@@ -5,8 +5,8 @@ Per poter sviluppare, testare o implementare nuove funzioni si consiglia di segu
 
 In queste istruzioni si suppone che il progetto sia già stato clonato nella sua interezza sul PC e che sia stato installato correttamente la [**Toolchain**](http://esp-idf.readthedocs.io/en/latest/get-started/index.html#setup-toolchain) per lo sviluppo.
 
-##Importazione del Progetto
 
+## Importazione del Progetto
 
 * Avviare Eclipse, scegliere *File -> Import...*
 * Nella finestra di dialogo, scegliere *"C/C++" -> "Existing Code as Makefile Project"* e cliccare *Next*.
@@ -16,8 +16,8 @@ In queste istruzioni si suppone che il progetto sia già stato clonato nella sua
 
 *Note: nel progetto ci saranno tanti warning: ignoriamoli.*
 
-##Proprietà del Progetto
 
+## Proprietà del Progetto
 
 * Troverete ora il progetto nel Project Explorer di Eclipse. Aprite le Proprietà cliccando con il tasto destro sul progetto.
 
@@ -40,19 +40,17 @@ In queste istruzioni si suppone che il progetto sia già stato clonato nella sua
 
      * In *"CDT GCC Build Output Parser"* e quindi su  *Compiler command pattern sostituire tutto con ``xtensa-esp32-elf-((g?cc)|([gc]\+\+)|(clang))``
 
-##Building in Eclipse
+## Building in Eclipse
 
 * Salvare le impostazioni e uscire dalla schermata delle proprietà.
 
 * Aprire **msys32** e navigare nella cartella contenente il nostro progetto. Avviare il comando ``make menuconfig`` per configurare la porta utilizzata.
 
-
 * Tornate in Eclipse e selezionate *Project -> Build project*
 
 **TIP**: Se avevi già fatto una build fuori da Eclipse, forse dovresti fare *Project -> Clean* prima di fare un altro build in Eclipse.
 
-Flash da Eclipse
-------------------
+## Flash da Eclipse
 
 * Click con il tasto destro sul progetto nel Project Explorer.
 
