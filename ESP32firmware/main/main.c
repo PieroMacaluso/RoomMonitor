@@ -6,6 +6,7 @@
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 #include <string.h>
+#include <math.h>
 
 /**
  * TYPE [0 MASK 0x0C]
@@ -37,13 +38,14 @@ static void wifi_sniffer_packet_handler(void *buff,
 		wifi_promiscuous_pkt_type_t type);
 static void getMAC(char *addr, const uint8_t* data, uint16_t offset);
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data);
+float calculateDistance(signed rssi);
 
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
  */
 void app_main(void) {
 
-	uint8_t level = 0, channel = 1;
+	uint8_t level = 0, channel = 11;
 
 	wifi_sniffer_init();
 
@@ -53,7 +55,7 @@ void app_main(void) {
 		gpio_set_level(GPIO_NUM_4, level ^= 1);
 		vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
 		wifi_sniffer_set_channel(channel);
-		channel = (channel % WIFI_CHANNEL_MAX) + 1;
+//		channel = (channel % WIFI_CHANNEL_MAX) + 1;
 	}
 }
 
@@ -135,6 +137,7 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	// Stampa dei dati a video
 	printf("TYPE= %s", subtype2str(frameSubType));
 	printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
+	printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
 	printf(" Ch: %02d", ppkt->rx_ctrl.channel);
 
 	char addr[] = "00:00:00:00:00:00";
@@ -196,5 +199,30 @@ const char *subtype2str(uint8_t type) {
 	default:
 		return "OTHE";
 	}
+}
+
+/**
+ * @brief      Conversione molto grossolana da RSSI a Metri
+ *
+ * @param[in]  rssi  RSSI
+ *
+ * @return     float in metri
+ */
+float calculateDistance(signed rssi) {
+
+  signed txPower = -59; //hard coded power value. Usually ranges between -59 to -65
+
+  if (rssi == 0) {
+    return -1.0;
+  }
+
+  float ratio = (float) rssi*1.0/txPower;
+  if (ratio < 1.0) {
+    return pow(ratio,10);
+  }
+  else {
+    float distance =  (0.89976)*pow(ratio,7.7095) + 0.111;
+    return distance;
+  }
 }
 
