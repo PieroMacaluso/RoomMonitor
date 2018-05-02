@@ -90,7 +90,7 @@ void wifi_sniffer_init(void) {
 /**
  * @brief      Restituisce il MAC address.
  *
- * @param      addr    Puntatore all'array in cui sar√† scritto il MAC in formato leggibile
+ * @param      addr    Puntatore all'array in cui sar‡ scritto il MAC in formato leggibile
  * @param[in]  data    Puntatore alla porzione payload del pacchetto
  * @param[in]  offset  Punto del payload in cui si trova l'indirizzo MAC richiesto
  */
