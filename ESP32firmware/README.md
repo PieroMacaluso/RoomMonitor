@@ -29,7 +29,7 @@ In queste istruzioni si suppone che il progetto sia già stato clonato nella sua
 
   * Clicca su *"Add..."* e inserisci nome ``BATCH_BUILD`` e valore ``1``.
   * Clicca su "Add..." di nuovo, e inserisci nome ``IDF_PATH``. Il valore dovrà essere il PATH dove ESP-IDF è installato.
-    * es. `*C:/msys32/home/MyUser/esp/esp-idf*`. **NOTA BENE:** usare `/` e non `\`
+    * es. `C:/msys32/home/MyUser/esp/esp-idf`. **NOTA BENE:** usare `/` e non `\`
   * Modificare la variabile d'ambiente *PATH*. Cancellare tutto e inserire:``C:\msys32\usr\bin;C:\msys32\mingw32\bin;C:\msys32\opt\xtensa-esp32-elf\bin`` (Dipende da dove è stato installato **msys32**).
 
 * Clicca su *"C/C++ General"* -> *"Preprocessor Include Paths, Macros, etc."*:
@@ -38,7 +38,7 @@ In queste istruzioni si suppone che il progetto sia già stato clonato nella sua
 
      * In *"CDT GCC Built-in Compiler Settings Cygwin"* e su *"Command to get compiler specs"* sostituisci tutto con ``xtensa-esp32-elf-gcc ${FLAGS} -E -P -v -dD "${INPUTS}"``.
 
-     * In *"CDT GCC Build Output Parser"* e quindi su  *Compiler command pattern sostituire tutto con ``xtensa-esp32-elf-((g?cc)|([gc]\+\+)|(clang))``
+     * In *"CDT GCC Build Output Parser"* e quindi su  *"Compiler command pattern"* sostituire tutto con ``xtensa-esp32-elf-((g?cc)|([gc]\+\+)|(clang))``
 
 ## Building in Eclipse
 
