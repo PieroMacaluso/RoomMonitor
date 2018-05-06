@@ -7,6 +7,9 @@
 #include "driver/gpio.h"
 #include <string.h>
 #include <math.h>
+#include "soc/timer_group_struct.h"
+#include "driver/periph_ctrl.h"
+#include "driver/timer.h"
 
 /**
  * TYPE [0 MASK 0x0C]
@@ -25,6 +28,23 @@
 #define	WIFI_CHANNEL_MAX		(13)
 #define	WIFI_CHANNEL_SWITCH_INTERVAL	(500)
 
+/*
+ * DIMENSIONI BUFFER
+ */
+#define SIZEBUF 			120
+#define NUM_PACKETS			10
+#define SECOND_SCAN_MODE	20
+
+/*
+ *  TIMER
+ */
+#define TIMER_INTR_SEL TIMER_INTR_LEVEL  /*!< Timer level interrupt */
+#define TIMER_GROUP    TIMER_GROUP_0     /*!< Test on timer group 0 */
+#define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
+#define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
+#define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
+#define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
+
 static wifi_country_t wifi_country = { .cc = "CN", .schan = 1, .nchan = 13,
 		.policy = WIFI_COUNTRY_POLICY_AUTO };
 
@@ -39,6 +59,14 @@ static void wifi_sniffer_packet_handler(void *buff,
 static void getMAC(char *addr, const uint8_t* data, uint16_t offset);
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data);
 float calculateDistance(signed rssi);
+int list_packet_init();
+void list_packet_free();
+static void timer0_init();
+
+/* Variabili */
+char** list_packet;
+int num_pack;
+int mod=0;							//0=> scan 1=>send server
 
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
@@ -47,16 +75,60 @@ void app_main(void) {
 
 	uint8_t level = 0, channel = 11;
 
+	if(list_packet_init()==-1){
+		printf("Error list_packet_init()\n");
+		return;
+	}
 	wifi_sniffer_init();
-
-	gpio_set_direction(GPIO_NUM_4, GPIO_MODE_OUTPUT);
+	vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
+	wifi_sniffer_set_channel(channel);
 	/* loop */
 	while (true) {
-		gpio_set_level(GPIO_NUM_4, level ^= 1);
-		vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
-		wifi_sniffer_set_channel(channel);
-//		channel = (channel % WIFI_CHANNEL_MAX) + 1;
+		esp_wifi_set_promiscuous(true);
+		mod=0;
+		printf("Inizio raccolta dati...\n");
+		timer0_init();
+		while(mod==0){
+			vTaskDelay(20 / portTICK_PERIOD_MS);				//attesa alarm
+		}
+		esp_wifi_set_promiscuous(false);
+		printf("Fine periodo cattura.\n");
+		timer_pause(TIMER_GROUP_0, 0);
+		vTaskDelay(5000 / portTICK_PERIOD_MS);				//sostituire con l'invio del buffer
 	}
+
+	 //todo list_packet_free();
+}
+
+/*
+ * @brief		Funzione per inizializzare il buffer che conterrà tutte le info dei pacchetti catturati
+ *
+ * @return		1 ok, -1 error
+ */
+int list_packet_init(){
+	int i;
+	list_packet=malloc(NUM_PACKETS*sizeof(char*));
+		if(list_packet==NULL)
+			return -1;
+		for(i=0;i<NUM_PACKETS;i++){
+			list_packet[i]=malloc(SIZEBUF*sizeof(char));
+			if(list_packet[i]==NULL)
+				return -1;
+		}
+
+	num_pack=0;
+	return 1;
+}
+
+/*
+ * @brief		Funzione per liberare il buffer
+ *
+ */
+void list_packet_free(){
+	int i;
+	for(i=0;i<num_pack;i++)
+		free(list_packet[i]);
+ 	free(list_packet);
 }
 
 /**
@@ -123,6 +195,7 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data) {
  */
 void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 
+	char tmp[4],tmp1[7];
 	// Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
 	const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
 	uint8_t frameControl = (unsigned int) ppkt->payload[0];
@@ -151,6 +224,32 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	}
 	printf("\n");
 
+	// Memorizzazione
+	if(num_pack<NUM_PACKETS){
+	strcpy(list_packet[num_pack],"type= ");
+	strcat(list_packet[num_pack],subtype2str(frameSubType));
+	strcat(list_packet[num_pack]," RSSI: ");
+	snprintf(tmp, sizeof tmp, "%02d", ppkt->rx_ctrl.rssi);
+	strcat(list_packet[num_pack],tmp);
+	strcat(list_packet[num_pack]," Distance: ");
+	snprintf(tmp1, sizeof tmp1, "%3.2fm", calculateDistance(ppkt->rx_ctrl.rssi));
+	strcat(list_packet[num_pack],tmp1);
+	strcat(list_packet[num_pack],"\t Ch: ");
+	snprintf(tmp, sizeof tmp, "%02d",ppkt->rx_ctrl.channel);
+	strcat(list_packet[num_pack],tmp);
+	strcat(list_packet[num_pack]," Peer MAC: ");
+	strcat(list_packet[num_pack],addr);
+	strcat(list_packet[num_pack]," SSID: ");
+	for (uint16_t i = 26; i < 26 + SSID_length; i++) {
+		snprintf(tmp,1,"%c", ppkt->payload[i]);
+		strcat(list_packet[num_pack],tmp);
+		}
+	strcat(list_packet[num_pack],"\0");
+	printf("%s\n",list_packet[num_pack]);
+	num_pack++;
+	}else{
+		printf("!!!Buffer list_packed pieno\n");			//todo riallocare
+	}
 }
 
 /**
@@ -225,4 +324,59 @@ float calculateDistance(signed rssi) {
     return distance;
   }
 }
+
+/*
+ *@brief  Gestisce l'interrupt generato allo scadere del timer
+ *
+ *@param para=0 indice timer0
+ */
+ void IRAM_ATTR timer_group0_isr(void *para){// timer group 0, ISR
+      int timer_idx = (int) para;
+       uint32_t intr_status = TIMERG0.int_st_timers.val;
+        if((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) {
+            TIMERG0.hw_timer[timer_idx].update = 1;
+            TIMERG0.int_clr_timers.t0 = 1;									//clear the interupt called
+            TIMERG0.hw_timer[timer_idx].config.alarm_en = 1;
+
+            //gestione allarme
+            mod=1;
+        }
+  }
+/*
+ * @brief Init timer usato per periodo "scan paccheti"
+ */
+static void timer0_init(){
+      int timer_group = TIMER_GROUP_0;
+      int timer_idx = TIMER_0;
+      timer_config_t config;
+      config.alarm_en = 1;										//per abilitare l'allarme ogni TIMER_INTERVAL0_SEC
+      config.auto_reload = 1;
+      config.counter_dir = TIMER_COUNT_UP;						//abilita conteggio da 0 in avanti
+      config.divider = TIMER_DIVIDER;
+      config.intr_type = TIMER_INTR_SEL;
+      config.counter_en = TIMER_PAUSE;
+      /*Configure timer*/
+      timer_init(timer_group, timer_idx, &config);
+      /*Stop timer counter*/
+      timer_pause(timer_group, timer_idx);
+      /*Load counter value */
+      timer_set_counter_value(timer_group, timer_idx, 0x00000000ULL);
+      /*Set alarm value*/
+      timer_set_alarm_value(timer_group, timer_idx, (TIMER_INTERVAL0_SEC * TIMER_SCALE) - TIMER_FINE_ADJ);
+      /*Enable timer interrupt*/
+      timer_enable_intr(timer_group, timer_idx);
+      /*Set ISR handler*/
+      timer_isr_register(timer_group, timer_idx, timer_group0_isr, (void*) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
+      /*Start timer counter*/
+      timer_start(timer_group, timer_idx);
+  }
+
+
+
+
+
+
+
+
+
 
