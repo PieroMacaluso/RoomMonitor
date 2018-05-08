@@ -1,8 +1,10 @@
 #include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
 #include "esp_wifi.h"
 #include "esp_system.h"
 #include "esp_event.h"
 #include "esp_event_loop.h"
+#include "esp_log.h"
 #include "nvs_flash.h"
 #include "driver/gpio.h"
 #include <string.h>
@@ -10,6 +12,8 @@
 #include "soc/timer_group_struct.h"
 #include "driver/periph_ctrl.h"
 #include "driver/timer.h"
+#include "lwip/sockets.h"
+#include "driver/gpio.h"
 
 /**
  * TYPE [0 MASK 0x0C]
@@ -45,11 +49,23 @@
 #define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
 #define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
 
+/*
+ * Parametri connessione server da configurare tramite make menuconfig impostati nel file kconfig.projbuild
+ */
+#define SSID CONFIG_WIFI_SSID
+#define PASSPHARSE CONFIG_WIFI_PASSWORD
+#define TCPServerIP CONFIG_IP_SERVER
+#define TCPServerPORT CONFIG_PORT_SERVER
+#define SCANChannel CONFIG_SCAN_CHANNEL
+#define MESSAGE "HelloTCPServer\0"
+
+#define BLINK_GPIO 2				//pin led
+
 static wifi_country_t wifi_country = { .cc = "CN", .schan = 1, .nchan = 13,
 		.policy = WIFI_COUNTRY_POLICY_AUTO };
 
 /* Prototipi Funzioni */
-static esp_err_t event_handler(void *ctx, system_event_t *event);
+static esp_err_t event_handler1(void *ctx, system_event_t *event);
 static void wifi_sniffer_init(void);
 static void wifi_sniffer_set_channel(uint8_t channel);
 static const char * type2str(wifi_promiscuous_pkt_type_t type);
@@ -62,39 +78,56 @@ float calculateDistance(signed rssi);
 int list_packet_init();
 void list_packet_free();
 static void timer0_init();
+void wifi_connect();
+static esp_err_t event_handler(void *ctx, system_event_t *event);
+int tcpClient(char *sbuf);
 
 /* Variabili */
 char** list_packet;
 int num_pack;
 int mod=0;							//0=> scan 1=>send server
 
+/*Variabili per comunicazione verso server*/
+static EventGroupHandle_t wifi_event_group;
+const int CONNECTED_BIT = BIT0;
+static const char *TAG="tcp_client";
+
+
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
  */
 void app_main(void) {
 
-	uint8_t level = 0, channel = 11;
+	uint8_t level = 0;
 
 	if(list_packet_init()==-1){
 		printf("Error list_packet_init()\n");
 		return;
 	}
-	wifi_sniffer_init();
+	wifi_event_group = xEventGroupCreate();
+	wifi_sniffer_init();									//init modalità scan
 	vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
-	wifi_sniffer_set_channel(channel);
+	wifi_sniffer_set_channel(SCANChannel);
+
 	/* loop */
 	while (true) {
+
 		esp_wifi_set_promiscuous(true);
 		mod=0;
+
 		printf("Inizio raccolta dati...\n");
-		timer0_init();
+		timer0_init();											//start timer
+
 		while(mod==0){
 			vTaskDelay(20 / portTICK_PERIOD_MS);				//attesa alarm
 		}
+
 		esp_wifi_set_promiscuous(false);
 		printf("Fine periodo cattura.\n");
 		timer_pause(TIMER_GROUP_0, 0);
-		vTaskDelay(5000 / portTICK_PERIOD_MS);				//sostituire con l'invio del buffer
+		vTaskDelay(200 / portTICK_PERIOD_MS);					//sostituire con l'invio del buffer
+
+		tcpClient(MESSAGE);										//todo sostituire MESSAGE con buffer pacchetti
 	}
 
 	 //todo list_packet_free();
@@ -139,7 +172,7 @@ void list_packet_free(){
  *
  * @return     ESP_OK
  */
-esp_err_t event_handler(void *ctx, system_event_t *event) {
+esp_err_t event_handler1(void *ctx, system_event_t *event) {
 	return ESP_OK;
 }
 
@@ -147,6 +180,7 @@ esp_err_t event_handler(void *ctx, system_event_t *event) {
  * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
  */
 void wifi_sniffer_init(void) {
+	esp_log_level_set("wifi", ESP_LOG_NONE); 						// disable wifi driver logging
 	nvs_flash_init();
 	tcpip_adapter_init();
 	ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
@@ -245,7 +279,6 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 		strcat(list_packet[num_pack],tmp);
 		}
 	strcat(list_packet[num_pack],"\0");
-	printf("%s\n",list_packet[num_pack]);
 	num_pack++;
 	}else{
 		printf("!!!Buffer list_packed pieno\n");			//todo riallocare
@@ -370,6 +403,101 @@ static void timer0_init(){
       /*Start timer counter*/
       timer_start(timer_group, timer_idx);
   }
+
+/*
+ * @brief Funzione per effettuare la connessione con la rete per raggiungere il server
+ */
+
+void wifi_connect(){
+    wifi_config_t cfg = {
+        .sta = {
+            .ssid = SSID,
+            .password = PASSPHARSE,
+        },
+    };
+    ESP_ERROR_CHECK( esp_wifi_disconnect() );
+    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &cfg) );
+    ESP_ERROR_CHECK( esp_wifi_connect() );
+}
+
+/**
+ * @brief      event_handler per init connessione wifi che ritorna semore ESP_OK.
+ *
+ * @param      ctx    The context
+ * @param      event  The event
+ *
+ * @return     ESP_OK
+ */
+static esp_err_t event_handler(void *ctx, system_event_t *event)
+{
+    switch(event->event_id) {
+    case SYSTEM_EVENT_STA_START:
+        wifi_connect();
+        break;
+    case SYSTEM_EVENT_STA_GOT_IP:
+        xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
+        break;
+    case SYSTEM_EVENT_STA_DISCONNECTED:
+        esp_wifi_connect();
+        xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
+        break;
+    default:
+        break;
+    }
+    return ESP_OK;
+}
+
+/**
+ * @brief      funzione per connessione tcp con server per scambio pacchetti acquisiti
+ *
+ * @param      *sbuf cosa inviare al server
+
+ *
+ * @return    0=ok, -2=error
+ */
+int tcpClient(char *sbuf){
+	int 			s,i;
+	int 			result;
+
+	struct in_addr 		addr;
+	struct sockaddr_in 	saddr;
+	gpio_set_level(BLINK_GPIO, 1);
+	xEventGroupWaitBits(wifi_event_group,CONNECTED_BIT,false,true,portMAX_DELAY);		//attende la configurazione dal dhcp
+
+	ESP_LOGI(TAG,"tcp_client task started \n");
+	s=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+		if(s==-1){
+			ESP_LOGE(TAG,"Error socket. \n");
+		 	return -2;
+		}
+
+	result=inet_aton(TCPServerIP,&addr);
+			if(!result){
+				ESP_LOGE(TAG,"Error ip addres.\n");
+			 return -2;
+	}
+	saddr.sin_family=AF_INET;
+	saddr.sin_port=htons(atoi(TCPServerPORT));
+	saddr.sin_addr=addr;
+
+	ESP_LOGI(TAG,"Connecting with %s:%s ...\n",TCPServerIP,TCPServerPORT);
+		result=connect(s,(struct sockaddr*)&saddr,sizeof(saddr));
+		if(result==-1){
+			ESP_LOGE(TAG,"Error connect errno=%d \n", errno );
+		 return -2;
+		}
+		printf("Connect done.\n");
+		result=send(s,MESSAGE,sizeof(MESSAGE),0);
+		if(result<=0){
+				ESP_LOGI(TAG,"Error send message\n");
+				return -2;
+			}
+		printf("Message sent.\n");
+
+	close(s);
+	gpio_set_level(BLINK_GPIO, 0);
+	return 0;
+}
 
 
 
