@@ -36,7 +36,6 @@
  * DIMENSIONI BUFFER
  */
 #define SIZEBUF 			120
-#define NUM_PACKETS			10
 #define SECOND_SCAN_MODE	20
 
 /*
@@ -75,17 +74,19 @@ static void wifi_sniffer_packet_handler(void *buff,
 static void getMAC(char *addr, const uint8_t* data, uint16_t offset);
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data);
 float calculateDistance(signed rssi);
-int list_packet_init();
+int list_packet_init(int size);
+int list_packet_update(int size);
 void list_packet_free();
 static void timer0_init();
 void wifi_connect();
 static esp_err_t event_handler(void *ctx, system_event_t *event);
-int tcpClient(char *sbuf);
+int tcpClient(char **sbuf);
 
 /* Variabili */
 char** list_packet;
 int num_pack;
 int mod=0;							//0=> scan 1=>send server
+int size_list_packet=10;
 
 /*Variabili per comunicazione verso server*/
 static EventGroupHandle_t wifi_event_group;
@@ -100,7 +101,7 @@ void app_main(void) {
 
 	uint8_t level = 0;
 
-	if(list_packet_init()==-1){
+	if(list_packet_init(size_list_packet)==-1){
 		printf("Error list_packet_init()\n");
 		return;
 	}
@@ -127,7 +128,7 @@ void app_main(void) {
 		timer_pause(TIMER_GROUP_0, 0);
 		vTaskDelay(200 / portTICK_PERIOD_MS);					//sostituire con l'invio del buffer
 
-		tcpClient(MESSAGE);										//todo sostituire MESSAGE con buffer pacchetti
+		tcpClient(list_packet);									//todo sostituire MESSAGE con buffer pacchetti
 	}
 
 	 //todo list_packet_free();
@@ -138,18 +139,37 @@ void app_main(void) {
  *
  * @return		1 ok, -1 error
  */
-int list_packet_init(){
+int list_packet_init(int size){
 	int i;
-	list_packet=malloc(NUM_PACKETS*sizeof(char*));
+	list_packet=malloc(size*sizeof(char*));
 		if(list_packet==NULL)
 			return -1;
-		for(i=0;i<NUM_PACKETS;i++){
+		for(i=0;i<size;i++){
 			list_packet[i]=malloc(SIZEBUF*sizeof(char));
 			if(list_packet[i]==NULL)
 				return -1;
 		}
 
 	num_pack=0;
+	return 1;
+}
+
+/*
+ * @brief		Funzione per inizializzare il buffer che conterrà tutte le info dei pacchetti catturati
+ *
+ * @return		1 ok, -1 error
+ */
+int list_packet_update(int size){
+	int i;
+	list_packet=realloc(list_packet,size*sizeof(char*));
+		if(list_packet==NULL)
+			return -1;
+		for(i=num_pack;i<size;i++){
+			list_packet[i]=malloc(SIZEBUF*sizeof(char));
+			if(list_packet[i]==NULL)
+				return -1;
+		}
+	size_list_packet=size;
 	return 1;
 }
 
@@ -259,7 +279,13 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	printf("\n");
 
 	// Memorizzazione
-	if(num_pack<NUM_PACKETS){
+	if(num_pack==size_list_packet-1){
+		if(list_packet_update(size_list_packet*2)==-1){
+				printf("Error list_packet_init()\n");
+				return;
+			}
+	}
+
 	strcpy(list_packet[num_pack],"type= ");
 	strcat(list_packet[num_pack],subtype2str(frameSubType));
 	strcat(list_packet[num_pack]," RSSI: ");
@@ -278,11 +304,10 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 		snprintf(tmp,1,"%c", ppkt->payload[i]);
 		strcat(list_packet[num_pack],tmp);
 		}
-	strcat(list_packet[num_pack],"\0");
+	strcat(list_packet[num_pack],"\0\n");
+	//printf("%s\n",list_packet[num_pack]);
 	num_pack++;
-	}else{
-		printf("!!!Buffer list_packed pieno\n");			//todo riallocare
-	}
+
 }
 
 /**
@@ -455,8 +480,8 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
  *
  * @return    0=ok, -2=error
  */
-int tcpClient(char *sbuf){
-	int 			s,i;
+int tcpClient(char **sbuf){
+	int 			s,j,i;
 	int 			result;
 
 	struct in_addr 		addr;
@@ -487,11 +512,16 @@ int tcpClient(char *sbuf){
 		 return -2;
 		}
 		printf("Connect done.\n");
-		result=send(s,MESSAGE,sizeof(MESSAGE),0);
+		//for(j=0;j<num_pack;j++){
+		result=send(s,sbuf,num_pack*SIZEBUF,0);
+
 		if(result<=0){
 				ESP_LOGI(TAG,"Error send message\n");
 				return -2;
 			}
+		//printf("Pack %c sent.\n",j);
+		//}
+		num_pack=0;
 		printf("Message sent.\n");
 
 	close(s);
