@@ -14,6 +14,7 @@
 #include "driver/timer.h"
 #include "lwip/sockets.h"
 #include "driver/gpio.h"
+#include "packet.h"
 
 /**
  * TYPE [0 MASK 0x0C]
@@ -32,13 +33,13 @@
 #define	WIFI_CHANNEL_MAX		(13)
 #define	WIFI_CHANNEL_SWITCH_INTERVAL	(500)
 
-/*
+/**
  * DIMENSIONI BUFFER
  */
 #define SIZEBUF 			120
 #define SECOND_SCAN_MODE	20
 
-/*
+/**
  *  TIMER
  */
 #define TIMER_INTR_SEL TIMER_INTR_LEVEL  /*!< Timer level interrupt */
@@ -83,16 +84,16 @@ static esp_err_t event_handler(void *ctx, system_event_t *event);
 int tcpClient(char **sbuf);
 
 /* Variabili */
+PacketList list;
 char** list_packet;
 int num_pack;
-int mod=0;							//0=> scan 1=>send server
-int size_list_packet=10;
+int mod = 0;							//0=> scan 1=>send server
+int size_list_packet = 10;
 
 /*Variabili per comunicazione verso server*/
 static EventGroupHandle_t wifi_event_group;
 const int CONNECTED_BIT = BIT0;
-static const char *TAG="tcp_client";
-
+static const char *TAG = "tcp_client";
 
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
@@ -101,37 +102,41 @@ void app_main(void) {
 
 	uint8_t level = 0;
 
-	if(list_packet_init(size_list_packet)==-1){
-		printf("Error list_packet_init()\n");
+	/*if (list_packet_init(size_list_packet) == -1) {
+	 printf("Error list_packet_init()\n");
+	 return;
+	 }*/
+	if ((list = init_packet_list()) == NULL) {
+		printf("Error init_packet_list()\n");
 		return;
 	}
 	wifi_event_group = xEventGroupCreate();
 	wifi_sniffer_init();									//init modalità scan
 	vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
-	wifi_sniffer_set_channel(SCANChannel);
+	wifi_sniffer_set_channel(atoi(SCANChannel));
 
 	/* loop */
 	while (true) {
 
 		esp_wifi_set_promiscuous(true);
-		mod=0;
+		mod = 0;
 
 		printf("Inizio raccolta dati...\n");
 		timer0_init();											//start timer
 
-		while(mod==0){
+		while (mod == 0) {
 			vTaskDelay(20 / portTICK_PERIOD_MS);				//attesa alarm
 		}
 
 		esp_wifi_set_promiscuous(false);
 		printf("Fine periodo cattura.\n");
 		timer_pause(TIMER_GROUP_0, 0);
-		vTaskDelay(200 / portTICK_PERIOD_MS);					//sostituire con l'invio del buffer
+		vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
 
-		tcpClient(list_packet);									//todo sostituire MESSAGE con buffer pacchetti
+		tcpClient(list_packet);	//todo sostituire MESSAGE con buffer pacchetti
 	}
 
-	 //todo list_packet_free();
+	//todo list_packet_free();
 }
 
 /*
@@ -139,18 +144,18 @@ void app_main(void) {
  *
  * @return		1 ok, -1 error
  */
-int list_packet_init(int size){
+int list_packet_init(int size) {
 	int i;
-	list_packet=malloc(size*sizeof(char*));
-		if(list_packet==NULL)
+	list_packet = malloc(size * sizeof(char*));
+	if (list_packet == NULL)
+		return -1;
+	for (i = 0; i < size; i++) {
+		list_packet[i] = malloc(SIZEBUF * sizeof(char));
+		if (list_packet[i] == NULL)
 			return -1;
-		for(i=0;i<size;i++){
-			list_packet[i]=malloc(SIZEBUF*sizeof(char));
-			if(list_packet[i]==NULL)
-				return -1;
-		}
+	}
 
-	num_pack=0;
+	num_pack = 0;
 	return 1;
 }
 
@@ -159,17 +164,17 @@ int list_packet_init(int size){
  *
  * @return		1 ok, -1 error
  */
-int list_packet_update(int size){
+int list_packet_update(int size) {
 	int i;
-	list_packet=realloc(list_packet,size*sizeof(char*));
-		if(list_packet==NULL)
+	list_packet = realloc(list_packet, size * sizeof(char*));
+	if (list_packet == NULL)
+		return -1;
+	for (i = num_pack; i < size; i++) {
+		list_packet[i] = malloc(SIZEBUF * sizeof(char));
+		if (list_packet[i] == NULL)
 			return -1;
-		for(i=num_pack;i<size;i++){
-			list_packet[i]=malloc(SIZEBUF*sizeof(char));
-			if(list_packet[i]==NULL)
-				return -1;
-		}
-	size_list_packet=size;
+	}
+	size_list_packet = size;
 	return 1;
 }
 
@@ -177,11 +182,11 @@ int list_packet_update(int size){
  * @brief		Funzione per liberare il buffer
  *
  */
-void list_packet_free(){
+void list_packet_free() {
 	int i;
-	for(i=0;i<num_pack;i++)
+	for (i = 0; i < num_pack; i++)
 		free(list_packet[i]);
- 	free(list_packet);
+	free(list_packet);
 }
 
 /**
@@ -200,7 +205,7 @@ esp_err_t event_handler1(void *ctx, system_event_t *event) {
  * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
  */
 void wifi_sniffer_init(void) {
-	esp_log_level_set("wifi", ESP_LOG_NONE); 						// disable wifi driver logging
+	esp_log_level_set("wifi", ESP_LOG_NONE); 	// disable wifi driver logging
 	nvs_flash_init();
 	tcpip_adapter_init();
 	ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
@@ -228,6 +233,13 @@ static void getMAC(char *addr, const uint8_t* data, uint16_t offset) {
 			data[offset + 4], data[offset + 5]);
 }
 
+void setMAC(unsigned *addr, const uint8_t* data, uint16_t offset) {
+	int i;
+	for (i = 0; i < 6; i++) {
+		addr[i] = data[offset + i];
+	}
+}
+
 /**
  * @brief      Stampa i dati contenuti nel pacchetto partendo da start, fino a start+size
  *
@@ -249,7 +261,9 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data) {
  */
 void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 
-	char tmp[4],tmp1[7];
+	Packet p = init_packet();
+
+	char tmp[4], tmp1[7];
 	// Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
 	const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
 	uint8_t frameControl = (unsigned int) ppkt->payload[0];
@@ -260,6 +274,9 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	// Filtraggio dei pacchetti non desiderati
 	if (frameType != TYPE_MANAGEMENT || frameSubType != SUBTYPE_PROBE_REQUEST)
 		return;
+
+	// Set Packet
+	//setPacket(p, ppkt->rx_ctrl.rssi, ppkt->rx_ctrl.timestamp, ppkt->payload);
 
 	// Stampa dei dati a video
 	printf("TYPE= %s", subtype2str(frameSubType));
@@ -279,34 +296,36 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	printf("\n");
 
 	// Memorizzazione
-	if(num_pack==size_list_packet-1){
-		if(list_packet_update(size_list_packet*2)==-1){
-				printf("Error list_packet_init()\n");
-				return;
-			}
-	}
+	addto_packet_list(p, list);
+	/*if (num_pack == size_list_packet - 1) {
+	 if (list_packet_update(size_list_packet * 2) == -1) {
+	 printf("Error list_packet_init()\n");
+	 return;
+	 }
+	 }
 
-	strcpy(list_packet[num_pack],"type= ");
-	strcat(list_packet[num_pack],subtype2str(frameSubType));
-	strcat(list_packet[num_pack]," RSSI: ");
-	snprintf(tmp, sizeof tmp, "%02d", ppkt->rx_ctrl.rssi);
-	strcat(list_packet[num_pack],tmp);
-	strcat(list_packet[num_pack]," Distance: ");
-	snprintf(tmp1, sizeof tmp1, "%3.2fm", calculateDistance(ppkt->rx_ctrl.rssi));
-	strcat(list_packet[num_pack],tmp1);
-	strcat(list_packet[num_pack],"\t Ch: ");
-	snprintf(tmp, sizeof tmp, "%02d",ppkt->rx_ctrl.channel);
-	strcat(list_packet[num_pack],tmp);
-	strcat(list_packet[num_pack]," Peer MAC: ");
-	strcat(list_packet[num_pack],addr);
-	strcat(list_packet[num_pack]," SSID: ");
-	for (uint16_t i = 26; i < 26 + SSID_length; i++) {
-		snprintf(tmp,1,"%c", ppkt->payload[i]);
-		strcat(list_packet[num_pack],tmp);
-		}
-	strcat(list_packet[num_pack],"\0\n");
-	//printf("%s\n",list_packet[num_pack]);
-	num_pack++;
+	 strcpy(list_packet[num_pack], "type= ");
+	 strcat(list_packet[num_pack], subtype2str(frameSubType));
+	 strcat(list_packet[num_pack], " RSSI: ");
+	 snprintf(tmp, sizeof tmp, "%02d", ppkt->rx_ctrl.rssi);
+	 strcat(list_packet[num_pack], tmp);
+	 strcat(list_packet[num_pack], " Distance: ");
+	 snprintf(tmp1, sizeof tmp1, "%3.2fm",
+	 calculateDistance(ppkt->rx_ctrl.rssi));
+	 strcat(list_packet[num_pack], tmp1);
+	 strcat(list_packet[num_pack], "\t Ch: ");
+	 snprintf(tmp, sizeof tmp, "%02d", ppkt->rx_ctrl.channel);
+	 strcat(list_packet[num_pack], tmp);
+	 strcat(list_packet[num_pack], " Peer MAC: ");
+	 strcat(list_packet[num_pack], addr);
+	 strcat(list_packet[num_pack], " SSID: ");
+	 for (uint16_t i = 26; i < 26 + SSID_length; i++) {
+	 snprintf(tmp, 1, "%c", ppkt->payload[i]);
+	 strcat(list_packet[num_pack], tmp);
+	 }
+	 strcat(list_packet[num_pack], "\0\n");
+	 //printf("%s\n",list_packet[num_pack]);
+	 num_pack++;*/
 
 }
 
@@ -367,20 +386,19 @@ const char *subtype2str(uint8_t type) {
  */
 float calculateDistance(signed rssi) {
 
-  signed txPower = -59; //hard coded power value. Usually ranges between -59 to -65
+	signed txPower = -59; //hard coded power value. Usually ranges between -59 to -65
 
-  if (rssi == 0) {
-    return -1.0;
-  }
+	if (rssi == 0) {
+		return -1.0;
+	}
 
-  float ratio = (float) rssi*1.0/txPower;
-  if (ratio < 1.0) {
-    return pow(ratio,10);
-  }
-  else {
-    float distance =  (0.89976)*pow(ratio,7.7095) + 0.111;
-    return distance;
-  }
+	float ratio = (float) rssi * 1.0 / txPower;
+	if (ratio < 1.0) {
+		return pow(ratio, 10);
+	} else {
+		float distance = (0.89976) * pow(ratio, 7.7095) + 0.111;
+		return distance;
+	}
 }
 
 /*
@@ -388,61 +406,58 @@ float calculateDistance(signed rssi) {
  *
  *@param para=0 indice timer0
  */
- void IRAM_ATTR timer_group0_isr(void *para){// timer group 0, ISR
-      int timer_idx = (int) para;
-       uint32_t intr_status = TIMERG0.int_st_timers.val;
-        if((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) {
-            TIMERG0.hw_timer[timer_idx].update = 1;
-            TIMERG0.int_clr_timers.t0 = 1;									//clear the interupt called
-            TIMERG0.hw_timer[timer_idx].config.alarm_en = 1;
+void IRAM_ATTR timer_group0_isr(void *para) { // timer group 0, ISR
+	int timer_idx = (int) para;
+	uint32_t intr_status = TIMERG0.int_st_timers.val;
+	if ((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) {
+		TIMERG0.hw_timer[timer_idx].update = 1;
+		TIMERG0.int_clr_timers.t0 = 1;				//clear the interupt called
+		TIMERG0.hw_timer[timer_idx].config.alarm_en = 1;
 
-            //gestione allarme
-            mod=1;
-        }
-  }
+		//gestione allarme
+		mod = 1;
+	}
+}
 /*
  * @brief Init timer usato per periodo "scan paccheti"
  */
-static void timer0_init(){
-      int timer_group = TIMER_GROUP_0;
-      int timer_idx = TIMER_0;
-      timer_config_t config;
-      config.alarm_en = 1;										//per abilitare l'allarme ogni TIMER_INTERVAL0_SEC
-      config.auto_reload = 1;
-      config.counter_dir = TIMER_COUNT_UP;						//abilita conteggio da 0 in avanti
-      config.divider = TIMER_DIVIDER;
-      config.intr_type = TIMER_INTR_SEL;
-      config.counter_en = TIMER_PAUSE;
-      /*Configure timer*/
-      timer_init(timer_group, timer_idx, &config);
-      /*Stop timer counter*/
-      timer_pause(timer_group, timer_idx);
-      /*Load counter value */
-      timer_set_counter_value(timer_group, timer_idx, 0x00000000ULL);
-      /*Set alarm value*/
-      timer_set_alarm_value(timer_group, timer_idx, (TIMER_INTERVAL0_SEC * TIMER_SCALE) - TIMER_FINE_ADJ);
-      /*Enable timer interrupt*/
-      timer_enable_intr(timer_group, timer_idx);
-      /*Set ISR handler*/
-      timer_isr_register(timer_group, timer_idx, timer_group0_isr, (void*) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
-      /*Start timer counter*/
-      timer_start(timer_group, timer_idx);
-  }
+static void timer0_init() {
+	int timer_group = TIMER_GROUP_0;
+	int timer_idx = TIMER_0;
+	timer_config_t config;
+	config.alarm_en = 1;	//per abilitare l'allarme ogni TIMER_INTERVAL0_SEC
+	config.auto_reload = 1;
+	config.counter_dir = TIMER_COUNT_UP;	//abilita conteggio da 0 in avanti
+	config.divider = TIMER_DIVIDER;
+	config.intr_type = TIMER_INTR_SEL;
+	config.counter_en = TIMER_PAUSE;
+	/*Configure timer*/
+	timer_init(timer_group, timer_idx, &config);
+	/*Stop timer counter*/
+	timer_pause(timer_group, timer_idx);
+	/*Load counter value */
+	timer_set_counter_value(timer_group, timer_idx, 0x00000000ULL);
+	/*Set alarm value*/
+	timer_set_alarm_value(timer_group, timer_idx,
+			(TIMER_INTERVAL0_SEC * TIMER_SCALE) - TIMER_FINE_ADJ);
+	/*Enable timer interrupt*/
+	timer_enable_intr(timer_group, timer_idx);
+	/*Set ISR handler*/
+	timer_isr_register(timer_group, timer_idx, timer_group0_isr,
+			(void*) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
+	/*Start timer counter*/
+	timer_start(timer_group, timer_idx);
+}
 
 /*
  * @brief Funzione per effettuare la connessione con la rete per raggiungere il server
  */
 
-void wifi_connect(){
-    wifi_config_t cfg = {
-        .sta = {
-            .ssid = SSID,
-            .password = PASSPHARSE,
-        },
-    };
-    ESP_ERROR_CHECK( esp_wifi_disconnect() );
-    ESP_ERROR_CHECK( esp_wifi_set_config(ESP_IF_WIFI_STA, &cfg) );
-    ESP_ERROR_CHECK( esp_wifi_connect() );
+void wifi_connect() {
+	wifi_config_t cfg = { .sta = { .ssid = SSID, .password = PASSPHARSE, }, };
+	ESP_ERROR_CHECK(esp_wifi_disconnect());
+	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &cfg));
+	ESP_ERROR_CHECK(esp_wifi_connect());
 }
 
 /**
@@ -453,23 +468,22 @@ void wifi_connect(){
  *
  * @return     ESP_OK
  */
-static esp_err_t event_handler(void *ctx, system_event_t *event)
-{
-    switch(event->event_id) {
-    case SYSTEM_EVENT_STA_START:
-        wifi_connect();
-        break;
-    case SYSTEM_EVENT_STA_GOT_IP:
-        xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
-        break;
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-        esp_wifi_connect();
-        xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
-        break;
-    default:
-        break;
-    }
-    return ESP_OK;
+static esp_err_t event_handler(void *ctx, system_event_t *event) {
+	switch (event->event_id) {
+	case SYSTEM_EVENT_STA_START:
+		wifi_connect();
+		break;
+	case SYSTEM_EVENT_STA_GOT_IP:
+		xEventGroupSetBits(wifi_event_group, CONNECTED_BIT);
+		break;
+	case SYSTEM_EVENT_STA_DISCONNECTED:
+		esp_wifi_connect();
+		xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
+		break;
+	default:
+		break;
+	}
+	return ESP_OK;
 }
 
 /**
@@ -480,61 +494,55 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
  *
  * @return    0=ok, -2=error
  */
-int tcpClient(char **sbuf){
-	int 			s,j,i;
-	int 			result;
+int tcpClient(char **sbuf) {
+	int s, j, i;
+	int result;
 
-	struct in_addr 		addr;
-	struct sockaddr_in 	saddr;
+	struct in_addr addr;
+	struct sockaddr_in saddr;
 	gpio_set_level(BLINK_GPIO, 1);
-	xEventGroupWaitBits(wifi_event_group,CONNECTED_BIT,false,true,portMAX_DELAY);		//attende la configurazione dal dhcp
+	xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true,
+	portMAX_DELAY);		//attende la configurazione dal dhcp
 
-	ESP_LOGI(TAG,"tcp_client task started \n");
-	s=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
-		if(s==-1){
-			ESP_LOGE(TAG,"Error socket. \n");
-		 	return -2;
-		}
-
-	result=inet_aton(TCPServerIP,&addr);
-			if(!result){
-				ESP_LOGE(TAG,"Error ip addres.\n");
-			 return -2;
+	ESP_LOGI(TAG, "tcp_client task started \n");
+	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (s == -1) {
+		ESP_LOGE(TAG, "Error socket. \n");
+		return -2;
 	}
-	saddr.sin_family=AF_INET;
-	saddr.sin_port=htons(atoi(TCPServerPORT));
-	saddr.sin_addr=addr;
 
-	ESP_LOGI(TAG,"Connecting with %s:%s ...\n",TCPServerIP,TCPServerPORT);
-		result=connect(s,(struct sockaddr*)&saddr,sizeof(saddr));
-		if(result==-1){
-			ESP_LOGE(TAG,"Error connect errno=%d \n", errno );
-		 return -2;
+	result = inet_aton(TCPServerIP, &addr);
+	if (!result) {
+		ESP_LOGE(TAG, "Error ip addres.\n");
+		return -2;
+	}
+	saddr.sin_family = AF_INET;
+	saddr.sin_port = htons(atoi(TCPServerPORT));
+	saddr.sin_addr = addr;
+
+	ESP_LOGI(TAG, "Connecting with %s:%s ...\n", TCPServerIP, TCPServerPORT);
+	result = connect(s, (struct sockaddr*) &saddr, sizeof(saddr));
+	if (result == -1) {
+		ESP_LOGE(TAG, "Error connect errno=%d \n", errno);
+		return -2;
+	}
+	printf("Connect done.\n");
+	int n = getn_packet_list(list);
+	for (i = 0; i < n; i++) {
+		result = send(s, string_packet(list, i), LENPACKET, 0);
+
+		if (result <= 0) {
+			ESP_LOGI(TAG, "Error send message\n");
+			return -2;
 		}
-		printf("Connect done.\n");
-		//for(j=0;j<num_pack;j++){
-		result=send(s,sbuf,num_pack*SIZEBUF,0);
-
-		if(result<=0){
-				ESP_LOGI(TAG,"Error send message\n");
-				return -2;
-			}
-		//printf("Pack %c sent.\n",j);
-		//}
-		num_pack=0;
-		printf("Message sent.\n");
+		printf("Pack %c sent.\n", i);
+	}
+	list = reset_packet_list(list);
+	num_pack = 0;
+	printf("Message sent.\n");
 
 	close(s);
 	gpio_set_level(BLINK_GPIO, 0);
 	return 0;
 }
-
-
-
-
-
-
-
-
-
 
