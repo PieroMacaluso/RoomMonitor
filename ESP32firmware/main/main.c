@@ -65,30 +65,27 @@ static wifi_country_t wifi_country = { .cc = "CN", .schan = 1, .nchan = 13,
 		.policy = WIFI_COUNTRY_POLICY_AUTO };
 
 /* Prototipi Funzioni */
-static esp_err_t event_handler1(void *ctx, system_event_t *event);
+/*static esp_err_t event_handler1(void *ctx, system_event_t *event);*/
 static void wifi_sniffer_init(void);
 static void wifi_sniffer_set_channel(uint8_t channel);
-static const char * type2str(wifi_promiscuous_pkt_type_t type);
+/*static const char * type2str(wifi_promiscuous_pkt_type_t type);*/
 const char * subtype2str(uint8_t type);
 static void wifi_sniffer_packet_handler(void *buff,
 		wifi_promiscuous_pkt_type_t type);
 static void getMAC(char *addr, const uint8_t* data, uint16_t offset);
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data);
 float calculateDistance(signed rssi);
-int list_packet_init(int size);
+/*int list_packet_init(int size);
 int list_packet_update(int size);
-void list_packet_free();
+void list_packet_free();*/
 static void timer0_init();
 void wifi_connect();
 static esp_err_t event_handler(void *ctx, system_event_t *event);
-int tcpClient(char **sbuf);
+int tcpClient();
 
 /* Variabili */
 PacketList list;
-char** list_packet;
-int num_pack;
 int mod = 0;							//0=> scan 1=>send server
-int size_list_packet = 10;
 
 /*Variabili per comunicazione verso server*/
 static EventGroupHandle_t wifi_event_group;
@@ -100,7 +97,7 @@ static const char *TAG = "tcp_client";
  */
 void app_main(void) {
 
-	uint8_t level = 0;
+	/*uint8_t level = 0;*/
 
 	/*if (list_packet_init(size_list_packet) == -1) {
 	 printf("Error list_packet_init()\n");
@@ -133,60 +130,12 @@ void app_main(void) {
 		timer_pause(TIMER_GROUP_0, 0);
 		vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
 
-		tcpClient(list_packet);	//todo sostituire MESSAGE con buffer pacchetti
+		tcpClient();	//todo sostituire MESSAGE con buffer pacchetti
+		list = reset_packet_list(list);
+
 	}
 
 	//todo list_packet_free();
-}
-
-/*
- * @brief		Funzione per inizializzare il buffer che conterrà tutte le info dei pacchetti catturati
- *
- * @return		1 ok, -1 error
- */
-int list_packet_init(int size) {
-	int i;
-	list_packet = malloc(size * sizeof(char*));
-	if (list_packet == NULL)
-		return -1;
-	for (i = 0; i < size; i++) {
-		list_packet[i] = malloc(SIZEBUF * sizeof(char));
-		if (list_packet[i] == NULL)
-			return -1;
-	}
-
-	num_pack = 0;
-	return 1;
-}
-
-/*
- * @brief		Funzione per inizializzare il buffer che conterrà tutte le info dei pacchetti catturati
- *
- * @return		1 ok, -1 error
- */
-int list_packet_update(int size) {
-	int i;
-	list_packet = realloc(list_packet, size * sizeof(char*));
-	if (list_packet == NULL)
-		return -1;
-	for (i = num_pack; i < size; i++) {
-		list_packet[i] = malloc(SIZEBUF * sizeof(char));
-		if (list_packet[i] == NULL)
-			return -1;
-	}
-	size_list_packet = size;
-	return 1;
-}
-
-/*
- * @brief		Funzione per liberare il buffer
- *
- */
-void list_packet_free() {
-	int i;
-	for (i = 0; i < num_pack; i++)
-		free(list_packet[i]);
-	free(list_packet);
 }
 
 /**
@@ -197,9 +146,11 @@ void list_packet_free() {
  *
  * @return     ESP_OK
  */
-esp_err_t event_handler1(void *ctx, system_event_t *event) {
-	return ESP_OK;
-}
+/*
+ esp_err_t event_handler1(void *ctx, system_event_t *event) {
+ return ESP_OK;
+ }
+ */
 
 /**
  * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
@@ -260,14 +211,13 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data) {
  * @param[in]  type  Il tipo di pacchetto
  */
 void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
-
 	Packet p = init_packet();
 
-	char tmp[4], tmp1[7];
+	/*char tmp[4], tmp1[7];*/
 	// Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
 	const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
 	uint8_t frameControl = (unsigned int) ppkt->payload[0];
-	uint8_t version = (frameControl & 0x03) >> 0;
+	/*uint8_t version = (frameControl & 0x03) >> 0;*/
 	uint8_t frameType = (frameControl & 0x0C) >> 2;
 	uint8_t frameSubType = (frameControl & 0xF0) >> 4;
 
@@ -276,27 +226,30 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 		return;
 
 	// Set Packet
-	//setPacket(p, ppkt->rx_ctrl.rssi, ppkt->rx_ctrl.timestamp, ppkt->payload);
+	int i = setPacket(p, ppkt);
+	/*printf("%d",i);
+	 // Stampa dei dati a video
+	 printf("TYPE= %s", subtype2str(frameSubType));
+	 printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
+	 printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
+	 printf(" Ch: %02d", ppkt->rx_ctrl.channel);
 
-	// Stampa dei dati a video
-	printf("TYPE= %s", subtype2str(frameSubType));
-	printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
-	printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
-	printf(" Ch: %02d", ppkt->rx_ctrl.channel);
+	 char addr[] = "00:00:00:00:00:00";
+	 getMAC(addr, ppkt->payload, 10);
+	 printf(" Peer MAC: %s", addr);
 
-	char addr[] = "00:00:00:00:00:00";
-	getMAC(addr, ppkt->payload, 10);
-	printf(" Peer MAC: %s", addr);
-
-	uint8_t SSID_length = ppkt->payload[25];
-	if (SSID_length > 0) {
-		printf(" SSID: ");
-		printDataSpan(26, SSID_length, ppkt->payload);
-	}
-	printf("\n");
-
+	 uint8_t SSID_length = ppkt->payload[25];
+	 if (SSID_length > 0) {
+	 printf(" SSID: ");
+	 printDataSpan(26, SSID_length, ppkt->payload);
+	 }
+	 printf("\n");
+	 */
 	// Memorizzazione
+	printf("Memorizzazione\n");
 	addto_packet_list(p, list);
+	printf("Memorizzato\n");
+
 	/*if (num_pack == size_list_packet - 1) {
 	 if (list_packet_update(size_list_packet * 2) == -1) {
 	 printf("Error list_packet_init()\n");
@@ -326,7 +279,6 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	 strcat(list_packet[num_pack], "\0\n");
 	 //printf("%s\n",list_packet[num_pack]);
 	 num_pack++;*/
-
 }
 
 /**
@@ -345,17 +297,19 @@ void wifi_sniffer_set_channel(uint8_t channel) {
  *
  * @return     Stringa del tipo richiesto
  */
-const char *type2str(wifi_promiscuous_pkt_type_t type) {
-	switch (type) {
-	case WIFI_PKT_MGMT:
-		return "MGMT";
-	case WIFI_PKT_DATA:
-		return "DATA";
-	default:
-	case WIFI_PKT_MISC:
-		return "MISC";
-	}
-}
+/*
+ const char *type2str(wifi_promiscuous_pkt_type_t type) {
+ switch (type) {
+ case WIFI_PKT_MGMT:
+ return "MGMT";
+ case WIFI_PKT_DATA:
+ return "DATA";
+ default:
+ case WIFI_PKT_MISC:
+ return "MISC";
+ }
+ }
+ */
 
 /**
  * @brief      Permette di convertire il numero del sottotipo in stringa personalizzabile
@@ -494,8 +448,8 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
  *
  * @return    0=ok, -2=error
  */
-int tcpClient(char **sbuf) {
-	int s, j, i;
+int tcpClient() {
+	int s, i;
 	int result;
 
 	struct in_addr addr;
@@ -527,18 +481,22 @@ int tcpClient(char **sbuf) {
 		return -2;
 	}
 	printf("Connect done.\n");
-	int n = getn_packet_list(list);
-	for (i = 0; i < n; i++) {
-		result = send(s, string_packet(list, i), LENPACKET, 0);
+	result = send_packets(s, list);
 
-		if (result <= 0) {
-			ESP_LOGI(TAG, "Error send message\n");
-			return -2;
-		}
-		printf("Pack %c sent.\n", i);
+	if (result <= 0) {
+		ESP_LOGI(TAG, "Error send message\n");
+		return -2;
 	}
-	list = reset_packet_list(list);
-	num_pack = 0;
+	/*int n = getn_packet_list(list);
+	 for (i = 0; i < n; i++) {
+	 result = send(s, string_packet(list, i), LENPACKET, 0);
+
+	 if (result <= 0) {
+	 ESP_LOGI(TAG, "Error send message\n");
+	 return -2;
+	 }
+	 printf("Pack %c sent.\n", i);
+	 }*/
 	printf("Message sent.\n");
 
 	close(s);
