@@ -16,26 +16,18 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-static const char *TAGP = "tcp_client";
 
 
 #define STARTSIZE 	20
 #define LENPACKET 	11
 #define OFFMAC 		10
 
+typedef struct node *node_t;
 
-typedef struct packetlist *PacketList;
-
-typedef struct packet *Packet;
-
-PacketList init_packet_list();
-Packet init_packet();
-int setPacket(Packet p, const wifi_promiscuous_pkt_t *ppkt);
-PacketList addto_packet_list(Packet p, PacketList list);
-int getn_packet_list(PacketList list);
-int send_packets(int s, PacketList list);
-/*unsigned char * string_packet(PacketList list, int n);*/
-PacketList reset_packet_list(PacketList list);
-void free_packet_list(PacketList list);
+node_t init_packet_list();
+node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h);
+int send_packets(int s, node_t h);
+void free_packet_list(node_t h);
+void reset_packet_list(node_t h);
 
 

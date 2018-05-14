@@ -76,15 +76,15 @@ static void getMAC(char *addr, const uint8_t* data, uint16_t offset);
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data);
 float calculateDistance(signed rssi);
 /*int list_packet_init(int size);
-int list_packet_update(int size);
-void list_packet_free();*/
+ int list_packet_update(int size);
+ void list_packet_free();*/
 static void timer0_init();
 void wifi_connect();
 static esp_err_t event_handler(void *ctx, system_event_t *event);
 int tcpClient();
 
 /* Variabili */
-PacketList list;
+node_t head;
 int mod = 0;							//0=> scan 1=>send server
 
 /*Variabili per comunicazione verso server*/
@@ -103,7 +103,7 @@ void app_main(void) {
 	 printf("Error list_packet_init()\n");
 	 return;
 	 }*/
-	if ((list = init_packet_list()) == NULL) {
+	if ((head = init_packet_list()) == NULL) {
 		printf("Error init_packet_list()\n");
 		return;
 	}
@@ -131,10 +131,9 @@ void app_main(void) {
 		vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
 
 		tcpClient();	//todo sostituire MESSAGE con buffer pacchetti
-		list = reset_packet_list(list);
 
 	}
-
+	free_packet_list(head);
 	//todo list_packet_free();
 }
 
@@ -178,6 +177,7 @@ void wifi_sniffer_init(void) {
  * @param[in]  data    Puntatore alla porzione payload del pacchetto
  * @param[in]  offset  Punto del payload in cui si trova l'indirizzo MAC richiesto
  */
+
 static void getMAC(char *addr, const uint8_t* data, uint16_t offset) {
 	sprintf(addr, "%02x:%02x:%02x:%02x:%02x:%02x", data[offset + 0],
 			data[offset + 1], data[offset + 2], data[offset + 3],
@@ -203,7 +203,6 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data) {
 		printf("%c", data[i]);
 	}
 }
-
 /**
  * @brief      Funzione Handler invocata quando viene ricevuto un pacchetto.
  *
@@ -211,8 +210,6 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data) {
  * @param[in]  type  Il tipo di pacchetto
  */
 void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
-	Packet p = init_packet();
-
 	/*char tmp[4], tmp1[7];*/
 	// Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
 	const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
@@ -222,63 +219,29 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	uint8_t frameSubType = (frameControl & 0xF0) >> 4;
 
 	// Filtraggio dei pacchetti non desiderati
-	if (frameType != TYPE_MANAGEMENT || frameSubType != SUBTYPE_PROBE_REQUEST)
+	if (frameType != TYPE_MANAGEMENT || frameSubType != SUBTYPE_PROBE_REQUEST) {
 		return;
+	}
 
 	// Set Packet
-	int i = setPacket(p, ppkt);
-	/*printf("%d",i);
-	 // Stampa dei dati a video
-	 printf("TYPE= %s", subtype2str(frameSubType));
-	 printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
-	 printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
-	 printf(" Ch: %02d", ppkt->rx_ctrl.channel);
+	addto_packet_list(ppkt, head);
 
-	 char addr[] = "00:00:00:00:00:00";
-	 getMAC(addr, ppkt->payload, 10);
-	 printf(" Peer MAC: %s", addr);
+	// Stampa dei dati a video
+	printf("TYPE= %s", subtype2str(frameSubType));
+	printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
+	printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
+	printf(" Ch: %02d", ppkt->rx_ctrl.channel);
 
-	 uint8_t SSID_length = ppkt->payload[25];
-	 if (SSID_length > 0) {
-	 printf(" SSID: ");
-	 printDataSpan(26, SSID_length, ppkt->payload);
-	 }
-	 printf("\n");
-	 */
-	// Memorizzazione
-	printf("Memorizzazione\n");
-	addto_packet_list(p, list);
-	printf("Memorizzato\n");
+	char addr[] = "00:00:00:00:00:00";
+	getMAC(addr, ppkt->payload, 10);
+	printf(" Peer MAC: %s", addr);
 
-	/*if (num_pack == size_list_packet - 1) {
-	 if (list_packet_update(size_list_packet * 2) == -1) {
-	 printf("Error list_packet_init()\n");
-	 return;
-	 }
-	 }
-
-	 strcpy(list_packet[num_pack], "type= ");
-	 strcat(list_packet[num_pack], subtype2str(frameSubType));
-	 strcat(list_packet[num_pack], " RSSI: ");
-	 snprintf(tmp, sizeof tmp, "%02d", ppkt->rx_ctrl.rssi);
-	 strcat(list_packet[num_pack], tmp);
-	 strcat(list_packet[num_pack], " Distance: ");
-	 snprintf(tmp1, sizeof tmp1, "%3.2fm",
-	 calculateDistance(ppkt->rx_ctrl.rssi));
-	 strcat(list_packet[num_pack], tmp1);
-	 strcat(list_packet[num_pack], "\t Ch: ");
-	 snprintf(tmp, sizeof tmp, "%02d", ppkt->rx_ctrl.channel);
-	 strcat(list_packet[num_pack], tmp);
-	 strcat(list_packet[num_pack], " Peer MAC: ");
-	 strcat(list_packet[num_pack], addr);
-	 strcat(list_packet[num_pack], " SSID: ");
-	 for (uint16_t i = 26; i < 26 + SSID_length; i++) {
-	 snprintf(tmp, 1, "%c", ppkt->payload[i]);
-	 strcat(list_packet[num_pack], tmp);
-	 }
-	 strcat(list_packet[num_pack], "\0\n");
-	 //printf("%s\n",list_packet[num_pack]);
-	 num_pack++;*/
+	uint8_t SSID_length = ppkt->payload[25];
+	if (SSID_length > 0) {
+		printf(" SSID: ");
+		printDataSpan(26, SSID_length, ppkt->payload);
+	}
+	printf("\n");
 }
 
 /**
@@ -449,7 +412,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
  * @return    0=ok, -2=error
  */
 int tcpClient() {
-	int s, i;
+	int s;
 	int result;
 
 	struct in_addr addr;
@@ -481,23 +444,15 @@ int tcpClient() {
 		return -2;
 	}
 	printf("Connect done.\n");
-	result = send_packets(s, list);
+	result = send_packets(s, head);
 
 	if (result <= 0) {
 		ESP_LOGI(TAG, "Error send message\n");
 		return -2;
 	}
-	/*int n = getn_packet_list(list);
-	 for (i = 0; i < n; i++) {
-	 result = send(s, string_packet(list, i), LENPACKET, 0);
 
-	 if (result <= 0) {
-	 ESP_LOGI(TAG, "Error send message\n");
-	 return -2;
-	 }
-	 printf("Pack %c sent.\n", i);
-	 }*/
 	printf("Message sent.\n");
+	reset_packet_list(head);
 
 	close(s);
 	gpio_set_level(BLINK_GPIO, 0);
