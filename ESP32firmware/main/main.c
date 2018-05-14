@@ -230,7 +230,7 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	printf("TYPE= %s", subtype2str(frameSubType));
 	printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
 	printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
-	printf(" Ch: %02d", ppkt->rx_ctrl.channel);
+	printf(" T: %d", ppkt->rx_ctrl.timestamp);
 
 	char addr[] = "00:00:00:00:00:00";
 	getMAC(addr, ppkt->payload, 10);
