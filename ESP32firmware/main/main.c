@@ -7,6 +7,7 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "driver/gpio.h"
+#include "rom/crc.h"
 #include <string.h>
 #include <math.h>
 #include "soc/timer_group_struct.h"
@@ -252,7 +253,14 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	addto_packet_list(ppkt, head);
 
 	// Stampa dei dati a video
-	printf("TYPE= %s", subtype2str(frameSubType));
+	int i;
+	uint32_t plen = 0;
+	plen = crc32_le(0, ppkt->payload, ppkt->rx_ctrl.sig_len);
+	printf("%u\t", ppkt->rx_ctrl.sig_len);
+//	for(i=0; i<4; i++) {
+		printf("%08x\t", plen);
+//	}
+	printf(" TYPE= %s", subtype2str(frameSubType));
 	printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
 	printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
 	printf(" T: %d", ppkt->rx_ctrl.timestamp);
