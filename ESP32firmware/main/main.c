@@ -15,6 +15,7 @@
 #include "lwip/sockets.h"
 #include "driver/gpio.h"
 #include "packet.h"
+#include "time.h"
 
 /**
  * TYPE [0 MASK 0x0C]
@@ -37,17 +38,18 @@
  * DIMENSIONI BUFFER
  */
 #define SIZEBUF 			120
-#define SECOND_SCAN_MODE	20
+//#define SECOND_SCAN_MODE	20
 
 /**
  *  TIMER
  */
-#define TIMER_INTR_SEL TIMER_INTR_LEVEL  /*!< Timer level interrupt */
-#define TIMER_GROUP    TIMER_GROUP_0     /*!< Test on timer group 0 */
-#define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
-#define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
-#define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
-#define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
+
+//#define TIMER_INTR_SEL TIMER_INTR_LEVEL  /*!< Timer level interrupt */
+//#define TIMER_GROUP    TIMER_GROUP_0     /*!< Test on timer group 0 */
+//#define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
+//#define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
+//#define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
+//#define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
 
 /*
  * Parametri connessione server da configurare tramite make menuconfig impostati nel file kconfig.projbuild
@@ -67,6 +69,7 @@ static wifi_country_t wifi_country = { .cc = "CN", .schan = 1, .nchan = 13,
 /* Prototipi Funzioni */
 /*static esp_err_t event_handler1(void *ctx, system_event_t *event);*/
 static void wifi_sniffer_init(void);
+void wifi_sniffer_update(void);
 static void wifi_sniffer_set_channel(uint8_t channel);
 /*static const char * type2str(wifi_promiscuous_pkt_type_t type);*/
 const char * subtype2str(uint8_t type);
@@ -78,14 +81,14 @@ float calculateDistance(signed rssi);
 /*int list_packet_init(int size);
  int list_packet_update(int size);
  void list_packet_free();*/
-static void timer0_init();
+//static void timer0_init();
 void wifi_connect();
 static esp_err_t event_handler(void *ctx, system_event_t *event);
 int tcpClient();
 
 /* Variabili */
 node_t head;
-int mod = 0;							//0=> scan 1=>send server
+static int mod = 0;							//0=> scan 1=>send server
 
 /*Variabili per comunicazione verso server*/
 static EventGroupHandle_t wifi_event_group;
@@ -97,6 +100,7 @@ static const char *TAG = "tcp_client";
  */
 void app_main(void) {
 
+	int nallarm=0;				//nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
 	/*uint8_t level = 0;*/
 
 	/*if (list_packet_init(size_list_packet) == -1) {
@@ -111,6 +115,7 @@ void app_main(void) {
 	wifi_sniffer_init();									//init modalità scan
 	vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
 	wifi_sniffer_set_channel(atoi(SCANChannel));
+	initialize_sntp();
 
 	/* loop */
 	while (true) {
@@ -130,11 +135,14 @@ void app_main(void) {
 		timer_pause(TIMER_GROUP_0, 0);
 		vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
 
-		tcpClient();	//todo sostituire MESSAGE con buffer pacchetti
+		tcpClient();
+
+		checkTime(&nallarm);
+
+		wifi_sniffer_update();
 
 	}
 	free_packet_list(head);
-	//todo list_packet_free();
 }
 
 /**
@@ -168,6 +176,23 @@ void wifi_sniffer_init(void) {
 	ESP_ERROR_CHECK(esp_wifi_start());
 	esp_wifi_set_promiscuous(true);
 	esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
+}
+
+/**
+ * @brief      Wifi sniffer update. Contiene tutte le procedure per ripristinare correttamente il dispositivo per lo sniffing
+ */
+void wifi_sniffer_update(void){
+	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT()
+		 						;
+		 						ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+		 						ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
+		 						ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
+		 						ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
+		 						ESP_ERROR_CHECK(esp_wifi_start());
+		 						esp_wifi_set_promiscuous(true);
+		 						esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
+		 						vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
+		 						wifi_sniffer_set_channel(atoi(SCANChannel));
 }
 
 /**
@@ -338,7 +363,7 @@ void IRAM_ATTR timer_group0_isr(void *para) { // timer group 0, ISR
 /*
  * @brief Init timer usato per periodo "scan paccheti"
  */
-static void timer0_init() {
+/*static void timer0_init() {
 	int timer_group = TIMER_GROUP_0;
 	int timer_idx = TIMER_0;
 	timer_config_t config;
@@ -348,23 +373,23 @@ static void timer0_init() {
 	config.divider = TIMER_DIVIDER;
 	config.intr_type = TIMER_INTR_SEL;
 	config.counter_en = TIMER_PAUSE;
-	/*Configure timer*/
+	//Configure timer
 	timer_init(timer_group, timer_idx, &config);
-	/*Stop timer counter*/
+	//Stop timer counter
 	timer_pause(timer_group, timer_idx);
-	/*Load counter value */
+	//Load counter value
 	timer_set_counter_value(timer_group, timer_idx, 0x00000000ULL);
-	/*Set alarm value*/
+	//Set alarm value
 	timer_set_alarm_value(timer_group, timer_idx,
 			(TIMER_INTERVAL0_SEC * TIMER_SCALE) - TIMER_FINE_ADJ);
-	/*Enable timer interrupt*/
+	//Enable timer interrupt
 	timer_enable_intr(timer_group, timer_idx);
-	/*Set ISR handler*/
+	//Set ISR handler
 	timer_isr_register(timer_group, timer_idx, timer_group0_isr,
 			(void*) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
-	/*Start timer counter*/
+	//Start timer counter
 	timer_start(timer_group, timer_idx);
-}
+}*/
 
 /*
  * @brief Funzione per effettuare la connessione con la rete per raggiungere il server
