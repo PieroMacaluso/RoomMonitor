@@ -43,6 +43,8 @@ char * getSSID(uint16_t start, uint16_t size, const uint8_t* data) {
 }
 
 Packet* setPacket(const wifi_promiscuous_pkt_t *ppkt) {
+	time_t now;
+	time(&now);
 	Packet *p;
 	p = malloc(sizeof(Packet));
 	int i;
@@ -53,7 +55,7 @@ Packet* setPacket(const wifi_promiscuous_pkt_t *ppkt) {
 		p->mac[i] = ppkt->payload[OFFMAC + i];
 	}
 	p->mac[7] = '\0';
-	p->timestamp = ppkt->rx_ctrl.timestamp;
+	p->timestamp = now;
 	uint8_t SSID_length = ppkt->payload[25];
 	p->SSID = getSSID(26, SSID_length, ppkt->payload);
 

@@ -239,6 +239,7 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	/*char tmp[4], tmp1[7];*/
 	// Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
 	const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
+	time_t now;
 	uint8_t frameControl = (unsigned int) ppkt->payload[0];
 	/*uint8_t version = (frameControl & 0x03) >> 0;*/
 	uint8_t frameType = (frameControl & 0x0C) >> 2;
@@ -253,7 +254,6 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	addto_packet_list(ppkt, head);
 
 	// Stampa dei dati a video
-	int i;
 	uint32_t plen = 0;
 	plen = crc32_le(0, ppkt->payload, ppkt->rx_ctrl.sig_len);
 	printf("%u\t", ppkt->rx_ctrl.sig_len);
@@ -263,7 +263,7 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	printf(" TYPE= %s", subtype2str(frameSubType));
 	printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
 	printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
-	printf(" T: %d", ppkt->rx_ctrl.timestamp);
+	printf(" T: %ld", (long) time(&now));
 
 	char addr[] = "00:00:00:00:00:00";
 	getMAC(addr, ppkt->payload, 10);
