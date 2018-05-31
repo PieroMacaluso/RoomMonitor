@@ -3,6 +3,7 @@
 #include "packet.h"
 
 static const char *TAGP = "tcp_client";
+char macESP[18];					//dopo l'init conterrà il mac della esp
 
 typedef struct packet {
 	uint32_t fcs;
@@ -10,6 +11,7 @@ typedef struct packet {
 	uint8_t mac[7];
 	uint32_t timestamp;
 	char * SSID;
+	char board[18];
 } Packet;
 
 struct node {
@@ -17,12 +19,15 @@ struct node {
 	struct node * next;
 };
 
-node_t init_packet_list() {
+node_t init_packet_list(char baseMacChr[18]) {
 	node_t head;
 	head = NULL;
 	head = malloc(sizeof(struct node));
 	head->packet = NULL;
 	head->next = NULL;
+
+	strcpy(macESP,baseMacChr);
+
 	return head;
 }
 
@@ -58,6 +63,7 @@ Packet* setPacket(const wifi_promiscuous_pkt_t *ppkt) {
 	p->timestamp = now;
 	uint8_t SSID_length = ppkt->payload[25];
 	p->SSID = getSSID(26, SSID_length, ppkt->payload);
+	strcpy(p->board,macESP);
 
 	return p;
 }
@@ -85,10 +91,10 @@ int send_packets(int s, node_t h) {
 	int result;
 	node_t i;
 	for (i = h; i != NULL; i = i->next) {
-		sprintf(buf, "%08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s", i->packet->fcs, i->packet->rssi,
+		sprintf(buf, "%08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", i->packet->fcs, i->packet->rssi,
 				i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
 				i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
-				i->packet->timestamp, i->packet->SSID);
+				i->packet->timestamp, i->packet->SSID,i->packet->board);
 		result = send(s, buf, 127, 0);
 				if (result <= 0) {
 					ESP_LOGI(TAGP, "Error send RSSI\n");

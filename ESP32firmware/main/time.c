@@ -46,7 +46,6 @@ void timer0_init() {
 
  void obtain_time(void)
 {
-    //initialize_sntp();
 
     // wait for time to be set
     time_t now = 0;
@@ -66,7 +65,7 @@ void timer0_init() {
  void checkTime(int* n){
 
 	 (*n)++;
-	 				if((*n)==/*SECOND_CHECK_TIME/SECOND_SCAN_MODE*/2 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
+	 				if((*n)==/*SECOND_CHECK_TIME/SECOND_SCAN_MODE*/2 || (*n)==-1 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
 	 					time_t now;
 	 					struct tm timeinfo;
 	 					time(&now);
@@ -87,6 +86,7 @@ void timer0_init() {
 	 					printf( "The current date/time in Italy is: %s\n", strftime_buf);
 	 					(*n)=0;
 	 				}
+
 
 
 

@@ -86,10 +86,13 @@ float calculateDistance(signed rssi);
 void wifi_connect();
 static esp_err_t event_handler(void *ctx, system_event_t *event);
 int tcpClient();
+void getMacAddress(char* baseMacChr);
 
 /* Variabili */
 node_t head;
 static int mod = 0;							//0=> scan 1=>send server
+char baseMacChr[18] = {0};
+
 
 /*Variabili per comunicazione verso server*/
 static EventGroupHandle_t wifi_event_group;
@@ -101,14 +104,22 @@ static const char *TAG = "tcp_client";
  */
 void app_main(void) {
 
-	int nallarm=0;				//nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
+	int nallarm=-1;				//nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
 	/*uint8_t level = 0;*/
 
 	/*if (list_packet_init(size_list_packet) == -1) {
 	 printf("Error list_packet_init()\n");
 	 return;
 	 }*/
-	if ((head = init_packet_list()) == NULL) {
+
+	//GetMac_ESP32
+	//char baseMacChr[18] = {0};
+	getMacAddress(baseMacChr);
+	/*for(i=0;i<18;i++){
+			printf("%c",baseMacChr[i]);
+		}
+		printf("\n");*/
+	if ((head = init_packet_list(baseMacChr)) == NULL) {
 		printf("Error init_packet_list()\n");
 		return;
 	}
@@ -117,6 +128,8 @@ void app_main(void) {
 	vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
 	wifi_sniffer_set_channel(atoi(SCANChannel));
 	initialize_sntp();
+	checkTime(&nallarm);
+	//vTaskDelay(20 / portTICK_PERIOD_MS);
 
 	/* loop */
 	while (true) {
@@ -144,6 +157,14 @@ void app_main(void) {
 
 	}
 	free_packet_list(head);
+}
+
+
+void getMacAddress(char *baseMacChr) {
+	uint8_t baseMac[6];
+	// Get MAC address for WiFi station
+	esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
+	sprintf(baseMacChr, "%02X:%02X:%02X:%02X:%02X:%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4], baseMac[5]);
 }
 
 /**
@@ -268,12 +289,14 @@ void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
 	char addr[] = "00:00:00:00:00:00";
 	getMAC(addr, ppkt->payload, 10);
 	printf(" Peer MAC: %s", addr);
-
+	printf(" Board Mac: %s", baseMacChr);
 	uint8_t SSID_length = ppkt->payload[25];
 	if (SSID_length > 0) {
 		printf(" SSID: ");
 		printDataSpan(26, SSID_length, ppkt->payload);
 	}
+
+
 	printf("\n");
 }
 
