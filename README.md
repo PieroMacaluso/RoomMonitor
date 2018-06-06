@@ -10,3 +10,7 @@
 * **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
 * **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
 * **Valentino** - [vale95](https://github.com/vale95)
+
+## Link Utili
+
+- https://stackoverflow.com/questions/22287335/connecting-mysql-with-c-c-sharp-in-visual-studio
