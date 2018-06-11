@@ -1,0 +1,9 @@
+﻿  stdafx.cpp
+  MySQLTry.cpp
+c:\program files\mysql\connector c++ 1.1\include\cppconn\sqlstring.h(45): warning C4251: 'sql::SQLString::realStr': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' deve avere un'interfaccia dll per essere utilizzata dai client di class 'sql::SQLString'
+  c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.11.25503\include\xstring(4079): note: vedere la dichiarazione di 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+c:\program files\mysql\connector c++ 1.1\include\cppconn\exception.h(78): warning C4251: 'sql::SQLException::sql_state': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' deve avere un'interfaccia dll per essere utilizzata dai client di class 'sql::SQLException'
+  c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.11.25503\include\xstring(4079): note: vedere la dichiarazione di 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+c:\program files\mysql\connector c++ 1.1\include\cppconn\exception.h(162): warning C4251: 'sql::SQLUnsupportedOptionException::option': class 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>' deve avere un'interfaccia dll per essere utilizzata dai client di struct 'sql::SQLUnsupportedOptionException'
+  c:\program files (x86)\microsoft visual studio\2017\enterprise\vc\tools\msvc\14.11.25503\include\xstring(4079): note: vedere la dichiarazione di 'std::basic_string<char,std::char_traits<char>,std::allocator<char>>'
+  MySQLTry.vcxproj -> D:\PIERO\Documents\GitHub\PDSproject\InterrogazioniSQL\MySQLTry\x64\Debug\MySQLTry.exe
