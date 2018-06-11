@@ -22,7 +22,7 @@ In questa guida diamo per scontato l'installazione dei programmi nei prerequisit
 
 ### Setup Progetto VS
 
-- Aprire il progetto in Visual Studio
+- Aprire il progetto in Visual Studio e modificare le stringhe in testata con le informazioni annotate in precedenza
 - Impostare la configurazione **Debug** e **x64** in alto (x86 se la vostra versione di installazione dei tool MySQL fosse diversa)
 - Aprire le **Proprietà del progetto** dal pannello **Esplora Soluzioni**
 - Andare in **Proprietà di Configurazione** :arrow_forward: **C/C++** :arrow_forward: **Generale** :arrow_forward: **Directory di inclusione aggiuntive** e aggiungere la stringa `C:\Program Files\MySQL\Connector C++ 1.1\include;` o comunque quella relativa alla vostra installazione di *MySQL Connector/C++ 1.1.11* all'inizio
