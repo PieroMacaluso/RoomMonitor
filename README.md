@@ -14,3 +14,4 @@
 ## Link Utili
 
 - https://stackoverflow.com/questions/22287335/connecting-mysql-with-c-c-sharp-in-visual-studio
+- http://www.lucadentella.it/category/esp32/
