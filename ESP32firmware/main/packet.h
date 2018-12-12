@@ -25,6 +25,9 @@
 
 typedef struct node *node_t;
 
+int get_id();
+int get_posx();
+int get_posy();
 node_t init_packet_list(char baseMacChr[18]);
 node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h);
 int send_packets(int s, node_t h);

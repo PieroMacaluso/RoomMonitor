@@ -6,7 +6,7 @@ You can find the configuration of the partitions in `partitions_spiffs.csv`.
 
 ## HOW-TO
 ### Create a SPIFFS partition
-***(If you don't want to create and flash your personal partition you can skip these part)***
+*(If you don't want to create and flash your personal partition you can skip these part)*
 1. Open the folder `spiffsKIT` and create your personal webpage in the folder `spiffs_image` using HTML, CSS and JS;
 2. Now you can create your partition using `mkspiffs` provided in the folder. You can do that with the command `./mkspiffs -c ./spiffs_image -b 4096 -p 256 -s 0x100000 captive_portal.img` (see `mkspiffs --help` for further informations);
 

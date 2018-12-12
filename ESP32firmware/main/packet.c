@@ -3,7 +3,20 @@
 #include "packet.h"
 
 static const char *TAGP = "tcp_client";
-char macESP[18];					//dopo l'init conterrà il mac della esp
+char macESP[18];					//dopo l'init conterrï¿½ il mac della esp
+uint8_t id;
+uint8_t posx;
+uint8_t posy;
+
+int get_id() {
+	return id;
+}
+int get_posx() {
+	return posx;
+}
+int get_posy() {
+	return posy;
+}
 
 typedef struct packet {
 	uint32_t fcs;
@@ -19,7 +32,29 @@ struct node {
 	struct node * next;
 };
 
+int my_nvs_get_str_to_int(char * key) {
+	esp_err_t err;
+	char* value = NULL;
+	nvs_handle my_handle;
+	err = nvs_open("storage", NVS_READWRITE, &my_handle);
+	size_t required_size;
+	err = nvs_get_str(my_handle, key, NULL, &required_size);
+	if (err == ESP_OK) {
+		value = malloc(required_size);
+		nvs_get_str(my_handle, key, value, &required_size);
+		printf("- NVS: %s, %s\n", key, value);
+	}
+	int ret = atoi(value);
+	free(value);
+	nvs_close(my_handle);
+	return ret;
+}
+
 node_t init_packet_list(char baseMacChr[18]) {
+	id = my_nvs_get_str_to_int("id");
+	posx = my_nvs_get_str_to_int("posx");
+	posy = my_nvs_get_str_to_int("posy");
+
 	node_t head;
 	head = NULL;
 	head = malloc(sizeof(struct node));
@@ -91,7 +126,7 @@ int send_packets(int s, node_t h) {
 	int result;
 	node_t i;
 	for (i = h; i != NULL; i = i->next) {
-		sprintf(buf, "%08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", i->packet->fcs, i->packet->rssi,
+		sprintf(buf, "%d %d %d %08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", id, posx, posy, i->packet->fcs, i->packet->rssi,
 				i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
 				i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
 				i->packet->timestamp, i->packet->SSID,i->packet->board);

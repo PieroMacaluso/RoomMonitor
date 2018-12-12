@@ -463,7 +463,6 @@ void app_main()
 			.authmode = CONFIG_AP_AUTHMODE,
 			.ssid_hidden = CONFIG_AP_SSID_HIDDEN,
 			.max_connection = CONFIG_AP_MAX_CONNECTIONS,
-			.beacon_interval = CONFIG_AP_BEACON_INTERVAL,
 		},
 	};
 	ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &ap_config));
