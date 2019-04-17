@@ -1,4 +1,6 @@
 # Progetto ESP32 Firmware
+**[VECCHIA GUIDA (DEPRECATA)](https://github.com/pieromacaluso/PDSproject/blob/master/ESP32firmware/README_old.md)**: verrà eliminata non appena questa guida sarà conclusa.
+
 **IDE Utilizzato**: [CLion](https://www.jetbrains.com/clion/) disponibile gratuitamente per studenti [qui](https://www.jetbrains.com/student/).
 
 ## Istruzioni per importazione e utilizzo
