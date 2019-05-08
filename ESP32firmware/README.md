@@ -10,6 +10,11 @@ Per poter sviluppare, testare o implementare nuove funzioni si consiglia di segu
 
 In queste istruzioni si suppone che il progetto sia già stato clonato nella sua interezza sul PC e che sia stata installata correttamente la [**Toolchain**](https://docs.espressif.com/projects/esp-idf/en/latest/get-started-cmake/index.html#installation-step-by-step) per lo sviluppo.
 
+Nota: Nella sezione di Toolchain Setup, della guida sopra citata, si fa riferimento al possibile errore '**Permission issues /dev/ttyUSB0**'. Se il procedimento indicato non dovesse risolvere il problema, usare il comando:
+```bash
+sudo chmod 777 /dev/ttyUSB0
+```
+
 ## Apertura Progetto
 Aprire la cartella **ESP32Firmware** in VSCode. Il metodo più efficace su Linux è il seguente:
 1. Aprire una finestra di terminale
