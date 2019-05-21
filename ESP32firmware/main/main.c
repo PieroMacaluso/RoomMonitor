@@ -162,6 +162,7 @@ void app_main(void) {
 	//char baseMacChr[18] = {0};
 	getMacAddress(baseMacChr);
 	esp_err_t err = nvs_flash_init();
+	// TODO: Check if is useful
 	if (nvs_flash_init() != ESP_OK){
 		printf("Initialization of NVS went wrong. Let's format!\n");
 		const esp_partition_t* nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_NVS, NULL);      
