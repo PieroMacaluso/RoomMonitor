@@ -161,7 +161,14 @@ void app_main(void) {
 	//GetMac_ESP32
 	//char baseMacChr[18] = {0};
 	getMacAddress(baseMacChr);
-	nvs_flash_init();
+	esp_err_t err = nvs_flash_init();
+	if (nvs_flash_init() != ESP_OK){
+		printf("Initialization of NVS went wrong. Let's format!\n");
+		const esp_partition_t* nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_NVS, NULL);      
+		if(!nvs_partition) printf("FATAL ERROR: No NVS partition found\n");
+		err = (esp_partition_erase_range(nvs_partition, 0, nvs_partition->size));
+		if(err != ESP_OK) printf("FATAL ERROR: Unable to erase the partition\n");
+	}
 	/*for(i=0;i<18;i++){
 			printf("%c",baseMacChr[i]);
 		}

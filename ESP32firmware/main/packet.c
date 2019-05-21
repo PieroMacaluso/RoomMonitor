@@ -31,7 +31,10 @@ struct node {
 	Packet * packet;
 	struct node * next;
 };
-
+/**
+ * Preleva dalla memoria chiave-valore un intero data la chiave stringa.
+ * In caso non fosse presente ritorna 0 come valore di default.
+ **/
 int my_nvs_get_str_to_int(char * key) {
 	esp_err_t err;
 	char* value = NULL;
@@ -39,13 +42,14 @@ int my_nvs_get_str_to_int(char * key) {
 	err = nvs_open("storage", NVS_READWRITE, &my_handle);
 	size_t required_size;
 	err = nvs_get_str(my_handle, key, NULL, &required_size);
+	int ret = 0;
 	if (err == ESP_OK) {
 		value = malloc(required_size);
 		nvs_get_str(my_handle, key, value, &required_size);
 		printf("- NVS: %s, %s\n", key, value);
+		ret = atoi(value);
+		free(value);
 	}
-	int ret = atoi(value);
-	free(value);
 	nvs_close(my_handle);
 	return ret;
 }
