@@ -38,6 +38,7 @@
 //static int mod; 	//0=> scan 1=>send server
 
 void timer0_init();
+void timer0_start();
 void IRAM_ATTR timer_group0_isr(void *para);
 void initialize_sntp(void);
 void obtain_time(void);

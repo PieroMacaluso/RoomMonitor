@@ -31,9 +31,8 @@ void timer0_init() {
     /*Set ISR handler*/
     timer_isr_register(timer_group, timer_idx, timer_group0_isr,				//timer_group0_isr handler in main.c
                        (void*) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
-    /*Start timer counter*/
-    timer_start(timer_group, timer_idx);
 }
+
 
 /* protocollo sntp*/
 void initialize_sntp(void)
@@ -53,13 +52,11 @@ void obtain_time(void)
     int retry = 0;
     const int retry_count = 10;
     while(timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
-        printf( "Waiting for system time to be set... (%d/%d)", retry, retry_count);
+        printf( "Waiting for system time to be set... (%d/%d)\n", retry, retry_count);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         time(&now);
         localtime_r(&now, &timeinfo);
     }
-
-    ESP_ERROR_CHECK( esp_wifi_stop() );
 }
 
 void checkTime(int* n){
@@ -86,10 +83,6 @@ void checkTime(int* n){
         printf( "The current date/time in Italy is: %s\n", strftime_buf);
         (*n)=0;
     }
-
-
-
-
 }
 
 

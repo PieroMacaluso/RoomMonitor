@@ -185,34 +185,37 @@ void app_main(void) {
     wifi_sniffer_init();									//init modalit� scan
     vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
     wifi_sniffer_set_channel(atoi(SCANChannel));
+
     initialize_sntp();
     checkTime(&nallarm);
     //vTaskDelay(20 / portTICK_PERIOD_MS);
 
+    timer0_init();											//init timer gestione modalità scan e comunicazione server
+
+    gpio_set_direction(BLINK_GPIO,GPIO_MODE_OUTPUT);
+
     /* loop */
     while (true) {
 
-        esp_wifi_set_promiscuous(true);
         mod = 0;
 
         printf("Inizio raccolta dati...\n");
-        timer0_init();											//start timer
-
+        timer_start(TIMER_GROUP_0, TIMER_0);
         while (mod == 0) {
             vTaskDelay(20 / portTICK_PERIOD_MS);				//attesa alarm
         }
 
         esp_wifi_set_promiscuous(false);
         printf("Fine periodo cattura.\n");
-        timer_pause(TIMER_GROUP_0, 0);
+        timer_pause(TIMER_GROUP_0, TIMER_0);
+
         vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
 
         tcpClient();
 
         checkTime(&nallarm);
 
-        wifi_sniffer_update();
-
+        esp_wifi_set_promiscuous(true);
     }
     free_packet_list(head);
 }
@@ -356,10 +359,11 @@ void initialize_spiffs(void) {
 
 /**
  * @brief      Wifi sniffer update. Contiene tutte le procedure per ripristinare correttamente il dispositivo per lo sniffing
+ *
+ * EDIT non necessaria, basta risettare true la promiscuous. Fatto nel ciclo while del main
  */
-void wifi_sniffer_update(void){
+/*void wifi_sniffer_update(void){
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT()
-    ;
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
     ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
@@ -369,7 +373,7 @@ void wifi_sniffer_update(void){
     esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
     vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
     wifi_sniffer_set_channel(atoi(SCANChannel));
-}
+}*/
 
 /**
  * @brief      Restituisce il MAC address.
@@ -896,3 +900,4 @@ int tcpClient() {
     gpio_set_level(BLINK_GPIO, 0);
     return 0;
 }
+
