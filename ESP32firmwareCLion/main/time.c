@@ -62,7 +62,7 @@ void obtain_time(void)
 void checkTime(int* n){
 
     (*n)++;
-    if((*n)==/*SECOND_CHECK_TIME/SECOND_SCAN_MODE*/2 || (*n)==-1 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
+    if((*n)==SECOND_CHECK_TIME/SECOND_SCAN_MODE/*2*/ || (*n)==-1 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
         time_t now;
         struct tm timeinfo;
         time(&now);

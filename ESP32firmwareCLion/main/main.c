@@ -250,7 +250,7 @@ void wifi_sniffer_init(void) {
     tcpip_adapter_init();
     printf("- TCP adapter initialized\n");
 
-    // stop DHCP server
+    /*// stop DHCP server
     ESP_ERROR_CHECK(tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP));
     printf("- DHCP server stopped\n");
 
@@ -265,7 +265,7 @@ void wifi_sniffer_init(void) {
 
     // start the DHCP server
     ESP_ERROR_CHECK(tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP));
-    printf("- DHCP server started\n");
+    printf("- DHCP server started\n");*/
 
     // initialize the wifi event handler
     ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));

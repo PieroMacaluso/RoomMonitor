@@ -129,6 +129,10 @@ int send_packets(int s, node_t h) {
     char buf[128];
     int result;
     node_t i;
+
+    if(h->next==NULL)
+        return LENPACKET;
+
     for (i = h; i != NULL; i = i->next) {
         sprintf(buf, "%d %d %d %08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", id, posx, posy, i->packet->fcs, i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
@@ -153,15 +157,15 @@ void free_node(node_t n) {
 
 void free_packet_list(node_t h) {
     free_node(h);
-
 }
 void reset_packet_list(node_t h) {
-    if (h->next != NULL)
+    if (h->next != NULL){
         free_node(h->next);
-    free(h->packet->SSID);
-    free(h->packet);
-    h->packet = NULL;
-    h->next = NULL;
+        free(h->packet->SSID);
+        free(h->packet);
+        h->packet = NULL;
+        h->next = NULL;
+    }
 }
 
 #endif
