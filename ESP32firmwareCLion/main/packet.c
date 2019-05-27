@@ -168,13 +168,18 @@ void free_packet_list(node_t h) {
  * @param h Head of the packet linked list
  */
 void reset_packet_list(node_t h) {
-    if (h->next != NULL){
+    // If the HEAD is NULL, simply returns
+    if (h == NULL) return;
+
+    if (h->next != NULL) {
+        // Next is not NULL, so Recursive Free on nodes!
         free_node(h->next);
-        free(h->packet->SSID);
-        free(h->packet);
-        h->packet = NULL;
-        h->next = NULL;
     }
+
+    free(h->packet->SSID);
+    free(h->packet);
+    h->packet = NULL;
+    h->next = NULL;
 }
 
 #endif
