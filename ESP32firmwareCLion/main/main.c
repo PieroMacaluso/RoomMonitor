@@ -60,17 +60,17 @@
 /**
  * SUBTYPE [0 MASK 0xF0]
  */
-#define SUBTYPE_PROBE_REQUEST 	0b0100
-#define SUBTYPE_PROBE_RESPONSE	0b0101
-#define SUBTYPE_BEACON 			0b1000
+#define SUBTYPE_PROBE_REQUEST    0b0100
+#define SUBTYPE_PROBE_RESPONSE    0b0101
+#define SUBTYPE_BEACON            0b1000
 
-#define	WIFI_CHANNEL_MAX		(13)
-#define	WIFI_CHANNEL_SWITCH_INTERVAL	(500)
+#define    WIFI_CHANNEL_MAX        (13)
+#define    WIFI_CHANNEL_SWITCH_INTERVAL    (500)
 
 /**
  * DIMENSIONI BUFFER
  */
-#define SIZEBUF 			120
+#define SIZEBUF            120
 //#define SECOND_SCAN_MODE	20
 
 /**
@@ -95,37 +95,53 @@
 #define MESSAGE "HelloTCPServer\0"
 
 const int STA_CONNECTED_BIT = BIT0;
-#define BLINK_GPIO 2				//pin led
+#define BLINK_GPIO 2                //pin led
 
-static wifi_country_t wifi_country = { .cc = "CN", .schan = 1, .nchan = 13,
-        .policy = WIFI_COUNTRY_POLICY_AUTO };
+static wifi_country_t wifi_country = {.cc = "CN", .schan = 1, .nchan = 13,
+        .policy = WIFI_COUNTRY_POLICY_AUTO};
 
 /* Prototipi Funzioni */
 /*static esp_err_t event_handler1(void *ctx, system_event_t *event);*/
 void initialize_spiffs(void);
+
 static void wifi_sniffer_init(void);
+
 void wifi_sniffer_update(void);
+
 static void wifi_sniffer_set_channel(uint8_t channel);
+
 /*static const char * type2str(wifi_promiscuous_pkt_type_t type);*/
-const char * subtype2str(uint8_t type);
+const char *subtype2str(uint8_t type);
+
 static void wifi_sniffer_packet_handler(void *buff,
                                         wifi_promiscuous_pkt_type_t type);
-static void getMAC(char *addr, const uint8_t* data, uint16_t offset);
-static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data);
+
+static void getMAC(char *addr, const uint8_t *data, uint16_t offset);
+
+static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data);
+
 float calculateDistance(signed rssi);
 /*int list_packet_init(int size);
  int list_packet_update(int size);
  void list_packet_free();*/
 //static void timer0_init();
 void wifi_connect();
+
 static esp_err_t event_handler(void *ctx, system_event_t *event);
+
 int tcpClient();
-void getMacAddress(char* baseMacChr);
+
+void getMacAddress(char *baseMacChr);
+
 static void http_server(void *pvParameters);
+
 static void http_server_netconn_serve(struct netconn *conn);
+
 void spiffs_serve(char *resource, struct netconn *conn);
+
 int spiffs_save(char *resource, struct netconn *conn);
-char *my_nvs_get_str(char * key);
+
+char *my_nvs_get_str(char *key);
 
 // Static Headers for HTTP response
 const static char http_html_hdr[] = "HTTP/1.1 200 OK\n\n";
@@ -137,7 +153,7 @@ const static char posy_str[] = "posy=([^&#]+)";
 
 /* Variabili */
 node_t head;
-static int mod = 0;							//0=> scan 1=>send server
+static int mod = 0;                            //0=> scan 1=>send server
 char baseMacChr[18] = {0};
 
 /*Variabili per comunicazione verso server*/
@@ -146,13 +162,12 @@ const int CONNECTED_BIT = BIT0;
 static const char *TAG = "tcp_client";
 
 
-
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
  */
 void app_main(void) {
 
-    int nallarm=-1;				//nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
+    int nallarm = -1;                //nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
     /*uint8_t level = 0;*/
 
     /*if (list_packet_init(size_list_packet) == -1) {
@@ -165,12 +180,13 @@ void app_main(void) {
     getMacAddress(baseMacChr);
     esp_err_t err = nvs_flash_init();
     // TODO: Check if is useful
-    if (nvs_flash_init() != ESP_OK){
+    if (nvs_flash_init() != ESP_OK) {
         printf("Initialization of NVS went wrong. Let's format!\n");
-        const esp_partition_t* nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_DATA_NVS, NULL);
-        if(!nvs_partition) printf("FATAL ERROR: No NVS partition found\n");
+        const esp_partition_t *nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA,
+                                                                        ESP_PARTITION_SUBTYPE_DATA_NVS, NULL);
+        if (!nvs_partition) printf("FATAL ERROR: No NVS partition found\n");
         err = (esp_partition_erase_range(nvs_partition, 0, nvs_partition->size));
-        if(err != ESP_OK) printf("FATAL ERROR: Unable to erase the partition\n");
+        if (err != ESP_OK) printf("FATAL ERROR: Unable to erase the partition\n");
     }
     /*for(i=0;i<18;i++){
             printf("%c",baseMacChr[i]);
@@ -182,17 +198,24 @@ void app_main(void) {
     }
     wifi_event_group = xEventGroupCreate();
     initialize_spiffs();
-    wifi_sniffer_init();									//init modalit� scan
+    wifi_sniffer_init();                                    //init modalit� scan
     vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
-    wifi_sniffer_set_channel(atoi(SCANChannel));
+
+    char *channel = my_nvs_get_str("channel");
+    if (channel != NULL) {
+        wifi_sniffer_set_channel(atoi(channel));
+        free(channel);
+    } else {
+        wifi_sniffer_set_channel(atoi(SCANChannel));
+    }
 
     initialize_sntp();
     checkTime(&nallarm);
     //vTaskDelay(20 / portTICK_PERIOD_MS);
 
-    timer0_init();											//init timer gestione modalità scan e comunicazione server
+    timer0_init();                                            //init timer gestione modalità scan e comunicazione server
 
-    gpio_set_direction(BLINK_GPIO,GPIO_MODE_OUTPUT);
+    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
     /* loop */
     while (true) {
@@ -202,7 +225,7 @@ void app_main(void) {
         printf("Inizio raccolta dati...\n");
         timer_start(TIMER_GROUP_0, TIMER_0);
         while (mod == 0) {
-            vTaskDelay(20 / portTICK_PERIOD_MS);				//attesa alarm
+            vTaskDelay(20 / portTICK_PERIOD_MS);                //attesa alarm
         }
 
         esp_wifi_set_promiscuous(false);
@@ -225,7 +248,8 @@ void getMacAddress(char *baseMacChr) {
     uint8_t baseMac[6];
     // Get MAC address for WiFi station
     esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
-    sprintf(baseMacChr, "%02X:%02X:%02X:%02X:%02X:%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4], baseMac[5]);
+    sprintf(baseMacChr, "%02X:%02X:%02X:%02X:%02X:%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4],
+            baseMac[5]);
 }
 
 /**
@@ -246,11 +270,11 @@ void getMacAddress(char *baseMacChr) {
  * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
  */
 void wifi_sniffer_init(void) {
-    esp_log_level_set("wifi", ESP_LOG_NONE); 	// disable wifi driver logging
+    esp_log_level_set("wifi", ESP_LOG_NONE);    // disable wifi driver logging
     tcpip_adapter_init();
     printf("- TCP adapter initialized\n");
 
-    /*// stop DHCP server
+    // stop DHCP server
     ESP_ERROR_CHECK(tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP));
     printf("- DHCP server stopped\n");
 
@@ -265,19 +289,19 @@ void wifi_sniffer_init(void) {
 
     // start the DHCP server
     ESP_ERROR_CHECK(tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP));
-    printf("- DHCP server started\n");*/
+    printf("- DHCP server started\n");
 
     // initialize the wifi event handler
     ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
     printf("- Event loop initialized\n");
 
     //ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT()
-    ;
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
     ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
+
     wifi_config_t ap_config = {
             .ap = {
                     .ssid = CONFIG_AP_SSID,
@@ -289,6 +313,19 @@ void wifi_sniffer_init(void) {
                     .max_connection = CONFIG_AP_MAX_CONNECTIONS,
             },
     };
+    char *ssid = my_nvs_get_str("ssid_ap");
+    char *pass = my_nvs_get_str("password_ap");
+    if (ssid != NULL) {
+        memcpy(ap_config.ap.ssid, ssid, strlen(ssid));
+        ap_config.ap.ssid[strlen(ssid)] = '\0';
+        free(ssid);
+    }
+    if (pass != NULL) {
+        memcpy(ap_config.ap.password, pass, strlen(pass));
+        ap_config.ap.password[strlen(pass)] = '\0';
+
+        free(pass);
+    }
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &ap_config));
     ESP_ERROR_CHECK(esp_wifi_start());
 
@@ -296,9 +333,15 @@ void wifi_sniffer_init(void) {
     esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
 }
 
-char *my_nvs_get_str(char * key) {
+/**
+ *
+ * @param key
+ * @return
+ */
+char *my_nvs_get_str(char *key) {
+    // TODO: doc
     esp_err_t err;
-    char* value = NULL;
+    char *value = NULL;
     nvs_handle my_handle;
     err = nvs_open("storage", NVS_READWRITE, &my_handle);
     size_t required_size;
@@ -327,18 +370,12 @@ void initialize_spiffs(void) {
     // Note: esp_vfs_spiffs_register is an all-in-one convenience function.
     esp_err_t ret = esp_vfs_spiffs_register(&conf);
 
-    if (ret != ESP_OK)
-    {
-        if (ret == ESP_FAIL)
-        {
+    if (ret != ESP_OK) {
+        if (ret == ESP_FAIL) {
             ESP_LOGE(TAG, "Failed to mount or format filesystem");
-        }
-        else if (ret == ESP_ERR_NOT_FOUND)
-        {
+        } else if (ret == ESP_ERR_NOT_FOUND) {
             ESP_LOGE(TAG, "Failed to find SPIFFS partition");
-        }
-        else
-        {
+        } else {
             ESP_LOGE(TAG, "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
         }
         return;
@@ -346,12 +383,9 @@ void initialize_spiffs(void) {
 
     size_t total = 0, used = 0;
     ret = esp_spiffs_info(NULL, &total, &used);
-    if (ret != ESP_OK)
-    {
+    if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
-    }
-    else
-    {
+    } else {
         ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
     }
     printf("- SPIFFS VFS module registered\n");
@@ -383,13 +417,13 @@ void initialize_spiffs(void) {
  * @param[in]  offset  Punto del payload in cui si trova l'indirizzo MAC richiesto
  */
 
-static void getMAC(char *addr, const uint8_t* data, uint16_t offset) {
+static void getMAC(char *addr, const uint8_t *data, uint16_t offset) {
     sprintf(addr, "%02x:%02x:%02x:%02x:%02x:%02x", data[offset + 0],
             data[offset + 1], data[offset + 2], data[offset + 3],
             data[offset + 4], data[offset + 5]);
 }
 
-void setMAC(unsigned *addr, const uint8_t* data, uint16_t offset) {
+void setMAC(unsigned *addr, const uint8_t *data, uint16_t offset) {
     int i;
     for (i = 0; i < 6; i++) {
         addr[i] = data[offset + i];
@@ -403,18 +437,19 @@ void setMAC(unsigned *addr, const uint8_t* data, uint16_t offset) {
  * @param[in]  size   The size
  * @param[in]  data   Puntatore alla porzione payload del pacchetto
  */
-static void printDataSpan(uint16_t start, uint16_t size, const uint8_t* data) {
+static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data) {
     for (uint16_t i = start; i < start + size; i++) {
         printf("%c", data[i]);
     }
 }
+
 /**
  * @brief      Funzione Handler invocata quando viene ricevuto un pacchetto.
  *
  * @param      buff  Il buffer, o meglio il pacchetto
  * @param[in]  type  Il tipo di pacchetto
  */
-void wifi_sniffer_packet_handler(void* buff, wifi_promiscuous_pkt_type_t type) {
+void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     /*char tmp[4], tmp1[7];*/
     // Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
     const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
@@ -543,7 +578,7 @@ void IRAM_ATTR timer_group0_isr(void *para) { // timer group 0, ISR
     uint32_t intr_status = TIMERG0.int_st_timers.val;
     if ((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) {
         TIMERG0.hw_timer[timer_idx].update = 1;
-        TIMERG0.int_clr_timers.t0 = 1;				//clear the interupt called
+        TIMERG0.int_clr_timers.t0 = 1;                //clear the interupt called
         TIMERG0.hw_timer[timer_idx].config.alarm_en = 1;
 
         //gestione allarme
@@ -586,7 +621,19 @@ void IRAM_ATTR timer_group0_isr(void *para) { // timer group 0, ISR
  */
 
 void wifi_connect() {
-    wifi_config_t cfg = { .sta = { .ssid = SSID, .password = PASSPHARSE, }, };
+    wifi_config_t cfg = {.sta = {.ssid = SSID, .password = PASSPHARSE,},};
+    char *ssid = my_nvs_get_str("ssid_server");
+    char *pass = my_nvs_get_str("password_server");
+    if (ssid != NULL) {
+        memcpy(cfg.sta.ssid, ssid, strlen(ssid));
+        cfg.sta.ssid[strlen(ssid)] = '\0';
+        free(ssid);
+    }
+    if (pass != NULL) {
+        memcpy(cfg.sta.password, pass, strlen(pass));
+        cfg.sta.password[strlen(pass)] = '\0';
+        free(pass);
+    }
     ESP_ERROR_CHECK(esp_wifi_disconnect());
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &cfg));
     ESP_ERROR_CHECK(esp_wifi_connect());
@@ -639,8 +686,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
 }
 
 // HTTP server task
-static void http_server(void *pvParameters)
-{
+static void http_server(void *pvParameters) {
 
     struct netconn *conn, *newconn;
     err_t err;
@@ -648,11 +694,9 @@ static void http_server(void *pvParameters)
     netconn_bind(conn, NULL, 80);
     netconn_listen(conn);
     printf("* HTTP Server listening\n");
-    do
-    {
+    do {
         err = netconn_accept(conn, &newconn);
-        if (err == ERR_OK)
-        {
+        if (err == ERR_OK) {
             http_server_netconn_serve(newconn);
             netconn_delete(newconn);
         }
@@ -662,8 +706,7 @@ static void http_server(void *pvParameters)
     netconn_delete(conn);
 }
 
-static void http_server_netconn_serve(struct netconn *conn)
-{
+static void http_server_netconn_serve(struct netconn *conn) {
 
     struct netbuf *inbuf;
     char *buf;
@@ -672,23 +715,20 @@ static void http_server_netconn_serve(struct netconn *conn)
 
     err = netconn_recv(conn, &inbuf);
 
-    if (err == ERR_OK)
-    {
+    if (err == ERR_OK) {
 
         // get the request and terminate the string
-        netbuf_data(inbuf, (void **)&buf, &buflen);
+        netbuf_data(inbuf, (void **) &buf, &buflen);
         buf[buflen] = '\0';
 
         // get the request body and the first line
         char *body = strstr(buf, "\r\n\r\n");
         char *request_line = strtok(buf, "\n");
 
-        if (request_line)
-        {
+        if (request_line) {
 
             // static content, get it from SPIFFS
-            if (strstr(request_line, "GET /save.html"))
-            {
+            if (strstr(request_line, "GET /save.html")) {
                 char *method = strtok(request_line, " ");
                 char *resource = strtok(NULL, " ");
                 //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
@@ -697,14 +737,11 @@ static void http_server_netconn_serve(struct netconn *conn)
                 spiffs_serve("/index.html", conn);
             }
             // default page -> redirect to index.html
-            if (strstr(request_line, "GET / "))
-            {
+            if (strstr(request_line, "GET / ")) {
                 //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
                 spiffs_serve("/index.html", conn);
                 //printf("SERVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-            }
-            else
-            {
+            } else {
                 char *method = strtok(request_line, " ");
                 char *resource = strtok(NULL, " ");
                 //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
@@ -718,10 +755,8 @@ static void http_server_netconn_serve(struct netconn *conn)
 }
 
 // serve static content from SPIFFS
-void spiffs_serve(char *resource, struct netconn *conn)
-{
-    if (resource == NULL)
-    {
+void spiffs_serve(char *resource, struct netconn *conn) {
+    if (resource == NULL) {
         return;
     }
     // check if it exists on SPIFFS
@@ -733,8 +768,7 @@ void spiffs_serve(char *resource, struct netconn *conn)
     sprintf(full_path, "/spiffs%s", resource);
     printf("+ Serving static resource: %s\n", full_path);
     struct stat st;
-    if (stat(full_path, &st) == 0)
-    {
+    if (stat(full_path, &st) == 0) {
         netconn_write(conn, http_html_hdr, sizeof(http_html_hdr) - 1, NETCONN_COPY);
 
         // int filedesc = open(full_path, O_RDWR);
@@ -752,8 +786,7 @@ void spiffs_serve(char *resource, struct netconn *conn)
         FILE *f = fopen(full_path, "r");
         //FILE *f = fdopen(filedesc, "r");
 
-        if (f == NULL)
-        {
+        if (f == NULL) {
             printf("Unable to open the file %s\n", full_path);
             return;
         }
@@ -762,11 +795,9 @@ void spiffs_serve(char *resource, struct netconn *conn)
         char buffer[500];
         len = 500;
         int size = 0;
-        size_t char_read = 0;
-        ; /* there was data to read */
+        size_t char_read = 0;; /* there was data to read */
         // char_read = read(filedesc, buffer, len); /* there was data to read */
-        while ((char_read = fread(buffer, sizeof(char), len, f)) != 0)
-        {
+        while ((char_read = fread(buffer, sizeof(char), len, f)) != 0) {
             size += char_read / sizeof(char);
             netconn_write(conn, buffer, char_read, NETCONN_COPY);
         }
@@ -774,55 +805,48 @@ void spiffs_serve(char *resource, struct netconn *conn)
         // close(filedesc);
         fflush(stdout);
         printf("+ served %d bytes\n", size);
-    }
-    else
-    {
+    } else {
         printf("Error 404\n");
         netconn_write(conn, http_404_hdr, sizeof(http_404_hdr) - 1, NETCONN_COPY);
     }
 }
 
 // serve static content from SPIFFS
-int spiffs_save(char *resource, struct netconn *conn)
-{
+int spiffs_save(char *resource, struct netconn *conn) {
 
-    int N_PAR = 4;
+    int N_PAR = 9;
     printf("%s\n", resource);
     int i, err;
     struct query_t *url;
 
-    if ((url = query_init(N_PAR)) == NULL)
-    {
+    if ((url = query_init(N_PAR)) == NULL) {
         //TODO: Change debug print
         fprintf(stderr, "Could not parse url!\n");
         return 1;
     }
-    if (-1 == query_parse(url, resource))
-    {
+    if (-1 == query_parse(url, resource)) {
         fprintf(stderr, "Could not parse url!\n");
         return 1;
     }
     printf("Query string parameters:\n");
-    for (i = 0; i < N_PAR; i++)
-    {
+    for (i = 0; i < N_PAR; i++) {
         printf("\t%s: %s\n", url->params[i].key, url->params[i].val);
     }
     FILE *f = fopen("/spiffs/data.json", "w");
-    fprintf(f, "{ \"id\": \"%s\", \"ipaddr\": \"%s\", \"posx\": \"%s\", \"posy\":\"%s\"}", url->params[0].val, url->params[1].val, url->params[2].val, url->params[3].val);
+    fprintf(f,
+            "{ \"id\": \"%s\", \"posx\": \"%s\", \"posy\":\"%s\", \"ssid_ap\": \"%s\", \"password_ap\": \"%s\", \"channel\": \"%s\", \"ssid_server\": \"%s\", \"password_server\": \"%s\", \"ip_server\": \"%s\"}",
+            url->params[0].val,
+            url->params[1].val, url->params[2].val, url->params[3].val, url->params[4].val, url->params[5].val,
+            url->params[6].val, url->params[7].val, url->params[8].val);
     fclose(f);
     nvs_handle my_handle;
     err = nvs_open("storage", NVS_READWRITE, &my_handle);
-    if (err != ESP_OK)
-    {
+    if (err != ESP_OK) {
         printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
-    }
-    else
-    {
-        for (i = 0; i < N_PAR; i++)
-        {
+    } else {
+        for (i = 0; i < N_PAR; i++) {
             err = nvs_set_str(my_handle, url->params[i].key, url->params[i].val);
-            switch (err)
-            {
+            switch (err) {
                 case ESP_OK:
                     printf("Saved\n");
                     break;
@@ -861,7 +885,7 @@ int tcpClient() {
     struct sockaddr_in saddr;
     gpio_set_level(BLINK_GPIO, 1);
     xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true,
-                        portMAX_DELAY);		//attende la configurazione dal dhcp
+                        portMAX_DELAY);        //attende la configurazione dal dhcp
 
     ESP_LOGI(TAG, "tcp_client task started \n");
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -869,18 +893,32 @@ int tcpClient() {
         ESP_LOGE(TAG, "Error socket. \n");
         return -2;
     }
+    char *server = my_nvs_get_str("ip_server");
+    if (server != NULL) {
+        result = inet_aton(server, &addr);
+        if (!result) {
+            ESP_LOGE(TAG, "Error ip addres.\n");
+            return -2;
+        }
+        saddr.sin_family = AF_INET;
+        saddr.sin_port = htons(atoi(TCPServerPORT));
+        saddr.sin_addr = addr;
 
-    result = inet_aton(TCPServerIP, &addr);
-    if (!result) {
-        ESP_LOGE(TAG, "Error ip addres.\n");
-        return -2;
+        ESP_LOGI(TAG, "Connecting with %s:%s ...\n", server, TCPServerPORT);
+        free(server);
+    } else {
+        result = inet_aton(TCPServerIP, &addr);
+        if (!result) {
+            ESP_LOGE(TAG, "Error ip addres.\n");
+            return -2;
+        }
+        saddr.sin_family = AF_INET;
+        saddr.sin_port = htons(atoi(TCPServerPORT));
+        saddr.sin_addr = addr;
+
+        ESP_LOGI(TAG, "Connecting with %s:%s ...\n", TCPServerIP, TCPServerPORT);
     }
-    saddr.sin_family = AF_INET;
-    saddr.sin_port = htons(atoi(TCPServerPORT));
-    saddr.sin_addr = addr;
-
-    ESP_LOGI(TAG, "Connecting with %s:%s ...\n", TCPServerIP, TCPServerPORT);
-    result = connect(s, (struct sockaddr*) &saddr, sizeof(saddr));
+    result = connect(s, (struct sockaddr *) &saddr, sizeof(saddr));
     if (result == -1) {
         ESP_LOGE(TAG, "Error connect errno=%d \n", errno);
         return -2;
