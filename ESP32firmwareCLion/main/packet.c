@@ -36,9 +36,15 @@ struct node {
 };
 
 /**
+
+ **/
+/**
  * Preleva dalla memoria chiave-valore un intero data la chiave stringa.
  * In caso non fosse presente ritorna 0 come valore di default.
- **/
+ *
+ * @param key chiave del valore da ricercare nella memoria
+ * @return Intero presente nella chiave valore, altrimenti 0 come default
+ */
 int my_nvs_get_str_to_int(char *key) {
     esp_err_t err;
     char *value = NULL;
@@ -163,6 +169,7 @@ void free_node(node_t n) {
 void free_packet_list(node_t h) {
     free_node(h);
 }
+
 /**
  * Recursive function to free the list of packets.
  * @param h Head of the packet linked list
