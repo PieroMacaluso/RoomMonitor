@@ -102,7 +102,7 @@ Packet *setPacket(const wifi_promiscuous_pkt_t *ppkt) {
     for (i = 0; i < 6; i++) {
         p->mac[i] = ppkt->payload[OFFMAC + i];
     }
-    p->mac[7] = '\0';
+    p->mac[6] = '\0';
     p->timestamp = now;
     uint8_t SSID_length = ppkt->payload[25];
     p->SSID = getSSID(26, SSID_length, ppkt->payload);
