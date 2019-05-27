@@ -74,3 +74,7 @@ Se riscontrate qualche problema, prima di mettervi le mani nei capelli:
 - Avviate da terminale: `idf.py clean` e `idf.py fullclean`.
 - Da Clion andate su `File -> Reload CMake project`
 - **Mettetevi le mani nei capelli!**
+
+## Formattazione totale ESP32
+1. Aprire il terminale di CLion
+2. Avviare il comando `idf.py erase_flash`
