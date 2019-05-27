@@ -1,9 +1,10 @@
 #ifndef PACKET_H
 #define PACKET_H
+
 #include "packet.h"
 
 static const char *TAGP = "tcp_client";
-char macESP[18];					//dopo l'init conterr� il mac della esp
+char macESP[18];                    //dopo l'init conterr� il mac della esp
 uint8_t id;
 uint8_t posx;
 uint8_t posy;
@@ -11,9 +12,11 @@ uint8_t posy;
 int get_id() {
     return id;
 }
+
 int get_posx() {
     return posx;
 }
+
 int get_posy() {
     return posy;
 }
@@ -23,21 +26,22 @@ typedef struct packet {
     signed rssi;
     uint8_t mac[7];
     uint32_t timestamp;
-    char * SSID;
+    char *SSID;
     char board[18];
 } Packet;
 
 struct node {
-    Packet * packet;
-    struct node * next;
+    Packet *packet;
+    struct node *next;
 };
+
 /**
  * Preleva dalla memoria chiave-valore un intero data la chiave stringa.
  * In caso non fosse presente ritorna 0 come valore di default.
  **/
-int my_nvs_get_str_to_int(char * key) {
+int my_nvs_get_str_to_int(char *key) {
     esp_err_t err;
-    char* value = NULL;
+    char *value = NULL;
     nvs_handle my_handle;
     err = nvs_open("storage", NVS_READWRITE, &my_handle);
     size_t required_size;
@@ -65,28 +69,28 @@ node_t init_packet_list(char baseMacChr[18]) {
     head->packet = NULL;
     head->next = NULL;
 
-    strcpy(macESP,baseMacChr);
+    strcpy(macESP, baseMacChr);
 
     return head;
 }
 
-char * getSSID(uint16_t start, uint16_t size, const uint8_t* data) {
-    char * string;
-    if (size== 0) {
-        string = malloc(2*sizeof(char));
+char *getSSID(uint16_t start, uint16_t size, const uint8_t *data) {
+    char *string;
+    if (size == 0) {
+        string = malloc(2 * sizeof(char));
         strcpy(string, "~");
         return string;
 
     }
-    string = malloc(size+1*sizeof(char));
+    string = malloc(size + 1 * sizeof(char));
     for (uint16_t i = start; i < start + size; i++) {
-        sprintf(string+(i-start), "%c", data[i]);
+        sprintf(string + (i - start), "%c", data[i]);
     }
     string[size] = '\0';
     return string;
 }
 
-Packet* setPacket(const wifi_promiscuous_pkt_t *ppkt) {
+Packet *setPacket(const wifi_promiscuous_pkt_t *ppkt) {
     time_t now;
     time(&now);
     Packet *p;
@@ -102,7 +106,7 @@ Packet* setPacket(const wifi_promiscuous_pkt_t *ppkt) {
     p->timestamp = now;
     uint8_t SSID_length = ppkt->payload[25];
     p->SSID = getSSID(26, SSID_length, ppkt->payload);
-    strcpy(p->board,macESP);
+    strcpy(p->board, macESP);
 
     return p;
 }
@@ -130,14 +134,15 @@ int send_packets(int s, node_t h) {
     int result;
     node_t i;
 
-    if(h->next==NULL)
+    if (h->next == NULL)
         return LENPACKET;
 
     for (i = h; i != NULL; i = i->next) {
-        sprintf(buf, "%d %d %d %08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", id, posx, posy, i->packet->fcs, i->packet->rssi,
+        sprintf(buf, "%d %d %d %08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", id, posx, posy, i->packet->fcs,
+                i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
-                i->packet->timestamp, i->packet->SSID,i->packet->board);
+                i->packet->timestamp, i->packet->SSID, i->packet->board);
         result = send(s, buf, 127, 0);
         if (result <= 0) {
             ESP_LOGI(TAGP, "Error send RSSI\n");
@@ -158,6 +163,10 @@ void free_node(node_t n) {
 void free_packet_list(node_t h) {
     free_node(h);
 }
+/**
+ * Recursive function to free the list of packets.
+ * @param h Head of the packet linked list
+ */
 void reset_packet_list(node_t h) {
     if (h->next != NULL){
         free_node(h->next);
