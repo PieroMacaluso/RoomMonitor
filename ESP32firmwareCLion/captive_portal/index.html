@@ -18,17 +18,12 @@
         <h1 class="h3 mb-3 font-weight-normal">ESP32 Setup</h1>
         <p>Let's setup your ESP32 board for the project.</p>
         <p id="json"></p>
-        
-    </div>
 
+    </div>
+    <h2 class="h3 mb-3 font-weight-normal">Board Setup</h2>
     <div class="form-label-group">
         <input type="text" name="id" id="id" class="form-control" placeholder="ID" required autofocus>
         <label for="id">ID</label>
-    </div>
-
-    <div class="form-label-group">
-        <input type="text" name="ipaddress" id="ipaddress" class="form-control" placeholder="Server IP address" required autofocus>
-        <label for="ipaddress">Server IP address</label>
     </div>
 
     <div class="form-label-group">
@@ -40,6 +35,37 @@
         <input type="text" name="posy" id="posy" class="form-control" placeholder="Position Y" required autofocus>
         <label for="posy">Position Y</label>
     </div>
+
+    <div class="form-label-group">
+        <input type="text" name="ssid_ap" id="ssid_ap" class="form-control" placeholder="SSID" required autofocus>
+        <label for="ssid_ap">AP SSID</label>
+    </div>
+
+    <div class="form-label-group">
+        <input type="text" name="password_ap" id="password_ap" class="form-control" placeholder="Pass" required autofocus>
+        <label for="password_ap">AP Password</label>
+    </div>
+
+    <div class="form-label-group">
+        <input type="text" name="channel" id="channel" class="form-control" placeholder="Channel" required autofocus>
+        <label for="channel">Scan Channel</label>
+    </div>
+    <hr>
+    <h2 class="h3 mb-3 font-weight-normal">Server Setup</h2>
+    <div class="form-label-group">
+        <input type="text" name="ssid_server" id="ssid_server" class="form-control" placeholder="SSID" required autofocus>
+        <label for="ssid_server">SSID</label>
+    </div>
+
+    <div class="form-label-group">
+        <input type="text" name="password_server" id="password_server" class="form-control" placeholder="Pass" required autofocus>
+        <label for="password_server">Password</label>
+    </div>
+
+    <div class="form-label-group">
+        <input type="text" name="ip_server" id="ip_server" class="form-control" placeholder="Server IP address" required autofocus>
+        <label for="ip_server">IP address</label>
+    </div>
     <button class="btn btn-lg btn-primary btn-block" type="submit" form="formesp">Start Setup</button>
 </form>
 
@@ -50,7 +76,7 @@
 <!--<script src="js/popper.min.js"></script>-->
 <!--<script src="js/bootstrap.min.js"></script>-->
 <script>
-            
+
 </script>
 </body>
 </html>
