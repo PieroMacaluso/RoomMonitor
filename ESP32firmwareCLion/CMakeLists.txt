@@ -4,3 +4,5 @@ cmake_minimum_required(VERSION 3.5)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(app-template)
+spiffs_create_partition_image(storage captive_portal FLASH_IN_PROJECT)
+

@@ -38,9 +38,29 @@ Il progetto verrà buildato e verranno mostrati warning ed errori, se trovati.
 1. Aprire il terminale di CLion
 2. Avviare il comando `idf.py -b 115200 flash`
 
-Il progetto verrà flashato, ora non resta che caricare il nostro Captive Portal e il gioco sarà fatto!
+Con questo comando ci occupiamo di flashare il nostro firmware, ma anche di buildare e flashare l'immagine del captive portal a partire da ciò
+che è contenuto nella cartella `captive_portal`!
 
-## Captive Portal
+
+## Monitor Applicazione
+1. Aprire il terminale di CLion
+2. Avviare il comando `idf.py -b 115200 monitor`
+
+## Quick Fix per tutti i problemi
+Se riscontrate qualche problema, prima di mettervi le mani nei capelli:
+- Avviate da terminale: `idf.py clean` e `idf.py fullclean`.
+- Da Clion andate su `File -> Reload CMake project`
+- **Mettetevi le mani nei capelli!**
+
+## Formattazione totale ESP32
+1. Aprire il terminale di CLion
+2. Avviare il comando `idf.py erase_flash`
+
+<hr>
+
+## Captive Portal [DEPRECATA]
+> **ATTENZIONE** Questa parte è deprecata poichè, grazie a CMake, il flash della partizione SPIFFS avviene direttamente con il lancio di
+`esp.py flash`. Comodo no?
 ### Come creare partizione SPIFFS
 > Questa parte è **facoltativa**, affrontarla solo se si vogliono applicare modifiche al captive portal a livello HTML, CSS, JS.
 
@@ -64,17 +84,4 @@ python $IDF_PATH/components/esptool_py/esptool/esptool.py --chip esp32 --port /d
 
 Il captive portal verrà flashato, a questo punto non rimane che usare `make monitor` per verificarne il corretto funzionamento.
 
-
-## Monitor Applicazione
-1. Aprire il terminale di CLion
-2. Avviare il comando `idf.py -b 115200 monitor`
-
-## Quick Fix per tutti i problemi
-Se riscontrate qualche problema, prima di mettervi le mani nei capelli:
-- Avviate da terminale: `idf.py clean` e `idf.py fullclean`.
-- Da Clion andate su `File -> Reload CMake project`
-- **Mettetevi le mani nei capelli!**
-
-## Formattazione totale ESP32
-1. Aprire il terminale di CLion
-2. Avviare il comando `idf.py erase_flash`
+<hr>
