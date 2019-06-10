@@ -1,6 +1,7 @@
 -essere sicuro di avere Qt con minGw64 e non 32;
 -in Clion->Settings->Build,Execution,Deployment->Toolchains aggiungere un nuovo elemento premendo sul tasto più, dare un nome(es Qt), configurare come Environment MinGW e selezionare il percorso del tipo "D:\Qt\Tools\mingw730_64" (conforme al percorso di installazione di Qt). in automatico dovrebbero essere compilati gli altri campi. Assicurarsi di spostare l'oggetto creato (Qt) come primo elemento della lista selezionandolo e cliccando la freccia verso l'alto. (tale passaggio può essere omesso se si dispone già di minGW64 comprendente qt);
-- in Clion->Settings->Build,Execution,Deployment->Cmake aggiungere nel campo CMake options "-DCMAKE_PREFIX_PATH=D:/Qt/5.12.3/mingw73_64/lib/cmake" (con percorso conforme). Aprire le variabili Environment e aggiungerne 3 nuove con i seguenti percorsi "qt mingw=D:\Qt\5.12.3\mingw73_64\bin","qt mingw gpp=D:\Qt\Tools\mingw730_64\bin","qt msvc=D:\Qt\5.12.3\msvc2017_64\bin" (sempre conformi al percorso di installazione).
+- in Clion->Settings->Build,Execution,Deployment->Cmake aggiungere nel campo CMake options "-DCMAKE_PREFIX_PATH=D:/Qt/5.12.3/mingw73_64/lib/cmake" (con percorso conforme),tale modifica va fatta per ogni progetto. 
+Aprire le variabili Environment e aggiungerne 3 nuove con i seguenti percorsi "qt mingw=D:\Qt\5.12.3\mingw73_64\bin","qt mingw gpp=D:\Qt\Tools\mingw730_64\bin","qt msvc=D:\Qt\5.12.3\msvc2017_64\bin" (sempre conformi al percorso di installazione).
 
 in teoria dovrebbe essere tutto finito ma non so perchè non trova alcune dll che sono nei vari path impostati, quindi per il momento bisogna copiare, nella dir dove è presente il file exe, le seguenti dll:
 -libstdc++-6.dll
