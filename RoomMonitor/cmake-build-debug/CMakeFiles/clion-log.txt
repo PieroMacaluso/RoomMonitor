@@ -1,0 +1,4 @@
+/home/pieromack/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/191.6183.77/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake -G "CodeBlocks - Unix Makefiles" /home/pieromack/development/esp32/PDSproject/RoomMonitor
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug
