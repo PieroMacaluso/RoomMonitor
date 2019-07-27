@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QDebug
+qdebug.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qdebug.h
+
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QObject
 qobject.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qobject.h
@@ -1434,6 +1438,10 @@ QtGui/qkeysequence.h
 QtGui/qevent.h
 -
 
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.cpp
+MonitoringServer.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
+
 /home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
 QObject
 -
@@ -1469,6 +1477,20 @@ QtCore/qmetatype.h
 /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/mocs_compilation.cpp
 EWIEGA46WW/moc_MonitoringServer.cpp
 /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/EWIEGA46WW/moc_MonitoringServer.cpp
+
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/main.cpp
+iostream
+-
+QApplication
+-
+QDebug
+-
+QMainWindow
+-
+ui_main.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/ui_main.h
+MonitoringServer.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
 
 RoomMonitor_autogen/include/ui_main.h
 QtCore/QVariant
