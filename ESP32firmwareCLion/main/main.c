@@ -317,12 +317,13 @@ void wifi_sniffer_init(void) {
     char *pass = my_nvs_get_str("password_ap");
     if (ssid != NULL) {
         memcpy(ap_config.ap.ssid, ssid, strlen(ssid));
-        ap_config.ap.ssid[strlen(ssid)] = '\0';
+        strcpy((char*)ap_config.ap.ssid, ssid);
+//        ap_config.ap.ssid[strlen(ssid)] = '\0';
         free(ssid);
     }
     if (pass != NULL) {
-        memcpy(ap_config.ap.password, pass, strlen(pass));
-        ap_config.ap.password[strlen(pass)] = '\0';
+        strcpy((char*)ap_config.ap.password, pass);
+//        ap_config.ap.password[strlen(pass)] = '\0';
 
         free(pass);
     }
