@@ -894,11 +894,12 @@ int tcpClient() {
         ESP_LOGE(TAG, "Error socket. \n");
         return -2;
     }
+    // TODO: Porta da NVS
     char *server = my_nvs_get_str("ip_server");
     if (server != NULL) {
         result = inet_aton(server, &addr);
         if (!result) {
-            ESP_LOGE(TAG, "Error ip addres.\n");
+            ESP_LOGE(TAG, "Error ip address.\n");
             return -2;
         }
         saddr.sin_family = AF_INET;
@@ -922,6 +923,7 @@ int tcpClient() {
     result = connect(s, (struct sockaddr *) &saddr, sizeof(saddr));
     if (result == -1) {
         ESP_LOGE(TAG, "Error connect errno=%d \n", errno);
+        close(s);
         return -2;
     }
     printf("Connect done.\n");

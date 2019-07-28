@@ -45,7 +45,7 @@ public:
         server = new QTcpServer(this);
         QObject::connect(server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
 
-        if (!server->listen(QHostAddress::Any, 1234)) {
+        if (!server->listen(QHostAddress::Any, 27015)) {
             qDebug() << "Server Did not start";
         } else {
             qDebug() << "Server Started";
