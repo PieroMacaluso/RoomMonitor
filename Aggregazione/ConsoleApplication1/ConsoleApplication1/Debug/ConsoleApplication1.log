@@ -1,0 +1,16 @@
+﻿  pch.cpp
+  Aggregazione.cpp
+  ConsoleApplication1.cpp
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(238): error C2672: 'std::invoke': non sono state trovate funzioni in overload corrispondenti
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(246): note: vedere il riferimento all'istanza '<Sconosciuto>' della funzione <Sconosciuto> di cui è in corso la compilazione
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(245): note: vedere il riferimento all'istanza '<Sconosciuto>' della funzione <Sconosciuto> di cui è in corso la compilazione
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(242): note: durante la compilazione della funzione membro '<Sconosciuto>' di modello <Sconosciuto>
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(230): note: vedere il riferimento all'istanza '<Sconosciuto>' della funzione <Sconosciuto> di cui è in corso la compilazione
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(257): note: vedere il riferimento all'istanza '<Sconosciuto>' di modello <Sconosciuto> di cui è in corso la compilazione
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thread(46): note: vedere il riferimento all'istanza '<Sconosciuto>' della funzione <Sconosciuto> di cui è in corso la compilazione
+  f:\consoleapplication1\consoleapplication1\consoleapplication1.cpp(13): note: vedere il riferimento all'istanza '<Sconosciuto>' della funzione <Sconosciuto> di cui è in corso la compilazione
+c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(237): error C2893: Impossibile specializzare il modello di funzione 'unknown-type std::invoke(_Callable &&,_Types &&...) noexcept(<expr>)'
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(237): note: Con i seguenti argomenti di modello:
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(237): note: '_Callable=Aggregazione *'
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\thr\xthread(237): note: '_Types={}'
+  Generazione del codice in corso...

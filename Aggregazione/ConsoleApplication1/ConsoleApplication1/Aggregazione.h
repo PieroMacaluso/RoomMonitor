@@ -31,9 +31,9 @@ private:
 	//deque <dati> deq;// all'inizio ne uso una sola magari nella ricezione 2 come avevamo detto e questa messa come parametro
 public:
 	Aggregazione():count(0) {};
-	~Aggregazione();
+	~Aggregazione() {};
 	
-	void leggi(int nSched, deque <dati> *deq/*Definire costruttore di copia/assegnazione o movimento???*/);
+	void leggi(int nSched, deque <dati> &deq/*Definire costruttore di copia/assegnazione o movimento???*/);
 	
 };
 
