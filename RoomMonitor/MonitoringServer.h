@@ -48,7 +48,7 @@ public:
         if (!server->listen(QHostAddress::Any, 27015)) {
             qDebug() << "Server Did not start";
         } else {
-            qDebug() << "Server Started";
+            qDebug() << "Server Started on port:" << server->serverPort();
         }
     }
 
@@ -125,19 +125,20 @@ public slots:
      */
     void newConnection() {
         QTcpSocket *socket = server->nextPendingConnection();
-        int numReadTotal;
+         int numReadTotal;
         std::vector<Packet> data;
         while (socket->waitForReadyRead(10000)) {
             QByteArray a = socket->readLine();
             if (!a.isEmpty()) {
                 std::string packet = a.toStdString();
                 // Eliminazione \n
-                packet.erase(packet.find('\n'));
+                packet.erase(packet.find('\000'));
                 // Splitting stringa
                 std::vector<std::string> vector;
-                MonitoringServer::split(packet, vector, ';');
+                MonitoringServer::split(packet, vector, ' ');
+                //Vettore ricevuto [id posX posY fcs rssi macCell tempo ssid/~ macBoard distanza]
                 // Inserimento in struttura che verrò stampata appena scatterà in timeout
-                Packet p{vector[0], std::stoi(vector[1])};
+                Packet p{vector[5], std::stoi(vector[0])};
                 data.push_back(p);
             }
         }
