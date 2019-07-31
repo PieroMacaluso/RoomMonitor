@@ -175,8 +175,9 @@ void free_packet_list(node_t h) {
  * @param h Head of the packet linked list
  */
 void reset_packet_list(node_t h) {
-    // If the HEAD is NULL, simply returns
+    // If the HEAD is NULL or the head is not null but there aren't packets , simply returns
     if (h == NULL) return;
+    if (h->packet == NULL) return;  //todo da testare appena non ho dispositivi accesi che mi circondano
 
     if (h->next != NULL) {
         // Next is not NULL, so Recursive Free on nodes!
