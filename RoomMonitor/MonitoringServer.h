@@ -108,7 +108,7 @@ public:
     }
 
     template<class Container>
-    void split(const std::string &str, Container &cont, char delim = ';') {
+    void split(const std::string &str, Container &cont, char delim) {
         std::stringstream ss(str);
         std::string token;
         while (std::getline(ss, token, delim)) {
@@ -116,6 +116,18 @@ public:
         }
     }
 
+    /**Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina
+     * */
+    template<class Container>
+    void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim) {
+        unsigned first=0;
+        unsigned end=0;
+        while ((first = str.find(startDelim,first))<str.size()&& (end=str.find(stopDelim,first))<str.size()) {
+            std::string val = str.substr(first+startDelim.size()+1,end-first-startDelim.size()-2);
+            cont.push_back(val);
+            first=end+stopDelim.size();
+        }
+    }
 
 public slots:
 
@@ -124,28 +136,26 @@ public slots:
      * E' il corpo principale che rappresenta cosa bisogna fare ogni volta che si presenta una nuova connessione
      */
     void newConnection() {
+        std::string startDelim("init");
+        std::string stopDelim("end");
         QTcpSocket *socket = server->nextPendingConnection();
          int numReadTotal;
-        std::vector<Packet> data;
+        std::vector<std::string> pacchetti;
         while (socket->waitForReadyRead(10000)) {
             QByteArray a = socket->readLine();
             if (!a.isEmpty()) {
                 std::string packet = a.toStdString();
-                // Eliminazione \n
-                packet.erase(packet.find('\000'));
+                //divisione singoli pacchetti
+                MonitoringServer::splitString(packet,pacchetti,startDelim,stopDelim);
+                for(std::string s:pacchetti)
+                    std::cout << s<< std::endl;
                 // Splitting stringa
                 std::vector<std::string> vector;
-                MonitoringServer::split(packet, vector, ' ');
-                //Vettore ricevuto [id posX posY fcs rssi macCell tempo ssid/~ macBoard distanza]
-                // Inserimento in struttura che verrò stampata appena scatterà in timeout
-                Packet p{vector[5], std::stoi(vector[0])};
-                data.push_back(p);
+
             }
         }
 
-        for (auto &el: data) {
-            std::cout << el.mac << " " << el.id_schedina << std::endl;
-        }
+        //todo controllare se va bene un conteiner pacchetti per ogni newConnection (stesso anche in caso la schedina usi più pacchetti tcp per inviare l'intero elenco)
         socket->flush();
         socket->close();
         delete socket;
