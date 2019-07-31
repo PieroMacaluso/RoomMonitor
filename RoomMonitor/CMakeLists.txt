@@ -21,5 +21,5 @@ list(APPEND LIBRARIES
         Qt5::Network)
 list(REMOVE_DUPLICATES LIBRARIES)
 
-add_executable(RoomMonitor main.cpp MonitoringServer.cpp MonitoringServer.h)
+add_executable(RoomMonitor main.cpp MonitoringServer.cpp MonitoringServer.h Packet.cpp Packet.h)
 target_link_libraries(RoomMonitor ${LIBRARIES})

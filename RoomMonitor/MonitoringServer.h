@@ -15,14 +15,8 @@
 #include <algorithm>
 #include <iterator>
 #include <array>
+#include "Packet.h"
 
-class Packet {
-public:
-    std::string mac;
-    int id_schedina;
-
-    Packet(std::string mac, int id_schedina) : mac(mac), id_schedina(id_schedina) {}
-};
 
 class MonitoringServer : public QObject {
 Q_OBJECT
@@ -35,6 +29,16 @@ public:
     MonitoringServer() {
 
     }
+
+    /**
+     * Funzione utilizzata per convertire il vettore di stringhe ricevute dalla esp in oggetti packet
+     * @param packets
+     * @return
+     */
+    std::deque<Packet> string2packet(std::vector<std::string> packets);
+
+    template<class Container>
+    void split(const std::string &str, Container &cont, char delim);
 
     /**
      * Funzione che viene avviata non appena viene premuto il pulsante Start
@@ -107,15 +111,6 @@ public:
 
     }
 
-    template<class Container>
-    void split(const std::string &str, Container &cont, char delim) {
-        std::stringstream ss(str);
-        std::string token;
-        while (std::getline(ss, token, delim)) {
-            cont.push_back(token);
-        }
-    }
-
     /**Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina
      * */
     template<class Container>
@@ -139,19 +134,21 @@ public slots:
         std::string startDelim("init");
         std::string stopDelim("end");
         QTcpSocket *socket = server->nextPendingConnection();
-         int numReadTotal;
         std::vector<std::string> pacchetti;
+        std::deque<Packet> packets;
+
         while (socket->waitForReadyRead(10000)) {
             QByteArray a = socket->readLine();
             if (!a.isEmpty()) {
                 std::string packet = a.toStdString();
                 //divisione singoli pacchetti
                 MonitoringServer::splitString(packet,pacchetti,startDelim,stopDelim);
-                for(std::string s:pacchetti)
-                    std::cout << s<< std::endl;
-                // Splitting stringa
-                std::vector<std::string> vector;
-
+                /*for(std::string s:pacchetti)
+                    std::cout << s<< std::endl;*/
+                //Conversione in oggetti Packet
+                packets=string2packet(pacchetti);
+                for(Packet p: packets)
+                    std::cout << p << std::endl;
             }
         }
 
