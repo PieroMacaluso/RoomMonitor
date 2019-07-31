@@ -144,7 +144,7 @@ int send_packets(int s, node_t h) {
         return LENPACKET;
 
     for (i = h; i != NULL; i = i->next) {
-        sprintf(buf, "%d %d %d %08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s", id, posx, posy, i->packet->fcs,
+        sprintf(buf, "init %d %d %d %08x %d %02x:%02x:%02x:%02x:%02x:%02x %u %s %s end", id, posx, posy, i->packet->fcs,
                 i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],

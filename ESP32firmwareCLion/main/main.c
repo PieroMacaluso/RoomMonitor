@@ -736,6 +736,7 @@ static void http_server_netconn_serve(struct netconn *conn) {
                 spiffs_save(resource, conn);
                 //printf("SAVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
                 spiffs_serve("/index.html", conn);
+
             }
             // default page -> redirect to index.html
             if (strstr(request_line, "GET / ")) {
