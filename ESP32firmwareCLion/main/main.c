@@ -146,10 +146,6 @@ char *my_nvs_get_str(char *key);
 // Static Headers for HTTP response
 const static char http_html_hdr[] = "HTTP/1.1 200 OK\n\n";
 const static char http_404_hdr[] = "HTTP/1.1 404 NOT FOUND\n\n";
-const static char id_str[] = "id=([^&#]+)";
-const static char ip_str[] = "ipaddress=([^&#]+)";
-const static char posx_str[] = "posx=([^&#]+)";
-const static char posy_str[] = "posy=([^&#]+)";
 
 /* Variabili */
 node_t head;
