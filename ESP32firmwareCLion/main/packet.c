@@ -149,7 +149,8 @@ int send_packets(int s, node_t h) {
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
                 i->packet->timestamp, i->packet->SSID, i->packet->board);
-        result = send(s, buf, 127, 0);
+        buf[strlen(buf)] = '\0';
+        result = send(s, buf, strlen(buf), 0);
         if (result <= 0) {
             ESP_LOGI(TAGP, "Error send RSSI\n");
             return -2;
