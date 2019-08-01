@@ -924,6 +924,7 @@ int tcpClient() {
     }
     printf("Connect done.\n");
     result = send_packets(s, head);
+    // TODO: se non trovo il server svuoto o non svuoto la linkedList?
 
     if (result <= 0) {
         ESP_LOGI(TAG, "Error send message\n");
