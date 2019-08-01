@@ -16,6 +16,7 @@
 #include <iterator>
 #include <array>
 #include "Packet.h"
+#include <mutex>
 
 
 class MonitoringServer : public QObject {
@@ -24,6 +25,9 @@ Q_OBJECT
     // TODO: nSchedine è ancora inutile, sono da implementare i thread
     int nSchedine;
     bool running;
+    std::deque<Packet> packets;
+    std::mutex m;
+
 
 public:
     MonitoringServer() {
@@ -35,7 +39,7 @@ public:
      * @param packets
      * @return
      */
-    std::deque<Packet> string2packet(std::vector<std::string> packets);
+    std::deque<Packet> string2packet(const std::vector<std::string>& packets);
 
     template<class Container>
     void split(const std::string &str, Container &cont, char delim);
@@ -48,6 +52,7 @@ public:
     void serverStart() {
         server = new QTcpServer(this);
         QObject::connect(server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
+
 
         if (!server->listen(QHostAddress::Any, 27015)) {
             qDebug() << "Server Did not start";
@@ -111,16 +116,23 @@ public:
 
     }
 
-    /**Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina
-     * */
+
+    /**
+     * Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina
+     * @tparam Container
+     * @param str
+     * @param cont
+     * @param startDelim
+     * @param stopDelim
+     */
     template<class Container>
     void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim) {
-        unsigned first=0;
-        unsigned end=0;
-        while ((first = str.find(startDelim,first))<str.size()&& (end=str.find(stopDelim,first))<str.size()) {
-            std::string val = str.substr(first+startDelim.size()+1,end-first-startDelim.size()-2);
+        unsigned first = 0;
+        unsigned end = 0;
+        while ((first = str.find(startDelim, first)) < str.size() && (end = str.find(stopDelim, first)) < str.size()) {
+            std::string val = str.substr(first + startDelim.size() + 1, end - first - startDelim.size() - 2);
             cont.push_back(val);
-            first=end+stopDelim.size();
+            first = end + stopDelim.size();
         }
     }
 
@@ -131,30 +143,46 @@ public slots:
      * E' il corpo principale che rappresenta cosa bisogna fare ogni volta che si presenta una nuova connessione
      */
     void newConnection() {
+        std::cout << "New Connection started" << std::endl;
         std::string startDelim("init");
         std::string stopDelim("end");
         QTcpSocket *socket = server->nextPendingConnection();
         std::vector<std::string> pacchetti;
-        std::deque<Packet> packets;
+        std::deque<Packet> packetsConn;
+        std::string allData{};
 
-        while (socket->waitForReadyRead(10000)) {
-            QByteArray a = socket->readLine();
+        while (socket->waitForReadyRead(1000)) {
+            // Concatenazione stringhe ricevute in un'unica stringa
+            QByteArray a = socket->readAll();
             if (!a.isEmpty()) {
                 std::string packet = a.toStdString();
-                //divisione singoli pacchetti
-                MonitoringServer::splitString(packet,pacchetti,startDelim,stopDelim);
-                /*for(std::string s:pacchetti)
-                    std::cout << s<< std::endl;*/
-                //Conversione in oggetti Packet
-                packets=string2packet(pacchetti);
-                for(Packet p: packets)
-                    std::cout << p << std::endl;
+                allData += packet;
             }
+        }
+
+        // Creazione pacchettini
+        if (!allData.empty()) {
+            // Divisione singoli pacchetti
+            MonitoringServer::split(allData, pacchetti, ';');
+            // Conversione in oggetti Packet
+            packetsConn = string2packet(pacchetti);
+
+            // TODO: ESECUZIONE THREAD_SAFE
+            /** INIZIO ESECUZIONE THREAD-SAFE */
+
+            std::unique_lock lk{m};
+            for (auto p: packetsConn) {
+                std::cout << p << std::endl;
+                packets.push_back(p);
+            }
+
+            /** FINE ESECUZIONE THREAD-SAFE */
         }
 
         //todo controllare se va bene un conteiner pacchetti per ogni newConnection (stesso anche in caso la schedina usi più pacchetti tcp per inviare l'intero elenco)
         socket->flush();
         socket->close();
+        std::cout << "Connection closed" << std::endl;
         delete socket;
 
     };

@@ -4,13 +4,13 @@
 
 #include "MonitoringServer.h"
 
-std::deque<Packet> MonitoringServer::string2packet(std::vector<std::string> p) {
-    std::deque<Packet> packets;
-    std::vector<std::string> values;
+std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string>& p) {
+    std::deque<Packet> deque;
     std::string ssid;
 
-    for(std::string s:p){
-        split(s,values,' ');
+    for(const std::string& s:p){
+        std::vector<std::string> values;
+        split(s,values,',');
 
         if(values.size()==7)        //alcuni pacchetti contengono l'ssid e altri no
             //no ssid
@@ -18,11 +18,11 @@ std::deque<Packet> MonitoringServer::string2packet(std::vector<std::string> p) {
         else
             ssid=values[7];
 
-        Packet p(std::stoi(values[0]),std::stoi(values[3]),std::stoi(values[4]),values[5],std::stoi(values[6]),ssid);
-        packets.push_back(p);
+        Packet packet(std::stoi(values[0]),values[3],std::stoi(values[4]),values[5],std::stoi(values[6]),ssid);
+        deque.push_back(packet);
     }
 
-    return packets;
+    return deque;
 }
 
 template<class Container>

@@ -5,7 +5,7 @@
 #include <sstream>
 #include "Packet.h"
 
-Packet::Packet(int id_schedina, uint32_t fcs, int rssi, std::string &mac, uint32_t timestamp, std::string &ssid) :
+Packet::Packet(int id_schedina, std::string fcs, int rssi, std::string &mac, uint32_t timestamp, std::string &ssid) :
         id_schedina(id_schedina),macPeer(mac),ssid(ssid),fcs(fcs),timestamp(timestamp),rssi(rssi) {}
 
 std::ostream& operator<<(std::ostream& os, const Packet& pk)
