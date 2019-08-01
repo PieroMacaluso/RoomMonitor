@@ -313,12 +313,12 @@ void wifi_sniffer_init(void) {
     char *pass = my_nvs_get_str("password_ap");
     if (ssid != NULL) {
         memcpy(ap_config.ap.ssid, ssid, strlen(ssid));
-        strcpy((char*)ap_config.ap.ssid, ssid);
+        strcpy((char *) ap_config.ap.ssid, ssid);
 //        ap_config.ap.ssid[strlen(ssid)] = '\0';
         free(ssid);
     }
     if (pass != NULL) {
-        strcpy((char*)ap_config.ap.password, pass);
+        strcpy((char *) ap_config.ap.password, pass);
 //        ap_config.ap.password[strlen(pass)] = '\0';
 
         free(pass);
@@ -447,7 +447,6 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data) {
  * @param[in]  type  Il tipo di pacchetto
  */
 void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
-    /*char tmp[4], tmp1[7];*/
     // Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
     const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
     time_t now;
