@@ -881,8 +881,8 @@ int tcpClient() {
     struct in_addr addr;
     struct sockaddr_in saddr;
     gpio_set_level(BLINK_GPIO, 1);
-    xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true,
-                        portMAX_DELAY);        //attende la configurazione dal dhcp
+    // Attende la configurazione dal dhcp
+    xEventGroupWaitBits(wifi_event_group, CONNECTED_BIT, false, true, portMAX_DELAY);
 
     ESP_LOGI(TAG, "tcp_client task started \n");
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -896,6 +896,8 @@ int tcpClient() {
         result = inet_aton(server, &addr);
         if (!result) {
             ESP_LOGE(TAG, "Error ip address.\n");
+            close(s);
+            free(server);
             return -2;
         }
         saddr.sin_family = AF_INET;
@@ -908,6 +910,7 @@ int tcpClient() {
         result = inet_aton(TCPServerIP, &addr);
         if (!result) {
             ESP_LOGE(TAG, "Error ip addres.\n");
+            close(s);
             return -2;
         }
         saddr.sin_family = AF_INET;
@@ -923,19 +926,21 @@ int tcpClient() {
         return -2;
     }
     printf("Connect done.\n");
+    // Invio dei pacchetti
     result = send_packets(s, head);
-    // TODO: se non trovo il server svuoto o non svuoto la linkedList?
 
+    int retValue = 0;
     if (result <= 0) {
+        // In caso di errore svuoto la lista, i pacchetti vengono persi
         ESP_LOGI(TAG, "Error send message\n");
-        return -2;
+        retValue = -2;
+    } else {
+        ESP_LOGI(TAG, "Message sent.\n");
     }
-
-    printf("Message sent.\n");
+    // Messaggi inviati, svuoto comunque la lista
     reset_packet_list(head);
-
     close(s);
     gpio_set_level(BLINK_GPIO, 0);
-    return 0;
+    return retValue;
 }
 
