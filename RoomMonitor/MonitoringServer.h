@@ -150,8 +150,8 @@ public slots:
         std::vector<std::string> pacchetti;
         std::deque<Packet> packetsConn;
         std::string allData{};
-
-        while (socket->waitForReadyRead(1000)) {
+        // TODO: finetuning di questo parametro, più è piccolo, meglio è!
+        while (socket->waitForReadyRead(500)) {
             // Concatenazione stringhe ricevute in un'unica stringa
             QByteArray a = socket->readAll();
             if (!a.isEmpty()) {
