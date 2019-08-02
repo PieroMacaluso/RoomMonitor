@@ -8,6 +8,9 @@
  * @type {number}
  */
 const schedine = 4;
+// Ambiente di testing 60000ms
+// const millisec = 60000;
+const millisec = 30000;
 
 /**
  * Funzione di sleep
@@ -48,52 +51,57 @@ function makeMac() {
 /**
  * Main Function
  */
+function mainFunction() {
 
-var net = require('net');
+    var net = require('net');
 // Array dei client TCP
-var client = [];
+    var client = [];
 // Array dei pacchetti per ogni client  TCP
-var packets = [];
+    var packets = [];
 // Posizione delle schedine
-var posSchedine = [[0, 0], [0, 1], [1, 0], [1, 1]];
+    var posSchedine = [[0, 0], [0, 1], [1, 0], [1, 1]];
 
 
 // Generazione causale di 4 pacchetti, il 5 sarà l'unico che dovrà risultare dall'aggregazione in generale
-for (let i = 0; i < schedine; i++) {
-    packets[i] = '';
-    packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
-    packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
-    packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
-    packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
-    packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + '11111111' + ',' + '-30,' + '22:22:22:22:22:22' + ',0,PieroTest,cia;';
-    console.log(packets[i]);
+    for (let i = 0; i < schedine; i++) {
+        packets[i] = '';
+        packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
+        packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
+        packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
+        packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + makeid(8) + ',' + '-30,' + makeMac() + ',0,PieroTest,cia;';
+        packets[i] += i + ',' + posSchedine[i][0] + ',' + posSchedine[i][1] + ',' + '11111111' + ',' + '-30,' + '22:22:22:22:22:22' + ',0,PieroTest,cia;';
+        // console.log(packets[i]); // Debug
 
-}
+    }
 
 // Creazione client TCP
-for (let i = 0; i < schedine; i++) {
-    client[i] = new net.Socket();
-}
+    for (let i = 0; i < schedine; i++) {
+        client[i] = new net.Socket();
+    }
 
 // Invio dati da ogni client TCP
-for (let i = 0; i < schedine; i++) {
-    console.log("Start " + i);
-    client[i].connect(27015, '127.0.0.1', function () {
-        console.log('Connected');
-        // Insert the data you prefer
-        client[i].write(packets[i]);
-    });
+    for (let i = 0; i < schedine; i++) {
+        console.log("Start " + i);
+        client[i].connect(27015, '127.0.0.1', function () {
+            console.log('Connected');
+            // Insert the data you prefer
+            client[i].write(packets[i]);
+        });
 
-    client[i].on('data', function (data) {
-        console.log('Received: ' + data);
-        client[i].destroy(); // kill client[i].after server's response
-    });
+        client[i].on('data', function (data) {
+            console.log('Received: ' + data);
+            client[i].destroy(); // kill client[i].after server's response
+        });
 
-    client[i].on('close', function () {
-        console.log('Connection closed');
-    });
+        client[i].on('close', function () {
+            console.log('Connection closed');
+        });
 
-    client[i].on('error', function () {
-        console.log('Connection error: the server is unavailable!');
-    });
+        client[i].on('error', function () {
+            console.log('Connection error: the server is unavailable!');
+        });
+    }
 }
+console.log("Le schedine genereranno pacchetti ogni " + millisec + 'ms!');
+mainFunction();
+setInterval(mainFunction, millisec);
