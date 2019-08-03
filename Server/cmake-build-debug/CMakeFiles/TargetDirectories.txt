@@ -1,0 +1,4 @@
+D:/polito/PDSproject/Server/cmake-build-debug/CMakeFiles/Server.dir
+D:/polito/PDSproject/Server/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/polito/PDSproject/Server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/polito/PDSproject/Server/cmake-build-debug/CMakeFiles/Server_autogen.dir
