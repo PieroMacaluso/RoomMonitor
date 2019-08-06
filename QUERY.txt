@@ -1,0 +1,54 @@
+/*#include <QSqlQuery>
+void Plot3::connessione(){
+    nDatabase=QSqlDatabase::addDatabase("QMYSQL");
+    nDatabase.setHostName("localhost");
+    nDatabase.setDatabaseName("data");
+    nDatabase.setPort(3306);
+    nDatabase.setUserName("root");
+    nDatabase.setPassword("NewRoot12Kz");
+    if(!nDatabase.open()){
+        QMessageBox::critical(this, "Error", nDatabase.lastError().text());
+        return;
+    }
+    nModel=new QSqlTableModel(this);
+    nModel ->setTable("campi");
+    nModel->select();
+
+
+}*/	
+//QUESTA ERA LA VECCHIA FUNZIONE CHE DOVREBBE ESSERE GIà PRESENTE PER CONNETTERSI
+//basta il codice da qui in poi
+  connessione();
+    QSqlQuery *qryData=new QSqlQuery(nDatabase);
+    int id=5;
+    QVariant hash="aaaaaaaa";
+    int rssi=5;
+    QVariant mac="baaaaaaaaaaaaaaa";
+    QDateTime timestamp= QDateTime::currentDateTime();
+    QVariant ssid="123";
+    QVariant board="45";
+
+    qryData->prepare("INSERT INTO campi (id, hash, rssi, mac, timestamp, ssid, board) "
+                     "VALUES (?, ?, ?,?,?,?,?)");
+    qryData->addBindValue(id);
+    qryData->addBindValue(hash);
+    qryData->addBindValue(rssi);
+    qryData->addBindValue(mac);
+    qryData->addBindValue(timestamp);
+    qryData->addBindValue(ssid);
+    qryData->addBindValue(board);
+    qryData->exec();
+
+ /*VARIANTE->NON SERVE  
+
+	QSqlQuery query;
+       query.prepare("INSERT INTO campi (id, hash, rssi, mac, timestamp, ssid, board) "
+                     "VALUES (:id, :hash, :rssi, :mac, :timestamp, :ssid, :board)");
+       query.bindValue(":id", id);
+       query.bindValue(":hash", hash)
+       query.bindValue(":rssi", rssi);
+       query.bindValue(":mac", mac);
+       query.bindValue(":timestamp", timestamp);
+       query.bindValue(":ssid", ssid);
+       query.bindValue(":board", board);
+       query.exec();*/
