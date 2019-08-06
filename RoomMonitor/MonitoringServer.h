@@ -17,6 +17,7 @@
 #include <array>
 #include "Packet.h"
 #include <mutex>
+#include <QTimer>
 
 
 class MonitoringServer : public QObject {
@@ -27,11 +28,17 @@ Q_OBJECT
     bool running;
     std::deque<Packet> packets;
     std::mutex m;
+    QTimer *timer;
 
 
 public:
     MonitoringServer() {
-
+        timer = nullptr;
+    }
+    ~MonitoringServer(){
+        if (timer != nullptr){
+            delete timer;
+        }
     }
 
     /**
@@ -58,6 +65,9 @@ public:
             qDebug() << "Server Did not start";
         } else {
             qDebug() << "Server Started on port:" << server->serverPort();
+            timer = new QTimer(this);
+            connect(timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
+            timer->start(30000);
         }
     }
 
@@ -66,6 +76,9 @@ public:
      */
     void serverStop() {
         server->close();
+        timer->stop();
+        delete timer;
+        timer = nullptr;
     }
 
     /**
@@ -187,6 +200,37 @@ public slots:
 
     };
 
+    void aggregate(){
+        std::unique_lock lk{m};
+        std::map<std::string, std::deque<Packet>> aggregate{};
+        for(auto &el : packets){
+            std::string id = el.getFcs();
+            auto it = aggregate.find(id);
+            if ( it == aggregate.end()){
+                std::deque<Packet> newDeque{};
+                newDeque.push_back(el);
+                aggregate.insert(std::make_pair(id, newDeque));
+            } else{
+                it->second.push_back(el);
+            }
+        }
+
+        auto it = aggregate.begin();
+        for(; it != aggregate.end(); ) {
+            if (nSchedine != it->second.size()) {
+                aggregate.erase(it++);
+            } else {
+                ++it;
+            }
+        }
+        std::cout << "Starting aggregation" << std::endl;
+        for (auto fil : aggregate){
+            std::cout << "ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() <<std::endl;
+        }
+        std::cout << "Ending aggregation" << std::endl;
+        packets.clear();
+    }
+
 
 signals:
 
@@ -200,8 +244,6 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
-
-
 };
 
 
