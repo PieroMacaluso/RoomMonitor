@@ -201,7 +201,13 @@ public slots:
     };
 
     void aggregate(){
+
+        // TODO: Capire come aggregare bene
+
         std::unique_lock lk{m};
+
+        // Generazione Mappa <ChiavePacchetto, DequePacchetto>
+        // TODO: capire se si può fare direttamente in acquisizione, secondo me si può usare la mappa in maniera thread safe
         std::map<std::string, std::deque<Packet>> aggregate{};
         for(auto &el : packets){
             std::string id = el.getFcs();
@@ -215,6 +221,7 @@ public slots:
             }
         }
 
+        // Eliminazione di tutti i pacchetti che non possiedono un numero di elementi pari al numero di schedine.
         auto it = aggregate.begin();
         for(; it != aggregate.end(); ) {
             if (nSchedine != it->second.size()) {
@@ -223,11 +230,20 @@ public slots:
                 ++it;
             }
         }
+
+        // TODO: Calcolo della posizione da RSSI
+
+        // Stampa id pacchetti aggregati rilevati.
         std::cout << "Starting aggregation" << std::endl;
         for (auto fil : aggregate){
             std::cout << "ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() <<std::endl;
         }
         std::cout << "Ending aggregation" << std::endl;
+
+        // TODO: Query al database, capire cosa e quanto salvare
+
+        // Pulizia deque pacchetti
+        // TODO: capire se può essere utile un meccanismo simile al second-chance per l'eliminazione
         packets.clear();
     }
 
