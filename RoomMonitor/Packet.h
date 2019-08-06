@@ -21,6 +21,18 @@ class Packet {
 public:
     Packet(int id_schedina, std::string fcs, int rssi, std::string &mac, uint32_t timestamp, std::string &ssid);
     friend std::ostream& operator<<(std::ostream& os, const Packet& pk);
+
+    const std::string &getMacPeer() const;
+
+    int getIdSchedina() const;
+
+    int getRssi() const;
+
+    const std::string &getFcs() const;
+
+    uint32_t getTimestamp() const;
+
+    const std::string &getSsid() const;
 };
 
 

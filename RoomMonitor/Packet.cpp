@@ -15,4 +15,28 @@ std::ostream& operator<<(std::ostream& os, const Packet& pk)
     return os;
 }
 
+const std::string &Packet::getMacPeer() const {
+    return macPeer;
+}
+
+int Packet::getIdSchedina() const {
+    return id_schedina;
+}
+
+int Packet::getRssi() const {
+    return rssi;
+}
+
+const std::string &Packet::getFcs() const {
+    return fcs;
+}
+
+uint32_t Packet::getTimestamp() const {
+    return timestamp;
+}
+
+const std::string &Packet::getSsid() const {
+    return ssid;
+}
+
 
