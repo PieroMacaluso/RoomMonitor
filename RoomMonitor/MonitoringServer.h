@@ -18,6 +18,7 @@
 #include "Packet.h"
 #include <mutex>
 #include <QTimer>
+#include <map>
 
 
 class MonitoringServer : public QObject {
@@ -26,7 +27,7 @@ Q_OBJECT
     // TODO: nSchedine è ancora inutile, sono da implementare i thread
     int nSchedine;
     bool running;
-    std::deque<Packet> packets;
+    std::deque<std::pair<Packet, int>> packets;
     std::mutex m;
     QTimer *timer;
 
@@ -35,8 +36,9 @@ public:
     MonitoringServer() {
         timer = nullptr;
     }
-    ~MonitoringServer(){
-        if (timer != nullptr){
+
+    ~MonitoringServer() {
+        if (timer != nullptr) {
             delete timer;
         }
     }
@@ -46,7 +48,7 @@ public:
      * @param packets
      * @return
      */
-    std::deque<Packet> string2packet(const std::vector<std::string>& packets);
+    std::deque<Packet> string2packet(const std::vector<std::string> &packets);
 
     template<class Container>
     void split(const std::string &str, Container &cont, char delim);
@@ -184,9 +186,9 @@ public slots:
             /** INIZIO ESECUZIONE THREAD-SAFE */
 
             std::unique_lock lk{m};
-            for (auto p: packetsConn) {
+            for (auto &p: packetsConn) {
                 std::cout << p << std::endl;
-                packets.push_back(p);
+                packets.emplace_back(std::make_pair(p, 0));
             }
 
             /** FINE ESECUZIONE THREAD-SAFE */
@@ -200,34 +202,46 @@ public slots:
 
     };
 
-    void aggregate(){
+    void aggregate() {
 
         // TODO: Capire come aggregare bene
 
         std::unique_lock lk{m};
 
         // Generazione Mappa <ChiavePacchetto, DequePacchetto>
-        // TODO: capire se si può fare direttamente in acquisizione, secondo me si può usare la mappa in maniera thread safe
+
+        /* TODO: capire se si può fare direttamente in acquisizione, secondo me si può usare la mappa in maniera thread safe
+         * in questo modo si andrebbe a creare l'aggregazione per id pacchetto già in ricezione, limitando lo sforzo
+         * computazionale che viene fatto in aggregate*/
+
         std::map<std::string, std::deque<Packet>> aggregate{};
-        for(auto &el : packets){
-            std::string id = el.getFcs();
+        std::for_each(packets.begin(), packets.end(), [&](std::pair<Packet, int> el) {
+            std::string id = el.first.getFcs();
+            el.second++;
             auto it = aggregate.find(id);
-            if ( it == aggregate.end()){
+            if (it == aggregate.end()) {
                 std::deque<Packet> newDeque{};
-                newDeque.push_back(el);
+                newDeque.push_back(el.first);
                 aggregate.insert(std::make_pair(id, newDeque));
-            } else{
-                it->second.push_back(el);
+            } else {
+                it->second.push_back(el.first);
             }
-        }
+        });
 
         // Eliminazione di tutti i pacchetti che non possiedono un numero di elementi pari al numero di schedine.
-        auto it = aggregate.begin();
-        for(; it != aggregate.end(); ) {
-            if (nSchedine != it->second.size()) {
-                aggregate.erase(it++);
+        for (auto i = aggregate.begin(), last = aggregate.end(); i != last; ) {
+            if (nSchedine != i->second.size()) {
+                i = aggregate.erase(i);
             } else {
-                ++it;
+
+                for (auto it = packets.begin(); it != packets.end(); ) {
+                    if (it->first.getFcs() == i->first) {
+                        it = packets.erase(it);
+                    } else {
+                        ++it;
+                    }
+                }
+                ++i;
             }
         }
 
@@ -235,16 +249,23 @@ public slots:
 
         // Stampa id pacchetti aggregati rilevati.
         std::cout << "Starting aggregation" << std::endl;
-        for (auto fil : aggregate){
-            std::cout << "ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() <<std::endl;
+        for (auto fil : aggregate) {
+            std::cout << "ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() << std::endl;
         }
         std::cout << "Ending aggregation" << std::endl;
 
         // TODO: Query al database, capire cosa e quanto salvare
 
         // Pulizia deque pacchetti
-        // TODO: capire se può essere utile un meccanismo simile al second-chance per l'eliminazione
-        packets.clear();
+        /* Un pacchetto viene eliminato dalla deque solo ed esclusivamente dopo due aggregate. In questo maniera
+         * si dovrebbe evitare la possibilità che vengano analizzate ricezioni di pacchetti parziali */
+        for (auto it = packets.begin(); it != packets.end(); ) {
+            if (it->second >= 2) {
+                it = packets.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
 
 
