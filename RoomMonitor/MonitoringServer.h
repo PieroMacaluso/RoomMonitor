@@ -19,6 +19,12 @@
 #include <mutex>
 #include <QTimer>
 #include <map>
+#include <QSqlQuery>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QtWidgets/QMessageBox>
+#include <QDebug>
+#include <QDateTime>
 
 
 class MonitoringServer : public QObject {
@@ -30,17 +36,40 @@ Q_OBJECT
     std::deque<std::pair<Packet, int>> packets;
     std::mutex m;
     QTimer *timer;
+    QSqlDatabase nDatabase;
 
 
 public:
     MonitoringServer() {
         timer = nullptr;
+        nDatabase = QSqlDatabase::addDatabase("QMYSQL");
+        nDatabase.setHostName("localhost");
+        nDatabase.setDatabaseName("data");
+        nDatabase.setPort(3306);
+        nDatabase.setUserName("root");
+        nDatabase.setPassword("NewRoot12Kz");
     }
 
     ~MonitoringServer() {
         if (timer != nullptr) {
             delete timer;
         }
+    }
+
+    /**
+     * Connessione al database
+     */
+    void connectDB() {
+        ;
+        if (!nDatabase.open()) {
+            qDebug() << nDatabase.lastError();
+            return;
+        }
+        qDebug() << "DB connected";
+    }
+
+    void disconnectDB() {
+        nDatabase.close();
     }
 
     /**
@@ -204,6 +233,8 @@ public slots:
 
     void aggregate() {
 
+        connectDB();
+
         // TODO: Capire come aggregare bene
 
         std::unique_lock lk{m};
@@ -229,12 +260,12 @@ public slots:
         });
 
         // Eliminazione di tutti i pacchetti che non possiedono un numero di elementi pari al numero di schedine.
-        for (auto i = aggregate.begin(), last = aggregate.end(); i != last; ) {
+        for (auto i = aggregate.begin(), last = aggregate.end(); i != last;) {
             if (nSchedine != i->second.size()) {
                 i = aggregate.erase(i);
             } else {
 
-                for (auto it = packets.begin(); it != packets.end(); ) {
+                for (auto it = packets.begin(); it != packets.end();) {
                     if (it->first.getFcs() == i->first) {
                         it = packets.erase(it);
                     } else {
@@ -251,21 +282,46 @@ public slots:
         std::cout << "Starting aggregation" << std::endl;
         for (auto fil : aggregate) {
             std::cout << "ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() << std::endl;
+            /*
+             * TODO: Query al database, capire cosa e quanto salvare
+             * Attualmente non trovo utilità del campo id e del campo board. L'RSSI dovrà essere modificato con le
+             * coordinate (x,y) se non sbaglio. Il timestamp forse sarebbe da "castrare" ad ogni minuto, esempio 16:23:40
+             * diventa 16:23:00.
+             */
+
+            /*
+             * TODO: aggregazione di pacchetti multipli appartenenti allo stesso MAC in un'unico pacchetto.
+             */
+            QSqlQuery query;
+            query.prepare(
+                    "INSERT INTO campi (id, hash, rssi, mac, timestamp, ssid, board) VALUES (:id, :hash, :rssi, :mac, :timestamp, :ssid, :board);");
+            query.bindValue(":id", 0);
+            query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
+            query.bindValue(":rssi", fil.second.begin()->getRssi());
+            query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
+            query.bindValue(":timestamp", QDateTime::fromSecsSinceEpoch(fil.second.begin()->getTimestamp()));
+            query.bindValue(":ssid", QString::fromStdString(fil.second.begin()->getSsid()));
+            query.bindValue(":board", fil.second.begin()->getIdSchedina());
+            if (!query.exec()) {
+                qDebug() << query.lastError();
+            }
         }
         std::cout << "Ending aggregation" << std::endl;
 
-        // TODO: Query al database, capire cosa e quanto salvare
 
-        // Pulizia deque pacchetti
+
+        // Pulizia deque pacchetti attraverso meccanismo di second chance
         /* Un pacchetto viene eliminato dalla deque solo ed esclusivamente dopo due aggregate. In questo maniera
          * si dovrebbe evitare la possibilità che vengano analizzate ricezioni di pacchetti parziali */
-        for (auto it = packets.begin(); it != packets.end(); ) {
+        for (auto it = packets.begin(); it != packets.end();) {
             if (it->second >= 2) {
                 it = packets.erase(it);
             } else {
                 ++it;
             }
         }
+
+        disconnectDB();
     }
 
 
