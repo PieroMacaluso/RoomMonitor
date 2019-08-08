@@ -33,3 +33,13 @@ void MonitoringServer::split(const std::string &str, Container &cont, char delim
         cont.push_back(token);
     }
 }
+/**
+ * Questa funzione prende in ingresso una coda di pacchetti con lo stesso FCS e provenienti da schede differenti.
+ * L'obiettivo è restituire
+ * @param deque
+ * @return
+ */
+PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
+    // TODO: Calcolo della posizione da RSSI
+    return PositionData(0.5, 0.5);
+}

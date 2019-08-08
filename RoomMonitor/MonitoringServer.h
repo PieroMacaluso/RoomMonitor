@@ -5,6 +5,14 @@
 #ifndef ROOMMONITOR_MONITORINGSERVER_H
 #define ROOMMONITOR_MONITORINGSERVER_H
 
+//#define _DEBUG 1
+
+#ifdef _DEBUG
+#define DEBUG(stuff) std::cout << stuff << std::endl;
+#else
+#define DEBUG(stuff)
+#endif
+
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -16,6 +24,7 @@
 #include <iterator>
 #include <array>
 #include "Packet.h"
+#include "PositionData.h"
 #include <mutex>
 #include <QTimer>
 #include <map>
@@ -60,12 +69,10 @@ public:
      * Connessione al database
      */
     void connectDB() {
-        ;
         if (!nDatabase.open()) {
             qDebug() << nDatabase.lastError();
             return;
         }
-        qDebug() << "DB connected";
     }
 
     void disconnectDB() {
@@ -89,12 +96,12 @@ public:
      */
     void serverStart() {
         server = new QTcpServer(this);
-        QObject::connect(server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
 
 
         if (!server->listen(QHostAddress::Any, 27015)) {
             qDebug() << "Server Did not start";
         } else {
+            QObject::connect(server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
             qDebug() << "Server Started on port:" << server->serverPort();
             timer = new QTimer(this);
             connect(timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
@@ -123,13 +130,16 @@ public:
 
         QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
             try {
-                this->nSchedine = ui.nSchedine->text().toInt();
-                this->started(ui.nSchedine->text().toInt());
-                ui.startButton->setDisabled(true);
-                ui.stopButton->setDisabled(false);
+                int n = ui.nSchedine->text().toInt();
+                if (n > 0) {
+                    this->nSchedine = n;
+                    this->started(ui.nSchedine->text().toInt());
+                    ui.startButton->setDisabled(true);
+                    ui.stopButton->setDisabled(false);
+                }
             } catch (std::exception &e) {
                 // Does not started signal
-                std::cout << "Ecc" << std::endl;
+                std::cout << "Non è stato possibile avviare il server." << std::endl;
                 return;
             }
             this->running = true;
@@ -187,7 +197,7 @@ public slots:
      * E' il corpo principale che rappresenta cosa bisogna fare ogni volta che si presenta una nuova connessione
      */
     void newConnection() {
-        std::cout << "New Connection started" << std::endl;
+        DEBUG("New Connection started");
         std::string startDelim("init");
         std::string stopDelim("end");
         QTcpSocket *socket = server->nextPendingConnection();
@@ -216,7 +226,7 @@ public slots:
 
             std::unique_lock lk{m};
             for (auto &p: packetsConn) {
-                std::cout << p << std::endl;
+                DEBUG(p)
                 packets.emplace_back(std::make_pair(p, 0));
             }
 
@@ -226,10 +236,12 @@ public slots:
         //todo controllare se va bene un conteiner pacchetti per ogni newConnection (stesso anche in caso la schedina usi più pacchetti tcp per inviare l'intero elenco)
         socket->flush();
         socket->close();
-        std::cout << "Connection closed" << std::endl;
+        DEBUG("Connection closed")
         delete socket;
 
     };
+
+    PositionData fromRssiToXY(std::deque<Packet> deque);
 
     void aggregate() {
 
@@ -276,12 +288,30 @@ public slots:
             }
         }
 
-        // TODO: Calcolo della posizione da RSSI
+        std::map<std::string, PositionData> map_mac_xy;
+        for (auto i = aggregate.begin(), last = aggregate.end(); i != last; i++) {
+            std::string mac = i->second.begin()->getMacPeer();
+            auto it = map_mac_xy.find(mac);
+            if (it == map_mac_xy.end()) {
+                // Nuovo MAC
+                // Calculate x,y da RSSI
+                // TODO: Calcolo della posizione da RSSI in funzione
+                PositionData positionData = fromRssiToXY(i->second);
+                map_mac_xy.insert(std::make_pair(mac, positionData));
+            } else {
+                // MAC già visto
+                // Calculate x,y da RSSI
+                // TODO: Calcolo della posizione da RSSI in funzione
+                PositionData positionData = fromRssiToXY(i->second);
+                it->second.addPacket(positionData);
+            }
+        }
+
 
         // Stampa id pacchetti aggregati rilevati.
-        std::cout << "Starting aggregation" << std::endl;
+        DEBUG("Starting aggregation")
         for (auto fil : aggregate) {
-            std::cout << "ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() << std::endl;
+            DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer())
             /*
              * TODO: Query al database, capire cosa e quanto salvare
              * Attualmente non trovo utilità del campo id e del campo board. L'RSSI dovrà essere modificato con le
@@ -306,7 +336,16 @@ public slots:
                 qDebug() << query.lastError();
             }
         }
-        std::cout << "Ending aggregation" << std::endl;
+        DEBUG("Ending aggregation")
+
+        // Stampa id pacchetti aggregati rilevati.
+        auto clock = std::chrono::system_clock::now();
+        std::time_t clock_time = std::chrono::system_clock::to_time_t(clock);
+        std::cout << "Situation at " << std::ctime(&clock_time) << std::endl;
+        for (auto &fil : map_mac_xy) {
+            std::cout << "MAC:" << fil.first << " " << fil.second << std::endl;
+        }
+        std::cout << "Persone nella stanza: " << map_mac_xy.size() << std::endl;
 
 
 
