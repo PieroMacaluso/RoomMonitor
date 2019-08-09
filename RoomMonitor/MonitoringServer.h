@@ -87,7 +87,7 @@ public:
 
     /**
      * Funzione che viene avviata non appena viene premuto il pulsante Start
-     * Si occupa di inizializzare il server (127.0.0.1:1234) e di impostare la callback di ogni nuova connessione
+     * Si occupa di inizializzare il server (127.0.0.1:27015) e di impostare la callback di ogni nuova connessione
      * a this->newConnection
      */
     void serverStart();
