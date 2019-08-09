@@ -68,16 +68,12 @@ public:
     /**
      * Connessione al database
      */
-    void connectDB() {
-        if (!nDatabase.open()) {
-            qDebug() << nDatabase.lastError();
-            return;
-        }
-    }
+    void connectDB();
 
-    void disconnectDB() {
-        nDatabase.close();
-    }
+    /**
+     * Disconnessione dal database
+     */
+    void disconnectDB();
 
     /**
      * Funzione utilizzata per convertire il vettore di stringhe ricevute dalla esp in oggetti packet
@@ -94,81 +90,18 @@ public:
      * Si occupa di inizializzare il server (127.0.0.1:1234) e di impostare la callback di ogni nuova connessione
      * a this->newConnection
      */
-    void serverStart() {
-        server = new QTcpServer(this);
-
-
-        if (!server->listen(QHostAddress::Any, 27015)) {
-            qDebug() << "Server Did not start";
-        } else {
-            QObject::connect(server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
-            qDebug() << "Server Started on port:" << server->serverPort();
-            timer = new QTimer(this);
-            connect(timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-            timer->start(30000);
-        }
-    }
+    void serverStart();
 
     /**
      * Chiude il server non appena viene premuto il pulsante di stop
      */
-    void serverStop() {
-        server->close();
-        timer->stop();
-        delete timer;
-        timer = nullptr;
-    }
+    void serverStop();
 
     /**
      * Setup della finestra del Server
      * @param ui Ui finestra principale da cui andare a prendere i vari file.
      */
-    void setup(Ui::MainWindow &ui) {
-        ui.stopButton->setDisabled(true);
-
-        // Click Start Button
-
-        QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
-            try {
-                int n = ui.nSchedine->text().toInt();
-                if (n > 0) {
-                    this->nSchedine = n;
-                    this->started(ui.nSchedine->text().toInt());
-                    ui.startButton->setDisabled(true);
-                    ui.stopButton->setDisabled(false);
-                }
-            } catch (std::exception &e) {
-                // Does not started signal
-                std::cout << "Non è stato possibile avviare il server." << std::endl;
-                return;
-            }
-            this->running = true;
-
-        });
-
-        // Conseguenze Click Start Button
-
-        QObject::connect(this, &MonitoringServer::started, [&]() { this->serverStart(); });
-
-        // Click Stop Button
-
-        QObject::connect(ui.stopButton, &QPushButton::clicked, [&]() {
-            this->stopped();
-            ui.startButton->setDisabled(false);
-            ui.stopButton->setDisabled(true);
-            this->running = false;
-            this->serverStop();
-
-
-        });
-
-        // Conseguenze Click Start Button
-
-        QObject::connect(this, &MonitoringServer::stopped, [&]() {
-            std::cout << "Stopped" << std::endl;
-        });
-
-    }
+    void setup(Ui::MainWindow &ui);
 
 
     /**
@@ -180,15 +113,10 @@ public:
      * @param stopDelim
      */
     template<class Container>
-    void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim) {
-        unsigned first = 0;
-        unsigned end = 0;
-        while ((first = str.find(startDelim, first)) < str.size() && (end = str.find(stopDelim, first)) < str.size()) {
-            std::string val = str.substr(first + startDelim.size() + 1, end - first - startDelim.size() - 2);
-            cont.push_back(val);
-            first = end + stopDelim.size();
-        }
-    }
+    void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim);
+
+    PositionData fromRssiToXY(std::deque<Packet> deque);
+
 
 public slots:
 
@@ -241,7 +169,6 @@ public slots:
 
     };
 
-    PositionData fromRssiToXY(std::deque<Packet> deque);
 
     void aggregate() {
 
