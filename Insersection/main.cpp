@@ -234,6 +234,8 @@ int main(void) {
     // Stampa media pesata
     std::cout << result << std::endl;
 
+    // TODO: valido se x e y risultanti sono nella stanza, altrimenti no!
+
 
     return 0;
 }
