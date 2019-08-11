@@ -102,8 +102,8 @@ Packet *setPacket(const wifi_promiscuous_pkt_t *ppkt) {
     Packet *p;
     p = malloc(sizeof(Packet));
     int i;
-
-    p->fcs = crc32_le(0, ppkt->payload, ppkt->rx_ctrl.sig_len);
+    uint32_t size = ppkt->rx_ctrl.sig_len;
+    p->fcs = crc32_le(0, ppkt->payload, size);
     p->rssi = ppkt->rx_ctrl.rssi;
     for (i = 0; i < 6; i++) {
         p->mac[i] = ppkt->payload[OFFMAC + i];

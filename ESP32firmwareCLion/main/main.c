@@ -157,6 +157,29 @@ static EventGroupHandle_t wifi_event_group;
 const int CONNECTED_BIT = BIT0;
 static const char *TAG = "tcp_client";
 
+/** STRUCT FOR CRC **/
+typedef struct {
+    unsigned frame_ctrl : 16;
+    unsigned duration_id : 16;
+    uint8_t addr1[6]; /* receiver address */
+    uint8_t addr2[6]; /* sender address */
+    uint8_t addr3[6]; /* filtering address */
+    unsigned sequence_ctrl : 16;
+    uint8_t addr4[6]; /* optional */
+} wifi_ieee80211_mac_hdr_t;
+
+typedef struct {
+    uint8_t point[0];
+    uint32_t crc;
+} crc_t;
+
+typedef struct {
+    wifi_ieee80211_mac_hdr_t hdr;
+    crc_t payload; /* network data ended with 4 bytes csum (CRC32) */
+} wifi_ieee80211_packet_t;
+
+
+
 
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
@@ -221,7 +244,7 @@ void app_main(void) {
         printf("Inizio raccolta dati...\n");
         timer_start(TIMER_GROUP_0, TIMER_0);
         while (mod == 0) {
-            vTaskDelay(20 / portTICK_PERIOD_MS);                //attesa alarm
+            vTaskDelay(60 / portTICK_PERIOD_MS);                //attesa alarm
         }
 
         esp_wifi_set_promiscuous(false);
@@ -449,6 +472,8 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data) {
 void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     // Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
     const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
+    const wifi_ieee80211_packet_t *ipkt = (wifi_ieee80211_packet_t *) ppkt->payload;
+    const crc_t *crc = &ipkt->payload;
     time_t now;
     uint8_t frameControl = (unsigned int) ppkt->payload[0];
     /*uint8_t version = (frameControl & 0x03) >> 0;*/
@@ -465,7 +490,8 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
 
     // Stampa dei dati a video
     uint32_t plen = 0;
-    plen = crc32_le(0, ppkt->payload, ppkt->rx_ctrl.sig_len);
+    uint32_t size = ppkt->rx_ctrl.sig_len;
+    plen = crc32_le(0, ppkt->payload, size);
     printf("%2d %2d %2d ", get_id(), get_posx(), get_posy());
     printf("%u\t", ppkt->rx_ctrl.sig_len);
 //	for(i=0; i<4; i++) {

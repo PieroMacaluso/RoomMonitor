@@ -6,6 +6,10 @@
 
 #IncludeRegexTransform: 
 
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QDateTime
+qdatetime.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qdatetime.h
+
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QDebug
 qdebug.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qdebug.h
@@ -13,6 +17,10 @@ qdebug.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QObject
 qobject.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qobject.h
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QTimer
+qtimer.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qtimer.h
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/QVariant
 qvariant.h
@@ -58,6 +66,12 @@ QtCore/qatomic_bootstrap.h
 QtCore/qatomic_cxx11.h
 -
 QtCore/qatomic_msvc.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qbasictimer.h
+QtCore/qglobal.h
+-
+QtCore/qnamespace.h
 -
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qbytearray.h
@@ -138,6 +152,16 @@ QtCore/qscopedpointer.h
 QtCore/qiodevice.h
 -
 QtCore/qpair.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qdatetime.h
+QtCore/qstring.h
+-
+QtCore/qnamespace.h
+-
+QtCore/qshareddata.h
+-
+limits
 -
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qdebug.h
@@ -616,6 +640,16 @@ QtCore/qlocale.h
 QtCore/qscopedpointer.h
 -
 stdio.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qtimer.h
+QtCore/qglobal.h
+-
+QtCore/qbasictimer.h
+-
+QtCore/qobject.h
+-
+chrono
 -
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtCore/qtypeinfo.h
@@ -1154,6 +1188,46 @@ QtCore/qglobal.h
 QtNetwork/qtnetwork-config.h
 -
 
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/QSqlDatabase
+qsqldatabase.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qsqldatabase.h
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/QSqlError
+qsqlerror.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qsqlerror.h
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/QSqlQuery
+qsqlquery.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qsqlquery.h
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qsqldatabase.h
+QtSql/qtsqlglobal.h
+-
+QtCore/qstring.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qsqlerror.h
+QtSql/qtsqlglobal.h
+-
+QtCore/qstring.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qsqlquery.h
+QtSql/qtsqlglobal.h
+-
+QtSql/qsqldatabase.h
+-
+QtCore/qstring.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qtsql-config.h
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql/qtsqlglobal.h
+QtCore/qglobal.h
+-
+QtSql/qtsql-config.h
+-
+
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QAction
 qaction.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qaction.h
@@ -1161,6 +1235,10 @@ qaction.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QApplication
 qapplication.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qapplication.h
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QGridLayout
+qgridlayout.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qgridlayout.h
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QHBoxLayout
 qboxlayout.h
@@ -1186,6 +1264,10 @@ qmenu.h
 qmenubar.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qmenubar.h
 
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QMessageBox
+qmessagebox.h
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qmessagebox.h
+
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QPushButton
 qpushbutton.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qpushbutton.h
@@ -1197,10 +1279,6 @@ qstatusbar.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QToolBar
 qtoolbar.h
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qtoolbar.h
-
-/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QVBoxLayout
-qboxlayout.h
-/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qboxlayout.h
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/QWidget
 qwidget.h
@@ -1267,6 +1345,12 @@ limits.h
 -
 
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qdesktopwidget.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qwidget.h
+-
+
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qdialog.h
 QtWidgets/qtwidgetsglobal.h
 -
 QtWidgets/qwidget.h
@@ -1362,6 +1446,12 @@ QtWidgets/qtwidgetsglobal.h
 QtWidgets/qmenu.h
 -
 
+/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qmessagebox.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qdialog.h
+-
+
 /home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets/qpushbutton.h
 QtWidgets/qtwidgetsglobal.h
 -
@@ -1438,9 +1528,21 @@ QtGui/qkeysequence.h
 QtGui/qevent.h
 -
 
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.h
+Point2d.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.h
+
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.h
+Point2d.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.h
+cmath
+-
+
 /home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.cpp
 MonitoringServer.h
 /home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
+Circle.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.h
 
 /home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
 QObject
@@ -1463,34 +1565,54 @@ iterator
 -
 array
 -
-
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/EWIEGA46WW/moc_MonitoringServer.cpp
-memory
+Packet.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.h
+PositionData.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.h
+Board.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.h
+Room.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.h
+mutex
 -
-../../../MonitoringServer.h
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
-QtCore/qbytearray.h
+QTimer
 -
-QtCore/qmetatype.h
+map
 -
-
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/mocs_compilation.cpp
-EWIEGA46WW/moc_MonitoringServer.cpp
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/EWIEGA46WW/moc_MonitoringServer.cpp
-
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/main.cpp
-iostream
+QSqlQuery
 -
-QApplication
+QSqlDatabase
+-
+QSqlError
+-
+QtWidgets/QMessageBox
 -
 QDebug
 -
-QMainWindow
+QDateTime
 -
-ui_main.h
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/ui_main.h
-MonitoringServer.h
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h
+
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.h
+string
+-
+deque
+-
+vector
+-
+
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.h
+iostream
+-
+cmath
+-
+
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.h
+iostream
+-
+
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.h
+Point2d.h
+/home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.h
 
 RoomMonitor_autogen/include/ui_main.h
 QtCore/QVariant
@@ -1498,6 +1620,8 @@ QtCore/QVariant
 QtWidgets/QAction
 -
 QtWidgets/QApplication
+-
+QtWidgets/QGridLayout
 -
 QtWidgets/QHBoxLayout
 -
@@ -1516,8 +1640,6 @@ QtWidgets/QPushButton
 QtWidgets/QStatusBar
 -
 QtWidgets/QToolBar
--
-QtWidgets/QVBoxLayout
 -
 QtWidgets/QWidget
 -

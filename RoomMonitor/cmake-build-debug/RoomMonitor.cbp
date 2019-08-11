@@ -5,7 +5,7 @@
 		<Option title="RoomMonitor"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\Qt\;CMake Files\..\..\..\..\Qt\5.13.0\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Charts\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Network\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\Qt\;CMake Files\..\..\..\..\Qt\5.13.0\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Charts\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Network\;CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug"/>
@@ -39,7 +39,9 @@
 					<Add option="-DQT_WIDGETS_LIB"/>
 					<Add option="-DQT_CHARTS_LIB"/>
 					<Add option="-DQT_NETWORK_LIB"/>
+					<Add option="-DQT_SQL_LIB"/>
 					<Add directory="/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/include"/>
+					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/./mkspecs/linux-g++"/>
@@ -47,6 +49,7 @@
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtCharts"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtNetwork"/>
+					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
 					<Add directory="/usr/include/c++/7/backward"/>
@@ -75,7 +78,9 @@
 					<Add option="-DQT_WIDGETS_LIB"/>
 					<Add option="-DQT_CHARTS_LIB"/>
 					<Add option="-DQT_NETWORK_LIB"/>
+					<Add option="-DQT_SQL_LIB"/>
 					<Add directory="/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/include"/>
+					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/./mkspecs/linux-g++"/>
@@ -83,6 +88,7 @@
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtCharts"/>
 					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtNetwork"/>
+					<Add directory="/home/pieromack/Qt/5.13.0/gcc_64/include/QtSql"/>
 					<Add directory="/usr/include/c++/7"/>
 					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
 					<Add directory="/usr/include/c++/7/backward"/>
@@ -120,10 +126,46 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.cpp">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.h">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.cpp">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.h">
+			<Option target="RoomMonitor"/>
+		</Unit>
 		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.cpp">
 			<Option target="RoomMonitor"/>
 		</Unit>
 		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.h">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.cpp">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.h">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.cpp">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.h">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.cpp">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.h">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.cpp">
+			<Option target="RoomMonitor"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.h">
 			<Option target="RoomMonitor"/>
 		</Unit>
 		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/mocs_compilation.cpp">
@@ -296,6 +338,24 @@
 		</Unit>
 		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Network/Qt5Network_QNetworkManagerEnginePlugin.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Network\"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql/Qt5SqlConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql/Qt5SqlConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql/Qt5Sql_QMYSQLDriverPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql/Qt5Sql_QODBCDriverPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql/Qt5Sql_QPSQLDriverPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\"/>
+		</Unit>
+		<Unit filename="/home/pieromack/development/esp32/PDSproject/RoomMonitor/../../../../Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql/Qt5Sql_QSQLiteDriverPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\gcc_64\lib\cmake\Qt5Sql\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

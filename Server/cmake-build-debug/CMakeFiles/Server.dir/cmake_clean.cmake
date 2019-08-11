@@ -1,16 +1,14 @@
 file(REMOVE_RECURSE
   "Server_autogen"
   "CMakeFiles/Server_autogen.dir/AutogenOldSettings.txt"
-  "CMakeFiles/Server.dir/Server_autogen/mocs_compilation.cpp.obj"
-  "CMakeFiles/Server.dir/main.cpp.obj"
-  "CMakeFiles/Server.dir/Packet.cpp.obj"
-  "CMakeFiles/Server.dir/DequeThreadSafe.cpp.obj"
-  "CMakeFiles/Server.dir/Aggregazione.cpp.obj"
-  "CMakeFiles/Server.dir/Ricezione.cpp.obj"
+  "CMakeFiles/Server.dir/main.cpp.o"
+  "CMakeFiles/Server.dir/Packet.cpp.o"
+  "CMakeFiles/Server.dir/DequeThreadSafe.cpp.o"
+  "CMakeFiles/Server.dir/Aggregazione.cpp.o"
+  "CMakeFiles/Server.dir/Ricezione.cpp.o"
+  "CMakeFiles/Server.dir/Server_autogen/mocs_compilation.cpp.o"
   "Server.pdb"
-  "Server.exe"
-  "Server.exe.manifest"
-  "libServer.dll.a"
+  "Server"
 )
 
 # Per-language clean rules from dependency scanning.

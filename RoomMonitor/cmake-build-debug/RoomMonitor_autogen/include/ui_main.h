@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -21,7 +22,6 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -30,17 +30,17 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QWidget *verticalLayoutWidget;
-    QVBoxLayout *verticalLayout;
+    QWidget *gridLayoutWidget;
+    QGridLayout *gridLayout;
     QHBoxLayout *horizontalLayout;
-    QLabel *labelNSchedine;
-    QLineEdit *nSchedine;
-    QHBoxLayout *horizontalLayout_2;
     QPushButton *startButton;
     QPushButton *stopButton;
+    QLabel *label;
+    QHBoxLayout *horizontalLayout_1;
+    QLabel *labelNSchedine;
+    QLineEdit *nSchedine;
     QMenuBar *menuBar;
     QMenu *menuFile;
-    QMenu *menuAbout;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -48,7 +48,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(302, 145);
+        MainWindow->resize(340, 197);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -56,56 +56,66 @@ public:
         MainWindow->setSizePolicy(sizePolicy);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        verticalLayoutWidget = new QWidget(centralWidget);
-        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(20, 10, 273, 62));
-        verticalLayout = new QVBoxLayout(verticalLayoutWidget);
-        verticalLayout->setSpacing(6);
-        verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        gridLayoutWidget = new QWidget(centralWidget);
+        gridLayoutWidget->setObjectName(QString::fromUtf8("gridLayoutWidget"));
+        gridLayoutWidget->setGeometry(QRect(10, 0, 327, 131));
+        gridLayout = new QGridLayout(gridLayoutWidget);
+        gridLayout->setSpacing(10);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout->setSizeConstraint(QLayout::SetMinimumSize);
+        gridLayout->setContentsMargins(20, 20, 20, 20);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        labelNSchedine = new QLabel(verticalLayoutWidget);
+        startButton = new QPushButton(gridLayoutWidget);
+        startButton->setObjectName(QString::fromUtf8("startButton"));
+
+        horizontalLayout->addWidget(startButton);
+
+        stopButton = new QPushButton(gridLayoutWidget);
+        stopButton->setObjectName(QString::fromUtf8("stopButton"));
+
+        horizontalLayout->addWidget(stopButton);
+
+
+        gridLayout->addLayout(horizontalLayout, 2, 0, 1, 1);
+
+        label = new QLabel(gridLayoutWidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
+        label->setSizePolicy(sizePolicy1);
+        label->setAutoFillBackground(false);
+
+        gridLayout->addWidget(label, 0, 0, 1, 1);
+
+        horizontalLayout_1 = new QHBoxLayout();
+        horizontalLayout_1->setSpacing(6);
+        horizontalLayout_1->setObjectName(QString::fromUtf8("horizontalLayout_1"));
+        labelNSchedine = new QLabel(gridLayoutWidget);
         labelNSchedine->setObjectName(QString::fromUtf8("labelNSchedine"));
         labelNSchedine->setMaximumSize(QSize(200, 16777215));
 
-        horizontalLayout->addWidget(labelNSchedine);
+        horizontalLayout_1->addWidget(labelNSchedine);
 
-        nSchedine = new QLineEdit(verticalLayoutWidget);
+        nSchedine = new QLineEdit(gridLayoutWidget);
         nSchedine->setObjectName(QString::fromUtf8("nSchedine"));
         nSchedine->setMaxLength(10);
 
-        horizontalLayout->addWidget(nSchedine);
+        horizontalLayout_1->addWidget(nSchedine);
 
 
-        verticalLayout->addLayout(horizontalLayout);
-
-        horizontalLayout_2 = new QHBoxLayout();
-        horizontalLayout_2->setSpacing(6);
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        startButton = new QPushButton(verticalLayoutWidget);
-        startButton->setObjectName(QString::fromUtf8("startButton"));
-
-        horizontalLayout_2->addWidget(startButton);
-
-        stopButton = new QPushButton(verticalLayoutWidget);
-        stopButton->setObjectName(QString::fromUtf8("stopButton"));
-
-        horizontalLayout_2->addWidget(stopButton);
-
-
-        verticalLayout->addLayout(horizontalLayout_2);
+        gridLayout->addLayout(horizontalLayout_1, 1, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 302, 22));
+        menuBar->setGeometry(QRect(0, 0, 340, 22));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
-        menuAbout = new QMenu(menuBar);
-        menuAbout->setObjectName(QString::fromUtf8("menuAbout"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -113,9 +123,10 @@ public:
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QString::fromUtf8("statusBar"));
         MainWindow->setStatusBar(statusBar);
+        QWidget::setTabOrder(nSchedine, startButton);
+        QWidget::setTabOrder(startButton, stopButton);
 
         menuBar->addAction(menuFile->menuAction());
-        menuBar->addAction(menuAbout->menuAction());
 
         retranslateUi(MainWindow);
 
@@ -125,11 +136,11 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        labelNSchedine->setText(QCoreApplication::translate("MainWindow", "Numero Schedine", nullptr));
         startButton->setText(QCoreApplication::translate("MainWindow", "Start", nullptr));
         stopButton->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "Inserire il numero di schedine in dotazione", nullptr));
+        labelNSchedine->setText(QCoreApplication::translate("MainWindow", "Numero Schedine", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
-        menuAbout->setTitle(QCoreApplication::translate("MainWindow", "About", nullptr));
     } // retranslateUi
 
 };

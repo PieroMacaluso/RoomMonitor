@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Emily/CLionProjects/RSSI_Cord/main.cpp
+/home/pieromack/development/esp32/PDSproject/RSSI_Cord/main.cpp
 iostream
 -
 vector

@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/Emily/CLionProjects/Cerchio/main.cpp" "C:/Users/Emily/CLionProjects/Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/main.cpp.obj"
+  "/home/pieromack/development/esp32/PDSproject/RSSI_Cerchio/main.cpp" "/home/pieromack/development/esp32/PDSproject/RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

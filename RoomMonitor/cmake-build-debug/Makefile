@@ -136,6 +136,60 @@ RoomMonitor_autogen/fast:
 	$(MAKE) -f CMakeFiles/RoomMonitor_autogen.dir/build.make CMakeFiles/RoomMonitor_autogen.dir/build
 .PHONY : RoomMonitor_autogen/fast
 
+Board.o: Board.cpp.o
+
+.PHONY : Board.o
+
+# target to build an object file
+Board.cpp.o:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Board.cpp.o
+.PHONY : Board.cpp.o
+
+Board.i: Board.cpp.i
+
+.PHONY : Board.i
+
+# target to preprocess a source file
+Board.cpp.i:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Board.cpp.i
+.PHONY : Board.cpp.i
+
+Board.s: Board.cpp.s
+
+.PHONY : Board.s
+
+# target to generate assembly for a file
+Board.cpp.s:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Board.cpp.s
+.PHONY : Board.cpp.s
+
+Circle.o: Circle.cpp.o
+
+.PHONY : Circle.o
+
+# target to build an object file
+Circle.cpp.o:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Circle.cpp.o
+.PHONY : Circle.cpp.o
+
+Circle.i: Circle.cpp.i
+
+.PHONY : Circle.i
+
+# target to preprocess a source file
+Circle.cpp.i:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Circle.cpp.i
+.PHONY : Circle.cpp.i
+
+Circle.s: Circle.cpp.s
+
+.PHONY : Circle.s
+
+# target to generate assembly for a file
+Circle.cpp.s:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Circle.cpp.s
+.PHONY : Circle.cpp.s
+
 MonitoringServer.o: MonitoringServer.cpp.o
 
 .PHONY : MonitoringServer.o
@@ -162,6 +216,114 @@ MonitoringServer.s: MonitoringServer.cpp.s
 MonitoringServer.cpp.s:
 	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.s
 .PHONY : MonitoringServer.cpp.s
+
+Packet.o: Packet.cpp.o
+
+.PHONY : Packet.o
+
+# target to build an object file
+Packet.cpp.o:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Packet.cpp.o
+.PHONY : Packet.cpp.o
+
+Packet.i: Packet.cpp.i
+
+.PHONY : Packet.i
+
+# target to preprocess a source file
+Packet.cpp.i:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Packet.cpp.i
+.PHONY : Packet.cpp.i
+
+Packet.s: Packet.cpp.s
+
+.PHONY : Packet.s
+
+# target to generate assembly for a file
+Packet.cpp.s:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Packet.cpp.s
+.PHONY : Packet.cpp.s
+
+Point2d.o: Point2d.cpp.o
+
+.PHONY : Point2d.o
+
+# target to build an object file
+Point2d.cpp.o:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Point2d.cpp.o
+.PHONY : Point2d.cpp.o
+
+Point2d.i: Point2d.cpp.i
+
+.PHONY : Point2d.i
+
+# target to preprocess a source file
+Point2d.cpp.i:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Point2d.cpp.i
+.PHONY : Point2d.cpp.i
+
+Point2d.s: Point2d.cpp.s
+
+.PHONY : Point2d.s
+
+# target to generate assembly for a file
+Point2d.cpp.s:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Point2d.cpp.s
+.PHONY : Point2d.cpp.s
+
+PositionData.o: PositionData.cpp.o
+
+.PHONY : PositionData.o
+
+# target to build an object file
+PositionData.cpp.o:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/PositionData.cpp.o
+.PHONY : PositionData.cpp.o
+
+PositionData.i: PositionData.cpp.i
+
+.PHONY : PositionData.i
+
+# target to preprocess a source file
+PositionData.cpp.i:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/PositionData.cpp.i
+.PHONY : PositionData.cpp.i
+
+PositionData.s: PositionData.cpp.s
+
+.PHONY : PositionData.s
+
+# target to generate assembly for a file
+PositionData.cpp.s:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/PositionData.cpp.s
+.PHONY : PositionData.cpp.s
+
+Room.o: Room.cpp.o
+
+.PHONY : Room.o
+
+# target to build an object file
+Room.cpp.o:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Room.cpp.o
+.PHONY : Room.cpp.o
+
+Room.i: Room.cpp.i
+
+.PHONY : Room.i
+
+# target to preprocess a source file
+Room.cpp.i:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Room.cpp.i
+.PHONY : Room.cpp.i
+
+Room.s: Room.cpp.s
+
+.PHONY : Room.s
+
+# target to generate assembly for a file
+Room.cpp.s:
+	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/Room.cpp.s
+.PHONY : Room.cpp.s
 
 RoomMonitor_autogen/mocs_compilation.o: RoomMonitor_autogen/mocs_compilation.cpp.o
 
@@ -227,9 +389,27 @@ help:
 	@echo "... RoomMonitor"
 	@echo "... edit_cache"
 	@echo "... RoomMonitor_autogen"
+	@echo "... Board.o"
+	@echo "... Board.i"
+	@echo "... Board.s"
+	@echo "... Circle.o"
+	@echo "... Circle.i"
+	@echo "... Circle.s"
 	@echo "... MonitoringServer.o"
 	@echo "... MonitoringServer.i"
 	@echo "... MonitoringServer.s"
+	@echo "... Packet.o"
+	@echo "... Packet.i"
+	@echo "... Packet.s"
+	@echo "... Point2d.o"
+	@echo "... Point2d.i"
+	@echo "... Point2d.s"
+	@echo "... PositionData.o"
+	@echo "... PositionData.i"
+	@echo "... PositionData.s"
+	@echo "... Room.o"
+	@echo "... Room.i"
+	@echo "... Room.s"
 	@echo "... RoomMonitor_autogen/mocs_compilation.o"
 	@echo "... RoomMonitor_autogen/mocs_compilation.i"
 	@echo "... RoomMonitor_autogen/mocs_compilation.s"

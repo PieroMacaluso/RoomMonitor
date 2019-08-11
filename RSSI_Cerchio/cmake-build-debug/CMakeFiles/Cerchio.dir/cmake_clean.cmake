@@ -1,9 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Cerchio.dir/main.cpp.obj"
+  "CMakeFiles/Cerchio.dir/main.cpp.o"
   "Cerchio.pdb"
-  "Cerchio.exe"
-  "Cerchio.exe.manifest"
-  "libCerchio.dll.a"
+  "Cerchio"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -83,9 +83,87 @@ CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/MonitoringServer.cpp -o CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.s
 
+CMakeFiles/RoomMonitor.dir/Packet.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
+CMakeFiles/RoomMonitor.dir/Packet.cpp.o: ../Packet.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/RoomMonitor.dir/Packet.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/Packet.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.cpp
+
+CMakeFiles/RoomMonitor.dir/Packet.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/RoomMonitor.dir/Packet.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.cpp > CMakeFiles/RoomMonitor.dir/Packet.cpp.i
+
+CMakeFiles/RoomMonitor.dir/Packet.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/Packet.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/Packet.cpp -o CMakeFiles/RoomMonitor.dir/Packet.cpp.s
+
+CMakeFiles/RoomMonitor.dir/PositionData.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
+CMakeFiles/RoomMonitor.dir/PositionData.cpp.o: ../PositionData.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/RoomMonitor.dir/PositionData.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/PositionData.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.cpp
+
+CMakeFiles/RoomMonitor.dir/PositionData.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/RoomMonitor.dir/PositionData.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.cpp > CMakeFiles/RoomMonitor.dir/PositionData.cpp.i
+
+CMakeFiles/RoomMonitor.dir/PositionData.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/PositionData.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/PositionData.cpp -o CMakeFiles/RoomMonitor.dir/PositionData.cpp.s
+
+CMakeFiles/RoomMonitor.dir/Board.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
+CMakeFiles/RoomMonitor.dir/Board.cpp.o: ../Board.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/RoomMonitor.dir/Board.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/Board.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.cpp
+
+CMakeFiles/RoomMonitor.dir/Board.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/RoomMonitor.dir/Board.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.cpp > CMakeFiles/RoomMonitor.dir/Board.cpp.i
+
+CMakeFiles/RoomMonitor.dir/Board.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/Board.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/Board.cpp -o CMakeFiles/RoomMonitor.dir/Board.cpp.s
+
+CMakeFiles/RoomMonitor.dir/Point2d.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
+CMakeFiles/RoomMonitor.dir/Point2d.cpp.o: ../Point2d.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/RoomMonitor.dir/Point2d.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/Point2d.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.cpp
+
+CMakeFiles/RoomMonitor.dir/Point2d.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/RoomMonitor.dir/Point2d.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.cpp > CMakeFiles/RoomMonitor.dir/Point2d.cpp.i
+
+CMakeFiles/RoomMonitor.dir/Point2d.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/Point2d.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/Point2d.cpp -o CMakeFiles/RoomMonitor.dir/Point2d.cpp.s
+
+CMakeFiles/RoomMonitor.dir/Circle.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
+CMakeFiles/RoomMonitor.dir/Circle.cpp.o: ../Circle.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/RoomMonitor.dir/Circle.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/Circle.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.cpp
+
+CMakeFiles/RoomMonitor.dir/Circle.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/RoomMonitor.dir/Circle.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.cpp > CMakeFiles/RoomMonitor.dir/Circle.cpp.i
+
+CMakeFiles/RoomMonitor.dir/Circle.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/Circle.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/Circle.cpp -o CMakeFiles/RoomMonitor.dir/Circle.cpp.s
+
+CMakeFiles/RoomMonitor.dir/Room.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
+CMakeFiles/RoomMonitor.dir/Room.cpp.o: ../Room.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/RoomMonitor.dir/Room.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/Room.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.cpp
+
+CMakeFiles/RoomMonitor.dir/Room.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/RoomMonitor.dir/Room.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.cpp > CMakeFiles/RoomMonitor.dir/Room.cpp.i
+
+CMakeFiles/RoomMonitor.dir/Room.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/RoomMonitor.dir/Room.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pieromack/development/esp32/PDSproject/RoomMonitor/Room.cpp -o CMakeFiles/RoomMonitor.dir/Room.cpp.s
+
 CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o: CMakeFiles/RoomMonitor.dir/flags.make
 CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o: RoomMonitor_autogen/mocs_compilation.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o -c /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/RoomMonitor_autogen/mocs_compilation.cpp
 
 CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.i: cmake_force
@@ -100,6 +178,12 @@ CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.s: cmake_for
 RoomMonitor_OBJECTS = \
 "CMakeFiles/RoomMonitor.dir/main.cpp.o" \
 "CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.o" \
+"CMakeFiles/RoomMonitor.dir/Packet.cpp.o" \
+"CMakeFiles/RoomMonitor.dir/PositionData.cpp.o" \
+"CMakeFiles/RoomMonitor.dir/Board.cpp.o" \
+"CMakeFiles/RoomMonitor.dir/Point2d.cpp.o" \
+"CMakeFiles/RoomMonitor.dir/Circle.cpp.o" \
+"CMakeFiles/RoomMonitor.dir/Room.cpp.o" \
 "CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o"
 
 # External object files for target RoomMonitor
@@ -107,15 +191,22 @@ RoomMonitor_EXTERNAL_OBJECTS =
 
 RoomMonitor: CMakeFiles/RoomMonitor.dir/main.cpp.o
 RoomMonitor: CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.o
+RoomMonitor: CMakeFiles/RoomMonitor.dir/Packet.cpp.o
+RoomMonitor: CMakeFiles/RoomMonitor.dir/PositionData.cpp.o
+RoomMonitor: CMakeFiles/RoomMonitor.dir/Board.cpp.o
+RoomMonitor: CMakeFiles/RoomMonitor.dir/Point2d.cpp.o
+RoomMonitor: CMakeFiles/RoomMonitor.dir/Circle.cpp.o
+RoomMonitor: CMakeFiles/RoomMonitor.dir/Room.cpp.o
 RoomMonitor: CMakeFiles/RoomMonitor.dir/RoomMonitor_autogen/mocs_compilation.cpp.o
 RoomMonitor: CMakeFiles/RoomMonitor.dir/build.make
 RoomMonitor: /home/pieromack/Qt/5.13.0/gcc_64/lib/libQt5Charts.so.5.13.0
 RoomMonitor: /home/pieromack/Qt/5.13.0/gcc_64/lib/libQt5Network.so.5.13.0
+RoomMonitor: /home/pieromack/Qt/5.13.0/gcc_64/lib/libQt5Sql.so.5.13.0
 RoomMonitor: /home/pieromack/Qt/5.13.0/gcc_64/lib/libQt5Widgets.so.5.13.0
 RoomMonitor: /home/pieromack/Qt/5.13.0/gcc_64/lib/libQt5Gui.so.5.13.0
 RoomMonitor: /home/pieromack/Qt/5.13.0/gcc_64/lib/libQt5Core.so.5.13.0
 RoomMonitor: CMakeFiles/RoomMonitor.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable RoomMonitor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable RoomMonitor"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/RoomMonitor.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

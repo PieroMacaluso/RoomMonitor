@@ -232,8 +232,8 @@ Qt5Gui_DIR:PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake/Qt5Gui
 //The directory containing a CMake configuration file for Qt5Network.
 Qt5Network_DIR:PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake/Qt5Network
 
-//The directory containing a CMake configuration file for Qt5Sockets.
-Qt5Sockets_DIR:PATH=Qt5Sockets_DIR-NOTFOUND
+//The directory containing a CMake configuration file for Qt5Sql.
+Qt5Sql_DIR:PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake/Qt5Sql
 
 //The directory containing a CMake configuration file for Qt5Widgets.
 Qt5Widgets_DIR:PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake/Qt5Widgets

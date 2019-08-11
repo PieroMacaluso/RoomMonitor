@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/Emily/CLionProjects/RSSI_Cord/main.cpp" "C:/Users/Emily/CLionProjects/RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/main.cpp.obj"
+  "/home/pieromack/development/esp32/PDSproject/RSSI_Cord/main.cpp" "/home/pieromack/development/esp32/PDSproject/RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/main.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "MSVC")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.13)
 project(Server)
+include_directories(/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 

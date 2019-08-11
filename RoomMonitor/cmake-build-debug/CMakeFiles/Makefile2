@@ -71,7 +71,7 @@ CMAKE_BINARY_DIR = /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmak
 CMakeFiles/RoomMonitor.dir/all: CMakeFiles/RoomMonitor_autogen.dir/all
 	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/depend
 	$(MAKE) -f CMakeFiles/RoomMonitor.dir/build.make CMakeFiles/RoomMonitor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target RoomMonitor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10 "Built target RoomMonitor"
 .PHONY : CMakeFiles/RoomMonitor.dir/all
 
 # Include target in all.
@@ -81,7 +81,7 @@ all: CMakeFiles/RoomMonitor.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/RoomMonitor.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles 11
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/RoomMonitor.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/RoomMonitor.dir/rule
@@ -108,7 +108,7 @@ clean: CMakeFiles/RoomMonitor.dir/clean
 CMakeFiles/RoomMonitor_autogen.dir/all:
 	$(MAKE) -f CMakeFiles/RoomMonitor_autogen.dir/build.make CMakeFiles/RoomMonitor_autogen.dir/depend
 	$(MAKE) -f CMakeFiles/RoomMonitor_autogen.dir/build.make CMakeFiles/RoomMonitor_autogen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=5 "Built target RoomMonitor_autogen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles --progress-num=11 "Built target RoomMonitor_autogen"
 .PHONY : CMakeFiles/RoomMonitor_autogen.dir/all
 
 # Build rule for subdir invocation for target.
