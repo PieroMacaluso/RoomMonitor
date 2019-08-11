@@ -139,7 +139,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     PositionData result{};
     result.addPacket(num_x / den, num_y / den);
 
-    // TODO: valido se x e y risultanti sono nella stanza, altrimenti no!
+    // TODO: (forse fatto, ma da controllare)valido se x e y risultanti sono nella stanza, altrimenti no!
     if (!is_inside_room(result)) return PositionData{-1, -1};
     return result;
 }
