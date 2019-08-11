@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/Emily/CLionProjects/Cerchio/main.cpp
+iostream
+-
+vector
+-
+math.h
+-
+deque
+-
+cstdlib
+-
+cmath
+-
+
