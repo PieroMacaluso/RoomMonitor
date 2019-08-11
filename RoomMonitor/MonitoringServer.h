@@ -25,6 +25,8 @@
 #include <array>
 #include "Packet.h"
 #include "PositionData.h"
+#include "Board.h"
+#include "Room.h"
 #include <mutex>
 #include <QTimer>
 #include <map>
@@ -41,6 +43,9 @@ Q_OBJECT
     QTcpServer *server;
     // TODO: nSchedine è ancora inutile, sono da implementare i thread
     int nSchedine;
+    // TODO: da gestire con input dal programma
+    Room room = Room{0, 3.2, 5.6};
+    std::map<int, Board> boards;
     bool running;
     std::deque<std::pair<Packet, int>> packets;
     std::mutex m;
@@ -49,21 +54,9 @@ Q_OBJECT
 
 
 public:
-    MonitoringServer() {
-        timer = nullptr;
-        nDatabase = QSqlDatabase::addDatabase("QMYSQL");
-        nDatabase.setHostName("localhost");
-        nDatabase.setDatabaseName("data");
-        nDatabase.setPort(3306);
-        nDatabase.setUserName("root");
-        nDatabase.setPassword("NewRoot12Kz");
-    }
+    MonitoringServer();
 
-    ~MonitoringServer() {
-        if (timer != nullptr) {
-            delete timer;
-        }
-    }
+    ~MonitoringServer();
 
     /**
      * Connessione al database
@@ -116,6 +109,10 @@ public:
     void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim);
 
     PositionData fromRssiToXY(std::deque<Packet> deque);
+
+    float calculateDistance(signed rssi);
+    
+    bool is_inside_room(PositionData data);
 
 
 public slots:
@@ -222,14 +219,14 @@ public slots:
             if (it == map_mac_xy.end()) {
                 // Nuovo MAC
                 // Calculate x,y da RSSI
-                // TODO: Calcolo della posizione da RSSI in funzione
                 PositionData positionData = fromRssiToXY(i->second);
+                if (positionData.getX() == -1 || positionData.getY() == -1) continue;
                 map_mac_xy.insert(std::make_pair(mac, positionData));
             } else {
                 // MAC già visto
                 // Calculate x,y da RSSI
-                // TODO: Calcolo della posizione da RSSI in funzione
                 PositionData positionData = fromRssiToXY(i->second);
+                if (positionData.getX() == -1 || positionData.getY() == -1) continue;
                 it->second.addPacket(positionData);
             }
         }
