@@ -249,7 +249,7 @@ public slots:
             QSqlQuery query;
             query.prepare(
                     "INSERT INTO campi (id, hash, rssi, mac, timestamp, ssid, board) VALUES (:id, :hash, :rssi, :mac, :timestamp, :ssid, :board);");
-            query.bindValue(":id", 0);
+            query.bindValue(":id", 0); // TODO:AUTOINCREMENT in CREATE TABLE
             query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
             query.bindValue(":rssi", fil.second.begin()->getRssi());
             query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));

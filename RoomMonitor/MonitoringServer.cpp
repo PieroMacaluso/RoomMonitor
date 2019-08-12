@@ -60,7 +60,7 @@ void MonitoringServer::split(const std::string &str, Container &cont, char delim
 }
 
 /**
- * Questa funzione prende in ingresso una coda di pacchetti con lo stesso FCS e provenienti da schede differenti.
+ * Questa funzione prende in ingresso una coda di pacchetti con lo stesso FCS(hash) e provenienti da schede differenti.
  * L'obiettivo è restituire la posizione stimata. Restituisce PositionData(-1,-1) se dato non va bene.
  * @param deque
  * @return
@@ -71,6 +71,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     // Deque che ci serve per media pesata
     std::deque<std::pair<PositionData, double>> pointW;
 
+    // Da pacchetti a Cerchi di centro schedina e raggio RSSI->metri.
     for (auto packet: deque) {
         auto b = boards.find(packet.getIdSchedina());
         if (b == boards.end()) return PositionData(-1, -1);
@@ -80,6 +81,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     }
 
     // TODO: controllare che tutte le circonferenze si intersechino
+
 
     // Combinazioni  e controllo, se anche una non è soddisfatta allora ingrandisco tutte le circonferenze dello spazio che manca.
 
@@ -257,6 +259,7 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 }
 
 bool MonitoringServer::is_inside_room(PositionData data) {
+    // TODO: margine?
     return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= room.getMax().x() && data.getY() <= room.getMax().y();
 }
 
