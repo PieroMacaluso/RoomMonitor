@@ -26,6 +26,8 @@ public:
     */
     double norm() const;
 
+    double distance(Point2d p2);
+
     void setCoords(double x, double y);
 
     // Print point
