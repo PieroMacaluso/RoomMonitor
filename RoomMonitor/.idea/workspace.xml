@@ -6,127 +6,28 @@
       <config projectName="RoomMonitor" targetName="RoomMonitor" />
     </generated>
   </component>
-  <component name="CMakeSettings">
+  <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
       <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_PREFIX_PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fe653e8-a4c7-47a8-a17b-545f3fdc0f89" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/main/test.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/test/server.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RSSI_Cerchio/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../RSSI_Cord/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Board.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Board.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Circle.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Circle.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Point2d.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Point2d.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Room.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Room.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.vscode/browse.vc.db" beforeDir="false" afterPath="$PROJECT_DIR$/../.vscode/browse.vc.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.vscode/browse.vc.db-shm" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.vscode/browse.vc.db-wal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmware/.vscode/browse.vc.db" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmware/.vscode/browse.vc.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmwareCLion/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmwareCLion/captive_portal/img/wifi.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/captive_portal/img/wifi.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmwareCLion/main/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/main/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmwareCLion/main/packet.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/main/packet.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmwareCLion/sdkconfig" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/sdkconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ESP32firmwareCLion/sdkconfig.old" beforeDir="false" afterPath="$PROJECT_DIR$/../ESP32firmwareCLion/sdkconfig.old" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Insersection/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Insersection/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Insersection/cmake-build-debug/Insersection" beforeDir="false" afterPath="$PROJECT_DIR$/../Insersection/cmake-build-debug/Insersection" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../QtFunzProg/QtFunz/funz.pro.user" beforeDir="false" afterPath="$PROJECT_DIR$/../QtFunzProg/QtFunz/funz.pro.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CMakeRCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdC/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdCXX/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/flags.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/linklibs.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/main.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/objects.a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Cerchio.dir/objects1.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/CMakeFiles/feature_tests.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/Cerchio.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/Cerchio.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cerchio/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CMakeRCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdC/CMakeCCompilerId.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdC/CMakeCCompilerId.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdCXX/CMakeCXXCompilerId.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/3.14.5/CompilerIdCXX/CMakeCXXCompilerId.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/depend.internal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/embed.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/flags.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/intermediate.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/main.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/manifest.rc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/manifest.res" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/objects1.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/RSSI_Cord.dir/vc140.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/feature_tests.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/feature_tests.c" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/feature_tests.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/feature_tests.cxx" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/CMakeFiles/feature_tests.cxx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/RSSI_Cord.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/RSSI_Cord.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../RSSI_Cord/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MonitoringServer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/MonitoringServer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MonitoringServer.h" beforeDir="false" afterPath="$PROJECT_DIR$/MonitoringServer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packet.h" beforeDir="false" afterPath="$PROJECT_DIR$/Packet.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PositionData.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PositionData.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PositionData.h" beforeDir="false" afterPath="$PROJECT_DIR$/PositionData.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeSystem.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeCXXCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CMakeSystem.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CompilerIdC/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.13.4/CompilerIdCXX/a.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeRuleHashes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeRuleHashes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/CXX.includecache" afterDir="false" />
@@ -137,72 +38,21 @@
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/depend.make" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/flags.make" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/progress.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/progress.make" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/AutogenInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/AutogenInfo.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/AutogenOldSettings.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/AutogenOldSettings.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/progress.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/progress.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/build.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/depend.internal" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir/depend.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/feature_tests.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor.cbp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/include/ui_main.h" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/include/ui_main.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/moc_predefs.h" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/moc_predefs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CMakeCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CMakeCXXCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CMakeDetermineCompilerABI_C.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CMakeRCCompiler.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdC/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/3.14.3/CompilerIdCXX/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/CMakeRuleHashes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/CMakeRuleHashes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/6" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/8" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Progress/count.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/Aggregazione.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/CXX.includecache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/DequeThreadSafe.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/Packet.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/Ricezione.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/Server_autogen/mocs_compilation.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/flags.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/includes_CXX.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/linklibs.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server.dir/objects1.rsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/AutogenInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/AutogenInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/AutogenOldSettings.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/depend.internal" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/depend.make" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/feature_tests.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/CMakeFiles/feature_tests.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/Server.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/Server.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/Server_autogen/EWIEGA46WW/moc_Ricezione.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/Server_autogen/moc_predefs.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/Server_autogen/mocs_compilation.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/mocs_compilation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/mocs_compilation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -217,11 +67,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MonitoringServer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="110">
-              <caret line="112" column="27" selection-start-line="112" selection-start-column="10" selection-end-line="112" selection-end-column="27" />
+            <state relative-caret-position="-160">
+              <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -229,8 +79,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PositionData.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
+            <state relative-caret-position="180">
               <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
         </entry>
@@ -238,76 +97,19 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PositionData.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="630">
-              <caret line="42" selection-start-line="42" selection-end-line="42" />
+            <state relative-caret-position="200">
+              <caret line="19" column="14" selection-start-line="19" selection-start-column="14" selection-end-line="19" selection-end-column="14" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Board.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="1" selection-end-line="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Board.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="48" selection-end-line="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Point2d.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MonitoringServer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="159" column="23" selection-start-line="159" selection-start-column="23" selection-end-line="159" selection-end-column="23" />
+            <state relative-caret-position="1560">
+              <caret line="78" selection-start-line="78" selection-end-line="78" />
               <folding>
                 <element signature="e#44#73#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Room.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="2" selection-start-column="2" selection-end-column="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Room.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="24" column="2" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Circle.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
-              <folding>
-                <element signature="e#103#123#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -364,7 +166,6 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Packet.cpp" />
         <option value="$PROJECT_DIR$/main.ui" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/Packet.h" />
         <option value="$PROJECT_DIR$/Point2d.cpp" />
         <option value="$PROJECT_DIR$/Point2d.h" />
@@ -376,8 +177,9 @@
         <option value="$PROJECT_DIR$/PositionData.h" />
         <option value="$PROJECT_DIR$/Room.cpp" />
         <option value="$PROJECT_DIR$/Room.h" />
-        <option value="$PROJECT_DIR$/MonitoringServer.h" />
         <option value="$PROJECT_DIR$/MonitoringServer.cpp" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/MonitoringServer.h" />
       </list>
     </option>
   </component>
@@ -387,7 +189,7 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="260" />
-    <option name="y" value="56" />
+    <option name="y" value="55" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -397,7 +199,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -409,6 +210,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -484,6 +286,7 @@
       <workItem from="1565339017911" duration="3206000" />
       <workItem from="1565347011518" duration="607000" />
       <workItem from="1565531406486" duration="6175000" />
+      <workItem from="1565690124913" duration="896000" />
     </task>
     <task id="LOCAL-00001" summary="RoomMonitor&#10;&#10;Ho creato un piccolo progetto di prova per provare a implementare il Room Monitor. Ancora è molto acerbo e sto provando a documentare il più possibile. Se qualcuno vuole iniziare a metterci mano sto prendendo spunto da questi video con opportuni aggiornamenti sul caso.&#10;&#10;https://www.youtube.com/watch?v=BSdKkZNEKlQ&#10;&#10;E' una serie, con una rapida ricerca trovate anche le altre.">
       <created>1564150999602</created>
@@ -594,7 +397,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="97088000" />
+    <option name="totallyTimeSpent" value="97984000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -606,15 +409,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="50" y="27" width="1870" height="1026" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.2922149" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16375838" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32925472" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4797149" visible="true" weight="0.541713" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4797149" visible="true" weight="0.541555" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49671054" weight="0.39933258" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -623,8 +426,8 @@
       <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49780703" weight="0.32925472" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.52028507" side_tool="true" weight="0.52614015" />
       <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.49725878" weight="0.32814237" />
-      <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.49561402" weight="0.32925472" />
-      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.47368422" weight="0.32925472" />
+      <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.49561402" weight="0.32841823" />
+      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.47368422" weight="0.32841823" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -722,12 +525,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/MonitoringServer.h</url>
-          <line>183</line>
+          <line>108</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/MonitoringServer.h</url>
-          <line>214</line>
+          <line>138</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
@@ -752,109 +555,31 @@
     <entry file="file://$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtNetwork/qtcpsocket.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="51" column="23" selection-start-line="51" selection-start-column="23" selection-end-line="51" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtCore/qstring.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9615">
-          <caret line="641" column="8" selection-start-line="641" selection-start-column="8" selection-end-line="641" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtNetwork/qtcpsocket.h" />
+    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtCore/qstring.h" />
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="125" column="15" selection-start-line="125" selection-start-column="15" selection-end-line="125" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtNetwork/QTcpServer">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="300">
-            <caret line="20" column="3" selection-start-line="20" selection-start-column="3" selection-end-line="20" selection-end-column="3" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtCore/qiodevice.h" />
+    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtNetwork/QTcpServer" />
+    <entry file="file://$PROJECT_DIR$/README.md" />
     <entry file="file://$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/include/ui_main.h">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file:///usr/include/c++/7/ext/string_conversions.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1230">
-          <caret line="82" selection-start-line="82" selection-end-line="82" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/7/bits/stl_iterator.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7365">
-          <caret line="491" column="15" selection-start-line="491" selection-start-column="15" selection-end-line="491" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/include/c++/7/ext/string_conversions.h" />
+    <entry file="file:///usr/include/c++/7/bits/stl_iterator.h" />
     <entry file="file://$PROJECT_DIR$/../Server/Aggregazione.cpp">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file:///usr/include/c++/7/bits/stl_algo.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13050">
-          <caret line="870" column="18" selection-start-line="870" selection-start-column="18" selection-end-line="870" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/7/bits/basic_string.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95580">
-          <caret line="6372" selection-start-line="6372" selection-end-line="6372" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtNetwork/qtcpserver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="56" column="23" selection-start-line="56" selection-start-column="23" selection-end-line="56" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtSql/qsqldatabase.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-141">
-          <caret line="48" column="15" selection-start-line="48" selection-start-column="6" selection-end-line="48" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/include/c++/7/bits/stl_pair.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3210">
-          <caret line="214" column="10" selection-start-line="214" selection-start-column="10" selection-end-line="214" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file:///usr/include/c++/7/bits/stl_algo.h" />
+    <entry file="file:///usr/include/c++/7/bits/basic_string.h" />
+    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtNetwork/qtcpserver.h" />
+    <entry file="file://$USER_HOME$/Qt/5.13.0/gcc_64/include/QtSql/qsqldatabase.h" />
+    <entry file="file:///usr/include/c++/7/bits/stl_pair.h" />
     <entry file="file://$PROJECT_DIR$/cmake-build-debug/RoomMonitor_autogen/EWIEGA46WW/moc_MonitoringServer.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2430">
           <caret line="162" column="23" selection-start-line="162" selection-start-column="23" selection-end-line="162" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="21" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -903,27 +628,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Circle.h">
+    <entry file="file://$PROJECT_DIR$/Board.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#103#123#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Point2d.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+        <state relative-caret-position="240">
+          <caret line="12" column="1" selection-end-line="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Board.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
+        <state relative-caret-position="320">
           <caret line="16" column="48" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Point2d.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -934,48 +656,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Board.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="1" selection-end-line="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PositionData.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" selection-start-line="42" selection-end-line="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Room.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="480">
           <caret line="24" column="2" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MonitoringServer.h">
+    <entry file="file://$PROJECT_DIR$/Circle.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="112" column="27" selection-start-line="112" selection-start-column="10" selection-end-line="112" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PositionData.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+        <state relative-caret-position="180">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+          <folding>
+            <element signature="e#103#123#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MonitoringServer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="159" column="23" selection-start-line="159" selection-start-column="23" selection-end-line="159" selection-end-column="23" />
+        <state relative-caret-position="1560">
+          <caret line="78" selection-start-line="78" selection-end-line="78" />
           <folding>
             <element signature="e#44#73#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PositionData.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PositionData.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="19" column="14" selection-start-line="19" selection-start-column="14" selection-end-line="19" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MonitoringServer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-160">
+          <caret line="34" column="10" selection-start-line="34" selection-start-column="10" selection-end-line="34" selection-end-column="10" />
         </state>
       </provider>
     </entry>

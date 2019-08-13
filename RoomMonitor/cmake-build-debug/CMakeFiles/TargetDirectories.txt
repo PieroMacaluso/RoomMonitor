@@ -1,4 +1,4 @@
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/RoomMonitor.dir
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/pieromack/development/esp32/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir
+D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/RoomMonitor.dir
+D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir

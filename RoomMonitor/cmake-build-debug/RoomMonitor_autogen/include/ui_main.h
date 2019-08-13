@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'main.ui'
 **
-** Created by: Qt User Interface Compiler version 5.13.0
+** Created by: Qt User Interface Compiler version 5.12.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -135,12 +135,12 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        startButton->setText(QCoreApplication::translate("MainWindow", "Start", nullptr));
-        stopButton->setText(QCoreApplication::translate("MainWindow", "Stop", nullptr));
-        label->setText(QCoreApplication::translate("MainWindow", "Inserire il numero di schedine in dotazione", nullptr));
-        labelNSchedine->setText(QCoreApplication::translate("MainWindow", "Numero Schedine", nullptr));
-        menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        startButton->setText(QApplication::translate("MainWindow", "Start", nullptr));
+        stopButton->setText(QApplication::translate("MainWindow", "Stop", nullptr));
+        label->setText(QApplication::translate("MainWindow", "Inserire il numero di schedine in dotazione", nullptr));
+        labelNSchedine->setText(QApplication::translate("MainWindow", "Numero Schedine", nullptr));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", nullptr));
     } // retranslateUi
 
 };
