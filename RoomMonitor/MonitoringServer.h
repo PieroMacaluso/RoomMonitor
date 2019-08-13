@@ -44,7 +44,7 @@ Q_OBJECT
     // TODO: nSchedine è ancora inutile, sono da implementare i thread
     int nSchedine;
     // TODO: da gestire con input dal programma
-    Room room = Room{0, 3.2, 5.6};
+    Room room = Room{0, 1, 1};
     std::map<int, Board> boards;
     bool running;
     std::deque<std::pair<Packet, int>> packets;
