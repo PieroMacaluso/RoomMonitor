@@ -32,12 +32,12 @@ size_t Circle::intersect(const Circle &C2, Point2d &i1, Point2d &i2) {
     } else if (d == 0 && r == C2.r) // circles coincide
     {
         std::cout << "Circles coincide\n";
-        return 0;
+        return -1;
     }
         // one circle contains the other
     else if (d + min(r, C2.r) < max(r, C2.r)) {
         std::cout << "One circle contains the other\n";
-        return 0;
+        return -2;
     } else {
         double a = (r * r - C2.r * C2.r + d * d) / (2.0 * d);
         double h = sqrt(r * r - a * a);
