@@ -64,3 +64,8 @@ std::ostream &operator<<(std::ostream &s, const Circle &C) {
     s << "Center: " << C.getC() << ", r = " << C.getR();
     return s;
 }
+
+void Circle::increaseR(double increment) {
+    this->r += increment;
+
+}

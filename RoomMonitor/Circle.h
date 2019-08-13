@@ -35,6 +35,8 @@ public:
 
     double getR() const;
 
+    void increaseR(double increment);
+
     bool containsPoint(Point2d x);
 
     size_t intersect(const Circle &C2, Point2d &i1, Point2d &i2);
