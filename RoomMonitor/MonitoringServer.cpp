@@ -86,33 +86,17 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
         for (int j = i + 1; j < circles.size(); j++) {
             // Punti di intersezione
             Point2d intPoint1, intPoint2;
+
             // Calcolare intersezione
-
             size_t i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
-            if (i_points <= 1)// INTERSEZ SOLO 1 PUNTO o 0
-            {
-                std::deque<Circle>::iterator it = circles.begin();// RISCRIVO/SOVRASCRIVO STESSI VALORI CON VALORI CORRETTI
-                for (auto packet: deque) {
-                    auto b = boards.find(packet.getIdSchedina());
-                    if (b == boards.end()) return PositionData(-1, -1);
-                    double dist = calculateDistance(packet.getRssi());
-                    int incr;
-                    incr= sqrt(pow( b->second.getCoord().x(), 2)+pow( b->second.getCoord().y(), 2));// calcolo di quanto deve essere l'incremento considerando come centro una circonf
-                    //dist=dist+(dist- b->second.getCoord().x()-b->second.getCoord().y())/2+0.5;
-                    // AUMENTO DEL RAGGIO. NON SO SE L'AUMENTO E' CORRETTO???
-                    dist=dist+(dist- incr)+0.5;
-                    Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
-                    //SOVRASCRIVO I VALORI PRECEDENTI CON RAGGIO CORRETTO
-                    it = circles.insert (it,res);
-                    ++it;
-                    //circles.push_back(res);
-
-                }
-
-
-
+            // Se non si intersecano TODO: vedere 1 o 0
+            if (i_points <= 1) {
+                // Calcolo distanza centri diviso due + margine
+                double margine = 0.5;
+                double delta = intPoint1.distance(intPoint2) / 2 + margine;
+                // Aggiungo questo delta a tutti i cerchi
+                for (auto mod : circles) mod.increaseR(delta);
             }
-
         }
     }
 
