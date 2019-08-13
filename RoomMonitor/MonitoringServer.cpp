@@ -17,7 +17,7 @@ MonitoringServer::MonitoringServer() {
     // TODO: Setup schedine da implementare
     // Ipotizziamo stanza 5.6mx2.3m con schedine in diagonale
     Board b0{0, 0, 0};
-    Board b1{1, 3.2, 5.6};
+    Board b1{1, 1, 1};
     boards.insert(std::make_pair(0, b0));
     boards.insert(std::make_pair(1, b1));
 }
@@ -89,6 +89,9 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
 
             // Calcolare intersezione
             size_t i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
+
+            // TODO: Trovare soluzione per cerchi coincidenti(-1) o cerchi contenuti uno nell'altro(-2)
+            if (i_points < 0) return PositionData{-1,-1};
             // Se non si intersecano TODO: vedere 1 o 0
             if (i_points <= 1) {
                 // Calcolo distanza centri diviso due + margine
@@ -173,10 +176,10 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
 float MonitoringServer::calculateDistance(signed rssi) {
     // n: Costante di propagazione del segnale. Costante 2 in ambiente aperto.
     // TODO: vedere se applicabile a stanza
-    const float cost = 2;
+    const float cost = 3;
     // A: potenza del segnale ricevuto in dBm ad un metro
     // TODO: da ricercare sperimentalmente
-    const float A = -59;
+    const float A = -55;
 
     return pow(10, (A - rssi) / (10 * cost));
 
