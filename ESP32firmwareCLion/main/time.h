@@ -40,8 +40,8 @@
 void timer0_init();
 void timer0_start();
 void IRAM_ATTR timer_group0_isr(void *para);
-void initialize_sntp(void);
-void obtain_time(void);
+bool initialize_sntp(void);
+bool obtain_time(void);
 void checkTime(int* n);
 
 #endif //APP_TEMPLATE_TIME_H

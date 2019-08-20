@@ -34,21 +34,35 @@ void timer0_init() {
 }
 
 
-/* protocollo sntp*/
-void initialize_sntp(void)
+/**
+ * protocollo sntp utilizzato per impostare l'orario della schedina
+ */
+bool initialize_sntp(void)
 {
-    printf("Initializing SNTP");
+    printf("Initializing SNTP\n");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, "pool.ntp.org");
     sntp_init();
+
+    //impostazione orario prima volta
+    if(!obtain_time()){
+        printf("Errore acquisizione orario.");
+        return false;
+    } else
+        return true;
 }
 
-void obtain_time(void)
+bool obtain_time(void)
 {
-
-    // wait for time to be set
     time_t now = 0;
     struct tm timeinfo = { 0 };
+    time(&now);
+    localtime_r(&now, &timeinfo);
+    // Is time set? If not, tm_year will be (1970 - 1900).
+    ESP_LOGI("sntp client", "Time resetting.");
+    // wait for time to be set
+    //time_t now = 0;
+    //struct tm timeinfo = { 0 };
     int retry = 0;
     const int retry_count = 10;
     while(timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
@@ -56,21 +70,11 @@ void obtain_time(void)
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         time(&now);
         localtime_r(&now, &timeinfo);
+        //return true;
     }
-}
-
-void checkTime(int* n){
-
-    (*n)++;
-    if((*n)==SECOND_CHECK_TIME/SECOND_SCAN_MODE/*2*/ || (*n)==-1 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
-        time_t now;
-        struct tm timeinfo;
-        time(&now);
-        localtime_r(&now, &timeinfo);
-        // Is time set? If not, tm_year will be (1970 - 1900).
-        ESP_LOGI("sntp client", "Time resetting.");
-        obtain_time();
-        // update 'now' variable with current time
+    if(retry==retry_count)
+        return false;
+    else{
         time(&now);
 
         char strftime_buf[64];
@@ -81,6 +85,15 @@ void checkTime(int* n){
         localtime_r(&now, &timeinfo);
         strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
         printf( "The current date/time in Italy is: %s\n", strftime_buf);
+        return true;
+    }
+}
+
+void checkTime(int* n){
+
+    (*n)++;
+    if((*n)==SECOND_CHECK_TIME/SECOND_SCAN_MODE/*2*/ || (*n)==-1 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
+        obtain_time();
         (*n)=0;
     }
 }

@@ -103,7 +103,7 @@ static wifi_country_t wifi_country = {.cc = "CN", .schan = 1, .nchan = 13,
 /* Prototipi Funzioni */
 /*static esp_err_t event_handler1(void *ctx, system_event_t *event);*/
 void initialize_spiffs(void);
-
+void wifi_init(void);
 static void wifi_sniffer_init(void);
 
 void wifi_sniffer_update(void);
@@ -187,6 +187,7 @@ typedef struct {
 void app_main(void) {
 
     int nallarm = -1;                //nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
+    bool orario= false;
     /*uint8_t level = 0;*/
 
     /*if (list_packet_init(size_list_packet) == -1) {
@@ -215,21 +216,21 @@ void app_main(void) {
         printf("Error init_packet_list()\n");
         return;
     }
-    wifi_event_group = xEventGroupCreate();
-    initialize_spiffs();
-    wifi_sniffer_init();                                    //init modalit� scan
-    vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
 
-    char *channel = my_nvs_get_str("channel");
-    if (channel != NULL) {
-        wifi_sniffer_set_channel(atoi(channel));
-        free(channel);
-    } else {
-        wifi_sniffer_set_channel(atoi(SCANChannel));
+    wifi_event_group = xEventGroupCreate();
+
+    initialize_spiffs();
+    wifi_init();
+
+    if(!initialize_sntp()){
+        return;
     }
 
-    initialize_sntp();
-    checkTime(&nallarm);
+    wifi_sniffer_init();
+
+    vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
+
+
     //vTaskDelay(20 / portTICK_PERIOD_MS);
 
     timer0_init();                                            //init timer gestione modalità scan e comunicazione server
@@ -286,9 +287,9 @@ void getMacAddress(char *baseMacChr) {
  */
 
 /**
- * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
+ * Impostazione dei parametri di rete sia per il captive portal sia per la comunicazione in rete
  */
-void wifi_sniffer_init(void) {
+void wifi_init(){
     esp_log_level_set("wifi", ESP_LOG_NONE);    // disable wifi driver logging
     tcpip_adapter_init();
     printf("- TCP adapter initialized\n");
@@ -349,8 +350,22 @@ void wifi_sniffer_init(void) {
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &ap_config));
     ESP_ERROR_CHECK(esp_wifi_start());
 
+}
+
+/**
+ * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
+ */
+void wifi_sniffer_init(void) {
     esp_wifi_set_promiscuous(true);
     esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
+
+    char *channel = my_nvs_get_str("channel");
+    if (channel != NULL) {
+        wifi_sniffer_set_channel(atoi(channel));
+        free(channel);
+    } else {
+        wifi_sniffer_set_channel(atoi(SCANChannel));
+    }
 }
 
 /**
