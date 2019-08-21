@@ -144,16 +144,11 @@ int send_packets(int s, node_t h) {
         return LENPACKET;
 
     for (i = h; i != NULL; i = i->next) {
-        /*sprintf(buf, "%d,%d,%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s;", id, posx, posy, i->packet->fcs,
+        sprintf(buf, "%d,x,y,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s;", id, i->packet->fcs,
                 i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
-                i->packet->timestamp, i->packet->SSID, i->packet->board);*/
-        sprintf(buf, "%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s;", id, i->packet->fcs,
-                i->packet->rssi,
-                i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
-                i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
-                i->packet->timestamp, i->packet->SSID, i->packet->board);
+                i->packet->timestamp, i->packet->SSID, i->packet->board);                   //todo eliminare x e y lato server per acquisire in modo corretto tutti i dati
 
         buf[strlen(buf)] = '\0';
         result = send(s, buf, strlen(buf), 0);
