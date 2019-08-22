@@ -5,7 +5,7 @@
 #ifndef ROOMMONITOR_MONITORINGSERVER_H
 #define ROOMMONITOR_MONITORINGSERVER_H
 
-//#define _DEBUG 1
+#define _DEBUG 1
 
 #ifdef _DEBUG
 #define DEBUG(stuff) std::cout << stuff << std::endl;

@@ -43,7 +43,8 @@ std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string
         else
             ssid = values[7];
 
-        Packet packet(std::stoi(values[0]), values[3], std::stoi(values[4]), values[5], std::stoi(values[6]), ssid);
+        Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3], std::stoi(values[4]), ssid);
+        //std::cout<<"pacchetto "<<stoi(values[0]) <<" "<<values[3]<<" "<<std::stoi(values[4])<<" "<<values[5]<<" "<<std::stoi(values[6])<<" "<< ssid;
         deque.push_back(packet);
     }
 
