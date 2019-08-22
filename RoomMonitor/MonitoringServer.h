@@ -168,7 +168,7 @@ public slots:
 
 
     void aggregate() {
-
+        DEBUG("Starting aggregation")
         connectDB();
 
         // TODO: Capire come aggregare bene
@@ -195,6 +195,7 @@ public slots:
             }
         });
 
+        DEBUG("-Eliminazione pacchetti non ricevuti da tutte le schede")
         // Eliminazione di tutti i pacchetti che non possiedono un numero di elementi pari al numero di schedine.
         for (auto i = aggregate.begin(), last = aggregate.end(); i != last;) {
             if (nSchedine != i->second.size()) {
@@ -211,6 +212,8 @@ public slots:
                 ++i;
             }
         }
+        DEBUG("-Totale Mac trovati:"<< aggregate.size())
+        DEBUG("-Calcolo posizione per ogni mac...")
 
         std::map<std::string, PositionData> map_mac_xy;
         for (auto i = aggregate.begin(), last = aggregate.end(); i != last; i++) {
@@ -232,10 +235,17 @@ public slots:
         }
 
 
+        DEBUG("Map_mac-xy...")
+        for( auto i: map_mac_xy){
+            DEBUG("Mac:"<<i.first <<" x:" <<i.second.getX() << " y:" << i.second.getY())
+        }
+        DEBUG("-Totale posizioni ottenute:"<<map_mac_xy.size())
+
+
         // Stampa id pacchetti aggregati rilevati.
-        DEBUG("Starting aggregation")
+        //DEBUG("Starting aggregation")
         for (auto fil : aggregate) {
-            DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer())
+            DEBUG("ID packet:" << fil.first << " MacPeer:" << fil.second.begin()->getMacPeer()/* << " PosX:"<<map_mac_xy.find(fil.second.begin()->getMacPeer())->second.getX() << " PosY:"<<map_mac_xy.find(fil.second.begin()->getMacPeer())->second.getY()*/)
             /*
              * TODO: Query al database, capire cosa e quanto salvare
              * Attualmente non trovo utilità del campo id e del campo board. L'RSSI dovrà essere modificato con le

@@ -39,4 +39,8 @@ const std::string &Packet::getSsid() const {
     return ssid;
 }
 
+void Packet::updatePosizionData(PositionData pos) {
+    positionData=pos;
+}
+
 
