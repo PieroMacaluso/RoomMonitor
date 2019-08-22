@@ -6,20 +6,20 @@
 static const char *TAGP = "tcp_client";
 char macESP[18];                    //dopo l'init conterr� il mac della esp
 uint8_t id;
-uint8_t posx;
-uint8_t posy;
+//uint8_t posx;
+//uint8_t posy;
 
 int get_id() {
     return id;
 }
 
-int get_posx() {
+/*int get_posx() {
     return posx;
 }
 
 int get_posy() {
     return posy;
-}
+}*/
 
 typedef struct packet {
     uint32_t fcs;
@@ -66,8 +66,8 @@ int my_nvs_get_str_to_int(char *key) {
 
 node_t init_packet_list(char baseMacChr[18]) {
     id = my_nvs_get_str_to_int("id");
-    posx = my_nvs_get_str_to_int("posx");
-    posy = my_nvs_get_str_to_int("posy");
+    //posx = my_nvs_get_str_to_int("posx");
+    //posy = my_nvs_get_str_to_int("posy");
 
     node_t head;
     head = NULL;
@@ -144,11 +144,12 @@ int send_packets(int s, node_t h) {
         return LENPACKET;
 
     for (i = h; i != NULL; i = i->next) {
-        sprintf(buf, "%d,%d,%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s;", id, posx, posy, i->packet->fcs,
+        sprintf(buf, "%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s;", id, i->packet->fcs,
                 i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
-                i->packet->timestamp, i->packet->SSID, i->packet->board);
+                i->packet->timestamp, i->packet->SSID, i->packet->board);                   //todo eliminare x e y lato server per acquisire in modo corretto tutti i dati
+
         buf[strlen(buf)] = '\0';
         result = send(s, buf, strlen(buf), 0);
         if (result <= 0) {

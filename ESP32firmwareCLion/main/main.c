@@ -507,7 +507,8 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     uint32_t plen = 0;
     uint32_t size = ppkt->rx_ctrl.sig_len;
     plen = crc32_le(0, ppkt->payload, size);
-    printf("%2d %2d %2d ", get_id(), get_posx(), get_posy());
+    //printf("%2d %2d %2d ", get_id(), get_posx(), get_posy());
+    printf("%2d ", get_id());
     printf("%u\t", ppkt->rx_ctrl.sig_len);
 //	for(i=0; i<4; i++) {
     printf("%08x\t", plen);
