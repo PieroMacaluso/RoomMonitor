@@ -191,6 +191,7 @@ CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.obj: RoomMonitor_autogen/include
 
 CMakeFiles/RoomMonitor.dir/Packet.cpp.obj: ../Packet.cpp
 CMakeFiles/RoomMonitor.dir/Packet.cpp.obj: ../Packet.h
+CMakeFiles/RoomMonitor.dir/Packet.cpp.obj: ../PositionData.h
 
 CMakeFiles/RoomMonitor.dir/Point2d.cpp.obj: ../Point2d.cpp
 CMakeFiles/RoomMonitor.dir/Point2d.cpp.obj: ../Point2d.h

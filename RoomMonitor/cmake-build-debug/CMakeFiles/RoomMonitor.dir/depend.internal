@@ -192,6 +192,7 @@ CMakeFiles/RoomMonitor.dir/MonitoringServer.cpp.obj
 CMakeFiles/RoomMonitor.dir/Packet.cpp.obj
  D:/polito/PDSproject/RoomMonitor/Packet.cpp
  D:/polito/PDSproject/RoomMonitor/Packet.h
+ D:/polito/PDSproject/RoomMonitor/PositionData.h
 CMakeFiles/RoomMonitor.dir/Point2d.cpp.obj
  D:/polito/PDSproject/RoomMonitor/Point2d.cpp
  D:/polito/PDSproject/RoomMonitor/Point2d.h
