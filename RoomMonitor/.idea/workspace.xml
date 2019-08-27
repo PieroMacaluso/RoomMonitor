@@ -12,13 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1fe653e8-a4c7-47a8-a17b-545f3fdc0f89" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../macNascosto/Entry.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../macNascosto/Entry.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../macNascosto/Packet.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../macNascosto/Packet.h" beforeDir="false" />
-    </list>
+    <list default="true" id="1fe653e8-a4c7-47a8-a17b-545f3fdc0f89" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -308,7 +302,7 @@
       <workItem from="1566404354463" duration="2341000" />
       <workItem from="1566479603596" duration="3678000" />
       <workItem from="1566808075313" duration="2505000" />
-      <workItem from="1566892109798" duration="2066000" />
+      <workItem from="1566892109798" duration="2665000" />
     </task>
     <task id="LOCAL-00001" summary="RoomMonitor&#10;&#10;Ho creato un piccolo progetto di prova per provare a implementare il Room Monitor. Ancora è molto acerbo e sto provando a documentare il più possibile. Se qualcuno vuole iniziare a metterci mano sto prendendo spunto da questi video con opportuni aggiornamenti sul caso.&#10;&#10;https://www.youtube.com/watch?v=BSdKkZNEKlQ&#10;&#10;E' una serie, con una rapida ricerca trovate anche le altre.">
       <created>1564150999602</created>
@@ -440,7 +434,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="114425000" />
+    <option name="totallyTimeSpent" value="115024000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
