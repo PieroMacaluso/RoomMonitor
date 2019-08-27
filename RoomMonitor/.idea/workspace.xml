@@ -13,14 +13,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fe653e8-a4c7-47a8-a17b-545f3fdc0f89" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../macNascosto/.idea/macNascosto.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../macNascosto/Aggregazione.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../macNascosto/Aggregazione.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../macNascosto/Packet.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../macNascosto/Packet.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../macNascosto/Entry.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../macNascosto/Entry.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/depend.internal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/RoomMonitor.dir/depend.make" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../macNascosto/Packet.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../macNascosto/Packet.h" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,7 +49,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MonitoringServer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
+            <state relative-caret-position="4380">
               <caret line="241" column="62" selection-start-line="241" selection-start-column="62" selection-end-line="241" selection-end-column="62" />
               <folding>
                 <element signature="e#215#235#0" expanded="true" />
@@ -62,6 +59,15 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PositionData.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="218">
@@ -70,10 +76,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MonitoringServer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-817">
+            <state relative-caret-position="3980">
               <caret line="199" column="34" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
               <folding>
                 <element signature="e#44#73#0" expanded="true" />
@@ -95,7 +101,7 @@
         <entry file="file://$PROJECT_DIR$/Packet.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="460">
-              <caret line="23" column="112" lean-forward="true" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="112" />
+              <caret line="23" column="112" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="112" />
               <folding>
                 <element signature="e#102#119#0" expanded="true" />
               </folding>
@@ -106,7 +112,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PositionData.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
+            <state relative-caret-position="200">
               <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
             </state>
           </provider>
@@ -193,8 +199,8 @@
     <option name="configuration" value="0-RoomMonitor" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="547" />
-    <option name="y" value="27" />
+    <option name="x" value="546" />
+    <option name="y" value="26" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -204,6 +210,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -215,7 +222,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -224,7 +230,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../RSSI_Cerchio" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../macNascosto" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="CMakeSettings" />
@@ -302,6 +308,7 @@
       <workItem from="1566404354463" duration="2341000" />
       <workItem from="1566479603596" duration="3678000" />
       <workItem from="1566808075313" duration="2505000" />
+      <workItem from="1566892109798" duration="2066000" />
     </task>
     <task id="LOCAL-00001" summary="RoomMonitor&#10;&#10;Ho creato un piccolo progetto di prova per provare a implementare il Room Monitor. Ancora è molto acerbo e sto provando a documentare il più possibile. Se qualcuno vuole iniziare a metterci mano sto prendendo spunto da questi video con opportuni aggiornamenti sul caso.&#10;&#10;https://www.youtube.com/watch?v=BSdKkZNEKlQ&#10;&#10;E' una serie, con una rapida ricerca trovate anche le altre.">
       <created>1564150999602</created>
@@ -433,7 +440,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="112359000" />
+    <option name="totallyTimeSpent" value="114425000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -448,19 +455,19 @@
     <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23624161" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23959732" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32841823" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4797149" visible="true" weight="0.56568366" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4797149" weight="0.56568366" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49671054" weight="0.32573727" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4989035" weight="0.32925472" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49780703" weight="0.32925472" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.52028507" side_tool="true" weight="0.52614015" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.52028507" side_tool="true" weight="0.5254692" />
       <window_info anchor="bottom" id="Version Control" order="10" sideWeight="0.49725878" weight="0.32814237" />
       <window_info anchor="bottom" id="CMake" order="11" sideWeight="0.49561402" weight="0.32841823" />
       <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.47368422" weight="0.43565685" />
@@ -688,13 +695,6 @@
         <state relative-caret-position="-1064" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/9e31c5f6-5198-4ebc-8bf8-fea1204afc2d/console.sql">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -712,9 +712,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Packet.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="460">
+          <caret line="23" column="112" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="112" />
+          <folding>
+            <element signature="e#102#119#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PositionData.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MonitoringServer.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
+        <state relative-caret-position="4380">
           <caret line="241" column="62" selection-start-line="241" selection-start-column="62" selection-end-line="241" selection-end-column="62" />
           <folding>
             <element signature="e#215#235#0" expanded="true" />
@@ -722,10 +739,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PositionData.h">
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="10" column="6" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
+        <state relative-caret-position="280">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
@@ -736,12 +753,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Packet.h">
+    <entry file="file://$PROJECT_DIR$/MonitoringServer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="460">
-          <caret line="23" column="112" lean-forward="true" selection-start-line="23" selection-start-column="4" selection-end-line="23" selection-end-column="112" />
+        <state relative-caret-position="3980">
+          <caret line="199" column="34" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
           <folding>
-            <element signature="e#102#119#0" expanded="true" />
+            <element signature="e#44#73#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -750,16 +767,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="218">
           <caret line="23" column="19" selection-start-line="23" selection-start-column="19" selection-end-line="23" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MonitoringServer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-817">
-          <caret line="199" column="34" selection-start-line="199" selection-start-column="34" selection-end-line="199" selection-end-column="34" />
-          <folding>
-            <element signature="e#44#73#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
