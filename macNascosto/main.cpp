@@ -28,7 +28,10 @@ std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTi
 }
 
 /**
- * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato
+ * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
+ * Ad ogni giro del for esterno si trovano ed eliminano tutti i pacchetti simili.
+ * //todo indicare una percentuale di validità
+ * //todo verificare che non ci siano problemi con i cicli su liste con posizioni eliminate.
  * @param initTime
  * @param endTime
  *
@@ -37,11 +40,10 @@ std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTi
  *
  * @return
  */
- //DEPRECATA perchè con più di due paccheti nella stessa posizione non restituisce una stima valida.
  // Avendo i pacchetti A B e C inviati dallo stesso dispositivo con mac diversi, quando il primo for punta al pacchetto A funziona correttamente, ma quando passa a B conta un nuovo dispositivo vedendo C non riuscendo a verificare che è gia stato contato con A
  //todo possibile idea, eliminare tutti i pacchetti simili ad ogni giro, Così facendo quando il primo for punta ad A elimina B e C e non si dovrebbero avere problemi
 
-/*int getHiddenDevice(std::deque<Entry>& allPackets,uint32_t initTime,uint32_t endTime){
+int getHiddenDevice(std::deque<Entry>& allPackets,uint32_t initTime,uint32_t endTime){
     //entro 5 minuti, stessa posizione +-0.5, altro da vedere
     uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
     double tolleranzaX=0.5;
@@ -64,12 +66,10 @@ std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTi
                     double diffX=(hiddenPackets.at(i).getX()<hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX()-hiddenPackets.at(i).getX()) : (hiddenPackets.at(i).getX()-hiddenPackets.at(j).getX());
                     double diffY=(hiddenPackets.at(i).getY()<hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY()-hiddenPackets.at(i).getY()) : (hiddenPackets.at(i).getY()-hiddenPackets.at(j).getY());
                     if(diffX<=tolleranzaX && diffY<=tolleranzaY){
-                        //mac diverso con posizione simile in 1 minuto=> possibile dire che sia lo stesso dispositivo
-                        std::cout << hiddenPackets.at(i).getMac() << " simile ad " << hiddenPackets.at(j).getMac() << std::endl;
-                        //mac i associato al mac j, basta tornare al ciclo i, aumentare il contatore ed andare avanti. così riusciamo a contare il numero di gruppi di mac associati
+                        //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
+                        std::cout << hiddenPackets.at(i).getMac() << " simile ad " << hiddenPackets.at(j).getMac() << ", differenza temporale e di posizione minima." << std::endl;
                         trovato= true;
-                        break;
-                        //todo forse fare il secondo giro fino alla fine per raggruppare tutti quelli simili in una lista in modo da eliminarli per evitare di contarli più volte
+                        hiddenPackets.erase(hiddenPackets.begin()+j);
                     }
                 }
 
@@ -81,19 +81,9 @@ std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTi
 
 
     return numHiddenDevice;
-}*/
-
-/**
- * Nuova funzione per la stima del nunmero di dispositivi con mac nascosti.
- * Idea: mappare l'aula come tanti quadretti di dimensione pari alla tolleranza accettabile per dire che i vari pacchetti siano dello stesso dispositivo.
- *       Creare una mappa con chiave il numero del quadretto e con valore la lista di tutti i pacchetti, con mac non univoco e con posizione uguale a quella del quadretto corrispondente, nel lasso di tempo specificato.
- *       Data la posizione di un pacchetto in coordinate x e y si ricava il suo indice facendo x*(numero quadretti su x)+y.
- *       La stima è data dal conteggio di tutte le entry della mappa con lista pacchetti piena.
- * @return
- */
-int getHiddenDevice(std::deque<Entry>& allPackets,uint32_t initTime,uint32_t endTime){
-    //Così facendo abbiamo il problema di non rilvare un eventuale nuovo dispositivo nella stessa posizione se usiamo dei initTime e endTime troppo larghi. Nella funzione precedente si poteva verificare se il timestamp di due pacchetti fosse simile oltre a vedere la posizione, usando invece la mappa con le dimensioni non è possibile separare per timestamp diversi.
 }
+
+
 int main() {
     /*Simulazione popolamento db*/
     int numHiddenDevice;
@@ -121,14 +111,22 @@ int main() {
     allPackets.push_back(p4);
 
     std::string m5("fe:8a:b9:d9:2a:c8");
-    Entry p5(m5, 1566810678, 5.9, 7.6);  //1111 1110 hidden_2
+    Entry p5(m5, 1566810858, 0.9, 1.5);  //1111 1110 hidden_1
     allPackets.push_back(p5);
 
     std::string m6("fe:ee:b9:d9:2a:c8");
     Entry p6(m6, 1566810668, 5.7, 7.5);  //1111 1110 hidden_2
     allPackets.push_back(p6);
 
-    setHiddenPackets(allPackets);       //forse possibile inglobarlo nel calcolo della posizione in modo da avere sul db già un flag che indica se nascosto o meno
+    std::string m7("fe:ab:b9:d9:2a:c8");
+    Entry p7(m7, 1566820858, 0.9, 1.5);  //1111 1110 hidden_3
+    allPackets.push_back(p7);
+
+    std::string m8("fe:bc:b9:d9:2a:c8");
+    Entry p8(m8, 1566820850, 1.1, 1.5);  //1111 1110 hidden_3
+    allPackets.push_back(p8);
+
+    setHiddenPackets(allPackets);       //todo possibile inglobarlo nel calcolo della posizione in modo da avere sul db già un flag che indica se nascosto o meno
 
     numHiddenDevice=getHiddenDevice(allPackets,0,1666810678);
     std::cout << "Numero dispositivi con mac nascosto stimato: "<<numHiddenDevice<<std::endl;
