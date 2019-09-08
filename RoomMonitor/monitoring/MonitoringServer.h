@@ -16,7 +16,9 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include <ui_main.h>
+#include "../ui_main.h"
+#include "../ui_settings.h"
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -51,10 +53,12 @@ Q_OBJECT
     std::mutex m;
     QTimer *timer;
     QSqlDatabase nDatabase;
+    Ui::MainWindow ui;
+    Ui::ConfigDialog configDialog;
 
 
 public:
-    MonitoringServer();
+    MonitoringServer(Ui::MainWindow &ui, Ui::ConfigDialog &configDialog);
 
     ~MonitoringServer();
 
@@ -94,7 +98,7 @@ public:
      * Setup della finestra del Server
      * @param ui Ui finestra principale da cui andare a prendere i vari file.
      */
-    void setup(Ui::MainWindow &ui);
+    void setup();
 
 
     /**

@@ -5,7 +5,9 @@
 #include "MonitoringServer.h"
 #include "Circle.h"
 
-MonitoringServer::MonitoringServer() {
+MonitoringServer::MonitoringServer(Ui::MainWindow &ui, Ui::ConfigDialog &configDialog) {
+    this->ui = ui;
+    this->configDialog = configDialog;
     timer = nullptr;
     nDatabase = QSqlDatabase::addDatabase("QMYSQL");
     nDatabase.setHostName("localhost");
@@ -219,7 +221,7 @@ void MonitoringServer::serverStop() {
     timer = nullptr;
 }
 
-void MonitoringServer::setup(Ui::MainWindow &ui) {
+void MonitoringServer::setup() {
     ui.stopButton->setDisabled(true);
 
     // Click Start Button
@@ -263,6 +265,17 @@ void MonitoringServer::setup(Ui::MainWindow &ui) {
     QObject::connect(this, &MonitoringServer::stopped, [&]() {
         std::cout << "Stopped" << std::endl;
     });
+
+    // Azione Impostazioni
+
+    QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
+        QDialog* dialog = new QDialog;
+        this->configDialog.setupUi(dialog);
+        dialog->setModal(true);
+        dialog->exec();
+    });
+
+
 
 }
 

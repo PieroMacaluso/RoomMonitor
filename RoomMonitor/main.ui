@@ -122,8 +122,23 @@
                 <property name="title">
                     <string>File</string>
                 </property>
+                <addaction name="actionChiudi"/>
+            </widget>
+            <widget class="QMenu" name="menuEdit">
+                <property name="title">
+                    <string>Modifica</string>
+                </property>
+                <addaction name="actionSettings"/>
+            </widget>
+            <widget class="QMenu" name="menuAbout">
+                <property name="title">
+                    <string>About</string>
+                </property>
+                <addaction name="actionInformazioni"/>
             </widget>
             <addaction name="menuFile"/>
+            <addaction name="menuEdit"/>
+            <addaction name="menuAbout"/>
         </widget>
         <widget class="QToolBar" name="mainToolBar">
             <attribute name="toolBarArea">
@@ -134,6 +149,21 @@
             </attribute>
         </widget>
         <widget class="QStatusBar" name="statusBar"/>
+        <action name="actionSettings">
+            <property name="text">
+                <string>Impostazioni...</string>
+            </property>
+        </action>
+        <action name="actionInformazioni">
+            <property name="text">
+                <string>Informazioni</string>
+            </property>
+        </action>
+        <action name="actionChiudi">
+            <property name="text">
+                <string>Chiudi</string>
+            </property>
+        </action>
     </widget>
     <layoutdefault spacing="6" margin="11"/>
     <tabstops>
@@ -142,5 +172,22 @@
         <tabstop>stopButton</tabstop>
     </tabstops>
     <resources/>
-    <connections/>
+    <connections>
+        <connection>
+            <sender>actionChiudi</sender>
+            <signal>triggered()</signal>
+            <receiver>MainWindow</receiver>
+            <slot>close()</slot>
+            <hints>
+                <hint type="sourcelabel">
+                    <x>-1</x>
+                    <y>-1</y>
+                </hint>
+                <hint type="destinationlabel">
+                    <x>169</x>
+                    <y>98</y>
+                </hint>
+            </hints>
+        </connection>
+    </connections>
 </ui>
