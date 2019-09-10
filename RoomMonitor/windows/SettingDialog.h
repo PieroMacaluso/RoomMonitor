@@ -14,13 +14,12 @@
 class SettingDialog : public QDialog {
 Q_OBJECT
 public:
+    Ui::ConfigDialog ui{};
+    QSettings s{};
+
     SettingDialog();
 
     void settingCheckUp();
-
-public:
-    Ui::ConfigDialog ui{};
-    QSettings s{};
 
     void setupConnect();
 

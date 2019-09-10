@@ -40,7 +40,7 @@
 #include <QDateTime>
 
 
-class MonitoringServer : public QObject {
+class MonitoringServer : public QMainWindow {
 Q_OBJECT
     QTcpServer *server;
     // TODO: nSchedine è ancora inutile, sono da implementare i thread
@@ -53,12 +53,11 @@ Q_OBJECT
     std::mutex m;
     QTimer *timer;
     QSqlDatabase nDatabase;
-    Ui::MainWindow ui;
-    Ui::ConfigDialog configDialog;
+    Ui::MainWindow ui{};
 
 
 public:
-    MonitoringServer(Ui::MainWindow &ui, Ui::ConfigDialog &configDialog);
+    MonitoringServer();
 
     ~MonitoringServer();
 

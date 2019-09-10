@@ -7,9 +7,10 @@
 #include "Circle.h"
 #include "../windows/SettingDialog.h"
 
-MonitoringServer::MonitoringServer(Ui::MainWindow &ui, Ui::ConfigDialog &configDialog) {
-    this->ui = ui;
-    this->configDialog = configDialog;
+MonitoringServer::MonitoringServer() {
+    ui.setupUi(this);
+    this->setup();
+    this->show();
     timer = nullptr;
     nDatabase = QSqlDatabase::addDatabase("QMYSQL");
     nDatabase.setHostName("localhost");
