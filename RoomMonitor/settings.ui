@@ -2,61 +2,121 @@
 <ui version="4.0">
     <class>ConfigDialog</class>
     <widget class="QDialog" name="ConfigDialog">
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>400</width>
-                <height>300</height>
-            </rect>
-        </property>
         <property name="windowTitle">
-            <string>Dialog</string>
+            <string>Impostazioni</string>
         </property>
-        <widget class="QDialogButtonBox" name="buttonBox">
-            <property name="geometry">
-                <rect>
-                    <x>30</x>
-                    <y>240</y>
-                    <width>341</width>
-                    <height>32</height>
-                </rect>
-            </property>
-            <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="standardButtons">
-                <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
-            </property>
-        </widget>
-        <widget class="QWidget" name="verticalLayoutWidget">
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>7</y>
-                    <width>371</width>
-                    <height>221</height>
-                </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout">
-                <item>
-                    <widget class="QTabWidget" name="tabWidget">
-                        <widget class="QWidget" name="tab">
-                            <attribute name="title">
-                                <string>Monitoraggio</string>
-                            </attribute>
-                            <widget class="QWidget" name="formLayoutWidget">
-                                <property name="geometry">
-                                    <rect>
-                                        <x>10</x>
-                                        <y>8</y>
-                                        <width>351</width>
-                                        <height>141</height>
-                                    </rect>
-                                </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+                <widget class="QTabWidget" name="tabWidget">
+                    <property name="currentIndex">
+                        <number>0</number>
+                    </property>
+                    <widget class="QWidget" name="tab_2">
+                        <attribute name="title">
+                            <string>Stanza</string>
+                        </attribute>
+                        <layout class="QVBoxLayout" name="verticalLayout_7">
+                            <item>
+                                <layout class="QVBoxLayout" name="verticalLayout_3">
+                                    <item>
+                                        <layout class="QFormLayout" name="formLayout_2">
+                                            <item row="0" column="0">
+                                                <widget class="QLabel" name="widthLabel">
+                                                    <property name="lineWidth">
+                                                        <number>1</number>
+                                                    </property>
+                                                    <property name="midLineWidth">
+                                                        <number>0</number>
+                                                    </property>
+                                                    <property name="text">
+                                                        <string>Larghezza Stanza (m)</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="0" column="1">
+                                                <widget class="QLineEdit" name="widthEdit">
+                                                    <property name="text">
+                                                        <string/>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="0">
+                                                <widget class="QLabel" name="heightLabel">
+                                                    <property name="text">
+                                                        <string>Altezza Stanza (m)</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="1" column="1">
+                                                <widget class="QLineEdit" name="heightEdit"/>
+                                            </item>
+                                            <item row="2" column="0">
+                                                <widget class="QLabel" name="boardLabel">
+                                                    <property name="text">
+                                                        <string>Schedine</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="3" column="0">
+                                                <widget class="QTableView" name="boardTable"/>
+                                            </item>
+                                            <item row="3" column="1">
+                                                <layout class="QVBoxLayout" name="verticalLayout_2">
+                                                    <item>
+                                                        <widget class="QPushButton" name="addBoard">
+                                                            <property name="text">
+                                                                <string>Aggiungi</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
+                                                        <widget class="QPushButton" name="removeBoard">
+                                                            <property name="text">
+                                                                <string>Rimuovi</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                </layout>
+                                            </item>
+                                        </layout>
+                                    </item>
+                                    <item>
+                                        <widget class="QPushButton" name="resetButton">
+                                            <property name="text">
+                                                <string>Reset DB</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                </layout>
+                            </item>
+                        </layout>
+                    </widget>
+                    <widget class="QWidget" name="tab">
+                        <attribute name="title">
+                            <string>Monitoraggio</string>
+                        </attribute>
+                        <layout class="QVBoxLayout" name="verticalLayout_6">
+                            <item>
                                 <layout class="QFormLayout" name="formLayout">
+                                    <item row="1" column="1">
+                                        <widget class="QLineEdit" name="aEdit"/>
+                                    </item>
+                                    <item row="1" column="0">
+                                        <widget class="QLabel" name="aLabel">
+                                            <property name="text">
+                                                <string>Potenza in dB ad un metro (A)</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="0" column="1">
+                                        <widget class="QLineEdit" name="nEdit">
+                                            <property name="text">
+                                                <string/>
+                                            </property>
+                                        </widget>
+                                    </item>
                                     <item row="0" column="0">
-                                        <widget class="QLabel" name="label">
+                                        <widget class="QLabel" name="nLabel">
                                             <property name="lineWidth">
                                                 <number>1</number>
                                             </property>
@@ -64,35 +124,27 @@
                                                 <number>0</number>
                                             </property>
                                             <property name="text">
-                                                <string>Costante di propagazione del segnale</string>
+                                                <string>Costante di propagazione del segnale (n)</string>
                                             </property>
                                         </widget>
-                                    </item>
-                                    <item row="0" column="1">
-                                        <widget class="QLineEdit" name="lineEdit"/>
-                                    </item>
-                                    <item row="1" column="0">
-                                        <widget class="QLabel" name="label_2">
-                                            <property name="text">
-                                                <string>dBm ad un metro</string>
-                                            </property>
-                                        </widget>
-                                    </item>
-                                    <item row="1" column="1">
-                                        <widget class="QLineEdit" name="lineEdit_2"/>
                                     </item>
                                 </layout>
-                            </widget>
-                        </widget>
-                        <widget class="QWidget" name="tab_2">
-                            <attribute name="title">
-                                <string>Tab 2</string>
-                            </attribute>
-                        </widget>
+                            </item>
+                        </layout>
                     </widget>
-                </item>
-            </layout>
-        </widget>
+                </widget>
+            </item>
+            <item>
+                <widget class="QDialogButtonBox" name="buttonBox">
+                    <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="standardButtons">
+                        <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
+                    </property>
+                </widget>
+            </item>
+        </layout>
     </widget>
     <resources/>
     <connections>

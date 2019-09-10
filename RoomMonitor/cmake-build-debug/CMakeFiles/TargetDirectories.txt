@@ -1,4 +1,0 @@
-D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/RoomMonitor.dir
-D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-D:/polito/PDSproject/RoomMonitor/cmake-build-debug/CMakeFiles/RoomMonitor_autogen.dir

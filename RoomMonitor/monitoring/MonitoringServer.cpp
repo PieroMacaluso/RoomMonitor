@@ -2,8 +2,10 @@
 // Created by pieromack on 26/07/19.
 //
 
+#include <QtCore/QSettings>
 #include "MonitoringServer.h"
 #include "Circle.h"
+#include "../windows/SettingDialog.h"
 
 MonitoringServer::MonitoringServer(Ui::MainWindow &ui, Ui::ConfigDialog &configDialog) {
     this->ui = ui;
@@ -177,12 +179,13 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
  * @return     float in metri
  */
 float MonitoringServer::calculateDistance(signed rssi) {
+    QSettings s;
     // n: Costante di propagazione del segnale. Costante 2 in ambiente aperto.
     // TODO: vedere se applicabile a stanza
-    const float cost = 3;
+    const float cost = s.value("monitor/n").toFloat();
     // A: potenza del segnale ricevuto in dBm ad un metro
     // TODO: da ricercare sperimentalmente
-    const float A = -55;
+    const float A = s.value("monitor/A").toFloat();
 
     return pow(10, (A - rssi) / (10 * cost));
 
@@ -269,10 +272,10 @@ void MonitoringServer::setup() {
     // Azione Impostazioni
 
     QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
-        QDialog* dialog = new QDialog;
-        this->configDialog.setupUi(dialog);
-        dialog->setModal(true);
-        dialog->exec();
+        SettingDialog sd{};
+        sd.setModal(true);
+        sd.exec();
+
     });
 
 

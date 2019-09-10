@@ -24,5 +24,5 @@ list(APPEND LIBRARIES
 
 list(REMOVE_DUPLICATES LIBRARIES)
 
-add_executable(RoomMonitor main.cpp monitoring/MonitoringServer.cpp monitoring/MonitoringServer.h monitoring/Packet.cpp monitoring/Packet.h monitoring/PositionData.cpp monitoring/PositionData.h monitoring/Board.cpp monitoring/Board.h monitoring/Circle.cpp monitoring/Circle.h monitoring/Point2d.cpp monitoring/Point2d.h monitoring/Room.h monitoring/Room.cpp)
+add_executable(RoomMonitor main.cpp monitoring/MonitoringServer.cpp monitoring/MonitoringServer.h monitoring/Packet.cpp monitoring/Packet.h monitoring/PositionData.cpp monitoring/PositionData.h monitoring/Board.cpp monitoring/Board.h monitoring/Circle.cpp monitoring/Circle.h monitoring/Point2d.cpp monitoring/Point2d.h monitoring/Room.h monitoring/Room.cpp windows/MainWindow.cpp windows/MainWindow.h windows/SettingDialog.cpp windows/SettingDialog.h)
 target_link_libraries(RoomMonitor ${LIBRARIES})

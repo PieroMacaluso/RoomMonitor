@@ -17,97 +17,73 @@
             </sizepolicy>
         </property>
         <property name="windowTitle">
-            <string>MainWindow</string>
+            <string>Room Monitor</string>
         </property>
         <widget class="QWidget" name="centralWidget">
-            <widget class="QWidget" name="gridLayoutWidget">
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>0</y>
-                        <width>327</width>
-                        <height>131</height>
-                    </rect>
-                </property>
-                <layout class="QGridLayout" name="gridLayout">
-                    <property name="sizeConstraint">
-                        <enum>QLayout::SetMinimumSize</enum>
-                    </property>
-                    <property name="leftMargin">
-                        <number>20</number>
-                    </property>
-                    <property name="topMargin">
-                        <number>20</number>
-                    </property>
-                    <property name="rightMargin">
-                        <number>20</number>
-                    </property>
-                    <property name="bottomMargin">
-                        <number>20</number>
-                    </property>
-                    <property name="spacing">
-                        <number>10</number>
-                    </property>
-                    <item row="2" column="0">
-                        <layout class="QHBoxLayout" name="horizontalLayout">
-                            <item>
-                                <widget class="QPushButton" name="startButton">
-                                    <property name="text">
-                                        <string>Start</string>
-                                    </property>
-                                </widget>
-                            </item>
-                            <item>
-                                <widget class="QPushButton" name="stopButton">
-                                    <property name="text">
-                                        <string>Stop</string>
-                                    </property>
-                                </widget>
-                            </item>
-                        </layout>
-                    </item>
-                    <item row="0" column="0">
-                        <widget class="QLabel" name="label">
-                            <property name="sizePolicy">
-                                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="autoFillBackground">
-                                <bool>false</bool>
-                            </property>
-                            <property name="text">
-                                <string>Inserire il numero di schedine in dotazione</string>
-                            </property>
-                        </widget>
-                    </item>
-                    <item row="1" column="0">
-                        <layout class="QHBoxLayout" name="horizontalLayout_1">
-                            <item>
-                                <widget class="QLabel" name="labelNSchedine">
-                                    <property name="maximumSize">
-                                        <size>
-                                            <width>200</width>
-                                            <height>16777215</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>Numero Schedine</string>
-                                    </property>
-                                </widget>
-                            </item>
-                            <item>
-                                <widget class="QLineEdit" name="nSchedine">
-                                    <property name="maxLength">
-                                        <number>10</number>
-                                    </property>
-                                </widget>
-                            </item>
-                        </layout>
-                    </item>
-                </layout>
-            </widget>
+            <layout class="QGridLayout" name="gridLayout_2">
+                <item row="2" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_1">
+                        <item>
+                            <widget class="QLabel" name="labelNSchedine">
+                                <property name="maximumSize">
+                                    <size>
+                                        <width>200</width>
+                                        <height>16777215</height>
+                                    </size>
+                                </property>
+                                <property name="text">
+                                    <string>Numero Schedine</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLineEdit" name="nSchedine">
+                                <property name="maxLength">
+                                    <number>10</number>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+                <item row="3" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout">
+                        <item>
+                            <widget class="QPushButton" name="startButton">
+                                <property name="text">
+                                    <string>Start</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="stopButton">
+                                <property name="text">
+                                    <string>Stop</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+                <item row="0" column="0">
+                    <layout class="QHBoxLayout" name="horizontalLayout_2">
+                        <item>
+                            <widget class="QLabel" name="label">
+                                <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="autoFillBackground">
+                                    <bool>false</bool>
+                                </property>
+                                <property name="text">
+                                    <string>Inserire il numero di schedine in dotazione</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
         </widget>
         <widget class="QMenuBar" name="menuBar">
             <property name="geometry">

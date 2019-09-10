@@ -1,4 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2018.3.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake -G "CodeBlocks - MinGW Makefiles" D:\polito\PDSproject\RoomMonitor
--- Configuring done
--- Generating done
--- Build files have been written to: D:/polito/PDSproject/RoomMonitor/cmake-build-debug
