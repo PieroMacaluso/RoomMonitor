@@ -40,21 +40,18 @@
 #include <QDateTime>
 
 
-class MonitoringServer : public QMainWindow {
-Q_OBJECT
-    QTcpServer *server;
-    // TODO: nSchedine è ancora inutile, sono da implementare i thread
-    int nSchedine;
+class MonitoringServer: public QObject {
+    Q_OBJECT
+    QTcpServer server{};
     // TODO: da gestire con input dal programma
     Room room = Room{0, 1, 1};
     std::map<int, Board> boards;
     bool running;
     std::deque<std::pair<Packet, int>> packets;
     std::mutex m;
-    QTimer *timer;
+    QTimer timer{};
     QSqlDatabase nDatabase;
-    Ui::MainWindow ui{};
-
+    QSettings settings{};
 
 public:
     MonitoringServer();
@@ -86,19 +83,12 @@ public:
      * Si occupa di inizializzare il server (127.0.0.1:27015) e di impostare la callback di ogni nuova connessione
      * a this->newConnection
      */
-    void serverStart();
+    void start();
 
     /**
      * Chiude il server non appena viene premuto il pulsante di stop
      */
-    void serverStop();
-
-    /**
-     * Setup della finestra del Server
-     * @param ui Ui finestra principale da cui andare a prendere i vari file.
-     */
-    void setup();
-
+    void stop();
 
     /**
      * Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina
@@ -128,7 +118,7 @@ public slots:
         DEBUG("New Connection started");
         std::string startDelim("init");
         std::string stopDelim("end");
-        QTcpSocket *socket = server->nextPendingConnection();
+        QTcpSocket *socket = server.nextPendingConnection();
         std::vector<std::string> pacchetti;
         std::deque<Packet> packetsConn;
         std::string allData{};
@@ -177,6 +167,9 @@ public slots:
         // TODO: Capire come aggregare bene
 
         std::unique_lock lk{m};
+
+        // TODO: SET NSCHEDINE SETTING
+        int nSchedine = 2;
 
         // Generazione Mappa <ChiavePacchetto, DequePacchetto>
 
@@ -297,7 +290,7 @@ signals:
      * Signal che segnala l'avvio del Server TCP
      * @param nSchedine numero delle schedine a disposizione
      */
-    void started(int nSchedine);
+    void started();
 
     /**
      * Signal che segnala la chiusura del server TCP

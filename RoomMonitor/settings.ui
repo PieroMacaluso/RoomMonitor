@@ -2,6 +2,14 @@
 <ui version="4.0">
     <class>ConfigDialog</class>
     <widget class="QDialog" name="ConfigDialog">
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>467</width>
+                <height>412</height>
+            </rect>
+        </property>
         <property name="windowTitle">
             <string>Impostazioni</string>
         </property>
@@ -50,17 +58,17 @@
                                             <item row="1" column="1">
                                                 <widget class="QLineEdit" name="heightEdit"/>
                                             </item>
-                                            <item row="2" column="0">
+                                            <item row="3" column="0">
                                                 <widget class="QLabel" name="boardLabel">
                                                     <property name="text">
                                                         <string>Schedine</string>
                                                     </property>
                                                 </widget>
                                             </item>
-                                            <item row="3" column="0">
+                                            <item row="4" column="0">
                                                 <widget class="QTableView" name="boardTable"/>
                                             </item>
-                                            <item row="3" column="1">
+                                            <item row="4" column="1">
                                                 <layout class="QVBoxLayout" name="verticalLayout_2">
                                                     <item>
                                                         <widget class="QPushButton" name="addBoard">
@@ -78,14 +86,17 @@
                                                     </item>
                                                 </layout>
                                             </item>
+                                            <item row="2" column="0">
+                                                <widget class="QLabel" name="portServerLabel">
+                                                    <property name="text">
+                                                        <string>Porta Server</string>
+                                                    </property>
+                                                </widget>
+                                            </item>
+                                            <item row="2" column="1">
+                                                <widget class="QLineEdit" name="portServerEdit"/>
+                                            </item>
                                         </layout>
-                                    </item>
-                                    <item>
-                                        <widget class="QPushButton" name="resetButton">
-                                            <property name="text">
-                                                <string>Reset DB</string>
-                                            </property>
-                                        </widget>
                                     </item>
                                 </layout>
                             </item>
@@ -129,6 +140,74 @@
                                         </widget>
                                     </item>
                                 </layout>
+                            </item>
+                        </layout>
+                    </widget>
+                    <widget class="QWidget" name="tab_3">
+                        <attribute name="title">
+                            <string>Database</string>
+                        </attribute>
+                        <layout class="QVBoxLayout" name="verticalLayout">
+                            <item>
+                                <layout class="QFormLayout" name="formLayout_3">
+                                    <item row="0" column="0">
+                                        <widget class="QLabel" name="hostLabel">
+                                            <property name="text">
+                                                <string>Host</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="1" column="0">
+                                        <widget class="QLabel" name="dbLabel">
+                                            <property name="text">
+                                                <string>Nome Database</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="0" column="1">
+                                        <widget class="QLineEdit" name="hostEdit"/>
+                                    </item>
+                                    <item row="2" column="0">
+                                        <widget class="QLabel" name="portLabel">
+                                            <property name="text">
+                                                <string>Porta</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="3" column="0">
+                                        <widget class="QLabel" name="userLabel">
+                                            <property name="text">
+                                                <string>Username</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="4" column="0">
+                                        <widget class="QLabel" name="passLabel">
+                                            <property name="text">
+                                                <string>Password</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item row="1" column="1">
+                                        <widget class="QLineEdit" name="dbEdit"/>
+                                    </item>
+                                    <item row="2" column="1">
+                                        <widget class="QLineEdit" name="portEdit"/>
+                                    </item>
+                                    <item row="3" column="1">
+                                        <widget class="QLineEdit" name="userEdit"/>
+                                    </item>
+                                    <item row="4" column="1">
+                                        <widget class="QLineEdit" name="passEdit"/>
+                                    </item>
+                                </layout>
+                            </item>
+                            <item>
+                                <widget class="QPushButton" name="resetButton">
+                                    <property name="text">
+                                        <string>Inizializza Database</string>
+                                    </property>
+                                </widget>
                             </item>
                         </layout>
                     </widget>

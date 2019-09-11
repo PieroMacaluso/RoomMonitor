@@ -22,30 +22,6 @@
         <widget class="QWidget" name="centralWidget">
             <layout class="QGridLayout" name="gridLayout_2">
                 <item row="2" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_1">
-                        <item>
-                            <widget class="QLabel" name="labelNSchedine">
-                                <property name="maximumSize">
-                                    <size>
-                                        <width>200</width>
-                                        <height>16777215</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>Numero Schedine</string>
-                                </property>
-                            </widget>
-                        </item>
-                        <item>
-                            <widget class="QLineEdit" name="nSchedine">
-                                <property name="maxLength">
-                                    <number>10</number>
-                                </property>
-                            </widget>
-                        </item>
-                    </layout>
-                </item>
-                <item row="3" column="0">
                     <layout class="QHBoxLayout" name="horizontalLayout">
                         <item>
                             <widget class="QPushButton" name="startButton">
@@ -77,7 +53,7 @@
                                     <bool>false</bool>
                                 </property>
                                 <property name="text">
-                                    <string>Inserire il numero di schedine in dotazione</string>
+                                    <string>Gestione Monitoraggio</string>
                                 </property>
                             </widget>
                         </item>
@@ -108,9 +84,9 @@
             </widget>
             <widget class="QMenu" name="menuAbout">
                 <property name="title">
-                    <string>About</string>
+                    <string>Aiuto</string>
                 </property>
-                <addaction name="actionInformazioni"/>
+                <addaction name="actionAbout"/>
             </widget>
             <addaction name="menuFile"/>
             <addaction name="menuEdit"/>
@@ -130,7 +106,7 @@
                 <string>Impostazioni...</string>
             </property>
         </action>
-        <action name="actionInformazioni">
+        <action name="actionAbout">
             <property name="text">
                 <string>Informazioni</string>
             </property>
@@ -143,7 +119,6 @@
     </widget>
     <layoutdefault spacing="6" margin="11"/>
     <tabstops>
-        <tabstop>nSchedine</tabstop>
         <tabstop>startButton</tabstop>
         <tabstop>stopButton</tabstop>
     </tabstops>

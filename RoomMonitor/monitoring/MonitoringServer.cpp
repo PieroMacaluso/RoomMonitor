@@ -8,16 +8,12 @@
 #include "../windows/SettingDialog.h"
 
 MonitoringServer::MonitoringServer() {
-    ui.setupUi(this);
-    this->setup();
-    this->show();
-    timer = nullptr;
     nDatabase = QSqlDatabase::addDatabase("QMYSQL");
-    nDatabase.setHostName("localhost");
-    nDatabase.setDatabaseName("data");
-    nDatabase.setPort(3306);
-    nDatabase.setUserName("root");
-    nDatabase.setPassword("NewRoot12Kz");
+    nDatabase.setHostName(settings.value("database/host").toString());
+    nDatabase.setDatabaseName(settings.value("database/name").toString());
+    nDatabase.setPort(settings.value("database/port").toInt());
+    nDatabase.setUserName(settings.value("database/user").toString());
+    nDatabase.setPassword(settings.value("database/pass").toString());
 
     // TODO: Setup schedine da implementare
     // Ipotizziamo stanza 5.6mx2.3m con schedine in diagonale
@@ -28,9 +24,6 @@ MonitoringServer::MonitoringServer() {
 }
 
 MonitoringServer::~MonitoringServer() {
-    if (timer != nullptr) {
-        delete timer;
-    }
 }
 
 
@@ -203,84 +196,23 @@ void MonitoringServer::disconnectDB() {
     nDatabase.close();
 }
 
-void MonitoringServer::serverStart() {
-    server = new QTcpServer(this);
-
-
-    if (!server->listen(QHostAddress::Any, 27015)) {
+void MonitoringServer::start() {
+    // TODO: add this setting
+    if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
     } else {
-        QObject::connect(server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
-        qDebug() << "Server Started on port:" << server->serverPort();
-        timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-        timer->start(30000);
+        QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
+        qDebug() << "Server Started on port:" << server.serverPort();
+        QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
+        timer.start(30000);
     }
 }
 
-void MonitoringServer::serverStop() {
-    server->close();
-    timer->stop();
-    delete timer;
-    timer = nullptr;
-}
-
-void MonitoringServer::setup() {
-    ui.stopButton->setDisabled(true);
-
-    // Click Start Button
-
-    QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
-        try {
-            int n = ui.nSchedine->text().toInt();
-            if (n > 0) {
-                this->nSchedine = n;
-                this->started(ui.nSchedine->text().toInt());
-                ui.startButton->setDisabled(true);
-                ui.stopButton->setDisabled(false);
-            }
-        } catch (std::exception &e) {
-            // Does not started signal
-            std::cout << "Non è stato possibile avviare il server." << std::endl;
-            return;
-        }
-        this->running = true;
-
-    });
-
-    // Conseguenze Click Start Button
-
-    QObject::connect(this, &MonitoringServer::started, [&]() { this->serverStart(); });
-
-    // Click Stop Button
-
-    QObject::connect(ui.stopButton, &QPushButton::clicked, [&]() {
-        this->stopped();
-        ui.startButton->setDisabled(false);
-        ui.stopButton->setDisabled(true);
-        this->running = false;
-        this->serverStop();
-
-
-    });
-
-    // Conseguenze Click Start Button
-
-    QObject::connect(this, &MonitoringServer::stopped, [&]() {
-        std::cout << "Stopped" << std::endl;
-    });
-
-    // Azione Impostazioni
-
-    QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
-        SettingDialog sd{};
-        sd.setModal(true);
-        sd.exec();
-
-    });
-
-
-
+void MonitoringServer::stop() {
+    QObject::disconnect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
+    QObject::disconnect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
+    server.close();
+    timer.stop();
 }
 
 template<class Container>
@@ -298,6 +230,6 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 
 bool MonitoringServer::is_inside_room(PositionData data) {
     // TODO: margine?
-    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= room.getMax().x() && data.getY() <= room.getMax().y();
+    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/height").toFloat() && data.getY() <= settings.value("room/height").toFloat();
 }
 
