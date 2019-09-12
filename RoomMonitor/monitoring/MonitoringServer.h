@@ -169,8 +169,8 @@ public slots:
 
         std::unique_lock lk{m};
 
-        // TODO: SET NSCHEDINE SETTING
-        int nSchedine = 2;
+        // Estrapola numero schedine da vettore
+        int nSchedine = boards.size();
 
         // Generazione Mappa <ChiavePacchetto, DequePacchetto>
 

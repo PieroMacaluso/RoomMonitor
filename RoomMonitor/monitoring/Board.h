@@ -24,6 +24,8 @@ public:
     int getId() const;
 
     const Point2d &getCoord() const;
+
+    static std::map<int, Board> extract_from_setting();
 };
 Q_DECLARE_METATYPE(Board)
 

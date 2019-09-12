@@ -20,46 +20,7 @@
             <string>Room Monitor</string>
         </property>
         <widget class="QWidget" name="centralWidget">
-            <layout class="QGridLayout" name="gridLayout_2">
-                <item row="2" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout">
-                        <item>
-                            <widget class="QPushButton" name="startButton">
-                                <property name="text">
-                                    <string>Start</string>
-                                </property>
-                            </widget>
-                        </item>
-                        <item>
-                            <widget class="QPushButton" name="stopButton">
-                                <property name="text">
-                                    <string>Stop</string>
-                                </property>
-                            </widget>
-                        </item>
-                    </layout>
-                </item>
-                <item row="0" column="0">
-                    <layout class="QHBoxLayout" name="horizontalLayout_2">
-                        <item>
-                            <widget class="QLabel" name="label">
-                                <property name="sizePolicy">
-                                    <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="autoFillBackground">
-                                    <bool>false</bool>
-                                </property>
-                                <property name="text">
-                                    <string>Gestione Monitoraggio</string>
-                                </property>
-                            </widget>
-                        </item>
-                    </layout>
-                </item>
-            </layout>
+            <layout class="QGridLayout" name="gridLayout_2"/>
         </widget>
         <widget class="QMenuBar" name="menuBar">
             <property name="geometry">
@@ -88,8 +49,15 @@
                 </property>
                 <addaction name="actionAbout"/>
             </widget>
+            <widget class="QMenu" name="menuVisualizza">
+                <property name="title">
+                    <string>Visualizza</string>
+                </property>
+                <addaction name="actionGestione_Monitoraggio"/>
+            </widget>
             <addaction name="menuFile"/>
             <addaction name="menuEdit"/>
+            <addaction name="menuVisualizza"/>
             <addaction name="menuAbout"/>
         </widget>
         <widget class="QToolBar" name="mainToolBar">
@@ -103,6 +71,57 @@
             <addaction name="actionAbout"/>
         </widget>
         <widget class="QStatusBar" name="statusBar"/>
+        <widget class="QDockWidget" name="dockWidget">
+            <attribute name="dockWidgetArea">
+                <number>1</number>
+            </attribute>
+            <widget class="QWidget" name="dockWidgetContents">
+                <layout class="QVBoxLayout" name="verticalLayout_2">
+                    <item>
+                        <layout class="QVBoxLayout" name="verticalLayout">
+                            <item>
+                                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                                    <item>
+                                        <widget class="QLabel" name="label">
+                                            <property name="sizePolicy">
+                                                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                                                    <horstretch>0</horstretch>
+                                                    <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                            </property>
+                                            <property name="autoFillBackground">
+                                                <bool>false</bool>
+                                            </property>
+                                            <property name="text">
+                                                <string>Gestione Monitoraggio</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                </layout>
+                            </item>
+                            <item>
+                                <layout class="QHBoxLayout" name="horizontalLayout">
+                                    <item>
+                                        <widget class="QPushButton" name="startButton">
+                                            <property name="text">
+                                                <string>Start</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                    <item>
+                                        <widget class="QPushButton" name="stopButton">
+                                            <property name="text">
+                                                <string>Stop</string>
+                                            </property>
+                                        </widget>
+                                    </item>
+                                </layout>
+                            </item>
+                        </layout>
+                    </item>
+                </layout>
+            </widget>
+        </widget>
         <action name="actionSettings">
             <property name="icon">
                 <iconset theme="emblem-system"/>
@@ -122,6 +141,17 @@
         <action name="actionChiudi">
             <property name="text">
                 <string>Chiudi</string>
+            </property>
+        </action>
+        <action name="actionGestione_Monitoraggio">
+            <property name="checkable">
+                <bool>true</bool>
+            </property>
+            <property name="checked">
+                <bool>true</bool>
+            </property>
+            <property name="text">
+                <string>Gestione Monitoraggio</string>
             </property>
         </action>
     </widget>
@@ -145,6 +175,38 @@
                 <hint type="destinationlabel">
                     <x>169</x>
                     <y>98</y>
+                </hint>
+            </hints>
+        </connection>
+        <connection>
+            <sender>dockWidget</sender>
+            <signal>visibilityChanged(bool)</signal>
+            <receiver>actionGestione_Monitoraggio</receiver>
+            <slot>setChecked(bool)</slot>
+            <hints>
+                <hint type="sourcelabel">
+                    <x>93</x>
+                    <y>117</y>
+                </hint>
+                <hint type="destinationlabel">
+                    <x>169</x>
+                    <y>10</y>
+                </hint>
+            </hints>
+        </connection>
+        <connection>
+            <sender>actionGestione_Monitoraggio</sender>
+            <signal>toggled(bool)</signal>
+            <receiver>dockWidget</receiver>
+            <slot>setVisible(bool)</slot>
+            <hints>
+                <hint type="sourcelabel">
+                    <x>-1</x>
+                    <y>-1</y>
+                </hint>
+                <hint type="destinationlabel">
+                    <x>93</x>
+                    <y>117</y>
                 </hint>
             </hints>
         </connection>

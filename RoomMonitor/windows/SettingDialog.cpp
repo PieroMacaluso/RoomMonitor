@@ -15,13 +15,19 @@ SettingDialog::SettingDialog() {
     ui.setupUi(this);
     setupConnect();
     ui.aEdit->setText(s.value("monitor/A").toString());
+    ui.aEdit->setValidator(new QIntValidator());
     ui.nEdit->setText(s.value("monitor/n").toString());
+    ui.nEdit->setValidator(new QIntValidator());
     ui.widthEdit->setText(s.value("room/width").toString());
+    ui.widthEdit->setValidator(new QDoubleValidator());
     ui.heightEdit->setText(s.value("room/height").toString());
+    ui.heightEdit->setValidator(new QDoubleValidator());
     ui.portServerEdit->setText(s.value("room/port").toString());
+    ui.portServerEdit->setValidator(new QIntValidator());
     ui.hostEdit->setText(s.value("database/host").toString());
     ui.dbEdit->setText(s.value("database/name").toString());
     ui.portEdit->setText(s.value("database/port").toString());
+    ui.portEdit->setValidator(new QIntValidator());
     ui.userEdit->setText(s.value("database/user").toString());
     ui.passEdit->setText(s.value("database/pass").toString());
     boardList = s.value("room/boards").value<QList<QStringList>>();
@@ -224,6 +230,9 @@ void SettingDialog::addBoard(const QString &id, const QString &x, const QString 
 }
 
 void SettingDialog::setupAddBoard() {
+    addBoardDialog.idEdit->setValidator(new QIntValidator());
+    addBoardDialog.xEdit->setValidator(new QDoubleValidator());
+    addBoardDialog.yEdit->setValidator(new QDoubleValidator());
     checkAddEdits();
     connect(addBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
     connect(addBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
@@ -243,6 +252,10 @@ void SettingDialog::checkAddEdits() {
 
 
 void SettingDialog::setupModBoard() {
+    modBoardDialog.idEdit->setValidator(new QIntValidator());
+    modBoardDialog.xEdit->setValidator(new QDoubleValidator());
+    modBoardDialog.yEdit->setValidator(new QDoubleValidator());
+
     checkModEdits();
     connect(modBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
     connect(modBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);

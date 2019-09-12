@@ -15,12 +15,12 @@ MonitoringServer::MonitoringServer() {
     nDatabase.setUserName(settings.value("database/user").toString());
     nDatabase.setPassword(settings.value("database/pass").toString());
 
-    // TODO: Setup schedine da implementare
-    // Ipotizziamo stanza 5.6mx2.3m con schedine in diagonale
-    Board b0{0, 0, 0};
-    Board b1{1, 1, 1};
-    boards.insert(std::make_pair(0, b0));
-    boards.insert(std::make_pair(1, b1));
+//    // TODO: Setup schedine da implementare
+//    // Ipotizziamo stanza 5.6mx2.3m con schedine in diagonale
+//    Board b0{0, 0, 0};
+//    Board b1{1, 1, 1};
+//    boards.insert(std::make_pair(0, b0));
+//    boards.insert(std::make_pair(1, b1));
 }
 
 MonitoringServer::~MonitoringServer() {
@@ -201,6 +201,8 @@ void MonitoringServer::start() {
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
     } else {
+        boards.clear();
+        boards = Board::extract_from_setting();
         QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
         qDebug() << "Server Started on port:" << server.serverPort();
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);

@@ -12,6 +12,7 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Charts REQUIRED)
 find_package(Qt5Network REQUIRED)
+
 find_package(Qt5Sql REQUIRED)
 
 list(APPEND LIBRARIES

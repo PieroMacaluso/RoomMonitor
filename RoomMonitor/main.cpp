@@ -8,7 +8,6 @@
 #include "monitoring/MonitoringServer.h"
 #include "windows/MainWindow.h"
 #include "windows/SettingDialog.h"
-
 void setupSettings();
 
 
