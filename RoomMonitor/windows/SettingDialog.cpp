@@ -42,9 +42,6 @@ SettingDialog::SettingDialog() {
 void SettingDialog::settingCheckUp() {
     QSettings su{};
     // Impostazioni iniziali, se non sono mai state configurate
-    /* TODO: verificare che possano essere spostate nel programma principale per funzionare di base senza per forza
-     * aprire le impostazioni
-     */
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     if (su.value("monitor/A").isNull())
         su.setValue("monitor/A", 3);
@@ -63,9 +60,6 @@ void SettingDialog::settingCheckUp() {
     if (su.value("database/user").isNull()) su.setValue("database/user", "root");
     if (su.value("database/pass").isNull()) su.setValue("database/pass", "NewRoot12Kz");
     if (su.value("database/table").isNull()) su.setValue("database/table", "stanza");
-
-
-    // TODO: gestione vettore con schedine e relative posizioni
 }
 
 void SettingDialog::setupConnect() {
@@ -300,6 +294,7 @@ void SettingDialog::resetDB() {
             return;
         }
 
+
         QSqlQuery query{};
         query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
 
@@ -309,8 +304,6 @@ void SettingDialog::resetDB() {
         query.prepare("CREATE TABLE " + s.value("database/table").toString() + " ("
                       "id_packet int auto_increment, "
                       "hash_fcs varchar(8) NOT NULL, "
-                      "id_room int NOT NULL, "
-                      "id_board int NOT NULL, "
                       "mac_addr varchar(17) NOT NULL, "
                       "pos_x REAL(5,2) NOT NULL, "
                       "pos_y REAL(5,2) NOT NULL, "

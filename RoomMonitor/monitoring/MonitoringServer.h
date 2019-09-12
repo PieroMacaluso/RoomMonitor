@@ -44,8 +44,6 @@
 class MonitoringServer: public QObject {
     Q_OBJECT
     QTcpServer server{};
-    // TODO: da gestire con input dal programma
-    Room room = Room{0, 1, 1};
     std::map<int, Board> boards;
     bool running;
     std::deque<std::pair<Packet, int>> packets;
@@ -140,7 +138,7 @@ public slots:
             // Conversione in oggetti Packet
             packetsConn = string2packet(pacchetti);
 
-            // TODO: ESECUZIONE THREAD_SAFE
+            // TODO: Verificare reale necessità di thread-safeness, altrimenti liberare tutto
             /** INIZIO ESECUZIONE THREAD-SAFE */
 
             std::unique_lock lk{m};
@@ -208,7 +206,7 @@ public slots:
                 ++i;
             }
         }
-
+        // TODO: verificare inutilità di questa procedura e cancellare
         std::map<std::string, PositionData> map_mac_xy;
         for (auto i = aggregate.begin(), last = aggregate.end(); i != last; i++) {
             std::string mac = i->second.begin()->getMacPeer();
@@ -234,25 +232,22 @@ public slots:
         for (auto fil : aggregate) {
             DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer())
             /*
-             * TODO: Query al database, capire cosa e quanto salvare
-             * Attualmente non trovo utilità del campo id e del campo board. L'RSSI dovrà essere modificato con le
-             * coordinate (x,y) se non sbaglio. Il timestamp forse sarebbe da "castrare" ad ogni minuto, esempio 16:23:40
-             * diventa 16:23:00.
-             */
-
-            /*
-             * TODO: aggregazione di pacchetti multipli appartenenti allo stesso MAC in un'unico pacchetto.
+             * TODO: Verificare query al database, capire cosa e quanto salvare
              */
             QSqlQuery query;
             query.prepare(
-                    "INSERT INTO campi (id, hash, rssi, mac, timestamp, ssid, board) VALUES (:id, :hash, :rssi, :mac, :timestamp, :ssid, :board);");
-            query.bindValue(":id", 0); // TODO:AUTOINCREMENT in CREATE TABLE
+                    "INSERT INTO campi (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
+//            query.bindValue(":id", 0);
+            PositionData positionData = fromRssiToXY(fil.second);
+            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
             query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
-            query.bindValue(":rssi", fil.second.begin()->getRssi());
             query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
+            query.bindValue(":posx", positionData.getX());
+            query.bindValue(":posy", positionData.getY());
             query.bindValue(":timestamp", QDateTime::fromSecsSinceEpoch(fil.second.begin()->getTimestamp()));
             query.bindValue(":ssid", QString::fromStdString(fil.second.begin()->getSsid()));
-            query.bindValue(":board", fil.second.begin()->getIdSchedina());
+            // TODO: manage HIDDEN
+            query.bindValue(":hidden", 0);
             if (!query.exec()) {
                 qDebug() << query.lastError();
             }
