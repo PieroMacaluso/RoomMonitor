@@ -8,6 +8,7 @@
 
 #include <QtWidgets/QDialog>
 #include "../ui_settings.h"
+#include "../ui_addboard.h"
 #include <QtCore/QSettings>
 
 
@@ -15,7 +16,10 @@ class SettingDialog : public QDialog {
 Q_OBJECT
 public:
     Ui::ConfigDialog ui{};
+    Ui::AddBoardDialog addBoardDialog{};
     QSettings s{};
+    QList<QStringList> boardList;
+
 
     SettingDialog();
 
@@ -35,20 +39,14 @@ public slots:
      * Slot richiamato dal pulsante applica, permette di applicare tutte le impostazioni presenti nella finestra
      * delle impostazioni.
      */
-    void apply() {
-        s.setValue("monitor/A", ui.aEdit->text().toFloat());
-        s.setValue("monitor/n", ui.nEdit->text().toFloat());
-        s.setValue("room/width", ui.widthEdit->text().toFloat());
-        s.setValue("room/height", ui.heightEdit->text().toFloat());
-        s.setValue("room/port", ui.portServerEdit->text().toInt());
-        s.setValue("database/host", ui.hostEdit->text());
-        s.setValue("database/name", ui.dbEdit->text());
-        s.setValue("database/port", ui.portEdit->text());
-        s.setValue("database/user", ui.userEdit->text());
-        s.setValue("database/pass", ui.passEdit->text());
+    void apply();
 
-        this->close();
-    }
+    void initializeBoardList();
+
+    void addBoard(const QString& id, const QString& x, const QString& y);
+    void elementChanged(int row, int column);
+    void removeSelected();
+    void openDialogAdd();
 
 };
 

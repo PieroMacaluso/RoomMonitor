@@ -38,6 +38,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QDebug>
 #include <QDateTime>
+#include <QSettings>
 
 
 class MonitoringServer: public QObject {
