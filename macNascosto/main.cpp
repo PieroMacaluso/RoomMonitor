@@ -3,8 +3,11 @@
 #include <vector>
 #include "Entry.h"
 
+std::deque<Entry> allPackets;
+std::deque<Entry> hiddenPackets;
 
-void setHiddenPackets(std::deque<Entry>& allPackets){
+
+void setHiddenPackets(){
     for(int i=0;i<allPackets.size();i++){
         if((allPackets.at(i).getMac().at(0)<='7' && allPackets.at(i).getMac().at(0)>='4') || allPackets.at(i).getMac().at(0)>='c'){
             std::cout << allPackets.at(i).getMac() << " hidden" <<std::endl;
@@ -17,8 +20,7 @@ void setHiddenPackets(std::deque<Entry>& allPackets){
 }
 
 
-std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTime,uint32_t endTime){
-    std::deque<Entry> hiddenPackets;
+std::deque<Entry> getHiddenPackets(uint32_t initTime,uint32_t endTime){
 
     for(Entry e:allPackets)
         if(e.getHidden() && (e.getTimestamp()>=initTime || e.getTimestamp()<=endTime))
@@ -28,10 +30,43 @@ std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTi
 }
 
 /**
- * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
- * Ad ogni giro del for esterno si trovano ed eliminano tutti i pacchetti simili.
+ * veririca se sono presenti mac simili a source oppure no
  * //todo indicare una percentuale di validità
- * //todo verificare che non ci siano problemi con i cicli su liste con posizioni eliminate.
+ * @param source
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+bool getHiddenDeviceFor(Entry source,uint32_t initTime,uint32_t endTime){
+    //entro 5 minuti, stessa posizione +-0.5, altro da vedere
+    uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
+    double tolleranzaX=0.5;
+    double tolleranzaY=0.5;
+    bool trovato= false;
+
+    for(int j=0;j<hiddenPackets.size();j++){
+        if(hiddenPackets.at(j).getMac()!=source.getMac()){
+            uint32_t diff=(source.getTimestamp()<hiddenPackets.at(j).getTimestamp()) ? (hiddenPackets.at(j).getTimestamp()-source.getTimestamp()) : (source.getTimestamp()-hiddenPackets.at(j).getTimestamp());
+            if(diff<=tolleranzaTimestamp){
+                //mac diverso ad intervallo inferiore di 1 minuto
+                double diffX=(source.getX()<hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX()-source.getX()) : (source.getX()-hiddenPackets.at(j).getX());
+                double diffY=(source.getY()<hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY()-source.getY()) : (source.getY()-hiddenPackets.at(j).getY());
+                if(diffX<=tolleranzaX && diffY<=tolleranzaY){
+                    //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
+                    std::cout << source.getMac() << " simile ad " << hiddenPackets.at(j).getMac() << ", differenza temporale e di posizione minima." << std::endl;
+                    trovato= true;
+                }
+            }
+
+        }
+    }
+
+    return trovato;
+}
+
+/**
+ * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
+ * Separato su due funzioni per avere anche solo la ricerca per un singolo mac.
  * @param initTime
  * @param endTime
  *
@@ -40,55 +75,25 @@ std::deque<Entry> getHiddenPackets(std::deque<Entry>& allPackets,uint32_t initTi
  *
  * @return
  */
- // Avendo i pacchetti A B e C inviati dallo stesso dispositivo con mac diversi, quando il primo for punta al pacchetto A funziona correttamente, ma quando passa a B conta un nuovo dispositivo vedendo C non riuscendo a verificare che è gia stato contato con A
- //todo possibile idea, eliminare tutti i pacchetti simili ad ogni giro, Così facendo quando il primo for punta ad A elimina B e C e non si dovrebbero avere problemi
 
-int getHiddenDevice(std::deque<Entry>& allPackets,uint32_t initTime,uint32_t endTime){
-    //entro 5 minuti, stessa posizione +-0.5, altro da vedere
-    uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
-    double tolleranzaX=0.5;
-    double tolleranzaY=0.5;
-    bool trovato= false;
-
+int getHiddenDevice(uint32_t initTime,uint32_t endTime){
+    bool trovato;
     int numHiddenDevice=0;
 
-    std::deque<Entry> hiddenPackets=getHiddenPackets(allPackets,initTime,endTime);  //todo realizzare tramite query sul db
-    std::cout << "\nTrovati " << hiddenPackets.size() << " mac nascosti"<< std::endl;
-
-
     for(int i=0;i<hiddenPackets.size();i++){
-        trovato= false;
-        for(int j=i+1;j<hiddenPackets.size();j++){
-            if(hiddenPackets.at(j).getMac()!=hiddenPackets.at(i).getMac()){
-                uint32_t diff=(hiddenPackets.at(i).getTimestamp()<hiddenPackets.at(j).getTimestamp()) ? (hiddenPackets.at(j).getTimestamp()-hiddenPackets.at(i).getTimestamp()) : (hiddenPackets.at(i).getTimestamp()-hiddenPackets.at(j).getTimestamp());
-                if(diff<=tolleranzaTimestamp){
-                    //mac diverso ad intervallo inferiore di 1 minuto
-                    double diffX=(hiddenPackets.at(i).getX()<hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX()-hiddenPackets.at(i).getX()) : (hiddenPackets.at(i).getX()-hiddenPackets.at(j).getX());
-                    double diffY=(hiddenPackets.at(i).getY()<hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY()-hiddenPackets.at(i).getY()) : (hiddenPackets.at(i).getY()-hiddenPackets.at(j).getY());
-                    if(diffX<=tolleranzaX && diffY<=tolleranzaY){
-                        //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
-                        std::cout << hiddenPackets.at(i).getMac() << " simile ad " << hiddenPackets.at(j).getMac() << ", differenza temporale e di posizione minima." << std::endl;
-                        trovato= true;
-                        hiddenPackets.erase(hiddenPackets.begin()+j);
-                    }
-                }
-
-            }
-        }
+        trovato=getHiddenDeviceFor(hiddenPackets.at(i),initTime,endTime);
         if(trovato)
             numHiddenDevice++;
     }
 
-
     return numHiddenDevice;
 }
-
 
 int main() {
     /*Simulazione popolamento db*/
     int numHiddenDevice;
 
-    std::deque<Entry> allPackets;
+    //std::deque<Entry> allPackets;
 
     std::string m("98:22:ef:ad:70:c9");
     Entry p(m, 1566306651,0.0,1.1); //1001 1000 VERO
@@ -126,11 +131,15 @@ int main() {
     Entry p8(m8, 1566820850, 1.1, 1.5);  //1111 1110 hidden_3
     allPackets.push_back(p8);
 
-    setHiddenPackets(allPackets);       //todo possibile inglobarlo nel calcolo della posizione in modo da avere sul db già un flag che indica se nascosto o meno
+    setHiddenPackets(/*allPackets*/);       //todo possibile inglobarlo nel calcolo della posizione in modo da avere sul db già un flag che indica se nascosto o meno
+    hiddenPackets=getHiddenPackets(/*allPackets,*/0,1666810678);
+    std::cout << "\nTrovati " << hiddenPackets.size() << " mac nascosti"<< std::endl;
 
-    numHiddenDevice=getHiddenDevice(allPackets,0,1666810678);
+    numHiddenDevice=getHiddenDevice(/*allPackets,*/0,1666810678);
     std::cout << "Numero dispositivi con mac nascosto stimato: "<<numHiddenDevice<<std::endl;
 
+    std::cout<< "\nRicerca mac simili a " <<p3.getMac()<<"..."<< std::endl;
+    getHiddenDeviceFor(p3,0,1666810678);
 
     return 0;
 }
