@@ -6,6 +6,10 @@
 #include "../monitoring/Board.h"
 #include <QDebug>
 #include <QtWidgets/QMessageBox>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlField>
+#include <QtSql/QSqlDriver>
+
 
 
 SettingDialog::SettingDialog() {
@@ -30,6 +34,7 @@ SettingDialog::SettingDialog() {
     ui.portEdit->setValidator(new QIntValidator());
     ui.userEdit->setText(s.value("database/user").toString());
     ui.passEdit->setText(s.value("database/pass").toString());
+    ui.tableEdit->setText(s.value("database/table").toString());
     boardList = s.value("room/boards").value<QList<QStringList>>();
     initializeBoardList();
 }
@@ -57,6 +62,7 @@ void SettingDialog::settingCheckUp() {
     if (su.value("database/port").isNull()) su.setValue("database/port", 3306);
     if (su.value("database/user").isNull()) su.setValue("database/user", "root");
     if (su.value("database/pass").isNull()) su.setValue("database/pass", "NewRoot12Kz");
+    if (su.value("database/table").isNull()) su.setValue("database/table", "stanza");
 
 
     // TODO: gestione vettore con schedine e relative posizioni
@@ -215,6 +221,9 @@ void SettingDialog::apply() {
     }
     s.setValue("room/boards", QVariant::fromValue(b));
 
+    if (ui.resetCheck->isChecked()) {
+        resetDB();
+    }
     this->close();
 
 }
@@ -271,4 +280,51 @@ void SettingDialog::checkModEdits() {
     modBoardDialog.yEdit->text().toDouble(&y);
 
     modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
+}
+
+void SettingDialog::resetDB() {
+    {
+        //TODO: ALARM SQL INJECTION!
+        QSqlDatabase db;
+        db = QSqlDatabase::addDatabase("QMYSQL");
+        db.setHostName(s.value("database/host").toString());
+        db.setDatabaseName(s.value("database/name").toString());
+        db.setPort(s.value("database/port").toInt());
+        db.setUserName(s.value("database/user").toString());
+        db.setPassword(s.value("database/pass").toString());
+
+        qDebug() << db.driver()->hasFeature(QSqlDriver::PreparedQueries);
+
+        if (!db.open()) {
+            qDebug() << db.lastError();
+            return;
+        }
+
+        QSqlQuery query{};
+        query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
+
+        if (!query.exec()) {
+            qDebug() << query.lastError();
+        }
+        query.prepare("CREATE TABLE " + s.value("database/table").toString() + " ("
+                      "id_packet int auto_increment, "
+                      "hash_fcs varchar(8) NOT NULL, "
+                      "id_room int NOT NULL, "
+                      "id_board int NOT NULL, "
+                      "mac_addr varchar(17) NOT NULL, "
+                      "pos_x REAL(5,2) NOT NULL, "
+                      "pos_y REAL(5,2) NOT NULL, "
+                      "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
+                      "ssid varchar(64) NOT NULL, "
+                      "hidden int NOT NULL, "
+                      "PRIMARY KEY (id_packet) "
+                      ");");
+
+        if (!query.exec()) {
+            qDebug() << query.lastError();
+        }
+        db.close();
+    }
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+
 }

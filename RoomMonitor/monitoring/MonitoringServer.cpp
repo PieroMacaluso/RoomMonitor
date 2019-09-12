@@ -186,6 +186,7 @@ float MonitoringServer::calculateDistance(signed rssi) {
 }
 
 void MonitoringServer::connectDB() {
+    
     if (!nDatabase.open()) {
         qDebug() << nDatabase.lastError();
         return;

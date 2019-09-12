@@ -12,6 +12,9 @@
 #include "../ui_modboard.h"
 
 #include <QtCore/QSettings>
+#include <QSqlQuery>
+#include <QSqlError>
+
 
 
 class SettingDialog : public QDialog {
@@ -39,6 +42,7 @@ public:
     void setupConnect();
 
 public slots:
+
     /**
      * Slot richiamato dal pulsante applica, permette di applicare tutte le impostazioni presenti nella finestra
      * delle impostazioni.
@@ -47,18 +51,24 @@ public slots:
 
     void initializeBoardList();
 
-    void addBoard(const QString& id, const QString& x, const QString& y);
-    void elementChanged(int row, int column);
-    void removeSelected();
-    void openDialogAdd();
-    void openDialogMod();
-    void checkAddEdits();
+    void addBoard(const QString &id, const QString &x, const QString &y);
 
+    void elementChanged(int row, int column);
+
+    void removeSelected();
+
+    void openDialogAdd();
+
+    void openDialogMod();
+
+    void checkAddEdits();
 
 
     void setupAddBoard();
 
     void setupModBoard();
+
+    void resetDB();
 
     void checkModEdits();
 };
