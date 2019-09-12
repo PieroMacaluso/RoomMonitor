@@ -18,6 +18,7 @@ SettingDialog::SettingDialog() {
     ui.nEdit->setText(s.value("monitor/n").toString());
     ui.widthEdit->setText(s.value("room/width").toString());
     ui.heightEdit->setText(s.value("room/height").toString());
+    ui.portServerEdit->setText(s.value("room/port").toString());
     ui.hostEdit->setText(s.value("database/host").toString());
     ui.dbEdit->setText(s.value("database/name").toString());
     ui.portEdit->setText(s.value("database/port").toString());
@@ -60,8 +61,8 @@ void SettingDialog::setupConnect() {
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
     connect(ui.modBoard, &QPushButton::clicked, this, &SettingDialog::openDialogMod);
-    connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&](){
-        if (ui.boardTable->selectedItems().size() == 0){
+    connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&]() {
+        if (ui.boardTable->selectedItems().size() == 0) {
             ui.modBoard->setDisabled(true);
             ui.removeBoard->setDisabled(true);
         } else {
@@ -69,7 +70,6 @@ void SettingDialog::setupConnect() {
             ui.removeBoard->setDisabled(false);
         }
     });
-
 
 
 }
@@ -118,12 +118,8 @@ void SettingDialog::elementChanged(int row, int column) {
 }
 
 void SettingDialog::removeSelected() {
-    for (auto i : ui.boardTable->selectedItems()) {
-        int rr = i->row();
-//        boardList.removeAt(i->row());
-        ui.boardTable->removeRow(rr);
-    }
-
+    int rr = ui.boardTable->selectedItems().first()->row();
+    ui.boardTable->removeRow(rr);
 }
 
 void SettingDialog::openDialogAdd() {
@@ -170,14 +166,15 @@ void SettingDialog::openDialogMod() {
     setupModBoard();
     if (add.exec()) {
         if (modBoardDialog.idEdit->text().isEmpty() || modBoardDialog.xEdit->text().isEmpty() ||
-                modBoardDialog.yEdit->text().isEmpty()) {
+            modBoardDialog.yEdit->text().isEmpty()) {
             QMessageBox msgBox;
             msgBox.setText("Inserimento non valido, riprovare!");
             msgBox.exec();
             return;
         }
         for (int i = 0; i < ui.boardTable->rowCount(); i++) {
-            if (modBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text() && modBoardDialog.idEdit->text() != list[0]) {
+            if (modBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text() &&
+                modBoardDialog.idEdit->text() != list[0]) {
                 QMessageBox msgBox;
                 msgBox.setText("Id già presente, riprovare!");
                 msgBox.exec();
