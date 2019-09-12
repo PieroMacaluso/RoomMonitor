@@ -9,6 +9,8 @@
 #include <QtWidgets/QDialog>
 #include "../ui_settings.h"
 #include "../ui_addboard.h"
+#include "../ui_modboard.h"
+
 #include <QtCore/QSettings>
 
 
@@ -17,6 +19,8 @@ Q_OBJECT
 public:
     Ui::ConfigDialog ui{};
     Ui::AddBoardDialog addBoardDialog{};
+    Ui::ModBoardDialog modBoardDialog{};
+
     QSettings s{};
     QList<QStringList> boardList;
 
@@ -47,7 +51,16 @@ public slots:
     void elementChanged(int row, int column);
     void removeSelected();
     void openDialogAdd();
+    void openDialogMod();
+    void checkAddEdits();
 
+
+
+    void setupAddBoard();
+
+    void setupModBoard();
+
+    void checkModEdits();
 };
 
 

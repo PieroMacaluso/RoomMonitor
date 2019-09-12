@@ -5,6 +5,7 @@
 #include "SettingDialog.h"
 #include "../monitoring/Board.h"
 #include <QDebug>
+#include <QtWidgets/QMessageBox>
 
 
 SettingDialog::SettingDialog() {
@@ -58,6 +59,18 @@ void SettingDialog::setupConnect() {
     connect(ui.buttonBox->button(QDialogButtonBox::Apply), &QPushButton::clicked, this, &SettingDialog::apply);
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
+    connect(ui.modBoard, &QPushButton::clicked, this, &SettingDialog::openDialogMod);
+    connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&](){
+        if (ui.boardTable->selectedItems().size() == 0){
+            ui.modBoard->setDisabled(true);
+            ui.removeBoard->setDisabled(true);
+        } else {
+            ui.modBoard->setDisabled(false);
+            ui.removeBoard->setDisabled(false);
+        }
+    });
+
+
 
 }
 
@@ -71,6 +84,9 @@ void SettingDialog::initializeBoardList() {
     ui.boardTable->verticalHeader()->hide();
     ui.boardTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui.boardTable->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
+    ui.boardTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui.modBoard->setDisabled(true);
+    ui.removeBoard->setDisabled(true);
     for (auto board: boardList) {
         int i = ui.boardTable->rowCount();
         ui.boardTable->insertRow(ui.boardTable->rowCount());
@@ -98,13 +114,14 @@ void SettingDialog::elementChanged(int row, int column) {
 
     }
 
-    boardList[row][column] = ui.boardTable->item(row, column)->text();
+//    boardList[row][column] = ui.boardTable->item(row, column)->text();
 }
 
 void SettingDialog::removeSelected() {
     for (auto i : ui.boardTable->selectedItems()) {
-        boardList.removeAt(i->row());
-        ui.boardTable->removeRow(i->row());
+        int rr = i->row();
+//        boardList.removeAt(i->row());
+        ui.boardTable->removeRow(rr);
     }
 
 }
@@ -114,8 +131,63 @@ void SettingDialog::openDialogAdd() {
     QDialog add;
     addBoardDialog.setupUi(&add);
     add.setModal(true);
-    if (add.exec()){
+    setupAddBoard();
+    if (add.exec()) {
+        if (addBoardDialog.idEdit->text().isEmpty() || addBoardDialog.xEdit->text().isEmpty() ||
+            addBoardDialog.yEdit->text().isEmpty()) {
+            QMessageBox msgBox;
+            msgBox.setText("Inserimento non valido, riprovare!");
+            msgBox.exec();
+            return;
+        }
+        for (int i = 0; i < ui.boardTable->rowCount(); i++) {
+            if (addBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text()) {
+                QMessageBox msgBox;
+                msgBox.setText("Id già presente, riprovare!");
+                msgBox.exec();
+                return;
+            }
+        }
+
         addBoard(addBoardDialog.idEdit->text(), addBoardDialog.xEdit->text(), addBoardDialog.yEdit->text());
+    }
+
+
+}
+
+void SettingDialog::openDialogMod() {
+
+    QDialog add;
+    modBoardDialog.setupUi(&add);
+    add.setModal(true);
+    QStringList list;
+    for (auto el : ui.boardTable->selectedItems()) {
+        list.append(el->text());
+    }
+    modBoardDialog.idEdit->setText(list[0]);
+    modBoardDialog.xEdit->setText(list[1]);
+    modBoardDialog.yEdit->setText(list[2]);
+    setupModBoard();
+    if (add.exec()) {
+        if (modBoardDialog.idEdit->text().isEmpty() || modBoardDialog.xEdit->text().isEmpty() ||
+                modBoardDialog.yEdit->text().isEmpty()) {
+            QMessageBox msgBox;
+            msgBox.setText("Inserimento non valido, riprovare!");
+            msgBox.exec();
+            return;
+        }
+        for (int i = 0; i < ui.boardTable->rowCount(); i++) {
+            if (modBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text() && modBoardDialog.idEdit->text() != list[0]) {
+                QMessageBox msgBox;
+                msgBox.setText("Id già presente, riprovare!");
+                msgBox.exec();
+                return;
+            }
+        }
+        int i = ui.boardTable->selectedItems().first()->row();
+        ui.boardTable->setItem(i, 0, new QTableWidgetItem(modBoardDialog.idEdit->text()));
+        ui.boardTable->setItem(i, 1, new QTableWidgetItem(modBoardDialog.xEdit->text()));
+        ui.boardTable->setItem(i, 2, new QTableWidgetItem(modBoardDialog.yEdit->text()));
     }
 
 
@@ -133,18 +205,60 @@ void SettingDialog::apply() {
     s.setValue("database/user", ui.userEdit->text());
     s.setValue("database/pass", ui.passEdit->text());
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
-    s.setValue("room/boards", QVariant::fromValue(boardList));
+    QList<QStringList> b;
+    for (int i = 0; i < ui.boardTable->rowCount(); i++) {
+        b.append({ui.boardTable->item(i, 0)->text(), ui.boardTable->item(i, 1)->text(),
+                  ui.boardTable->item(i, 2)->text()});
+    }
+    s.setValue("room/boards", QVariant::fromValue(b));
 
     this->close();
 
 }
 
-void SettingDialog::addBoard(const QString& id, const QString& x, const QString& y) {
+void SettingDialog::addBoard(const QString &id, const QString &x, const QString &y) {
     int i = ui.boardTable->rowCount();
-    boardList.append({id, x, y});
+//    boardList.append({id, x, y});
     ui.boardTable->insertRow(ui.boardTable->rowCount());
     ui.boardTable->setItem(i, 0, new QTableWidgetItem(id));
     ui.boardTable->setItem(i, 1, new QTableWidgetItem(x));
     ui.boardTable->setItem(i, 2, new QTableWidgetItem(y));
 
+}
+
+void SettingDialog::setupAddBoard() {
+    checkAddEdits();
+    connect(addBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
+    connect(addBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
+    connect(addBoardDialog.yEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
+}
+
+void SettingDialog::checkAddEdits() {
+    bool id;
+    bool x;
+    bool y;
+    addBoardDialog.idEdit->text().toInt(&id);
+    addBoardDialog.xEdit->text().toDouble(&x);
+    addBoardDialog.yEdit->text().toDouble(&y);
+
+    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
+}
+
+
+void SettingDialog::setupModBoard() {
+    checkModEdits();
+    connect(modBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
+    connect(modBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
+    connect(modBoardDialog.yEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
+}
+
+void SettingDialog::checkModEdits() {
+    bool id;
+    bool x;
+    bool y;
+    modBoardDialog.idEdit->text().toInt(&id);
+    modBoardDialog.xEdit->text().toDouble(&x);
+    modBoardDialog.yEdit->text().toDouble(&y);
+
+    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
 }

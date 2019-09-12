@@ -75,6 +75,13 @@
                                                         </widget>
                                                     </item>
                                                     <item>
+                                                        <widget class="QPushButton" name="modBoard">
+                                                            <property name="text">
+                                                                <string>Modifica</string>
+                                                            </property>
+                                                        </widget>
+                                                    </item>
+                                                    <item>
                                                         <widget class="QPushButton" name="removeBoard">
                                                             <property name="text">
                                                                 <string>Rimuovi</string>
