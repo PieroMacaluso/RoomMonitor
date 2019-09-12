@@ -12,8 +12,8 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Charts REQUIRED)
 find_package(Qt5Network REQUIRED)
-find_package(Qt5Sql REQUIRED)
 
+find_package(Qt5Sql REQUIRED)
 
 list(APPEND LIBRARIES
         Qt5::Core
@@ -25,5 +25,5 @@ list(APPEND LIBRARIES
 
 list(REMOVE_DUPLICATES LIBRARIES)
 
-add_executable(RoomMonitor main.cpp MonitoringServer.cpp MonitoringServer.h Packet.cpp Packet.h PositionData.cpp PositionData.h Board.cpp Board.h Circle.cpp Circle.h Point2d.cpp Point2d.h Room.h Room.cpp)
+add_executable(RoomMonitor main.cpp monitoring/MonitoringServer.cpp monitoring/MonitoringServer.h monitoring/Packet.cpp monitoring/Packet.h monitoring/PositionData.cpp monitoring/PositionData.h monitoring/Board.cpp monitoring/Board.h monitoring/Circle.cpp monitoring/Circle.h monitoring/Point2d.cpp monitoring/Point2d.h monitoring/Room.h monitoring/Room.cpp windows/SettingDialog.cpp windows/SettingDialog.h windows/MainWindow.cpp windows/MainWindow.h windows/InformationWindow.cpp windows/InformationWindow.h)
 target_link_libraries(RoomMonitor ${LIBRARIES})
