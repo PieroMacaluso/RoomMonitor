@@ -31,7 +31,6 @@ std::deque<Entry> getHiddenPackets(uint32_t initTime,uint32_t endTime){
 
 /**
  * veririca se sono presenti mac simili a source oppure no
- * //todo indicare una percentuale di validità
  * @param source
  * @param initTime
  * @param endTime
@@ -42,18 +41,20 @@ bool getHiddenDeviceFor(Entry source,uint32_t initTime,uint32_t endTime){
     uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
     double tolleranzaX=0.5;
     double tolleranzaY=0.5;
+    double perc;
     bool trovato= false;
 
     for(int j=0;j<hiddenPackets.size();j++){
         if(hiddenPackets.at(j).getMac()!=source.getMac()){
-            uint32_t diff=(source.getTimestamp()<hiddenPackets.at(j).getTimestamp()) ? (hiddenPackets.at(j).getTimestamp()-source.getTimestamp()) : (source.getTimestamp()-hiddenPackets.at(j).getTimestamp());
+            double diff=(source.getTimestamp()<hiddenPackets.at(j).getTimestamp()) ? (hiddenPackets.at(j).getTimestamp()-source.getTimestamp()) : (source.getTimestamp()-hiddenPackets.at(j).getTimestamp());
             if(diff<=tolleranzaTimestamp){
                 //mac diverso ad intervallo inferiore di 1 minuto
                 double diffX=(source.getX()<hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX()-source.getX()) : (source.getX()-hiddenPackets.at(j).getX());
                 double diffY=(source.getY()<hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY()-source.getY()) : (source.getY()-hiddenPackets.at(j).getY());
                 if(diffX<=tolleranzaX && diffY<=tolleranzaY){
                     //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
-                    std::cout << source.getMac() << " simile ad " << hiddenPackets.at(j).getMac() << ", differenza temporale e di posizione minima." << std::endl;
+                    perc=((diffX*100/tolleranzaX) + (diffY*100/tolleranzaY) + (diff*100/tolleranzaTimestamp))*100/(300);
+                    std::cout << source.getMac() << " simile ad " << hiddenPackets.at(j).getMac() << " con probabilita' del "<<perc<<"%" << std::endl;
                     trovato= true;
                 }
             }
@@ -131,7 +132,7 @@ int main() {
     Entry p8(m8, 1566820850, 1.1, 1.5);  //1111 1110 hidden_3
     allPackets.push_back(p8);
 
-    setHiddenPackets(/*allPackets*/);       //todo possibile inglobarlo nel calcolo della posizione in modo da avere sul db già un flag che indica se nascosto o meno
+    setHiddenPackets();       //todo inglobarlo nel calcolo della posizione in modo da avere sul db già un flag che indica se nascosto o meno
     hiddenPackets=getHiddenPackets(/*allPackets,*/0,1666810678);
     std::cout << "\nTrovati " << hiddenPackets.size() << " mac nascosti"<< std::endl;
 
