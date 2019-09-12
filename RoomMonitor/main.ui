@@ -99,14 +99,22 @@
             <attribute name="toolBarBreak">
                 <bool>false</bool>
             </attribute>
+            <addaction name="actionSettings"/>
+            <addaction name="actionAbout"/>
         </widget>
         <widget class="QStatusBar" name="statusBar"/>
         <action name="actionSettings">
+            <property name="icon">
+                <iconset theme="emblem-system"/>
+            </property>
             <property name="text">
                 <string>Impostazioni...</string>
             </property>
         </action>
         <action name="actionAbout">
+            <property name="icon">
+                <iconset theme="dialog-information"/>
+            </property>
             <property name="text">
                 <string>Informazioni</string>
             </property>
