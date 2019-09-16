@@ -56,6 +56,21 @@ void MainWindow::setupConnect() {
 
     QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
         SettingDialog sd{};
+        if (s.isRunning()) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Analisi in corso",
+                                          "L'analisi in corso verrà interrotta. Continuare?",
+                                          QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::Yes) {
+                qDebug() << "Yes was clicked";
+            } else {
+                qDebug() << "Yes was *not* clicked";
+                return;
+            }
+        }
+        s.stop();
+        ui.startButton->setDisabled(false);
+        ui.stopButton->setDisabled(true);
         sd.setModal(true);
         sd.exec();
 
@@ -69,7 +84,6 @@ void MainWindow::setupConnect() {
         sd.exec();
 
     });
-
 
 
 }

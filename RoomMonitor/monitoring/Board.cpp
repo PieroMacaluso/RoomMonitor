@@ -16,7 +16,7 @@ const Point2d &Board::getCoord() const {
 std::map<int, Board> Board::extract_from_setting() {
     QSettings s{};
     std::map<int, Board> result;
-    QList<QStringList> list = s.value("room/boards").value<QList<QStringList>>();
+    auto list = s.value("room/boards").value<QList<QStringList>>();
     for (auto b : list){
         int id = b[0].toInt();
         double posx = b[1].toDouble();
@@ -24,6 +24,6 @@ std::map<int, Board> Board::extract_from_setting() {
         Board board{id, posx, posy};
         result.insert(std::make_pair(id, board));
     }
-
+    return result;
 
 }
