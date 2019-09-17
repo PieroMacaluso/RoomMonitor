@@ -7,9 +7,9 @@
 
 
 #include <QtWidgets/QDialog>
-#include "../ui_settings.h"
-#include "../ui_addboard.h"
-#include "../ui_modboard.h"
+#include "ui_settings.h"
+#include "ui_addboard.h"
+#include "ui_modboard.h"
 
 #include <QtCore/QSettings>
 #include <QSqlQuery>

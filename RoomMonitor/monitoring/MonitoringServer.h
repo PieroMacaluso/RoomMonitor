@@ -16,9 +16,6 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include "../ui_main.h"
-#include "../ui_settings.h"
-
 #include <iostream>
 #include <string>
 #include <sstream>

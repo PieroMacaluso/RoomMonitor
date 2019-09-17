@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include <QtCore/QSettings>
 #include <QtWidgets/QStyleFactory>
-#include "ui_main.h"
-#include "ui_settings.h"
 #include "monitoring/MonitoringServer.h"
 #include "windows/MainWindow.h"
 #include "windows/SettingDialog.h"

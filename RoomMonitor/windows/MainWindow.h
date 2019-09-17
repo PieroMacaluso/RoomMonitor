@@ -6,8 +6,8 @@
 #define ROOMMONITOR_MAINWINDOW_H
 
 
-#include "../ui_main.h"
-#include "../ui_about.h"
+#include "ui_main.h"
+#include "ui_about.h"
 #include "../monitoring/MonitoringServer.h"
 
 class MainWindow: public QMainWindow {
