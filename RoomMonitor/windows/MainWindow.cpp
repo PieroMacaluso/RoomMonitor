@@ -98,12 +98,13 @@ void MainWindow::setPlotMacOne() {
     QChart *chart = new QChart();
     chart->addSeries(series);
     chart->setTitle("Numero di rilevazioni dei MAC presenti");
-    chart->setAnimationOptions(QChart::SeriesAnimations);
+//    chart->setAnimationOptions(QChart::SeriesAnimations);
     // TODO: categories MAC
     QStringList categories;
     categories << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun" << "Jul" << "A" << "B" << "C" << "D" << "E" << "F" << "G";
     QBarCategoryAxis *axiY = new QBarCategoryAxis();
     axiY->append(categories);
+    axiY->setRange(categories[0], categories[5]);
     chart->addAxis(axiY, Qt::AlignLeft);
     series->attachAxis(axiY);
 
@@ -111,9 +112,9 @@ void MainWindow::setPlotMacOne() {
     axiX->setRange(0,15);
     chart->addAxis(axiX, Qt::AlignBottom);
     series->attachAxis(axiX);
-//    chart->legend()->setVisible(true);
-//    chart->legend()->setAlignment(Qt::AlignBottom);
+    chart->legend()->setVisible(false);
+    ui.plot1->setMouseTracking(true);
     ui.plot1->setChart(chart);
-    ui.plot1->setRenderHint(QPainter::Antialiasing);
+//    ui.plot1->setRenderHint(QPainter::Antialiasing);
     ui.plot1->setRubberBand(QChartView::VerticalRubberBand);
 }

@@ -6,10 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-if(CMAKE_VERSION VERSION_LESS "3.7.0")
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-endif()
+#if(CMAKE_VERSION VERSION_LESS "3.7.0")
+#    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+#endif()
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
@@ -35,5 +36,5 @@ QT5_WRAP_UI(QT_UIS_HDRS
 #add_executable(helloworld qcustomplot.cpp main.cpp mainwindow.cpp ${QT_UIS_HDRS})
 #list(REMOVE_DUPLICATES LIBRARIES)
 
-add_executable(RoomMonitor main.cpp monitoring/MonitoringServer.cpp monitoring/MonitoringServer.h monitoring/Packet.cpp monitoring/Packet.h monitoring/PositionData.cpp monitoring/PositionData.h monitoring/Board.cpp monitoring/Board.h monitoring/Circle.cpp monitoring/Circle.h monitoring/Point2d.cpp monitoring/Point2d.h monitoring/Room.h monitoring/Room.cpp windows/SettingDialog.cpp windows/SettingDialog.h windows/MainWindow.cpp windows/MainWindow.h windows/InformationWindow.cpp windows/InformationWindow.h )
+add_executable(RoomMonitor main.cpp monitoring/MonitoringServer.cpp monitoring/MonitoringServer.h monitoring/Packet.cpp monitoring/Packet.h monitoring/PositionData.cpp monitoring/PositionData.h monitoring/Board.cpp monitoring/Board.h monitoring/Circle.cpp monitoring/Circle.h monitoring/Point2d.cpp monitoring/Point2d.h monitoring/Room.h monitoring/Room.cpp windows/SettingDialog.cpp windows/SettingDialog.h windows/MainWindow.cpp windows/MainWindow.h windows/InformationWindow.cpp windows/InformationWindow.h windows/elements/Plot1.h windows/elements/Plot1.cpp)
 target_link_libraries(RoomMonitor ${LIBRARIES})
