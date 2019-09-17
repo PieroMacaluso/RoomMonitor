@@ -21,6 +21,8 @@ public:
      * Setup della finestra principale
      */
     void setupConnect();
+
+    void setPlotMacOne();
 };
 
 
