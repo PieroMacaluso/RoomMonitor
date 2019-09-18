@@ -7,7 +7,7 @@
 
 MainWindow::MainWindow() {
     ui.setupUi(this);
-    setPlotMacOne();
+    setupMonitoringPlot();
     setupConnect();
 }
 
@@ -50,7 +50,7 @@ void MainWindow::setupConnect() {
     // Conseguenze Click Start Button
 
     QObject::connect(&s, &MonitoringServer::stopped, [&]() {
-            std::cout << "Stopped" << std::endl;
+        std::cout << "Stopped" << std::endl;
     });
 
     // Azione Impostazioni
@@ -89,55 +89,22 @@ void MainWindow::setupConnect() {
 
 }
 
-void MainWindow::setPlotMacOne() {
-    QBarSet *set0 = new QBarSet("Presenze");
-    QHorizontalBarSeries *series = new QHorizontalBarSeries();
-    series->append(set0);
-    connect(series, &QHorizontalBarSeries::hovered, this, &MainWindow::tooltip);
+void MainWindow::setupMonitoringPlot() {
+    monitoringChart = new MonitoringChart();
+    ui.monitoringPlot->setChart(monitoringChart);
 
-    *set0 << 1 << 2 << 3 << 4 << 5 << 6 << 1 << 2 << 3 << 4 << 5 << 6 << 1 << 2;
-    chart1 = new QChart();
-    chart1->addSeries(series);
-    chart1->setTitle("Numero di rilevazioni dei MAC presenti");
-//    chart->setAnimationOptions(QChart::SeriesAnimations);
-    // TODO: categories MAC
-    QStringList categories;
-    categories << "Jan" << "FebFebFebFeb" << "Mar" << "Apr" << "May" << "Jun" << "Jul" << "A" << "B" << "C" << "D"
-               << "E" << "F" << "G";
-    QBarCategoryAxis *axiY = new QBarCategoryAxis();
-    axiY->append(categories);
-    axiY->setRange(categories[0], categories[4]);
-    chart1->addAxis(axiY, Qt::AlignLeft);
-    series->attachAxis(axiY);
-
-    QValueAxis *axiX = new QValueAxis();
-    axiX->setRange(0, 15);
-    chart1->addAxis(axiX, Qt::AlignBottom);
-    series->attachAxis(axiX);
-    chart1->legend()->setVisible(false);
-    ui.plot1->setMouseTracking(true);
-    ui.plot1->setChart(chart1);
-    ui.plot1->setCategorySize(categories.size());
-//    ui.plot1->setRenderHint(QPainter::Antialiasing);
-//    ui.plot1->setRubberBand(QChartView::VerticalRubberBand);
-}
-
-void MainWindow::tooltip(bool status, int index, QBarSet *set) {
-    if (m_tooltip == nullptr)
-        m_tooltip = new QGraphicsSimpleTextItem(chart1);
-
-    set->at(index);
-
-
-    if (status) {
-
-        m_tooltip->setText(QString("%1").arg(set->at(index)));
-        m_tooltip->setPos(chart1->mapToPosition(QPointF(set->at(index),index) + QPointF(0.50,0.25)));
-        m_tooltip->setZValue(11);
-//        m_tooltip->updateGeometry();
-        m_tooltip->show();
-    } else {
-        m_tooltip->hide();
+    startTime.setDate(QDate(2019,9,18));
+    startTime.setTime(QTime(10,0,0));
+    for (int i = 0; i < 11; i++) {
+        QDateTime momentInTime = startTime.addSecs(60*5*i_time);
+        i_time++;
+        monitoringChart->addData(momentInTime, std::rand()%20);
     }
-
+    connect(ui.aggiungidatiFittizi, &QPushButton::clicked, [&](){
+        QDateTime momentInTime = startTime.addSecs(60*5*i_time);
+        i_time++;
+        monitoringChart->addData(momentInTime, std::rand()%20);
+    });
 }
+
+

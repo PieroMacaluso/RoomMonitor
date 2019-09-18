@@ -10,12 +10,18 @@
 #include "ui_about.h"
 #include "../monitoring/MonitoringServer.h"
 #include "windows/elements/callout.h"
+#include <QtCharts>
+#include <windows/elements/MonitoringChart.h>
 
 class MainWindow: public QMainWindow {
     Ui::MainWindow ui{};
     MonitoringServer s{};
     QGraphicsSimpleTextItem *m_tooltip = nullptr;
-    QChart *chart1;
+    MonitoringChart *monitoringChart;
+    QLineSeries * lineSeries;
+    QDateTime startTime{};
+            //TODO: remove
+    int i_time = 0;
 
 public:
     MainWindow();
@@ -28,9 +34,9 @@ public:
      * Funzione per impostare il Grafico numero uno
      */
     //TODO: Creare una funzione simile per l'altro grafico
-    void setPlotMacOne();
+    void setupMonitoringPlot();
 
-    void tooltip(bool status, int index, QBarSet * set);
+//    void tooltip(bool status, int index, QBarSet * set);
 };
 
 
