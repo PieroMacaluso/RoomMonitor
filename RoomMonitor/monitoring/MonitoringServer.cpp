@@ -161,13 +161,12 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
  * @return     float in metri
  */
 float MonitoringServer::calculateDistance(signed rssi) {
-    QSettings s;
     // n: Costante di propagazione del segnale. Costante 2 in ambiente aperto.
     // TODO: vedere se applicabile a stanza
-    const float cost = s.value("monitor/n").toFloat();
+    const float cost = settings.value("monitor/n").toFloat();
     // A: potenza del segnale ricevuto in dBm ad un metro
     // TODO: da ricercare sperimentalmente
-    const float A = s.value("monitor/A").toFloat();
+    const float A = settings.value("monitor/A").toFloat();
 
     return pow(10, (A - rssi) / (10 * cost));
 

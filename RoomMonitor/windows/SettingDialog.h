@@ -24,7 +24,7 @@ public:
     Ui::AddBoardDialog addBoardDialog{};
     Ui::ModBoardDialog modBoardDialog{};
 
-    QSettings s{};
+    QSettings s{"VALP", "RoomMonitoring"};
     QList<QStringList> boardList;
 
 

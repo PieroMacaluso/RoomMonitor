@@ -40,7 +40,7 @@ SettingDialog::SettingDialog() {
 }
 
 void SettingDialog::settingCheckUp() {
-    QSettings su{};
+    QSettings su{"VALP", "RoomMonitoring"};
     // Impostazioni iniziali, se non sono mai state configurate
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     if (su.value("monitor/A").isNull())
@@ -207,6 +207,7 @@ void SettingDialog::apply() {
     s.setValue("database/port", ui.portEdit->text());
     s.setValue("database/user", ui.userEdit->text());
     s.setValue("database/pass", ui.passEdit->text());
+    s.setValue("database/table", ui.tableEdit->text());
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     QList<QStringList> b;
     for (int i = 0; i < ui.boardTable->rowCount(); i++) {

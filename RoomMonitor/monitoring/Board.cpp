@@ -14,7 +14,7 @@ const Point2d &Board::getCoord() const {
 }
 
 std::map<int, Board> Board::extract_from_setting() {
-    QSettings s{};
+    QSettings s{"VALP", "RoomMonitoring"};
     std::map<int, Board> result;
     auto list = s.value("room/boards").value<QList<QStringList>>();
     for (auto b : list){

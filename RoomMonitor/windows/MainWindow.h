@@ -14,7 +14,7 @@
 class MainWindow: public QMainWindow {
     Ui::MainWindow ui{};
     MonitoringServer s{};
-    Callout *m_tooltip = nullptr;
+    QGraphicsSimpleTextItem *m_tooltip = nullptr;
     QChart *chart1;
 
 public:

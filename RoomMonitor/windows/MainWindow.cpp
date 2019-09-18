@@ -124,17 +124,17 @@ void MainWindow::setPlotMacOne() {
 
 void MainWindow::tooltip(bool status, int index, QBarSet *set) {
     if (m_tooltip == nullptr)
-        m_tooltip = new Callout(chart1);
+        m_tooltip = new QGraphicsSimpleTextItem(chart1);
 
     set->at(index);
 
 
     if (status) {
 
-        m_tooltip->setText(QString("Presenze: %1").arg(set->at(index)));
-        m_tooltip->setAnchor(QPointF(set->at(index),index));
+        m_tooltip->setText(QString("%1").arg(set->at(index)));
+        m_tooltip->setPos(chart1->mapToPosition(QPointF(set->at(index),index) + QPointF(0.50,0.25)));
         m_tooltip->setZValue(11);
-        m_tooltip->updateGeometry();
+//        m_tooltip->updateGeometry();
         m_tooltip->show();
     } else {
         m_tooltip->hide();

@@ -47,7 +47,7 @@ Q_OBJECT
     std::mutex m;
     QTimer timer{};
     QSqlDatabase nDatabase;
-    QSettings settings{};
+    QSettings settings{"VALP", "RoomMonitoring"};
 
 public:
     MonitoringServer();
