@@ -50,7 +50,7 @@ void MainWindow::setupConnect() {
     // Conseguenze Click Start Button
 
     QObject::connect(&s, &MonitoringServer::stopped, [&]() {
-        std::cout << "Stopped" << std::endl;
+            std::cout << "Stopped" << std::endl;
     });
 
     // Azione Impostazioni
@@ -93,28 +93,51 @@ void MainWindow::setPlotMacOne() {
     QBarSet *set0 = new QBarSet("Presenze");
     QHorizontalBarSeries *series = new QHorizontalBarSeries();
     series->append(set0);
+    connect(series, &QHorizontalBarSeries::hovered, this, &MainWindow::tooltip);
 
-    *set0 << 1 << 2 << 3 << 4 << 5 << 6 << 1 << 2 << 3 << 4 << 5 << 6;
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle("Numero di rilevazioni dei MAC presenti");
+    *set0 << 1 << 2 << 3 << 4 << 5 << 6 << 1 << 2 << 3 << 4 << 5 << 6 << 1 << 2;
+    chart1 = new QChart();
+    chart1->addSeries(series);
+    chart1->setTitle("Numero di rilevazioni dei MAC presenti");
 //    chart->setAnimationOptions(QChart::SeriesAnimations);
     // TODO: categories MAC
     QStringList categories;
-    categories << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun" << "Jul" << "A" << "B" << "C" << "D" << "E" << "F" << "G";
+    categories << "Jan" << "FebFebFebFeb" << "Mar" << "Apr" << "May" << "Jun" << "Jul" << "A" << "B" << "C" << "D"
+               << "E" << "F" << "G";
     QBarCategoryAxis *axiY = new QBarCategoryAxis();
     axiY->append(categories);
-    axiY->setRange(categories[0], categories[5]);
-    chart->addAxis(axiY, Qt::AlignLeft);
+    axiY->setRange(categories[0], categories[4]);
+    chart1->addAxis(axiY, Qt::AlignLeft);
     series->attachAxis(axiY);
 
     QValueAxis *axiX = new QValueAxis();
-    axiX->setRange(0,15);
-    chart->addAxis(axiX, Qt::AlignBottom);
+    axiX->setRange(0, 15);
+    chart1->addAxis(axiX, Qt::AlignBottom);
     series->attachAxis(axiX);
-    chart->legend()->setVisible(false);
+    chart1->legend()->setVisible(false);
     ui.plot1->setMouseTracking(true);
-    ui.plot1->setChart(chart);
+    ui.plot1->setChart(chart1);
+    ui.plot1->setCategorySize(categories.size());
 //    ui.plot1->setRenderHint(QPainter::Antialiasing);
-    ui.plot1->setRubberBand(QChartView::VerticalRubberBand);
+//    ui.plot1->setRubberBand(QChartView::VerticalRubberBand);
+}
+
+void MainWindow::tooltip(bool status, int index, QBarSet *set) {
+    if (m_tooltip == nullptr)
+        m_tooltip = new Callout(chart1);
+
+    set->at(index);
+
+
+    if (status) {
+
+        m_tooltip->setText(QString("Presenze: %1").arg(set->at(index)));
+        m_tooltip->setAnchor(QPointF(set->at(index),index));
+        m_tooltip->setZValue(11);
+        m_tooltip->updateGeometry();
+        m_tooltip->show();
+    } else {
+        m_tooltip->hide();
+    }
+
 }
