@@ -40,7 +40,6 @@ void MonitoringChart::addSeries(QLineSeries *series) {
     });
 
     connect(lineSeries, &QLineSeries::pointReplaced, [=](int index) {
-        qDebug() <<"Replace";
         qreal y = lineSeries->at(index).y();
 
         if (y < yMin || y > yMax) {

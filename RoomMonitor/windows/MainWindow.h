@@ -37,6 +37,9 @@ public:
     void setupMonitoringPlot();
 
 //    void tooltip(bool status, int index, QBarSet * set);
+    void initializeMacList();
+
+    void addMacPos(QString mac, qreal posx, qreal posy);
 };
 
 

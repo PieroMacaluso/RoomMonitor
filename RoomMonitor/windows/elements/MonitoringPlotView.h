@@ -12,10 +12,7 @@
 
 class MonitoringPlotView : public QChartView {
     MonitoringChart * chart;
-    QGraphicsSimpleTextItem *m_coordX;
-    QGraphicsSimpleTextItem *m_coordY;
     Callout *m_tooltip = nullptr;
-    QList<Callout *> m_callouts;
 public:
     explicit MonitoringPlotView(QWidget *parent = nullptr);
 
@@ -26,9 +23,6 @@ public:
     void mouseDoubleClickEvent(QMouseEvent *event);
 
     void wheelEvent(QWheelEvent *event);
-
-
-//    void mouseMoveEvent(QMouseEvent *event);
 
     void tooltip(QPointF point, bool state);
 };

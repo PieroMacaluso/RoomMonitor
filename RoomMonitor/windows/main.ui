@@ -79,6 +79,9 @@
    <property name="windowTitle">
     <string/>
    </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextUnderIcon</enum>
    </property>
@@ -86,7 +89,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <addaction name="actionAnalysis"/>
    <addaction name="actionSettings"/>
@@ -94,6 +97,25 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="monitoringManagerDock">
+   <property name="minimumSize">
+    <size>
+     <width>198</width>
+     <height>76</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>524287</width>
+     <height>76</height>
+    </size>
+   </property>
+   <property name="acceptDrops">
+    <bool>true</bool>
+   </property>
+   <property name="windowIcon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
@@ -101,7 +123,7 @@
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
-    <string/>
+    <string>Gestione Monitoraggio</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -109,7 +131,7 @@
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
        <property name="leftMargin">
         <number>6</number>
        </property>
@@ -122,16 +144,6 @@
        <property name="bottomMargin">
         <number>6</number>
        </property>
-       <item>
-        <widget class="QLabel" name="monitoringLabel">
-         <property name="text">
-          <string>Gestione Monitoraggio</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="sizeConstraint">
@@ -167,26 +179,44 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="lastMacDock">
+   <property name="acceptDrops">
+    <bool>true</bool>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>Ultime Posizioni MAC rilevati</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_9">
      <item>
-      <widget class="QLabel" name="macSituationLabel">
-       <property name="text">
-        <string>Ultime posizioni MAC rilevati</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QTableWidget" name="macSituation"/>
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionGestione_Monitoraggio"/>
+   <addaction name="actionUltimi_MAC_Rilevati"/>
   </widget>
   <action name="actionSettings">
    <property name="icon">
@@ -218,8 +248,21 @@
    <property name="checked">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
+   </property>
    <property name="text">
     <string>Gestione Monitoraggio</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionUltimi_MAC_Rilevati">
@@ -228,6 +271,10 @@
    </property>
    <property name="checked">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/info.svg</normaloff>:/resources/resources/info.svg</iconset>
    </property>
    <property name="text">
     <string>Ultimi MAC Rilevati</string>

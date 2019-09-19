@@ -5,9 +5,12 @@
 #include "MainWindow.h"
 #include "SettingDialog.h"
 
+void addMacPos(QString mac, qreal posx, qreal posy);
+
 MainWindow::MainWindow() {
     ui.setupUi(this);
     setupMonitoringPlot();
+    initializeMacList();
     setupConnect();
 }
 
@@ -30,6 +33,12 @@ void MainWindow::setupConnect() {
             std::cout << "Non è stato possibile avviare il server." << std::endl;
             return;
         }
+    });
+
+    // Click Analysis Button
+
+    QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
+       // TODO: Apertura finestra Analisi
     });
 
     // Conseguenze Click Start Button
@@ -106,6 +115,33 @@ void MainWindow::setupMonitoringPlot() {
 //        i_time++;
 //        monitoringChart->addData(momentInTime, std::rand()%20);
 //    });
+
 }
 
+
+void MainWindow::initializeMacList() {
+    /* SETUP TABLE */
+    ui.macSituation->setColumnCount(3);
+    QStringList h;
+    h << "MAC" << "X" << "Y";
+    ui.macSituation->setHorizontalHeaderLabels(h);
+    ui.macSituation->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui.macSituation->verticalHeader()->hide();
+    ui.macSituation->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui.macSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
+    ui.macSituation->setAlternatingRowColors(true);
+    ui.macSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    addMacPos("AA:AA:AA:AA:AA:AA", 0, 2.5);
+    addMacPos("BB:BB:BB:BB:BB:BB", 1, 3);
+    addMacPos("CC:CC:CC:CC:CC:CC", 2, 0);
+}
+void MainWindow::addMacPos(QString mac, qreal posx, qreal posy){
+        int i = ui.macSituation->rowCount();
+        ui.macSituation->insertRow(ui.macSituation->rowCount());
+        ui.macSituation->setItem(i, 0, new QTableWidgetItem(mac));
+        ui.macSituation->setItem(i, 1, new QTableWidgetItem(QString::number(posx)));
+        ui.macSituation->setItem(i, 2, new QTableWidgetItem(QString::number(posy)));
+        ui.macSituation->resizeColumnsToContents();
+
+}
 
