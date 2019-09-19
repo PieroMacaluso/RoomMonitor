@@ -11,6 +11,7 @@
 
 class MonitoringChart : public QChart {
     QLineSeries *lineSeries;
+    QScatterSeries *scatter;
     QDateTimeAxis *aX;
     QValueAxis *aY;
     int yMin = INT_MAX;
@@ -19,15 +20,23 @@ class MonitoringChart : public QChart {
     qreal xMax = 0;
 
 
+
 public:
     explicit MonitoringChart(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = Qt::WindowFlags());
     void addSeries(QLineSeries *series);
     void addData(QDateTime time, int value);
+    void updateData(QDateTime time, int value);
     void addX(QDateTimeAxis *axisX);
     void addY(QValueAxis *axisY);
+    QLineSeries * getLineSeries();
+    QScatterSeries * getScatter();
     ~MonitoringChart() override;
 
     void resetView();
+
+    void addSeries(QScatterSeries *series);
+
+
 };
 
 
