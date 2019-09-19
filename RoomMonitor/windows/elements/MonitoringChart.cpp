@@ -78,12 +78,6 @@ void MonitoringChart::addSeries(QScatterSeries *series) {
     QChart::addSeries(series);
 }
 
-MonitoringChart::~MonitoringChart() {
-    free(lineSeries);
-    free(aX);
-    free(aY);
-
-}
 
 void MonitoringChart::addData(QDateTime time, int value) {
     this->lineSeries->append(time.toMSecsSinceEpoch(), value);

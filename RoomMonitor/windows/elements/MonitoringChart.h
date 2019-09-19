@@ -30,7 +30,6 @@ public:
     void addY(QValueAxis *axisY);
     QLineSeries * getLineSeries();
     QScatterSeries * getScatter();
-    ~MonitoringChart() override;
 
     void resetView();
 
