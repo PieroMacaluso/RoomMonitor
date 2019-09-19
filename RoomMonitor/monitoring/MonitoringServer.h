@@ -105,47 +105,9 @@ public:
 
     bool is_inside_room(PositionData data);
 
-    /**
- * veririca se sono presenti mac simili a source oppure no
- * @param source
- * @param initTime
- * @param endTime
- * @return
- */
-    bool getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime){
-        //entro 5 minuti, stessa posizione +-0.5, altro da vedere
-        uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
-        double tolleranzaX=0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
-        double tolleranzaY=0.5;
-        double perc;
-        bool trovato= false;
+    bool getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime);
 
-        std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
-
-
-        for(int j=0;j<hiddenPackets.size();j++){
-            if(hiddenPackets.at(j).getMacPeer()!=source.getMacPeer()){
-                double diff=(source.getTimestamp()<hiddenPackets.at(j).getTimestamp()) ? (hiddenPackets.at(j).getTimestamp()-source.getTimestamp()) : (source.getTimestamp()-hiddenPackets.at(j).getTimestamp());
-                if(diff<=tolleranzaTimestamp){
-                    //mac diverso ad intervallo inferiore di 1 minuto
-                    double diffX=(source.getX()<hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX()-source.getX()) : (source.getX()-hiddenPackets.at(j).getX());
-                    double diffY=(source.getY()<hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY()-source.getY()) : (source.getY()-hiddenPackets.at(j).getY());
-                    if(diffX<=tolleranzaX && diffY<=tolleranzaY){
-                        //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
-                        perc=(100-((diffX*100/tolleranzaX) + (diffY*100/tolleranzaY) + (diff*100/tolleranzaTimestamp))*100/(300));
-                        std::cout << source.getMacPeer() << " simile ad " << hiddenPackets.at(j).getMacPeer() << " con probabilita' del "<<perc<<"%" << std::endl;
-                        //todo decidere cosa fare con tale percentiale
-                        trovato= true;
-                    }
-                }
-
-            }
-        }
-
-        return trovato;
-    }
-
-    /**
+/**
  * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
  * Separato su due funzioni per avere anche solo la ricerca per un singolo mac.
  * @param initTime
@@ -157,31 +119,16 @@ public:
  * @return
  */
 
-    int getHiddenDevice(uint32_t initTime,uint32_t endTime){
-        bool trovato;
-        int numHiddenDevice=0;
+    int getHiddenDevice(uint32_t initTime,uint32_t endTime);
 
+/**
+ * Funzione che recupera dal db tutti i pacchetti con mac hidden nel periodo specificato
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+    std::deque<Packet> getHiddenPackets(uint32_t initTime,uint32_t endTime);
 
-        std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
-
-        for(int i=0;i<hiddenPackets.size();i++){
-            trovato=getHiddenDeviceFor(hiddenPackets.at(i),initTime,endTime);
-            if(trovato)
-                numHiddenDevice++;
-        }
-
-        return numHiddenDevice;
-        //todo decidere cosa fare con tale numero
-    }
-
-    std::deque<Packet> getHiddenPackets(uint32_t initTime,uint32_t endTime){
-        //todo creare la query corretta per ottenere i pacchetti con mac hidden nel periodo specificato
-        std::deque<Packet> hiddenPackets;
-
-
-
-        return hiddenPackets;
-    }
 
 public slots:
 
