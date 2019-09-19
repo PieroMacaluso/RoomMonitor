@@ -3,6 +3,7 @@
 //
 
 #include <QtCore/QSettings>
+#include <QtSql/QSqlRecord>
 #include "MonitoringServer.h"
 #include "Circle.h"
 #include "../windows/SettingDialog.h"
@@ -408,11 +409,28 @@ bool MonitoringServer::isRunning() {
 }
 
 std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t endTime){
-    //todo creare la query corretta per ottenere i pacchetti con mac hidden nel periodo specificato
+    //query per ottenere i pacchetti con mac hidden nel periodo specificato
     std::deque<Packet> hiddenPackets;
+    QString table="stanza";
+    QSqlQuery query{};
+    query.prepare("SELECT * FROM "+ table+ "WHERE hidden=1 AND timestamp>="+initTime+" AND timestamp<="+endTime+";");
 
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+    QSqlRecord record = query.record();
 
+    while(query.next()){                                //ciclo su ogni entry selezionata del db
+        std::string fcs=query.value(1).toString().toStdString();
+        std::string mac=query.value(2).toString().toStdString();
+        uint32_t timestamp=query.value(5).toString().toUInt();
+        std::string ssid=query.value(6).toString().toStdString();
 
+        Packet p(-1,fcs,-1,mac,timestamp,ssid);
+        hiddenPackets.push_back(p);
+
+    }
+    //todo verificare che funzioni
     return hiddenPackets;
 }
 
@@ -433,7 +451,8 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32
     bool trovato= false;
 
     std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
-
+    if(hiddenPackets.size()==0)
+        return false;
 
     for(int j=0;j<hiddenPackets.size();j++){
         if(hiddenPackets.at(j).getMacPeer()!=source.getMacPeer()){
@@ -475,6 +494,8 @@ int MonitoringServer::getHiddenDevice(uint32_t initTime,uint32_t endTime){
 
 
     std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
+    if(hiddenPackets.size()==0)
+        return 0;
 
     for(int i=0;i<hiddenPackets.size();i++){
         trovato=getHiddenDeviceFor(hiddenPackets.at(i),initTime,endTime);

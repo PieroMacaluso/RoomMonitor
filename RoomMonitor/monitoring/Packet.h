@@ -22,6 +22,7 @@ class Packet {
 
 public:
     Packet(int id_schedina, std::string fcs, int rssi, std::string &mac, uint32_t timestamp, std::string &ssid);
+    //todo valutare se va bene usare questo anche per la lettura dal db oppure crearne un altro. Per ora id_schedina e rssi sono -1 quando creato da db
     friend std::ostream& operator<<(std::ostream& os, const Packet& pk);
 
     const std::string &getMacPeer() const;
