@@ -7,11 +7,14 @@
 MonitoringPlotView::MonitoringPlotView(QWidget *parent) : QChartView(parent) {
     this->setMouseTracking(true);
     this->setRubberBand(QChartView::RectangleRubberBand);
+    this->setRenderHint(QPainter::Antialiasing);
 }
 
 MonitoringPlotView::MonitoringPlotView(QChart *chart, QWidget *parent) : QChartView(chart, parent) {
     this->setMouseTracking(true);
     this->setRubberBand(QChartView::RectangleRubberBand);
+    this->setRenderHint(QPainter::Antialiasing);
+
 }
 
 void MonitoringPlotView::setChart(MonitoringChart *chart) {
