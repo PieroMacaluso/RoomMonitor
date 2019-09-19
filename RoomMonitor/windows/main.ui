@@ -43,6 +43,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionAnalysis"/>
+    <addaction name="separator"/>
     <addaction name="actionChiudi"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -177,8 +179,8 @@
   </widget>
   <action name="actionSettings">
    <property name="icon">
-    <iconset theme="emblem-system">
-     <normaloff>../../../../../.designer/backup</normaloff>../../../../../.designer/backup</iconset>
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/settings.svg</normaloff>:/resources/resources/settings.svg</iconset>
    </property>
    <property name="text">
     <string>Impostazioni...</string>
@@ -186,8 +188,8 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset theme="dialog-information">
-     <normaloff>../../../../../.designer/backup</normaloff>../../../../../.designer/backup</iconset>
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/info.svg</normaloff>:/resources/resources/info.svg</iconset>
    </property>
    <property name="text">
     <string>Informazioni</string>
@@ -220,6 +222,11 @@
     <string>Ultimi MAC Rilevati</string>
    </property>
   </action>
+  <action name="actionAnalysis">
+   <property name="text">
+    <string>Analisi dei dati</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -233,7 +240,9 @@
   <tabstop>startButton</tabstop>
   <tabstop>stopButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionChiudi</sender>
