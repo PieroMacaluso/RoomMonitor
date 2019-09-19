@@ -13,14 +13,12 @@
 #include <QtCharts>
 #include <windows/elements/MonitoringChart.h>
 
-class MainWindow: public QMainWindow {
+class MainWindow : public QMainWindow {
     Ui::MainWindow ui{};
     MonitoringServer s{};
-    QGraphicsSimpleTextItem *m_tooltip = nullptr;
-    MonitoringChart *monitoringChart;
-    QLineSeries * lineSeries;
+    MonitoringChart *monitoringChart{};
     QDateTime startTime{};
-            //TODO: remove
+    //TODO: remove
     int i_time = 0;
 
 public:
@@ -37,9 +35,13 @@ public:
     void setupMonitoringPlot();
 
 //    void tooltip(bool status, int index, QBarSet * set);
-    void initializeMacList();
+    void initializeLastMacList();
 
-    void addMacPos(QString mac, qreal posx, qreal posy);
+    void addLastMacPos(const QString &mac, qreal posx, qreal posy);
+
+    void initializeMacSituationList();
+
+    void addMacSitua(const QString &mac, qreal posx, qreal posy, bool random);
 };
 
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>960</width>
-    <height>498</height>
+    <height>817</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,12 +25,21 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="1" column="0">
+     <widget class="MonitoringPlotView" name="monitoringPlot"/>
+    </item>
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="MonitoringPlotView" name="monitoringPlot"/>
-      </item>
-     </layout>
+     <widget class="QLabel" name="title">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:600;&quot;&gt;Monitoraggio Stanza&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -47,6 +56,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionMonitoring"/>
     <addaction name="actionAnalysis"/>
     <addaction name="separator"/>
     <addaction name="actionChiudi"/>
@@ -67,8 +77,11 @@
     <property name="title">
      <string>Visualizza</string>
     </property>
-    <addaction name="actionGestione_Monitoraggio"/>
-    <addaction name="actionUltimi_MAC_Rilevati"/>
+    <addaction name="actionMonitoringDock"/>
+    <addaction name="actionlastMacDock"/>
+    <addaction name="separator"/>
+    <addaction name="actionRangeDock"/>
+    <addaction name="actionMacSituationDock"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -76,6 +89,9 @@
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string/>
    </property>
@@ -89,14 +105,22 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
+   <addaction name="actionMonitoring"/>
    <addaction name="actionAnalysis"/>
+   <addaction name="separator"/>
    <addaction name="actionSettings"/>
    <addaction name="actionAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="monitoringManagerDock">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="minimumSize">
     <size>
      <width>198</width>
@@ -114,7 +138,7 @@
    </property>
    <property name="windowIcon">
     <iconset resource="../res.qrc">
-     <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
+     <normaloff>:/resources/resources/wifi.svg</normaloff>:/resources/resources/wifi.svg</iconset>
    </property>
    <property name="floating">
     <bool>false</bool>
@@ -182,6 +206,10 @@
    <property name="acceptDrops">
     <bool>true</bool>
    </property>
+   <property name="windowIcon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/mac.svg</normaloff>:/resources/resources/mac.svg</iconset>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
@@ -194,29 +222,108 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_9">
      <item>
-      <widget class="QTableWidget" name="macSituation"/>
+      <widget class="QTableWidget" name="macLastSituation"/>
      </item>
     </layout>
    </widget>
   </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="acceptDrops">
+  <widget class="QDockWidget" name="rangeSelectorDock">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>201</width>
+     <height>128</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>524287</width>
+     <height>128</height>
+    </size>
+   </property>
+   <property name="floating">
     <bool>false</bool>
    </property>
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Selezione Range Analisi</string>
    </property>
-   <property name="movable">
-    <bool>false</bool>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QVBoxLayout" name="verticalLayout_11">
+     <item>
+      <layout class="QFormLayout" name="formLayout_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="start">
+         <property name="text">
+          <string>Inizio:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QDateTimeEdit" name="startDate"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="end">
+         <property name="text">
+          <string>Fine:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDateTimeEdit" name="endDate"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="searchButton_4">
+       <property name="text">
+        <string>Ricerca</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res.qrc">
+         <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="macDetectedDock">
+   <property name="windowTitle">
+    <string>MAC rilevati</string>
    </property>
-   <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
    </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="actionGestione_Monitoraggio"/>
-   <addaction name="actionUltimi_MAC_Rilevati"/>
+   <widget class="QWidget" name="dockWidgetContents_7">
+    <layout class="QVBoxLayout" name="verticalLayout_12">
+     <item>
+      <widget class="QTableWidget" name="macSituation"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QPushButton" name="localizeButton">
+         <property name="text">
+          <string>Localizza</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="randomButton">
+         <property name="text">
+          <string>Stima MAC Random</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="actionSettings">
    <property name="icon">
@@ -241,7 +348,7 @@
     <string>Chiudi</string>
    </property>
   </action>
-  <action name="actionGestione_Monitoraggio">
+  <action name="actionMonitoringDock">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -250,7 +357,7 @@
    </property>
    <property name="icon">
     <iconset resource="../res.qrc">
-     <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
+     <normaloff>:/resources/resources/wifi.svg</normaloff>:/resources/resources/wifi.svg</iconset>
    </property>
    <property name="text">
     <string>Gestione Monitoraggio</string>
@@ -265,7 +372,7 @@
     <bool>true</bool>
    </property>
   </action>
-  <action name="actionUltimi_MAC_Rilevati">
+  <action name="actionlastMacDock">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -274,19 +381,82 @@
    </property>
    <property name="icon">
     <iconset resource="../res.qrc">
-     <normaloff>:/resources/resources/info.svg</normaloff>:/resources/resources/info.svg</iconset>
+     <normaloff>:/resources/resources/mac.svg</normaloff>:/resources/resources/mac.svg</iconset>
    </property>
    <property name="text">
     <string>Ultimi MAC Rilevati</string>
    </property>
   </action>
   <action name="actionAnalysis">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
    </property>
    <property name="text">
     <string>Analisi dei dati</string>
+   </property>
+  </action>
+  <action name="actionMonitoring">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/wifi.svg</normaloff>:/resources/resources/wifi.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Monitoraggio Stanza</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRangeDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/time.svg</normaloff>:/resources/resources/time.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Selezione Range</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionMacSituationDock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../res.qrc">
+     <normaloff>:/resources/resources/mac.svg</normaloff>:/resources/resources/mac.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Ultimi MAC Rilevati</string>
    </property>
   </action>
  </widget>
@@ -325,7 +495,7 @@
   <connection>
    <sender>monitoringManagerDock</sender>
    <signal>visibilityChanged(bool)</signal>
-   <receiver>actionGestione_Monitoraggio</receiver>
+   <receiver>actionMonitoringDock</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -339,7 +509,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionGestione_Monitoraggio</sender>
+   <sender>actionMonitoringDock</sender>
    <signal>toggled(bool)</signal>
    <receiver>monitoringManagerDock</receiver>
    <slot>setVisible(bool)</slot>
@@ -355,7 +525,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionUltimi_MAC_Rilevati</sender>
+   <sender>actionlastMacDock</sender>
    <signal>triggered(bool)</signal>
    <receiver>lastMacDock</receiver>
    <slot>setVisible(bool)</slot>
@@ -373,7 +543,7 @@
   <connection>
    <sender>lastMacDock</sender>
    <signal>visibilityChanged(bool)</signal>
-   <receiver>actionUltimi_MAC_Rilevati</receiver>
+   <receiver>actionlastMacDock</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">

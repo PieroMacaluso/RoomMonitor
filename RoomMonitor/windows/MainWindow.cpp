@@ -5,13 +5,11 @@
 #include "MainWindow.h"
 #include "SettingDialog.h"
 
-void addMacPos(QString mac, qreal posx, qreal posy);
-
 MainWindow::MainWindow() {
+
     ui.setupUi(this);
-    setupMonitoringPlot();
-    initializeMacList();
     setupConnect();
+    ui.actionMonitoring->triggered(true);
 }
 
 void MainWindow::setupConnect() {
@@ -38,7 +36,71 @@ void MainWindow::setupConnect() {
     // Click Analysis Button
 
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
-       // TODO: Apertura finestra Analisi
+        if (s.isRunning()) {
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::question(this, "Analisi in corso",
+                                          "L'analisi in corso verrà interrotta. Continuare?",
+                                          QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::Yes) {
+                qDebug() << "Yes was clicked";
+            } else {
+                qDebug() << "Yes was *not* clicked";
+                return;
+            }
+            s.stop();
+            ui.startButton->setDisabled(false);
+            ui.stopButton->setDisabled(true);
+        }
+
+        // Chiusura monitoraggio
+        // Chiudi Dock Monitoraggio
+        ui.monitoringManagerDock->setVisible(false);
+        ui.lastMacDock->setVisible(false);
+        ui.actionMonitoringDock->setEnabled(false);
+        ui.actionlastMacDock->setEnabled(false);
+        // Disabilita azione Analisi
+        ui.actionAnalysis->setEnabled(false);
+
+        // Apertura Analisi
+        // Apri Dock Analisi
+        ui.macDetectedDock->setVisible(true);
+        ui.rangeSelectorDock->setVisible(true);
+        ui.actionMacSituationDock->setEnabled(true);
+        ui.actionRangeDock->setEnabled(true);
+
+        ui.actionMonitoring->setEnabled(true);
+
+        ui.title->setText(
+                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Analisi dei Dati</span></p></body></html>");
+        setupMonitoringPlot();
+        initializeMacSituationList();
+
+    });
+
+
+    QObject::connect(ui.actionMonitoring, &QAction::triggered, [&]() {
+        // Chiusura analisi
+        // Chiudi Dock analisi
+        ui.monitoringManagerDock->setVisible(true);
+        ui.lastMacDock->setVisible(true);
+        ui.actionMonitoringDock->setEnabled(true);
+        ui.actionlastMacDock->setEnabled(true);
+        // Disabilita azione Analisi
+        ui.actionAnalysis->setEnabled(true);
+
+        // Apertura Analisi
+        // Apri Dock Analisi
+        ui.macDetectedDock->setVisible(false);
+        ui.rangeSelectorDock->setVisible(false);
+        ui.actionMacSituationDock->setEnabled(false);
+        ui.actionRangeDock->setEnabled(false);
+
+        ui.actionMonitoring->setEnabled(false);
+        ui.title->setText(
+                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Monitoraggio Stanza</span></p></body></html>");
+        setupMonitoringPlot();
+        initializeLastMacList();
+
     });
 
     // Conseguenze Click Start Button
@@ -77,12 +139,29 @@ void MainWindow::setupConnect() {
                 qDebug() << "Yes was *not* clicked";
                 return;
             }
+            s.stop();
+            ui.startButton->setDisabled(false);
+            ui.stopButton->setDisabled(true);
         }
-        s.stop();
-        ui.startButton->setDisabled(false);
-        ui.stopButton->setDisabled(true);
+
         sd.setModal(true);
         sd.exec();
+
+    });
+
+    QObject::connect(ui.localizeButton, &QPushButton::clicked, [&]() {
+        // TODO: Implement Localize Dialog
+        QDialog localize{};
+        localize.setModal(true);
+        localize.exec();
+
+    });
+
+    QObject::connect(ui.randomButton, &QPushButton::clicked, [&]() {
+        // TODO: Implement Random Dialog
+        QDialog random{};
+        random.setModal(true);
+        random.exec();
 
     });
 
@@ -102,12 +181,12 @@ void MainWindow::setupMonitoringPlot() {
     monitoringChart = new MonitoringChart();
     ui.monitoringPlot->setChart(monitoringChart);
 
-    startTime.setDate(QDate(2019,9,18));
-    startTime.setTime(QTime(10,0,0));
+    startTime.setDate(QDate(2019, 9, 18));
+    startTime.setTime(QTime(10, 0, 0));
     for (int i = 0; i < 11; i++) {
-        QDateTime momentInTime = startTime.addSecs(60*5*i_time);
+        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
         i_time++;
-        monitoringChart->addData(momentInTime, std::rand()%20);
+        monitoringChart->addData(momentInTime, std::rand() % 20);
     }
     monitoringChart->updateData(startTime, 0);
 //    connect(ui.aggiungidatiFittizi, &QPushButton::clicked, [&](){
@@ -118,12 +197,13 @@ void MainWindow::setupMonitoringPlot() {
 
 }
 
-
-void MainWindow::initializeMacList() {
+void MainWindow::initializeMacSituationList() {
+    ui.macSituation->reset();
+    ui.macSituation->setRowCount(0);
     /* SETUP TABLE */
-    ui.macSituation->setColumnCount(3);
+    ui.macSituation->setColumnCount(4);
     QStringList h;
-    h << "MAC" << "X" << "Y";
+    h << "MAC" << "X" << "Y" << "Random";
     ui.macSituation->setHorizontalHeaderLabels(h);
     ui.macSituation->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.macSituation->verticalHeader()->hide();
@@ -131,17 +211,62 @@ void MainWindow::initializeMacList() {
     ui.macSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
     ui.macSituation->setAlternatingRowColors(true);
     ui.macSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    addMacPos("AA:AA:AA:AA:AA:AA", 0, 2.5);
-    addMacPos("BB:BB:BB:BB:BB:BB", 1, 3);
-    addMacPos("CC:CC:CC:CC:CC:CC", 2, 0);
+    // TODO: delete fake data
+    addMacSitua("AA:AA:AA:AA:AA:AA", 0, 2.5, true);
+    addMacSitua("BB:BB:BB:BB:BB:BB", 1, 3, false);
+    addMacSitua("CC:CC:CC:CC:CC:CC", 2, 0, false);
 }
-void MainWindow::addMacPos(QString mac, qreal posx, qreal posy){
-        int i = ui.macSituation->rowCount();
-        ui.macSituation->insertRow(ui.macSituation->rowCount());
-        ui.macSituation->setItem(i, 0, new QTableWidgetItem(mac));
-        ui.macSituation->setItem(i, 1, new QTableWidgetItem(QString::number(posx)));
-        ui.macSituation->setItem(i, 2, new QTableWidgetItem(QString::number(posy)));
-        ui.macSituation->resizeColumnsToContents();
+
+void MainWindow::addMacSitua(const QString &mac, qreal posx, qreal posy, bool random) {
+    int i = ui.macSituation->rowCount();
+    ui.macSituation->insertRow(ui.macSituation->rowCount());
+    auto mac_table = new QTableWidgetItem{mac};
+    mac_table->setToolTip(mac);
+    auto posx_table = new QTableWidgetItem{QString::number(posx)};
+    auto posy_table = new QTableWidgetItem{QString::number(posy)};
+    auto random_table = new QTableWidgetItem{random ? "true" : "false"};
+
+    mac_table->setToolTip(mac);
+    ui.macSituation->setItem(i, 0,mac_table);
+    ui.macSituation->setItem(i, 1, posx_table);
+    ui.macSituation->setItem(i, 2, posy_table);
+    ui.macSituation->setItem(i, 3, random_table);
+
+}
+
+void MainWindow::initializeLastMacList() {
+    ui.macLastSituation->reset();
+    /* SETUP TABLE */
+    ui.macLastSituation->setColumnCount(3);
+    ui.macLastSituation->setRowCount(0);
+    QStringList h;
+    h << "MAC" << "X" << "Y";
+    ui.macLastSituation->setHorizontalHeaderLabels(h);
+    ui.macLastSituation->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui.macLastSituation->verticalHeader()->hide();
+    ui.macLastSituation->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui.macLastSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
+    ui.macLastSituation->setAlternatingRowColors(true);
+    ui.macLastSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // TODO: delete fake data
+    addLastMacPos("BB:BB:BB:BB:BB:BB", 1.0, 3.0);
+    addLastMacPos("CC:CC:CC:CC:CC:CC", 2.0, 0.0);
+    addLastMacPos("AA:AA:AA:AA:AA:AA", 0.0, 2.5);
+}
+
+void MainWindow::addLastMacPos(const QString &mac, qreal posx, qreal posy) {
+    int i = ui.macLastSituation->rowCount();
+    ui.macLastSituation->insertRow(ui.macSituation->rowCount());
+    ui.macLastSituation->setRowCount(i+1);
+
+    auto mac_table = new QTableWidgetItem{mac};
+    auto posx_table = new QTableWidgetItem{QString::number(posx)};
+    auto posy_table = new QTableWidgetItem{QString::number(posy)};
+    mac_table->setToolTip(mac);
+
+    ui.macLastSituation->setItem(i, 0, mac_table);
+    ui.macLastSituation->setItem(i, 1, posx_table);
+    ui.macLastSituation->setItem(i, 2, posy_table);
 
 }
 
