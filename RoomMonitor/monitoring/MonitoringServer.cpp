@@ -334,6 +334,7 @@ void MonitoringServer::aggregate() {
             PositionData positionData = fromRssiToXY(i->second);
             if (positionData.getX() == -1 || positionData.getY() == -1) continue;
             map_mac_xy.insert(std::make_pair(mac, positionData));
+            //todo aggiungere posizionData al pacchetto con quel mac prima di salvarlo nel db
         } else {
             // MAC già visto
             // Calculate x,y da RSSI
@@ -364,7 +365,13 @@ void MonitoringServer::aggregate() {
         query.bindValue(":timestamp", QDateTime::fromSecsSinceEpoch(fil.second.begin()->getTimestamp()));
         query.bindValue(":ssid", QString::fromStdString(fil.second.begin()->getSsid()));
         // TODO: manage HIDDEN
-        query.bindValue(":hidden", 0);
+        //controllo se pacchetto con mac hidden //todo controllare bene
+        if((fil.second.begin()->getMacPeer().at(0)>='4' && fil.second.begin()->getMacPeer().at(0)<='7')|| fil.second.begin()->getMacPeer().at(0)>='c'){
+            //mac hidden
+            query.bindValue(":hidden", 1);
+        }else{
+            query.bindValue(":hidden", 0);
+        }
         if (!query.exec()) {
             qDebug() << query.lastError();
         }
@@ -399,4 +406,29 @@ void MonitoringServer::aggregate() {
 bool MonitoringServer::isRunning() {
     return server.isListening();
 }
+
+bool getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime);
+
+/**
+ * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
+ * Separato su due funzioni per avere anche solo la ricerca per un singolo mac.
+ * @param initTime
+ * @param endTime
+ *
+ * initTime e endTime corrispondono al periodo di osservazione (esempio alcune ore)
+ * tolleranzaTimestamp corrisponde al tempo in cui la posizione deve essere simile per dire che il mac è uguale ad un altro (esempio 1 minuto)
+ *
+ * @return
+ */
+
+int getHiddenDevice(uint32_t initTime,uint32_t endTime);
+
+/**
+ * Funzione che recupera dal db tutti i pacchetti con mac hidden nel periodo specificato
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+std::deque<Packet> getHiddenPackets(uint32_t initTime,uint32_t endTime);
+
 

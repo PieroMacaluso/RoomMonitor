@@ -39,4 +39,16 @@ const std::string &Packet::getSsid() const {
     return ssid;
 }
 
+void Packet::setPosition(PositionData pos) {
+    positionData=pos;
+}
+
+double Packet::getX(){
+    return positionData.getX();
+}
+
+double Packet::getY() {
+    return positionData.getY();
+}
+
 

@@ -9,6 +9,7 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include "PositionData.h"
 
 class Packet {
     std::string macPeer;
@@ -17,6 +18,7 @@ class Packet {
     std::string fcs;
     uint32_t timestamp;
     std::string ssid;
+    PositionData positionData;
 
 public:
     Packet(int id_schedina, std::string fcs, int rssi, std::string &mac, uint32_t timestamp, std::string &ssid);
@@ -33,6 +35,11 @@ public:
     uint32_t getTimestamp() const;
 
     const std::string &getSsid() const;
+
+    void setPosition(PositionData pos);
+
+    double getX();
+    double getY();
 };
 
 
