@@ -100,11 +100,11 @@ void MainWindow::setupMonitoringPlot() {
         i_time++;
         monitoringChart->addData(momentInTime, std::rand()%20);
     }
-    connect(ui.aggiungidatiFittizi, &QPushButton::clicked, [&](){
-        QDateTime momentInTime = startTime.addSecs(60*5*i_time);
-        i_time++;
-        monitoringChart->addData(momentInTime, std::rand()%20);
-    });
+//    connect(ui.aggiungidatiFittizi, &QPushButton::clicked, [&](){
+//        QDateTime momentInTime = startTime.addSecs(60*5*i_time);
+//        i_time++;
+//        monitoringChart->addData(momentInTime, std::rand()%20);
+//    });
 }
 
 
