@@ -193,6 +193,7 @@ void MonitoringServer::start() {
     nDatabase.setUserName(settings.value("database/user").toString());
     nDatabase.setPassword(settings.value("database/pass").toString());
 
+    getHiddenDevice(1569088800,1569091920);
 
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
@@ -425,7 +426,7 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t
     std::deque<Packet> hiddenPackets;
     QString table="stanza";         //todo vedere da impostazioni
     QSqlQuery query{};
-    query.prepare("SELECT * FROM "+ table+ " WHERE hidden='1' AND timestamp>='"+timeInit.toString(Qt::SystemLocaleShortDate)+"' AND timestamp<='"+ timeEnd.toString("yyyy-MM-dd hh:mm:ss")+"';");
+    query.prepare("SELECT * FROM "+ table+ " WHERE hidden='1' AND timestamp>='"+timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss")+"' AND timestamp<='"+ timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss")+"';");
     qDebug()<< query.executedQuery();
     if (!query.exec()) {
         qDebug() << query.lastError();
