@@ -186,12 +186,14 @@ void MonitoringServer::disconnectDB() {
 }
 
 void MonitoringServer::start() {
-
+    nDatabase = QSqlDatabase::addDatabase("QMYSQL");
     nDatabase.setHostName(settings.value("database/host").toString());
     nDatabase.setDatabaseName(settings.value("database/name").toString());
     nDatabase.setPort(settings.value("database/port").toInt());
     nDatabase.setUserName(settings.value("database/user").toString());
     nDatabase.setPassword(settings.value("database/pass").toString());
+
+
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
     } else {
@@ -202,6 +204,7 @@ void MonitoringServer::start() {
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
         timer.start(30000);
     }
+
 }
 
 void MonitoringServer::stop() {
@@ -365,7 +368,6 @@ void MonitoringServer::aggregate() {
         query.bindValue(":posy", positionData.getY());
         query.bindValue(":timestamp", QDateTime::fromSecsSinceEpoch(fil.second.begin()->getTimestamp()));
         query.bindValue(":ssid", QString::fromStdString(fil.second.begin()->getSsid()));
-        // TODO: manage HIDDEN
         //controllo se pacchetto con mac hidden //todo controllare bene
         if((fil.second.begin()->getMacPeer().at(0)>='4' && fil.second.begin()->getMacPeer().at(0)<='7')|| fil.second.begin()->getMacPeer().at(0)>='c'){
             //mac hidden
@@ -410,23 +412,40 @@ bool MonitoringServer::isRunning() {
 
 std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t endTime){
     //query per ottenere i pacchetti con mac hidden nel periodo specificato
-    std::deque<Packet> hiddenPackets;
-    QString table="stanza";
-    QSqlQuery query{};
-    query.prepare("SELECT * FROM "+ table+ "WHERE hidden=1 AND timestamp>="+initTime+" AND timestamp<="+endTime+";");
+    connectDB();
 
+    QDateTime timeInit;
+    QDateTime timeEnd;
+
+    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeEnd.setTime_t(endTime);
+
+
+
+    std::deque<Packet> hiddenPackets;
+    QString table="stanza";         //todo vedere da impostazioni
+    QSqlQuery query{};
+    query.prepare("SELECT * FROM "+ table+ " WHERE hidden='1' AND timestamp>='"+timeInit.toString(Qt::SystemLocaleShortDate)+"' AND timestamp<='"+ timeEnd.toString("yyyy-MM-dd hh:mm:ss")+"';");
+    qDebug()<< query.executedQuery();
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
     QSqlRecord record = query.record();
+    if(query.size()==0)
+        qDebug() << "Nessun risultato";
 
     while(query.next()){                                //ciclo su ogni entry selezionata del db
         std::string fcs=query.value(1).toString().toStdString();
         std::string mac=query.value(2).toString().toStdString();
-        uint32_t timestamp=query.value(5).toString().toUInt();
+        uint32_t timestamp=query.value(5).toDateTime().toSecsSinceEpoch();
         std::string ssid=query.value(6).toString().toStdString();
 
         Packet p(-1,fcs,-1,mac,timestamp,ssid);
+
+        double_t posX=query.value(3).toDouble();
+        double_t posY=query.value(4).toDouble();
+        PositionData positionData(posX,posY);
+        p.setPosition(positionData);
         hiddenPackets.push_back(p);
 
     }
@@ -487,7 +506,7 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32
 *
 * @return
 */
-
+//getHiddenDevice(1569088800,1569091920);
 int MonitoringServer::getHiddenDevice(uint32_t initTime,uint32_t endTime){
     bool trovato;
     int numHiddenDevice=0;
@@ -503,6 +522,7 @@ int MonitoringServer::getHiddenDevice(uint32_t initTime,uint32_t endTime){
             numHiddenDevice++;
     }
 
+    qDebug() << "Numero di dispositivi differenti con mac nascosto: "<< numHiddenDevice;
     return numHiddenDevice;
     //todo decidere cosa fare con tale numero
 }
