@@ -462,7 +462,7 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t
 * @param endTime
 * @return
 */
-bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime){
+bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime,std::deque<Packet> &hiddenPackets){
     //entro 5 minuti, stessa posizione +-0.5, altro da vedere
     uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
     double tolleranzaX=0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
@@ -470,9 +470,9 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32
     double perc;
     bool trovato= false;
 
-    std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
+    /*std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
     if(hiddenPackets.size()==0)
-        return false;
+        return false;*/
 
     for(int j=0;j<hiddenPackets.size();j++){
         if(hiddenPackets.at(j).getMacPeer()!=source.getMacPeer()){
@@ -514,11 +514,11 @@ int MonitoringServer::getHiddenDevice(uint32_t initTime,uint32_t endTime){
 
 
     std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
-    if(hiddenPackets.size()==0)
+    if(hiddenPackets.empty())
         return 0;
 
     for(int i=0;i<hiddenPackets.size();i++){
-        trovato=getHiddenDeviceFor(hiddenPackets.at(i),initTime,endTime);
+        trovato=getHiddenDeviceFor(hiddenPackets.at(i),initTime,endTime,hiddenPackets);
         if(trovato)
             numHiddenDevice++;
     }

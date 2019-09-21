@@ -105,7 +105,7 @@ public:
 
     bool is_inside_room(PositionData data);
 
-    bool getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime);
+    bool getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime,std::deque<Packet> &hiddenPackets);
 
 /**
  * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
