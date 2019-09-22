@@ -12,12 +12,12 @@
 #include "windows/elements/callout.h"
 #include <QtCharts>
 #include <windows/elements/MonitoringChart.h>
-#include <windows/elements/Plot1.h>
+#include <windows/elements/MacChart.h>
 
 class MainWindow : public QMainWindow {
     Ui::MainWindow ui{};
     MonitoringServer s{};
-    Plot1 *plot1{};
+    MacChart *macPlot{};
     MonitoringChart *monitoringChart{};
     QDateTime startTime{};
     //TODO: remove
@@ -48,6 +48,7 @@ public:
     void setupAnalysisPlot();
 
 
+    void setPlotMacOne();
 };
 
 

@@ -2,7 +2,8 @@
 // Created by pieromack on 11/09/19.
 //
 
-#include <windows/elements/Plot1.h>
+#include <windows/elements/MacChart.h>
+#include <windows/classes/MacOccurrence.h>
 #include "MainWindow.h"
 #include "SettingDialog.h"
 
@@ -209,8 +210,6 @@ void MainWindow::setupMonitoringPlot() {
 
 void MainWindow::setupAnalysisPlot() {
     monitoringChart = new MonitoringChart();
-    plot1 = new Plot1();
-
     // Plot Analysis Chart
     ui.analysisPlot->setChart(monitoringChart);
 //    ui.macPlot->setChart(monitoringChart);
@@ -225,9 +224,7 @@ void MainWindow::setupAnalysisPlot() {
     monitoringChart->updateData(startTime, 0);
 
     // TODO: Plot MAC occurrences
-//    ui.macPlot->setChart(plot1);
-//    ui.macPlot->setChart(monitoringChart);
-//
+    setPlotMacOne();
 //    startTime.setDate(QDate(2019, 9, 18));
 //    startTime.setTime(QTime(10, 0, 0));
 //    for (int i = 0; i < 11; i++) {
@@ -311,3 +308,15 @@ void MainWindow::addLastMacPos(const QString &mac, qreal posx, qreal posy) {
 
 }
 
+
+void MainWindow::setPlotMacOne() {
+    macPlot = new MacChart();
+    QVector<MacOccurrence> macs;
+    for (int i = 0; i < 20; i++) {
+        QString st {"MAC %1"};
+        MacOccurrence m{st.arg(i), i};
+        macs.append(m);
+    }
+    macPlot->fillChart(macs);
+    ui.macPlot->setChart(macPlot);
+}
