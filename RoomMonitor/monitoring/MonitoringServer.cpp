@@ -445,7 +445,7 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t
 
         double_t posX=query.value(3).toDouble();
         double_t posY=query.value(4).toDouble();
-        PositionData positionData(posX,posY);
+        PositionData positionData(posX, posY);
         p.setPosition(positionData);
         hiddenPackets.push_back(p);
 

@@ -8,6 +8,7 @@
 
 #include "ui_main.h"
 #include "ui_about.h"
+#include "ui_localize.h"
 #include "../monitoring/MonitoringServer.h"
 #include "windows/common/callout.h"
 #include <QtCharts>
@@ -16,6 +17,7 @@
 
 class MainWindow : public QMainWindow {
     Ui::MainWindow ui{};
+    Ui::PositionDialog positionDialog{};
     MonitoringServer s{};
     MacChart *macPlot{};
     MonitoringChart *monitoringChart{};
@@ -49,6 +51,8 @@ public:
 
 
     void setPlotMacOne();
+
+    void setupPositionPlot();
 };
 
 

@@ -4,6 +4,7 @@
 
 #include <windows/plots/mac/MacChart.h>
 #include <windows/classes/MacOccurrence.h>
+#include <windows/classes/PositionDataPlot.h>
 #include "MainWindow.h"
 #include "SettingDialog.h"
 
@@ -162,7 +163,11 @@ void MainWindow::setupConnect() {
 
     QObject::connect(ui.localizeButton, &QPushButton::clicked, [&]() {
         // TODO: Implement Localize Dialog
+        QString mac = ui.macSituation->selectedItems().at(0)->text();
         QDialog localize{};
+        positionDialog.setupUi(&localize);
+        positionDialog.macLabel->setText(mac);
+        setupPositionPlot();
         localize.setModal(true);
         localize.exec();
 
@@ -251,15 +256,15 @@ void MainWindow::initializeMacSituationList() {
     ui.macSituation->setAlternatingRowColors(true);
     ui.macSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
     // Connect
-    connect(ui.macSituation, &QTableWidget::itemSelectionChanged, this, [&](){
+    connect(ui.macSituation, &QTableWidget::itemSelectionChanged, this, [&]() {
         auto i = ui.macSituation->selectedItems();
-        if (i.size() == 0){
+        if (i.size() == 0) {
             ui.randomButton->setEnabled(false);
             ui.localizeButton->setEnabled(false);
             return;
         }
         bool ran = i.at(3)->text() == "true";
-        if (ran){
+        if (ran) {
             ui.randomButton->setEnabled(true);
             ui.localizeButton->setEnabled(true);
         } else {
@@ -330,10 +335,30 @@ void MainWindow::setPlotMacOne() {
     macPlot = new MacChart();
     QVector<MacOccurrence> macs;
     for (int i = 0; i < 20; i++) {
-        QString st {"MAC %1"};
+        QString st{"MAC %1"};
         MacOccurrence m{st.arg(i), i};
         macs.append(m);
     }
     macPlot->fillChart(macs);
     ui.macPlot->setChart(macPlot);
+}
+
+void MainWindow::setupPositionPlot() {
+    PositionPlot *posPlot = new PositionPlot();// Plot Analysis Chart
+    positionDialog.positionPlot->setChart(posPlot);
+//    ui.macPlot->setChart(monitoringChart);
+    // TODO: Cancella dati fittizi
+    std::vector<PositionDataPlot> v;
+    startTime.setDate(QDate(2019, 9, 18));
+    startTime.setTime(QTime(10, 0, 0));
+    for (int i = 0; i < 100; i++) {
+        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
+        i_time++;
+        PositionDataPlot p{momentInTime, (std::rand() % 10) * 1.0, (std::rand() % 10) * 1.0};
+        v.push_back(p);
+    }
+
+    posPlot->fillData(v);
+    positionDialog.horizontalSlider->setRange(0, v.size());
+    connect(positionDialog.horizontalSlider, &QSlider::valueChanged, posPlot, &PositionPlot::sliderChanged);
 }
