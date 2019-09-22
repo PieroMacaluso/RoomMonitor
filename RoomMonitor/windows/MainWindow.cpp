@@ -2,6 +2,7 @@
 // Created by pieromack on 11/09/19.
 //
 
+#include <windows/elements/Plot1.h>
 #include "MainWindow.h"
 #include "SettingDialog.h"
 
@@ -59,7 +60,7 @@ void MainWindow::setupConnect() {
         ui.actionMonitoringDock->setEnabled(false);
         ui.actionlastMacDock->setEnabled(false);
         // Disabilita azione Analisi
-        ui.actionAnalysis->setEnabled(false);
+        ui.actionAnalysis->setVisible(false);
 
         // Apertura Analisi
         // Apri Dock Analisi
@@ -68,11 +69,15 @@ void MainWindow::setupConnect() {
         ui.actionMacSituationDock->setEnabled(true);
         ui.actionRangeDock->setEnabled(true);
 
-        ui.actionMonitoring->setEnabled(true);
+        ui.actionMonitoring->setVisible(true);
+
+        // Cambia plot
+        ui.monitoringPlot->setVisible(false);
+        ui.analysisWidget->setVisible(true);
 
         ui.title->setText(
                 "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Analisi dei Dati</span></p></body></html>");
-        setupMonitoringPlot();
+        setupAnalysisPlot();
         initializeMacSituationList();
 
     });
@@ -80,24 +85,29 @@ void MainWindow::setupConnect() {
 
     QObject::connect(ui.actionMonitoring, &QAction::triggered, [&]() {
         // Chiusura analisi
-        // Chiudi Dock analisi
+
+        // Chiusura DOCK analisi
         ui.monitoringManagerDock->setVisible(true);
         ui.lastMacDock->setVisible(true);
         ui.actionMonitoringDock->setEnabled(true);
         ui.actionlastMacDock->setEnabled(true);
-        // Disabilita azione Analisi
-        ui.actionAnalysis->setEnabled(true);
 
-        // Apertura Analisi
         // Apri Dock Analisi
         ui.macDetectedDock->setVisible(false);
         ui.rangeSelectorDock->setVisible(false);
         ui.actionMacSituationDock->setEnabled(false);
         ui.actionRangeDock->setEnabled(false);
 
-        ui.actionMonitoring->setEnabled(false);
+        // Disabilita azione Monitoring e abilita Analisi
+        ui.actionAnalysis->setVisible(true);
+        ui.actionMonitoring->setVisible(false);
+
         ui.title->setText(
                 "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Monitoraggio Stanza</span></p></body></html>");
+
+        // Cambia plot
+        ui.monitoringPlot->setVisible(true);
+        ui.analysisWidget->setVisible(false);
         setupMonitoringPlot();
         initializeLastMacList();
 
@@ -194,6 +204,38 @@ void MainWindow::setupMonitoringPlot() {
 //        i_time++;
 //        monitoringChart->addData(momentInTime, std::rand()%20);
 //    });
+
+}
+
+void MainWindow::setupAnalysisPlot() {
+    monitoringChart = new MonitoringChart();
+    plot1 = new Plot1();
+
+    // Plot Analysis Chart
+    ui.analysisPlot->setChart(monitoringChart);
+//    ui.macPlot->setChart(monitoringChart);
+
+    startTime.setDate(QDate(2019, 9, 18));
+    startTime.setTime(QTime(10, 0, 0));
+    for (int i = 0; i < 11; i++) {
+        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
+        i_time++;
+        monitoringChart->addData(momentInTime, std::rand() % 20);
+    }
+    monitoringChart->updateData(startTime, 0);
+
+    // TODO: Plot MAC occurrences
+//    ui.macPlot->setChart(plot1);
+//    ui.macPlot->setChart(monitoringChart);
+//
+//    startTime.setDate(QDate(2019, 9, 18));
+//    startTime.setTime(QTime(10, 0, 0));
+//    for (int i = 0; i < 11; i++) {
+//        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
+//        i_time++;
+//        monitoringChart->addData(momentInTime, std::rand() % 20);
+//    }
+//    monitoringChart->updateData(startTime, 0);
 
 }
 

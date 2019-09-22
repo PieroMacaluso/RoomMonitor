@@ -12,10 +12,12 @@
 #include "windows/elements/callout.h"
 #include <QtCharts>
 #include <windows/elements/MonitoringChart.h>
+#include <windows/elements/Plot1.h>
 
 class MainWindow : public QMainWindow {
     Ui::MainWindow ui{};
     MonitoringServer s{};
+    Plot1 *plot1{};
     MonitoringChart *monitoringChart{};
     QDateTime startTime{};
     //TODO: remove
@@ -42,6 +44,10 @@ public:
     void initializeMacSituationList();
 
     void addMacSitua(const QString &mac, qreal posx, qreal posy, bool random);
+
+    void setupAnalysisPlot();
+
+
 };
 
 
