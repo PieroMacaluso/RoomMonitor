@@ -219,7 +219,7 @@ void MainWindow::initializeMacSituationList() {
 
 void MainWindow::addMacSitua(const QString &mac, qreal posx, qreal posy, bool random) {
     int i = ui.macSituation->rowCount();
-    ui.macSituation->insertRow(ui.macSituation->rowCount());
+    ui.macSituation->insertRow(i);
     auto mac_table = new QTableWidgetItem{mac};
     mac_table->setToolTip(mac);
     auto posx_table = new QTableWidgetItem{QString::number(posx)};
@@ -227,7 +227,7 @@ void MainWindow::addMacSitua(const QString &mac, qreal posx, qreal posy, bool ra
     auto random_table = new QTableWidgetItem{random ? "true" : "false"};
 
     mac_table->setToolTip(mac);
-    ui.macSituation->setItem(i, 0,mac_table);
+    ui.macSituation->setItem(i, 0, mac_table);
     ui.macSituation->setItem(i, 1, posx_table);
     ui.macSituation->setItem(i, 2, posy_table);
     ui.macSituation->setItem(i, 3, random_table);
@@ -256,8 +256,7 @@ void MainWindow::initializeLastMacList() {
 
 void MainWindow::addLastMacPos(const QString &mac, qreal posx, qreal posy) {
     int i = ui.macLastSituation->rowCount();
-    ui.macLastSituation->insertRow(ui.macSituation->rowCount());
-    ui.macLastSituation->setRowCount(i+1);
+    ui.macLastSituation->insertRow(i);
 
     auto mac_table = new QTableWidgetItem{mac};
     auto posx_table = new QTableWidgetItem{QString::number(posx)};
