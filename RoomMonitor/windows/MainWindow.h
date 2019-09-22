@@ -9,10 +9,10 @@
 #include "ui_main.h"
 #include "ui_about.h"
 #include "../monitoring/MonitoringServer.h"
-#include "windows/elements/callout.h"
+#include "windows/common/callout.h"
 #include <QtCharts>
-#include <windows/elements/MonitoringChart.h>
-#include <windows/elements/MacChart.h>
+#include <windows/plots/monitoring/MonitoringChart.h>
+#include <windows/plots/mac/MacChart.h>
 
 class MainWindow : public QMainWindow {
     Ui::MainWindow ui{};

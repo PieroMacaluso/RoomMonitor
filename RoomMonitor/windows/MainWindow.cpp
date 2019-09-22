@@ -2,7 +2,7 @@
 // Created by pieromack on 11/09/19.
 //
 
-#include <windows/elements/MacChart.h>
+#include <windows/plots/mac/MacChart.h>
 #include <windows/classes/MacOccurrence.h>
 #include "MainWindow.h"
 #include "SettingDialog.h"

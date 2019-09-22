@@ -501,12 +501,12 @@
   <customwidget>
    <class>MonitoringPlotView</class>
    <extends>QGraphicsView</extends>
-   <header>windows/elements/MonitoringPlotView.h</header>
+   <header>windows/plots/monitoring/MonitoringPlotView.h</header>
   </customwidget>
   <customwidget>
    <class>MacPlotView</class>
    <extends>QGraphicsView</extends>
-   <header>windows/elements/MacPlotView.h</header>
+   <header>windows/plots/mac/MacPlotView.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

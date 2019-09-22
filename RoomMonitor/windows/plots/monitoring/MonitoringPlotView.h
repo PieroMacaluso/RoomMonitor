@@ -7,7 +7,7 @@
 
 #include <QtCharts>
 #include "MonitoringChart.h"
-#include "callout.h"
+#include "windows/common/callout.h"
 
 
 class MonitoringPlotView : public QChartView {
