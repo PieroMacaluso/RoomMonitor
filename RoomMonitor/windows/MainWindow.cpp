@@ -250,6 +250,23 @@ void MainWindow::initializeMacSituationList() {
     ui.macSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
     ui.macSituation->setAlternatingRowColors(true);
     ui.macSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // Connect
+    connect(ui.macSituation, &QTableWidget::itemSelectionChanged, this, [&](){
+        auto i = ui.macSituation->selectedItems();
+        if (i.size() == 0){
+            ui.randomButton->setEnabled(false);
+            ui.localizeButton->setEnabled(false);
+            return;
+        }
+        bool ran = i.at(3)->text() == "true";
+        if (ran){
+            ui.randomButton->setEnabled(true);
+            ui.localizeButton->setEnabled(true);
+        } else {
+            ui.randomButton->setEnabled(false);
+            ui.localizeButton->setEnabled(true);
+        }
+    });
     // TODO: delete fake data
     addMacSitua("AA:AA:AA:AA:AA:AA", 0, 2.5, true);
     addMacSitua("BB:BB:BB:BB:BB:BB", 1, 3, false);
