@@ -16,42 +16,80 @@
 #include <windows/plots/mac/MacChart.h>
 
 class MainWindow : public QMainWindow {
+
+    /**
+     * UI Finestra Principale
+     */
     Ui::MainWindow ui{};
+
+    /**
+     * UI Dialogo Posizione MAC
+     */
     Ui::PositionDialog positionDialog{};
+
+    /**
+     * Struttura di monitoraggio. Parte centrale delle procedure di monitoraggio
+     */
     MonitoringServer s{};
-    MacChart *macPlot{};
-    MonitoringChart *monitoringChart{};
-    QDateTime startTime{};
-    //TODO: remove
-    int i_time = 0;
 
 public:
+    /**
+     * Costruttore: si occupa di fare il setup della UI, inizializzare le connect e infine triggerare una funzione per
+     * attivare la visualizzazione iniziale, ovvero quella del monitoraggio.
+     */
     MainWindow();
 
     /**
-     * Setup della finestra principale
+     * Setup delle connect di tutta la MainWindow
      */
     void setupConnect();
+
     /**
-     * Funzione per impostare il Grafico numero uno
+     * Funzione per impostare il grafico del monitoraggio
      */
-    //TODO: Creare una funzione simile per l'altro grafico
     void setupMonitoringPlot();
 
-//    void tooltip(bool status, int index, QBarSet * set);
+    /**
+     * Inizializza la lista delle ultime posizioni dei Mac rilevati
+     */
     void initializeLastMacList();
 
+    /**
+     * Aggiunta di una ultima posizione MAC alla tabella delle ultime posizioni.
+     * @param mac   MAC del dispositivo
+     * @param posx  coordinata x posizione
+     * @param posy  coordinata y posizione
+     */
     void addLastMacPos(const QString &mac, qreal posx, qreal posy);
 
+    /**
+     * Inizializza la tabella della situazione dei MAC nel range specificato dall'analisi di lungo periodo
+     */
     void initializeMacSituationList();
 
+    /**
+     * Aggiunta MAC alla lista della situazione MAC nella statistica di lungo periodo.
+     * @param mac   MAC del dispositivo
+     * @param posx  coordinata x posizione
+     * @param posy  coordinata y posizione
+     * @param random    mac randomico o normale?
+     */
     void addMacSitua(const QString &mac, qreal posx, qreal posy, bool random);
 
+    /**
+     * Setup iniziale del grafico andamento presenze nella analisi di lungo periodo
+     */
     void setupAnalysisPlot();
 
+    /**
+     * Setup iniziale del grafico con le differenti rilevazioni dei MAC
+     */
+    void setMacPlot();
 
-    void setPlotMacOne();
-
+    /**
+     * Setup iniziale del grafico che rappresenta le varie posizioni del MAC selezionato nella relativa finestra di
+     * dialogo
+     */
     void setupPositionPlot();
 };
 

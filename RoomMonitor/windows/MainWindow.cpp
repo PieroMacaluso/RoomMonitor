@@ -9,7 +9,6 @@
 #include "SettingDialog.h"
 
 MainWindow::MainWindow() {
-
     ui.setupUi(this);
     setupConnect();
     ui.actionMonitoring->triggered(true);
@@ -19,7 +18,6 @@ void MainWindow::setupConnect() {
     ui.stopButton->setDisabled(true);
 
     // Click Start Button
-
     QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
         try {
             // TODO: insert from settings
@@ -37,7 +35,6 @@ void MainWindow::setupConnect() {
     });
 
     // Click Analysis Button
-
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
         if (s.isRunning()) {
             QMessageBox::StandardButton reply;
@@ -84,7 +81,7 @@ void MainWindow::setupConnect() {
 
     });
 
-
+    // Click Monitoring Button
     QObject::connect(ui.actionMonitoring, &QAction::triggered, [&]() {
         // Chiusura analisi
 
@@ -116,28 +113,24 @@ void MainWindow::setupConnect() {
     });
 
     // Conseguenze Click Start Button
-
     QObject::connect(&s, &MonitoringServer::started, [&]() { s.start(); });
 
     // Click Stop Button
-
     QObject::connect(ui.stopButton, &QPushButton::clicked, [&]() {
-        s.stopped();
-        ui.startButton->setDisabled(false);
-        ui.stopButton->setDisabled(true);
-        s.stop();
-
-
+        if (s.isRunning()) {
+            s.stopped();
+            ui.startButton->setDisabled(false);
+            ui.stopButton->setDisabled(true);
+            s.stop();
+        }
     });
 
-    // Conseguenze Click Start Button
-
+    // Conseguenze Click Stop Button
     QObject::connect(&s, &MonitoringServer::stopped, [&]() {
         std::cout << "Stopped" << std::endl;
     });
 
     // Azione Impostazioni
-
     QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
         SettingDialog sd{};
         if (s.isRunning()) {
@@ -161,6 +154,7 @@ void MainWindow::setupConnect() {
 
     });
 
+    // Azione Localizza MAC
     QObject::connect(ui.localizeButton, &QPushButton::clicked, [&]() {
         // TODO: Implement Localize Dialog
         QString mac = ui.macSituation->selectedItems().at(0)->text();
@@ -173,6 +167,7 @@ void MainWindow::setupConnect() {
 
     });
 
+    // Azione Analisi MAC randomico
     QObject::connect(ui.randomButton, &QPushButton::clicked, [&]() {
         // TODO: Implement Random Dialog
         QDialog random{};
@@ -181,6 +176,7 @@ void MainWindow::setupConnect() {
 
     });
 
+    // Azione Informazioni Sviluppatori
     QObject::connect(ui.actionAbout, &QAction::triggered, [&]() {
         QDialog sd{};
         Ui::AboutDialog a{};
@@ -194,42 +190,39 @@ void MainWindow::setupConnect() {
 }
 
 void MainWindow::setupMonitoringPlot() {
-    monitoringChart = new MonitoringChart();
+    auto monitoringChart = new MonitoringChart();
     ui.monitoringPlot->setChart(monitoringChart);
 
+    // TODO: dati fittizi da rimuovere alla fine
+    QDateTime startTime{};
     startTime.setDate(QDate(2019, 9, 18));
     startTime.setTime(QTime(10, 0, 0));
     for (int i = 0; i < 11; i++) {
-        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
-        i_time++;
+        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
         monitoringChart->addData(momentInTime, std::rand() % 20);
     }
     monitoringChart->updateData(startTime, 0);
-//    connect(ui.aggiungidatiFittizi, &QPushButton::clicked, [&](){
-//        QDateTime momentInTime = startTime.addSecs(60*5*i_time);
-//        i_time++;
-//        monitoringChart->addData(momentInTime, std::rand()%20);
-//    });
-
+    // Fine dati da rimuovere
 }
 
 void MainWindow::setupAnalysisPlot() {
-    monitoringChart = new MonitoringChart();
+    auto monitoringChart = new MonitoringChart();
     // Plot Analysis Chart
     ui.analysisPlot->setChart(monitoringChart);
 //    ui.macPlot->setChart(monitoringChart);
 
+    // TODO: dati fittizi da rimuovere alla fine
+    QDateTime startTime{};
     startTime.setDate(QDate(2019, 9, 18));
     startTime.setTime(QTime(10, 0, 0));
     for (int i = 0; i < 11; i++) {
-        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
-        i_time++;
+        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
         monitoringChart->addData(momentInTime, std::rand() % 20);
     }
     monitoringChart->updateData(startTime, 0);
 
     // TODO: Plot MAC occurrences
-    setPlotMacOne();
+    setMacPlot();
 //    startTime.setDate(QDate(2019, 9, 18));
 //    startTime.setTime(QTime(10, 0, 0));
 //    for (int i = 0; i < 11; i++) {
@@ -309,10 +302,11 @@ void MainWindow::initializeLastMacList() {
     ui.macLastSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
     ui.macLastSituation->setAlternatingRowColors(true);
     ui.macLastSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    // TODO: delete fake data
+    // TODO: Cancella dati fittizi alla fine
     addLastMacPos("BB:BB:BB:BB:BB:BB", 1.0, 3.0);
     addLastMacPos("CC:CC:CC:CC:CC:CC", 2.0, 0.0);
     addLastMacPos("AA:AA:AA:AA:AA:AA", 0.0, 2.5);
+    // FINE
 }
 
 void MainWindow::addLastMacPos(const QString &mac, qreal posx, qreal posy) {
@@ -331,8 +325,9 @@ void MainWindow::addLastMacPos(const QString &mac, qreal posx, qreal posy) {
 }
 
 
-void MainWindow::setPlotMacOne() {
-    macPlot = new MacChart();
+void MainWindow::setMacPlot() {
+    auto macPlot = new MacChart();
+    // TODO: rimuovi dati fittizi alla fine
     QVector<MacOccurrence> macs;
     for (int i = 0; i < 20; i++) {
         QString st{"MAC %1"};
@@ -340,25 +335,26 @@ void MainWindow::setPlotMacOne() {
         macs.append(m);
     }
     macPlot->fillChart(macs);
+    // FINE
     ui.macPlot->setChart(macPlot);
 }
 
 void MainWindow::setupPositionPlot() {
-    PositionPlot *posPlot = new PositionPlot();// Plot Analysis Chart
+    auto posPlot = new PositionPlot();// Plot Analysis Chart
     positionDialog.positionPlot->setChart(posPlot);
-//    ui.macPlot->setChart(monitoringChart);
     // TODO: Cancella dati fittizi
     std::vector<PositionDataPlot> v;
+    QDateTime startTime{};
     startTime.setDate(QDate(2019, 9, 18));
     startTime.setTime(QTime(10, 0, 0));
     for (int i = 0; i < 100; i++) {
-        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
-        i_time++;
+        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
         PositionDataPlot p{momentInTime, (std::rand() % 10) * 1.0, (std::rand() % 10) * 1.0};
         v.push_back(p);
     }
 
     posPlot->fillData(v);
     positionDialog.horizontalSlider->setRange(0, v.size());
+    // FINE
     connect(positionDialog.horizontalSlider, &QSlider::valueChanged, posPlot, &PositionPlot::sliderChanged);
 }
