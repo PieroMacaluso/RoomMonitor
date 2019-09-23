@@ -11,10 +11,10 @@
 #include <QtSql/QSqlDriver>
 
 
-
 SettingDialog::SettingDialog() {
+    // Linea che serve per poter salvare nelle impostazioni una QList<QStringList>
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
-    // Inizializzazione Dialogo con Impostazioni e riempimento con i dati.
+    // Inizializzazione SettingDialog con impostazioni da QSettings.
     settingCheckUp();
     ui.setupUi(this);
     setupConnect();
@@ -41,7 +41,7 @@ SettingDialog::SettingDialog() {
 
 void SettingDialog::settingCheckUp() {
     QSettings su{"VALP", "RoomMonitoring"};
-    // Impostazioni iniziali, se non sono mai state configurate
+    // Inizializzo le impostazioni, se non sono mai state configurate
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     if (su.value("monitor/A").isNull())
         su.setValue("monitor/A", 3);
@@ -63,6 +63,7 @@ void SettingDialog::settingCheckUp() {
 }
 
 void SettingDialog::setupConnect() {
+    // Connect varie
     connect(ui.buttonBox->button(QDialogButtonBox::Apply), &QPushButton::clicked, this, &SettingDialog::apply);
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
@@ -76,8 +77,6 @@ void SettingDialog::setupConnect() {
             ui.removeBoard->setDisabled(false);
         }
     });
-
-
 }
 
 void SettingDialog::initializeBoardList() {
@@ -100,6 +99,7 @@ void SettingDialog::initializeBoardList() {
         ui.boardTable->setItem(i, 1, new QTableWidgetItem(board[1]));
         ui.boardTable->setItem(i, 2, new QTableWidgetItem(board[2]));
     }
+    // TODO: controlla che la funzione elementChanged serva ancora effettivamente
     connect(ui.boardTable, &QTableWidget::cellChanged, this, &SettingDialog::elementChanged);
 
 
@@ -114,13 +114,8 @@ void SettingDialog::elementChanged(int row, int column) {
                 ui.boardTable->item(row, column)->setText(boardList[row][column]);
                 return;
             }
-
         }
-
-
     }
-
-//    boardList[row][column] = ui.boardTable->item(row, column)->text();
 }
 
 void SettingDialog::removeSelected() {
@@ -129,7 +124,6 @@ void SettingDialog::removeSelected() {
 }
 
 void SettingDialog::openDialogAdd() {
-
     QDialog add;
     addBoardDialog.setupUi(&add);
     add.setModal(true);
@@ -145,7 +139,7 @@ void SettingDialog::openDialogAdd() {
         for (int i = 0; i < ui.boardTable->rowCount(); i++) {
             if (addBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text()) {
                 QMessageBox msgBox;
-                msgBox.setText("Id già presente, riprovare!");
+                msgBox.setText("ID già presente, riprovare!");
                 msgBox.exec();
                 return;
             }
@@ -182,7 +176,7 @@ void SettingDialog::openDialogMod() {
             if (modBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text() &&
                 modBoardDialog.idEdit->text() != list[0]) {
                 QMessageBox msgBox;
-                msgBox.setText("Id già presente, riprovare!");
+                msgBox.setText("ID già presente, riprovare!");
                 msgBox.exec();
                 return;
             }
@@ -225,7 +219,6 @@ void SettingDialog::apply() {
 
 void SettingDialog::addBoard(const QString &id, const QString &x, const QString &y) {
     int i = ui.boardTable->rowCount();
-//    boardList.append({id, x, y});
     ui.boardTable->insertRow(ui.boardTable->rowCount());
     ui.boardTable->setItem(i, 0, new QTableWidgetItem(id));
     ui.boardTable->setItem(i, 1, new QTableWidgetItem(x));
@@ -259,7 +252,6 @@ void SettingDialog::setupModBoard() {
     modBoardDialog.idEdit->setValidator(new QIntValidator());
     modBoardDialog.xEdit->setValidator(new QDoubleValidator());
     modBoardDialog.yEdit->setValidator(new QDoubleValidator());
-
     checkModEdits();
     connect(modBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
     connect(modBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
@@ -279,8 +271,8 @@ void SettingDialog::checkModEdits() {
 
 void SettingDialog::resetDB() {
     {
-        //TODO: ALARM SQL INJECTION!
-        QSqlDatabase db;
+        //TODO: ALARM SQL INJECTION?!? Controllare bene
+        QSqlDatabase db{};
         db = QSqlDatabase::addDatabase("QMYSQL");
         db.setHostName(s.value("database/host").toString());
         db.setDatabaseName(s.value("database/name").toString());
@@ -302,7 +294,8 @@ void SettingDialog::resetDB() {
         if (!query.exec()) {
             qDebug() << query.lastError();
         }
-        query.prepare("CREATE TABLE " + s.value("database/table").toString() + " ("
+        query.prepare("CREATE TABLE " + s.value("database/table").toString() +
+                      " ("
                       "id_packet int auto_increment, "
                       "hash_fcs varchar(8) NOT NULL, "
                       "mac_addr varchar(17) NOT NULL, "
