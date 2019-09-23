@@ -44,7 +44,6 @@ Q_OBJECT
     std::map<int, Board> boards;
     bool running;
     std::deque<std::pair<Packet, int>> packets;
-    std::mutex m;
     QTimer timer{};
     QSqlDatabase nDatabase;
     QSettings settings{"VALP", "RoomMonitoring"};
@@ -105,7 +104,7 @@ public:
 
     bool is_inside_room(PositionData data);
 
-    bool getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime,std::deque<Packet> &hiddenPackets);
+    bool getHiddenDeviceFor(Packet source, uint32_t initTime, uint32_t endTime, std::deque<Packet> &hiddenPackets);
 
 /**
  * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
@@ -119,7 +118,7 @@ public:
  * @return
  */
 
-    int getHiddenDevice(uint32_t initTime,uint32_t endTime);
+    int getHiddenDevice(uint32_t initTime, uint32_t endTime);
 
 /**
  * Funzione che recupera dal db tutti i pacchetti con mac hidden nel periodo specificato
@@ -127,7 +126,7 @@ public:
  * @param endTime
  * @return
  */
-    std::deque<Packet> getHiddenPackets(uint32_t initTime,uint32_t endTime);
+    std::deque<Packet> getHiddenPackets(uint32_t initTime, uint32_t endTime);
 
 
 public slots:
@@ -141,6 +140,7 @@ public slots:
 
     void aggregate();
 
+    static bool isRandomMac(const std::string &basicString);
 
 signals:
 
@@ -154,6 +154,7 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
+
 };
 
 

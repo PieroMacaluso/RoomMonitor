@@ -81,7 +81,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
             // TODO: Trovare soluzione per cerchi coincidenti(-1) o cerchi contenuti uno nell'altro(-2)
             if (i_points < 0) return PositionData{-1, -1};
             // Se non si intersecano TODO: vedere 1 o 0
-            if (i_points <= 1) {
+            if (i_points < 1) {
                 // Calcolo distanza centri diviso due + margine
                 double margine = 0.5;
                 double delta = intPoint1.distance(intPoint2) / 2 + margine;
@@ -101,7 +101,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
             // Calcolare intersezione
             // TODO: rivedere bene funzione intersect
             size_t i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
-            if (i_points == 0) return PositionData{-1, -1};
+            if (i_points < 1) return PositionData{-1, -1};
             // Controllo se questi punti sono contenuti nelle altre circonferenze.
             // Ipotesi verificata a meno che non si trovi una condizione falsa.
             bool ok1 = true;
@@ -150,7 +150,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     result.addPacket(num_x / den, num_y / den);
 
     // TODO: (forse fatto, ma da controllare)valido se x e y risultanti sono nella stanza, altrimenti no!
-    if (!is_inside_room(result)) return PositionData{-1, -1};
+//    if (!is_inside_room(result)) return PositionData{-1, -1};
     return result;
 }
 
@@ -193,7 +193,7 @@ void MonitoringServer::start() {
     nDatabase.setUserName(settings.value("database/user").toString());
     nDatabase.setPassword(settings.value("database/pass").toString());
 
-    getHiddenDevice(1569088800,1569091920);
+    getHiddenDevice(1569088800, 1569091920);
 
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
@@ -264,7 +264,6 @@ void MonitoringServer::newConnection() {
         // TODO: Verificare reale necessità di thread-safeness, altrimenti liberare tutto
         /** INIZIO ESECUZIONE THREAD-SAFE */
 
-        std::unique_lock lk{m};
         for (auto &p: packetsConn) {
             DEBUG(p)
             packets.emplace_back(std::make_pair(p, 0));
@@ -286,8 +285,6 @@ void MonitoringServer::aggregate() {
     connectDB();
 
     // TODO: Capire come aggregare bene
-
-    std::unique_lock lk{m};
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
@@ -329,25 +326,25 @@ void MonitoringServer::aggregate() {
         }
     }
     // TODO: verificare inutilità di questa procedura e cancellare
-    std::map<std::string, PositionData> map_mac_xy;
-    for (auto i = aggregate.begin(), last = aggregate.end(); i != last; i++) {
-        std::string mac = i->second.begin()->getMacPeer();
-        auto it = map_mac_xy.find(mac);
-        if (it == map_mac_xy.end()) {
-            // Nuovo MAC
-            // Calculate x,y da RSSI
-            PositionData positionData = fromRssiToXY(i->second);
-            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
-            map_mac_xy.insert(std::make_pair(mac, positionData));
-            //todo aggiungere posizionData al pacchetto con quel mac prima di salvarlo nel db
-        } else {
-            // MAC già visto
-            // Calculate x,y da RSSI
-            PositionData positionData = fromRssiToXY(i->second);
-            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
-            it->second.addPacket(positionData);
-        }
-    }
+//    std::map<std::string, PositionData> map_mac_xy;
+//    for (auto i = aggregate.begin(), last = aggregate.end(); i != last; i++) {
+//        std::string mac = i->second.begin()->getMacPeer();
+//        auto it = map_mac_xy.find(mac);
+//        if (it == map_mac_xy.end()) {
+//            // Nuovo MAC
+//            // Calculate x,y da RSSI
+//            PositionData positionData = fromRssiToXY(i->second);
+//            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
+//            map_mac_xy.insert(std::make_pair(mac, positionData));
+//            //todo aggiungere posizionData al pacchetto con quel mac prima di salvarlo nel db
+//        } else {
+//            // MAC già visto
+//            // Calculate x,y da RSSI
+//            PositionData positionData = fromRssiToXY(i->second);
+//            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
+//            it->second.addPacket(positionData);
+//        }
+//    }
 
 
     // Stampa id pacchetti aggregati rilevati.
@@ -359,21 +356,23 @@ void MonitoringServer::aggregate() {
          */
         QSqlQuery query;
         query.prepare(
-                "INSERT INTO campi (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
+                "INSERT INTO :name_table (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
+        query.bindValue(":name_table", settings.value("database/table").toString());
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
         query.bindValue(":posx", positionData.getX());
         query.bindValue(":posy", positionData.getY());
         query.bindValue(":timestamp", QDateTime::fromSecsSinceEpoch(fil.second.begin()->getTimestamp()));
         query.bindValue(":ssid", QString::fromStdString(fil.second.begin()->getSsid()));
-        //controllo se pacchetto con mac hidden //todo controllare bene
-        if((fil.second.begin()->getMacPeer().at(0)>='4' && fil.second.begin()->getMacPeer().at(0)<='7')|| fil.second.begin()->getMacPeer().at(0)>='c'){
+        // TODO: controllare bene
+        // Controllo se pacchetto con mac hidden
+        if (isRandomMac(fil.second.begin()->getMacPeer())) {
             //mac hidden
             query.bindValue(":hidden", 1);
-        }else{
+        } else {
             query.bindValue(":hidden", 0);
         }
         if (!query.exec()) {
@@ -383,13 +382,13 @@ void MonitoringServer::aggregate() {
     DEBUG("Ending aggregation")
 
     // Stampa id pacchetti aggregati rilevati.
-    auto clock = std::chrono::system_clock::now();
-    std::time_t clock_time = std::chrono::system_clock::to_time_t(clock);
-    std::cout << "Situation at " << std::ctime(&clock_time) << std::endl;
-    for (auto &fil : map_mac_xy) {
-        std::cout << "MAC:" << fil.first << " " << fil.second << std::endl;
-    }
-    std::cout << "Persone nella stanza: " << map_mac_xy.size() << std::endl;
+//    auto clock = std::chrono::system_clock::now();
+//    std::time_t clock_time = std::chrono::system_clock::to_time_t(clock);
+//    std::cout << "Situation at " << std::ctime(&clock_time) << std::endl;
+//    for (auto &fil : map_mac_xy) {
+//        std::cout << "MAC:" << fil.first << " " << fil.second << std::endl;
+//    }
+//    std::cout << "Persone nella stanza: " << map_mac_xy.size() << std::endl;
 
 
 
@@ -411,40 +410,42 @@ bool MonitoringServer::isRunning() {
     return server.isListening();
 }
 
-std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t endTime){
+std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_t endTime) {
     //query per ottenere i pacchetti con mac hidden nel periodo specificato
     connectDB();
 
     QDateTime timeInit;
     QDateTime timeEnd;
 
-    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeInit.setTime_t(
+            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     timeEnd.setTime_t(endTime);
 
 
-
     std::deque<Packet> hiddenPackets;
-    QString table="stanza";         //todo vedere da impostazioni
+    QString table = "stanza";         //todo vedere da impostazioni
     QSqlQuery query{};
-    query.prepare("SELECT * FROM "+ table+ " WHERE hidden='1' AND timestamp>='"+timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss")+"' AND timestamp<='"+ timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss")+"';");
-    qDebug()<< query.executedQuery();
+    query.prepare("SELECT * FROM " + table + " WHERE hidden='1' AND timestamp>='" +
+                  timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" +
+                  timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "';");
+    qDebug() << query.executedQuery();
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
     QSqlRecord record = query.record();
-    if(query.size()==0)
+    if (query.size() == 0)
         qDebug() << "Nessun risultato";
 
-    while(query.next()){                                //ciclo su ogni entry selezionata del db
-        std::string fcs=query.value(1).toString().toStdString();
-        std::string mac=query.value(2).toString().toStdString();
-        uint32_t timestamp=query.value(5).toDateTime().toSecsSinceEpoch();
-        std::string ssid=query.value(6).toString().toStdString();
+    while (query.next()) {                                //ciclo su ogni entry selezionata del db
+        std::string fcs = query.value(1).toString().toStdString();
+        std::string mac = query.value(2).toString().toStdString();
+        uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
+        std::string ssid = query.value(6).toString().toStdString();
 
-        Packet p(-1,fcs,-1,mac,timestamp,ssid);
+        Packet p(-1, fcs, -1, mac, timestamp, ssid);
 
-        double_t posX=query.value(3).toDouble();
-        double_t posY=query.value(4).toDouble();
+        double_t posX = query.value(3).toDouble();
+        double_t posY = query.value(4).toDouble();
         PositionData positionData(posX, posY);
         p.setPosition(positionData);
         hiddenPackets.push_back(p);
@@ -462,31 +463,42 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime,uint32_t
 * @param endTime
 * @return
 */
-bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32_t endTime,std::deque<Packet> &hiddenPackets){
+bool MonitoringServer::getHiddenDeviceFor(Packet source, uint32_t initTime, uint32_t endTime,
+                                          std::deque<Packet> &hiddenPackets) {
     //entro 5 minuti, stessa posizione +-0.5, altro da vedere
-    uint32_t tolleranzaTimestamp=240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
-    double tolleranzaX=0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
-    double tolleranzaY=0.5;
+    uint32_t tolleranzaTimestamp = 240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
+    double tolleranzaX = 0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
+    double tolleranzaY = 0.5;
     double perc;
-    bool trovato= false;
+    bool trovato = false;
 
     /*std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
     if(hiddenPackets.size()==0)
         return false;*/
 
-    for(int j=0;j<hiddenPackets.size();j++){
-        if(hiddenPackets.at(j).getMacPeer()!=source.getMacPeer()){
-            double diff=(source.getTimestamp()<hiddenPackets.at(j).getTimestamp()) ? (hiddenPackets.at(j).getTimestamp()-source.getTimestamp()) : (source.getTimestamp()-hiddenPackets.at(j).getTimestamp());
-            if(diff<=tolleranzaTimestamp){
+    for (int j = 0; j < hiddenPackets.size(); j++) {
+        if (hiddenPackets.at(j).getMacPeer() != source.getMacPeer()) {
+            double diff = (source.getTimestamp() < hiddenPackets.at(j).getTimestamp()) ? (
+                    hiddenPackets.at(j).getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
+                                                                                   hiddenPackets.at(j).getTimestamp());
+            if (diff <= tolleranzaTimestamp) {
                 //mac diverso ad intervallo inferiore di 1 minuto
-                double diffX=(source.getX()<hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX()-source.getX()) : (source.getX()-hiddenPackets.at(j).getX());
-                double diffY=(source.getY()<hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY()-source.getY()) : (source.getY()-hiddenPackets.at(j).getY());
-                if(diffX<=tolleranzaX && diffY<=tolleranzaY){
+                double diffX = (source.getX() < hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX() -
+                                                                               source.getX()) : (source.getX() -
+                                                                                                 hiddenPackets.at(
+                                                                                                         j).getX());
+                double diffY = (source.getY() < hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY() -
+                                                                               source.getY()) : (source.getY() -
+                                                                                                 hiddenPackets.at(
+                                                                                                         j).getY());
+                if (diffX <= tolleranzaX && diffY <= tolleranzaY) {
                     //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
-                    perc=(100-((diffX*100/tolleranzaX) + (diffY*100/tolleranzaY) + (diff*100/tolleranzaTimestamp))*100/(300));
-                    std::cout << source.getMacPeer() << " simile ad " << hiddenPackets.at(j).getMacPeer() << " con probabilita' del "<<perc<<"%" << std::endl;
+                    perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
+                                   (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
+                    std::cout << source.getMacPeer() << " simile ad " << hiddenPackets.at(j).getMacPeer()
+                              << " con probabilita' del " << perc << "%" << std::endl;
                     //todo decidere cosa fare con tale percentiale
-                    trovato= true;
+                    trovato = true;
                 }
             }
 
@@ -508,25 +520,30 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source,uint32_t initTime,uint32
 * @return
 */
 //getHiddenDevice(1569088800,1569091920);
-int MonitoringServer::getHiddenDevice(uint32_t initTime,uint32_t endTime){
+int MonitoringServer::getHiddenDevice(uint32_t initTime, uint32_t endTime) {
     bool trovato;
-    int numHiddenDevice=0;
+    int numHiddenDevice = 0;
 
 
-    std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
-    if(hiddenPackets.empty())
+    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime, endTime);
+    if (hiddenPackets.empty())
         return 0;
 
-    for(int i=0;i<hiddenPackets.size();i++){
-        trovato=getHiddenDeviceFor(hiddenPackets.at(i),initTime,endTime,hiddenPackets);
-        if(trovato)
+    for (int i = 0; i < hiddenPackets.size(); i++) {
+        trovato = getHiddenDeviceFor(hiddenPackets.at(i), initTime, endTime, hiddenPackets);
+        if (trovato)
             numHiddenDevice++;
     }
 
-    qDebug() << "Numero di dispositivi differenti con mac nascosto: "<< numHiddenDevice;
+    qDebug() << "Numero di dispositivi differenti con mac nascosto: " << numHiddenDevice;
     return numHiddenDevice;
     //todo decidere cosa fare con tale numero
 }
+
+bool MonitoringServer::isRandomMac(const std::string &basicString) {
+    return (basicString.at(0) >= '4' && basicString.at(0) <= '7') || std::tolower(basicString.at(0)) >= 'c';
+}
+
 
 
 
