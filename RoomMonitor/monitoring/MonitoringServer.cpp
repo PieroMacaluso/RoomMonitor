@@ -24,11 +24,11 @@ std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string
         std::vector<std::string> values;
         split(s, values, ',');
 
-        if (values.size() == 7)        //alcuni pacchetti contengono l'ssid e altri no
+        if (values[5] == "~")        //alcuni pacchetti contengono l'ssid e altri no
             //no ssid
             ssid = "Nan";
         else
-            ssid = values[7];
+            ssid = values[5];
 
         Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3], std::stoi(values[4]), ssid);
         //std::cout<<"pacchetto "<<stoi(values[0]) <<" "<<values[3]<<" "<<std::stoi(values[4])<<" "<<values[5]<<" "<<std::stoi(values[6])<<" "<< ssid;
