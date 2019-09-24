@@ -361,7 +361,6 @@ void MonitoringServer::aggregate() {
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
-        query.bindValue(":name_table", settings.value("database/table").toString());
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
         query.bindValue(":posx", positionData.getX());
