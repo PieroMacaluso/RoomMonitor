@@ -81,12 +81,12 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
             // TODO: Trovare soluzione per cerchi coincidenti(-1) o cerchi contenuti uno nell'altro(-2)
             if (i_points < 0) return PositionData{-1, -1};
             // Se non si intersecano TODO: vedere 1 o 0
-            if (i_points < 1) {
+            while (i_points < 1) {
                 // Calcolo distanza centri diviso due + margine
-                double margine = 0.5;
-                double delta = intPoint1.distance(intPoint2) / 2 + margine;
+                double delta = 0.05;
                 // Aggiungo questo delta a tutti i cerchi
-                for (auto mod : circles) mod.increaseR(delta);
+                for (auto &mod : circles) mod.increaseR(delta);
+                i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
             }
         }
     }
