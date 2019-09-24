@@ -223,7 +223,8 @@ void app_main(void) {
     wifi_init();
 
     if(!initialize_sntp()){
-        return;
+        printf("ESP32 Restarting...\n");
+        esp_restart();
     }
 
     wifi_sniffer_init();
