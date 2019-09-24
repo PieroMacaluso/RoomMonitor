@@ -356,7 +356,8 @@ void MonitoringServer::aggregate() {
          */
         QSqlQuery query;
         query.prepare(
-                "INSERT INTO :name_table (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
+                "INSERT INTO " + settings.value("database/table").toString() +
+                " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
