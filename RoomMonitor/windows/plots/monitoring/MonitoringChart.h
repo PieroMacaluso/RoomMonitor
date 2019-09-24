@@ -24,8 +24,8 @@ class MonitoringChart : public QChart {
 public:
     explicit MonitoringChart(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = Qt::WindowFlags());
     void addSeries(QLineSeries *series);
-    void addData(QDateTime time, int value);
-    void updateData(QDateTime time, int value);
+    void addData(const QDateTime& time, int value);
+    void updateData(const QDateTime& time, int value);
     void addX(QDateTimeAxis *axisX);
     void addY(QValueAxis *axisY);
     QLineSeries * getLineSeries();

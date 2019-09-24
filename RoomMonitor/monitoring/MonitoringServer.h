@@ -128,7 +128,6 @@ public:
  */
     std::deque<Packet> getHiddenPackets(uint32_t initTime, uint32_t endTime);
 
-
 public slots:
 
     /**
@@ -154,6 +153,8 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
+
+
 
 };
 

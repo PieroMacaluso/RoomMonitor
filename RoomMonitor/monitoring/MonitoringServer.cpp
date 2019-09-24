@@ -9,7 +9,7 @@
 #include "../windows/SettingDialog.h"
 
 MonitoringServer::MonitoringServer() {
-    nDatabase = QSqlDatabase::addDatabase("QMYSQL", "reception");
+//    nDatabase = QSqlDatabase::addDatabase("QMYSQL");
 }
 
 MonitoringServer::~MonitoringServer() {
@@ -90,11 +90,11 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
 
                 // TODO: Controllare funzionalità
                 // Se cerchi coincidenti(-1) scarta tutto, qualcosa non quadra
-                if (i_points ==-1) return PositionData{-1, -1};
+                if (i_points == -1) return PositionData{-1, -1};
                 //  Se cerchi non coincidenti econtenuti uno nell'altro (-2) riduco il raggio modificando RSSI
                 if (i_points == -2) {
                     error = true;
-                    delta +=1;
+                    delta += 1;
                     break;
                 }
                 // Se cerchi non si toccano aumento il raggio modificando RSSI
@@ -210,7 +210,7 @@ void MonitoringServer::start() {
     nDatabase.setUserName(settings.value("database/user").toString());
     nDatabase.setPassword(settings.value("database/pass").toString());
 
-    getHiddenDevice(1569088800, 1569091920);
+//    getHiddenDevice(1569088800, 1569091920);
 
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
@@ -228,6 +228,7 @@ void MonitoringServer::start() {
 void MonitoringServer::stop() {
     QObject::disconnect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
     QObject::disconnect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
+    QSqlDatabase::removeDatabase("MonitoringServer");
     qDebug() << "Server Disconnected:" << server.serverPort();
 
     server.close();

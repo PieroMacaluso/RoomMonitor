@@ -57,3 +57,7 @@ void MonitoringPlotView::tooltip(QPointF point, bool state)
         m_tooltip->hide();
     }
 }
+
+MonitoringChart *MonitoringPlotView::getChart() const {
+    return chart;
+}

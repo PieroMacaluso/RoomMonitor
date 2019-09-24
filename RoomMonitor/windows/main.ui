@@ -20,7 +20,7 @@
    <string>Room Monitor</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res.qrc">
     <normaloff>:/resources/resources/logo_img.svg</normaloff>:/resources/resources/logo_img.svg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -164,10 +164,10 @@
     </size>
    </property>
    <property name="acceptDrops">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="windowIcon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/wifi.svg</normaloff>:/resources/resources/wifi.svg</iconset>
    </property>
    <property name="floating">
@@ -209,7 +209,7 @@
             <string>Start</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res.qrc">
              <normaloff>:/resources/resources/play.svg</normaloff>:/resources/resources/play.svg</iconset>
            </property>
           </widget>
@@ -220,7 +220,7 @@
             <string>Stop</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res.qrc">
              <normaloff>:/resources/resources/stop.svg</normaloff>:/resources/resources/stop.svg</iconset>
            </property>
           </widget>
@@ -234,10 +234,10 @@
   </widget>
   <widget class="QDockWidget" name="lastMacDock">
    <property name="acceptDrops">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="windowIcon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/mac.svg</normaloff>:/resources/resources/mac.svg</iconset>
    </property>
    <property name="floating">
@@ -314,7 +314,7 @@
         <string>Ricerca</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../res.qrc">
          <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
        </property>
       </widget>
@@ -363,7 +363,7 @@
   </widget>
   <action name="actionSettings">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/settings.svg</normaloff>:/resources/resources/settings.svg</iconset>
    </property>
    <property name="text">
@@ -372,7 +372,7 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/info.svg</normaloff>:/resources/resources/info.svg</iconset>
    </property>
    <property name="text">
@@ -392,7 +392,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/wifi.svg</normaloff>:/resources/resources/wifi.svg</iconset>
    </property>
    <property name="text">
@@ -416,7 +416,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/mac.svg</normaloff>:/resources/resources/mac.svg</iconset>
    </property>
    <property name="text">
@@ -428,7 +428,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/analysis.svg</normaloff>:/resources/resources/analysis.svg</iconset>
    </property>
    <property name="text">
@@ -440,7 +440,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/wifi.svg</normaloff>:/resources/resources/wifi.svg</iconset>
    </property>
    <property name="text">
@@ -461,7 +461,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/time.svg</normaloff>:/resources/resources/time.svg</iconset>
    </property>
    <property name="text">
@@ -488,7 +488,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res.qrc">
      <normaloff>:/resources/resources/mac.svg</normaloff>:/resources/resources/mac.svg</iconset>
    </property>
    <property name="text">
@@ -551,7 +551,7 @@
   </connection>
   <connection>
    <sender>actionMonitoringDock</sender>
-   <signal>toggled(bool)</signal>
+   <signal>triggered(bool)</signal>
    <receiver>monitoringManagerDock</receiver>
    <slot>setVisible(bool)</slot>
    <hints>

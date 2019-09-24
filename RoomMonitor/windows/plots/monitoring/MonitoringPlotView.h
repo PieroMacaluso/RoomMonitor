@@ -52,6 +52,8 @@ public:
      * @param event
      */
     void tooltip(QPointF point, bool state);
+
+    MonitoringChart *getChart() const;
 };
 
 

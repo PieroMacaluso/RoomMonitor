@@ -17,6 +17,7 @@
 
 class MainWindow : public QMainWindow {
 
+    int i_time = 0;
     /**
      * UI Finestra Principale
      */
@@ -31,6 +32,8 @@ class MainWindow : public QMainWindow {
      * Struttura di monitoraggio. Parte centrale delle procedure di monitoraggio
      */
     MonitoringServer s{};
+
+    QTimer liveGraph{};
 
 public:
     /**
@@ -91,6 +94,10 @@ public:
      * dialogo
      */
     void setupPositionPlot();
+
+    void addLiveData();
+
+
 };
 
 

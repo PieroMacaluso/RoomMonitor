@@ -15,7 +15,7 @@ void MonitoringChart::addSeries(QLineSeries *series) {
                 yMin = y;
             if (y > yMax)
                 yMax = y;
-            aY->setRange(yMin - 2, yMax + 2);
+            aY->setRange(yMin - 1, yMax + 1);
         }
 
         qreal x = lineSeries->at(index).x();
@@ -47,7 +47,7 @@ void MonitoringChart::addSeries(QLineSeries *series) {
                 yMin = y;
             if (y > yMax)
                 yMax = y;
-            aY->setRange(yMin - 2, yMax + 2);
+            aY->setRange(yMin - 1, yMax + 1);
         }
 
         qreal x = lineSeries->at(index).x();
@@ -79,21 +79,23 @@ void MonitoringChart::addSeries(QScatterSeries *series) {
 }
 
 
-void MonitoringChart::addData(QDateTime time, int value) {
+void MonitoringChart::addData(const QDateTime& time, int value) {
     this->lineSeries->append(time.toMSecsSinceEpoch(), value);
     this->scatter->append(time.toMSecsSinceEpoch(), value);
 
 }
 
-void MonitoringChart::updateData(QDateTime time, int value) {
+void MonitoringChart::updateData(const QDateTime& time, int value) {
     for (int i = 0; i < lineSeries->count(); i++) {
         auto point = this->lineSeries->at(i);
         if (point.x() == time.toMSecsSinceEpoch()) {
             this->lineSeries->replace(i, time.toMSecsSinceEpoch(), value);
             this->scatter->replace(i, time.toMSecsSinceEpoch(), value);
+            return;
 
         }
     }
+    this->addData(time, value);
 }
 
 void MonitoringChart::resetView() {
@@ -132,6 +134,7 @@ MonitoringChart::MonitoringChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) 
     axisX->setTickCount(5);
     axisX->setFormat("dd/MM/yy hh:mm:ss");
     axisX->setTitleText("Date");
+    axisX->setRange(QDateTime::currentDateTime(), QDateTime::currentDateTime().addSecs(60*5));
     this->addX(axisX);
     lineSeries->attachAxis(axisX);
     scatter->attachAxis(axisX);
@@ -139,6 +142,7 @@ MonitoringChart::MonitoringChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) 
     QValueAxis *axisY = new QValueAxis;
     axisY->setLabelFormat("%i");
     axisY->setTitleText("Numero dispositivi rilevati");
+    axisY->setRange(-0.5, 10);
     this->addY(axisY);
     lineSeries->attachAxis(axisY);
     scatter->attachAxis(axisY);

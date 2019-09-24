@@ -17,6 +17,8 @@ MainWindow::MainWindow() {
 void MainWindow::setupConnect() {
     ui.stopButton->setDisabled(true);
 
+    connect(&liveGraph, &QTimer::timeout, this, &MainWindow::addLiveData);
+
     // Click Start Button
     QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
         try {
@@ -27,6 +29,9 @@ void MainWindow::setupConnect() {
                 ui.startButton->setDisabled(true);
                 ui.stopButton->setDisabled(false);
             }
+            liveGraph.start(1000*60*5);
+            i_time = 0;
+            setupMonitoringPlot();
         } catch (std::exception &e) {
             // Does not started signal
             std::cout << "Non è stato possibile avviare il server." << std::endl;
@@ -122,6 +127,7 @@ void MainWindow::setupConnect() {
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
             s.stop();
+            liveGraph.stop();
         }
     });
 
@@ -193,15 +199,15 @@ void MainWindow::setupMonitoringPlot() {
     auto monitoringChart = new MonitoringChart();
     ui.monitoringPlot->setChart(monitoringChart);
 
-    // TODO: dati fittizi da rimuovere alla fine
-    QDateTime startTime{};
-    startTime.setDate(QDate(2019, 9, 18));
-    startTime.setTime(QTime(10, 0, 0));
-    for (int i = 0; i < 11; i++) {
-        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
-        monitoringChart->addData(momentInTime, std::rand() % 20);
-    }
-    monitoringChart->updateData(startTime, 0);
+//    // TODO: dati fittizi da rimuovere alla fine
+//    QDateTime startTime{};
+//    startTime.setDate(QDate(2019, 9, 18));
+//    startTime.setTime(QTime(10, 0, 0));
+//    for (int i = 0; i < 11; i++) {
+//        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
+//        monitoringChart->addData(momentInTime, std::rand() % 20);
+//    }
+//    monitoringChart->updateData(startTime, 0);
     // Fine dati da rimuovere
 }
 
@@ -357,4 +363,70 @@ void MainWindow::setupPositionPlot() {
     positionDialog.horizontalSlider->setRange(0, v.size());
     // FINE
     connect(positionDialog.horizontalSlider, &QSlider::valueChanged, posPlot, &PositionPlot::sliderChanged);
+}
+
+void MainWindow::addLiveData() {
+    {
+        QSettings su{"VALP", "RoomMonitoring"};
+        qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
+        // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
+//        startTimestamp = 1569344039 + 60 * 5 * i_time;
+//        i_time++;
+        startTimestamp = startTimestamp / (60 * 5);
+        QDateTime start{};
+        QDateTime end{};
+        QDateTime prev{};
+        start.setSecsSinceEpoch(startTimestamp * 60 * 5);
+        end = start.addSecs(60 * 5);
+        prev = start.addSecs(-60 * 5);
+
+        QSqlDatabase db{};
+        db = QSqlDatabase::addDatabase("QMYSQL");
+        db.setHostName(su.value("database/host").toString());
+        db.setDatabaseName(su.value("database/name").toString());
+        db.setPort(su.value("database/port").toInt());
+        db.setUserName(su.value("database/user").toString());
+        db.setPassword(su.value("database/pass").toString());
+        if (!db.open()) {
+            qDebug() << db.lastError();
+            return;
+        }
+
+        QSqlQuery query{};
+
+        query.prepare(
+                "SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
+                " WHERE timestamp BETWEEN :fd AND :sd;");
+        query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
+        query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
+        if (!query.exec())
+            qDebug() << query.lastError();
+
+        if (!query.first())
+            ui.monitoringPlot->getChart()->updateData(prev, 0);
+        else
+            ui.monitoringPlot->getChart()->updateData(prev, query.value(0).toInt());
+
+
+        query.clear();
+
+        query.prepare("SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
+                      " WHERE timestamp BETWEEN :fd AND :sd;");
+        query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+        query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+        if (!query.exec())
+            qDebug() << query.lastError();
+
+        if (!query.first())
+            ui.monitoringPlot->getChart()->addData(start, 0);
+        else
+            ui.monitoringPlot->getChart()->addData(start, query.value(0).toInt());
+
+        db.close();
+
+    }
+
+    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+
+
 }
