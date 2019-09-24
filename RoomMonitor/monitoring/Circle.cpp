@@ -19,7 +19,7 @@ bool Circle::containsPoint(Point2d x) {
 
 }
 
-size_t Circle::intersect(const Circle &C2, Point2d &i1, Point2d &i2) {
+int Circle::intersect(const Circle &C2, Point2d &i1, Point2d &i2) {
     // distance between the centers
     double d = Point2d(c.x() - C2.c.x(),
                        c.y() - C2.c.y()).norm();

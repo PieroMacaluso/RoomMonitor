@@ -58,42 +58,49 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     std::deque<Circle> circles{};
     // Deque che ci serve per media pesata
     std::deque<std::pair<PositionData, double>> pointW;
+    int retry = 0;
+    bool error = true;
 
-    // Da pacchetti a Cerchi di centro schedina e raggio RSSI->metri.
-    for (auto packet: deque) {
-        auto b = boards.find(packet.getIdSchedina());
-        if (b == boards.end()) return PositionData(-1, -1);
-        double dist = calculateDistance(packet.getRssi());
-        Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
-        circles.push_back(res);
-    }
-
-    // TODO: controllare che tutte le circonferenze si intersechino
-    // Combinazioni  e controllo, se anche una non è soddisfatta allora ingrandisco tutte le circonferenze dello spazio che manca.
-    for (int i = 0; i < circles.size() - 1; i++) {
-        for (int j = i + 1; j < circles.size(); j++) {
-            // Punti di intersezione
-            Point2d intPoint1, intPoint2;
-
-            // Calcolare intersezione
-            size_t i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
-
-            // TODO: Trovare soluzione per cerchi coincidenti(-1) o cerchi contenuti uno nell'altro(-2)
-            if (i_points < 0) return PositionData{-1, -1};
-            // Se non si intersecano TODO: vedere 1 o 0
-            while (i_points < 1) {
-                // Calcolo distanza centri diviso due + margine
-                double delta = 0.05;
-                // Aggiungo questo delta a tutti i cerchi
-                for (auto &mod : circles) mod.increaseR(delta);
-                i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
-            }
+    /**
+     * Se i cerchi non si intersecano si va ad aumentare il modulo dell'RSSI per poter raggiungere una migliore stima
+     * della posizione fino ad un massimo di 1000 volte
+     */
+    while (retry < 1000 && error) {
+        // Pulizia deque cerchi
+        circles.clear();
+        // Da pacchetti a Cerchi di centro schedina e raggio RSSI->metri meno il numero di retry finora
+        for (auto &packet: deque) {
+            auto b = boards.find(packet.getIdSchedina());
+            if (b == boards.end()) return PositionData(-1, -1);
+            double dist = calculateDistance(packet.getRssi() - retry);
+            Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
+            circles.push_back(res);
         }
+        // Ipotesi no errori
+        error = false;
+        // Combinazioni  e controllo, se anche una non è soddisfatta allora ingrandisco tutte le circonferenze dello spazio che manca.
+        for (int i = 0; i < circles.size() - 1; i++) {
+            for (int j = i + 1; j < circles.size(); j++) {
+                // Punti di intersezione
+                Point2d intPoint1, intPoint2;
+
+                // Calcolare intersezione
+                int i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
+
+                // TODO: Se cerchi coincidenti(-1) o cerchi contenuti uno nell'altro(-2) ritorno (-1, -1) che viene ignorato all'esterno
+                if (i_points < 0) return PositionData{-1, -1};
+                // Se non si intersecano incremento retry e ricalcolo
+                if (i_points < 1) {
+                    error = true;
+                    break;
+                }
+            }
+            if (error) break;
+        }
+        if (error) retry++;
     }
 
-    // Combinazioni  e controllo, se anche una non è soddisfatta allora ingrandisco tutte le circonferenze dello spazio che manca.
-
-    // Doppio ciclo per combinazioni
+    // Doppio ciclo per combinazioni e calcolo
     for (int i = 0; i < circles.size() - 1; i++) {
         for (int j = i + 1; j < circles.size(); j++) {
             // Punti di intersezione
@@ -150,7 +157,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     result.addPacket(num_x / den, num_y / den);
 
     // TODO: (forse fatto, ma da controllare)valido se x e y risultanti sono nella stanza, altrimenti no!
-//    if (!is_inside_room(result)) return PositionData{-1, -1};
+    if (!is_inside_room(result)) return PositionData{-1, -1};
     return result;
 }
 
@@ -164,12 +171,12 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
 float MonitoringServer::calculateDistance(signed rssi) {
     // n: Costante di propagazione del segnale. Costante 2 in ambiente aperto.
     // TODO: vedere se applicabile a stanza
-    const float cost = settings.value("monitor/n").toFloat();
+    const float A = settings.value("monitor/n").toFloat();
     // A: potenza del segnale ricevuto in dBm ad un metro
     // TODO: da ricercare sperimentalmente
-    const float A = settings.value("monitor/A").toFloat();
+    const float cost = settings.value("monitor/A").toFloat();
 
-    return pow(10, (A - rssi) / (10 * cost));
+    return pow(10, (A - rssi) / (10.0 * cost));
 
 }
 

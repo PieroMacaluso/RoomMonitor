@@ -39,7 +39,7 @@ public:
 
     bool containsPoint(Point2d x);
 
-    size_t intersect(const Circle &C2, Point2d &i1, Point2d &i2);
+    int intersect(const Circle &C2, Point2d &i1, Point2d &i2);
 
     // Print circle
     friend std::ostream &operator<<(std::ostream &s, const Circle &C);
