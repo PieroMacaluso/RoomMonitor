@@ -60,6 +60,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
     std::deque<std::pair<PositionData, double>> pointW;
     int retry = 0;
     bool error = true;
+    int delta = 0;
 
     /**
      * Se i cerchi non si intersecano si va ad aumentare il modulo dell'RSSI per poter raggiungere una migliore stima
@@ -72,7 +73,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
         for (auto &packet: deque) {
             auto b = boards.find(packet.getIdSchedina());
             if (b == boards.end()) return PositionData(-1, -1);
-            double dist = calculateDistance(packet.getRssi() - retry);
+            double dist = calculateDistance(packet.getRssi() + delta);
             Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
             circles.push_back(res);
         }
@@ -87,11 +88,19 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
                 // Calcolare intersezione
                 int i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
 
-                // TODO: Se cerchi coincidenti(-1) o cerchi contenuti uno nell'altro(-2) ritorno (-1, -1) che viene ignorato all'esterno
-                if (i_points < 0) return PositionData{-1, -1};
-                // Se non si intersecano incremento retry e ricalcolo
-                if (i_points < 1) {
+                // TODO: Controllare funzionalità
+                // Se cerchi coincidenti(-1) scarta tutto, qualcosa non quadra
+                if (i_points ==-1) return PositionData{-1, -1};
+                //  Se cerchi non coincidenti econtenuti uno nell'altro (-2) riduco il raggio modificando RSSI
+                if (i_points == -2) {
                     error = true;
+                    delta +=1;
+                    break;
+                }
+                // Se cerchi non si toccano aumento il raggio modificando RSSI
+                if (i_points == 0) {
+                    error = true;
+                    delta += -1;
                     break;
                 }
             }
@@ -99,6 +108,7 @@ PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
         }
         if (error) retry++;
     }
+    if (error) return PositionData{-1, -1};
 
     // Doppio ciclo per combinazioni e calcolo
     for (int i = 0; i < circles.size() - 1; i++) {
