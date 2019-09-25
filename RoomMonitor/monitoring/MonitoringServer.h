@@ -128,6 +128,13 @@ public:
  */
     Packet getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime);
 
+    std::list<PositionData> getAllPositionOfMac(QString mac, uint32_t initTime, uint32_t endTime);
+
+    std::list<uint32_t> getAllTimeStampOfMac(QString mac, uint32_t initTime, uint32_t endTime);
+
+    double checkTimeStamp(uint32_t timestamp, std::list<uint32_t> list);
+
+    double checkPos(PositionData data, std::list<PositionData> list);
 
 
 public slots:
@@ -143,7 +150,6 @@ public slots:
 
     static bool isRandomMac(const std::string &basicString);
 
-    void checkRandomMac();
 
 signals:
 
@@ -159,6 +165,7 @@ signals:
     void stopped();
 
 
+    std::list<Packet> getAllPacketsOfMac(QString qString, uint32_t time, uint32_t endTime);
 };
 
 

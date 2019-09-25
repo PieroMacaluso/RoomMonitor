@@ -454,6 +454,7 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_
 * @param endTime
 * @return
 */
+//todo dovrebbe essere sostituita con getHiddenMacFor
 bool MonitoringServer::getHiddenDeviceFor(Packet source, uint32_t initTime, uint32_t endTime,
                                           std::deque<Packet> &hiddenPackets) {
     //entro 5 minuti, stessa posizione +-0.5, altro da vedere
@@ -511,49 +512,56 @@ bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t 
     uint32_t tolleranzaTimestamp = 240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
     double tolleranzaX = 0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
     double tolleranzaY = 0.5;
+
     double perc;
     bool trovato = false;
 
-    std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
+    std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);                                //ottiene tutti i pacchetti dello stesso mac in quel determinato intervallo
     if(hiddenPackets.empty())
-        return false;
+        return false;                                                                                    //nel lasso di tempo scelto non è stato trovato nessun pacchetto con il mac selezionato. Per effettuare la stima è necessario che ci sia almeno un pacchetto con  il mac scelto
 
-    Packet source=getLastPacketWithMac(mac,initTime,endTime);
-    if(source.getTimestamp()==-1)                               //nel lasso di tempo scelto non è stato trovato nessun pacchetto con il mac selezionato. Per effettuare la stima è necessario che ci sia almeno un pacchetto con  il mac scelto
+    std::list<Packet> allPacketsOfMac=getAllPacketsOfMac(mac,initTime,endTime);
+    if(allPacketsOfMac.empty())
         return false;
-
 
     for (int j = 0; j < hiddenPackets.size(); j++) {
-        if (hiddenPackets.at(j).getMacPeer() != source.getMacPeer()) {
-            double diff = (source.getTimestamp() < hiddenPackets.at(j).getTimestamp()) ? (
-                    hiddenPackets.at(j).getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
-                                                                                   hiddenPackets.at(j).getTimestamp());
-            if (diff <= tolleranzaTimestamp) {
-                //mac diverso ad intervallo inferiore di 1 minuto
-                double diffX = (source.getX() < hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX() -
-                                                                               source.getX()) : (source.getX() -
-                                                                                                 hiddenPackets.at(
-                                                                                                         j).getX());
-                double diffY = (source.getY() < hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY() -
-                                                                               source.getY()) : (source.getY() -
-                                                                                                 hiddenPackets.at(
-                                                                                                         j).getY());
-                if (diffX <= tolleranzaX && diffY <= tolleranzaY) {
-                    //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
-                    perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
-                                   (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
-                    std::cout << source.getMacPeer() << " simile ad " << hiddenPackets.at(j).getMacPeer()
-                              << " con probabilita' del " << perc << "%" << std::endl;
-                    //todo decidere cosa fare con tale percentiale
-                    trovato = true;
+        if (hiddenPackets.at(j).getMacPeer() != mac.toStdString()) {
+
+            double_t maxPerc=0;
+
+            for(Packet source:allPacketsOfMac){                                                           //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
+                double diff = (source.getTimestamp() < hiddenPackets.at(j).getTimestamp()) ? (
+                        hiddenPackets.at(j).getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
+                                                                                       hiddenPackets.at(j).getTimestamp());
+                if (diff <= tolleranzaTimestamp) {
+                    //mac diverso ad intervallo inferiore di 1 minuto
+                    double diffX = (source.getX() < hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX() -
+                                                                                   source.getX()) : (source.getX() -
+                                                                                                     hiddenPackets.at(
+                                                                                                             j).getX());
+                    double diffY = (source.getY() < hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY() -
+                                                                                   source.getY()) : (source.getY() -
+                                                                                                     hiddenPackets.at(
+                                                                                                             j).getY());
+                    if (diffX <= tolleranzaX && diffY <= tolleranzaY) {
+                        //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
+                        perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
+                                       (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
+                        if(perc>maxPerc)
+                            maxPerc=perc;
+                    }
                 }
             }
+            std::cout << mac.toStdString() << " simile ad " << hiddenPackets.at(j).getMacPeer()
+                      << " con probabilita' del " << maxPerc << "%" << std::endl;
 
         }
     }
 
     return trovato;
 }
+
+
 
 
 /**
@@ -600,7 +608,51 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
     return b.to_string()[2] == '1';
 }
 
-void MonitoringServer::checkRandomMac() {
+/**
+ * Funzione che ottiene tutti i pacchetti di un determinato mac in un determinato intervallo temporale
+ * @param mac
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+std::list<Packet> MonitoringServer::getAllPacketsOfMac(QString mac, uint32_t initTime, uint32_t endTime) {
+    QSqlDatabase db= QSqlDatabase::database();
+    QSqlQuery query{};
+    QString table="stanza";         //todo vedere da impostazioni
+    QDateTime timeInit;
+    QDateTime timeEnd;
+
+    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeEnd.setTime_t(endTime);
+
+    query.prepare("SELECT * FROM "+table+" WHERE mac_addr='"+ mac+"' AND timestamp>='" + timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" + timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "';");
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+
+    if (query.size() == 0){
+       return std::list<Packet>();
+    }
+
+    std::list<Packet> allPacketsOfMac;
+    while(query.next()){
+        std::string fcs = query.value(1).toString().toStdString();
+        std::string mac_add = query.value(2).toString().toStdString();
+        uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
+        std::string ssid = query.value(6).toString().toStdString();
+
+        Packet p(-1, fcs, -1, mac_add, timestamp, ssid);
+
+        double_t posX = query.value(3).toDouble();
+        double_t posY = query.value(4).toDouble();
+        PositionData positionData(posX, posY);
+        p.setPosition(positionData);
+
+        allPacketsOfMac.push_back(p);
+    }
+
+    return allPacketsOfMac;
 
 }
 

@@ -55,6 +55,10 @@ bool operator<(const Packet &lhs, const Packet &rhs) {
     return lhs.getTimestamp()<rhs.getTimestamp();
 }
 
+PositionData Packet::getPositionData() {
+    return positionData;
+}
+
 
 
 

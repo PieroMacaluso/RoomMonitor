@@ -42,6 +42,7 @@ public:
     double getX();
     double getY();
     friend bool operator< (const Packet& lhs, const Packet& rhs);
+    PositionData getPositionData();
 };
 
 
