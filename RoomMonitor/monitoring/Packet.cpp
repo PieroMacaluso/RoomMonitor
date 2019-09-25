@@ -51,6 +51,10 @@ double Packet::getY() {
     return positionData.getY();
 }
 
+bool operator<(const Packet &lhs, const Packet &rhs) {
+    return lhs.getTimestamp()<rhs.getTimestamp();
+}
+
 
 
 

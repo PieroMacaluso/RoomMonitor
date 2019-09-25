@@ -95,6 +95,7 @@ public:
     bool is_inside_room(PositionData data);
 
     bool getHiddenDeviceFor(Packet source, uint32_t initTime, uint32_t endTime, std::deque<Packet> &hiddenPackets);
+    bool getHiddenMacFor(QString mac, uint32_t initTime, uint32_t endTime);
 
 /**
  * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
@@ -118,6 +119,17 @@ public:
  */
     std::deque<Packet> getHiddenPackets(uint32_t initTime, uint32_t endTime);
 
+    /**
+ * Funzione utilizzata per ottenere il pacchetto con il maggior timestamp di un determinato mac
+ * @param mac
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+    Packet getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime);
+
+
+
 public slots:
 
     /**
@@ -131,6 +143,8 @@ public slots:
 
     static bool isRandomMac(const std::string &basicString);
 
+    void checkRandomMac();
+
 signals:
 
     /**
@@ -143,7 +157,6 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
-
 
 
 };

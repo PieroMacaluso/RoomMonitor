@@ -357,13 +357,59 @@ bool MonitoringServer::isRunning() {
     return server.isListening();
 }
 
+/**
+ * Funzione utilizzata per ottenere il pacchetto con il maggior timestamp di un determinato mac
+ * @param mac
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime){
+    QSqlDatabase db= QSqlDatabase::database();
+    QSqlQuery query{};
+    QString table="stanza";         //todo vedere da impostazioni
+    QDateTime timeInit;
+    QDateTime timeEnd;
+
+    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeEnd.setTime_t(endTime);
+
+    query.prepare("SELECT * FROM "+table+" WHERE mac_addr='"+ mac+"' AND timestamp>='" + timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" + timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' ORDER BY TIMESTAMP desc;");
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+
+    if (query.size() == 0){
+        Packet p(-1, "null", -1, (std::string &) "null", -1, (std::string &) "null");
+        return p;
+    }
+
+    while(query.next()){
+        std::string fcs = query.value(1).toString().toStdString();
+        std::string mac = query.value(2).toString().toStdString();
+        uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
+        std::string ssid = query.value(6).toString().toStdString();
+
+        Packet p(-1, fcs, -1, mac, timestamp, ssid);
+
+        double_t posX = query.value(3).toDouble();
+        double_t posY = query.value(4).toDouble();
+        PositionData positionData(posX, posY);
+        p.setPosition(positionData);
+
+        return p;
+    }
+
+
+}
+
 std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_t endTime) {
     //query per ottenere i pacchetti con mac hidden nel periodo specificato
     QDateTime timeInit;
     QDateTime timeEnd;
 
-    timeInit.setTime_t(
-            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     timeEnd.setTime_t(endTime);
 
 
@@ -396,13 +442,13 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_
         hiddenPackets.push_back(p);
 
     }
-    //todo verificare che funzioni
+    //todo ordinare per timestamp, utile per getHiddenMacFor
     return hiddenPackets;
 }
 
 
 /**
-* veririca se sono presenti mac simili a source oppure no
+* veririca se sono presenti mac simili a source oppure no. Mac selezionato da interfaccia. Vengono ottenuti dal db tutti i pacchetti hidden nel lasso di tempo specificato.
 * @param source
 * @param initTime
 * @param endTime
@@ -454,6 +500,63 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source, uint32_t initTime, uint
 }
 
 /**
+ * Stessa cosa della funzione getHiddenDeviceFor ma questa volta partendo solo dalla stringa del mac e non da un intero pacchetto
+ * @param mac
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t endTime) {
+    //entro 5 minuti, stessa posizione +-0.5, altro da vedere
+    uint32_t tolleranzaTimestamp = 240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
+    double tolleranzaX = 0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
+    double tolleranzaY = 0.5;
+    double perc;
+    bool trovato = false;
+
+    std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);
+    if(hiddenPackets.empty())
+        return false;
+
+    Packet source=getLastPacketWithMac(mac,initTime,endTime);
+    if(source.getTimestamp()==-1)                               //nel lasso di tempo scelto non è stato trovato nessun pacchetto con il mac selezionato. Per effettuare la stima è necessario che ci sia almeno un pacchetto con  il mac scelto
+        return false;
+
+
+    for (int j = 0; j < hiddenPackets.size(); j++) {
+        if (hiddenPackets.at(j).getMacPeer() != source.getMacPeer()) {
+            double diff = (source.getTimestamp() < hiddenPackets.at(j).getTimestamp()) ? (
+                    hiddenPackets.at(j).getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
+                                                                                   hiddenPackets.at(j).getTimestamp());
+            if (diff <= tolleranzaTimestamp) {
+                //mac diverso ad intervallo inferiore di 1 minuto
+                double diffX = (source.getX() < hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX() -
+                                                                               source.getX()) : (source.getX() -
+                                                                                                 hiddenPackets.at(
+                                                                                                         j).getX());
+                double diffY = (source.getY() < hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY() -
+                                                                               source.getY()) : (source.getY() -
+                                                                                                 hiddenPackets.at(
+                                                                                                         j).getY());
+                if (diffX <= tolleranzaX && diffY <= tolleranzaY) {
+                    //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
+                    perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
+                                   (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
+                    std::cout << source.getMacPeer() << " simile ad " << hiddenPackets.at(j).getMacPeer()
+                              << " con probabilita' del " << perc << "%" << std::endl;
+                    //todo decidere cosa fare con tale percentiale
+                    trovato = true;
+                }
+            }
+
+        }
+    }
+
+    return trovato;
+}
+
+
+/**
 * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
 * Separato su due funzioni per avere anche solo la ricerca per un singolo mac.
 * @param initTime
@@ -495,6 +598,10 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
 //    std::cout << b.to_string() << std::endl;
 //    std::cout << b.to_string()[2] << std::endl;
     return b.to_string()[2] == '1';
+}
+
+void MonitoringServer::checkRandomMac() {
+
 }
 
 
