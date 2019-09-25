@@ -854,7 +854,7 @@ void spiffs_serve(char *resource, struct netconn *conn) {
 // serve static content from SPIFFS
 int spiffs_save(char *resource, struct netconn *conn) {
 
-    int N_PAR = 9;
+    int N_PAR = 7;
     printf("%s\n", resource);
     int i, err;
     struct query_t *url;
@@ -874,10 +874,10 @@ int spiffs_save(char *resource, struct netconn *conn) {
     }
     FILE *f = fopen("/spiffs/data.json", "w");
     fprintf(f,
-            "{ \"id\": \"%s\", \"posx\": \"%s\", \"posy\":\"%s\", \"ssid_ap\": \"%s\", \"password_ap\": \"%s\", \"channel\": \"%s\", \"ssid_server\": \"%s\", \"password_server\": \"%s\", \"ip_server\": \"%s\"}",
+            "{ \"id\": \"%s\",\"ssid_ap\": \"%s\", \"password_ap\": \"%s\", \"channel\": \"%s\", \"ssid_server\": \"%s\", \"password_server\": \"%s\", \"ip_server\": \"%s\"}",
             url->params[0].val,
             url->params[1].val, url->params[2].val, url->params[3].val, url->params[4].val, url->params[5].val,
-            url->params[6].val, url->params[7].val, url->params[8].val);
+            url->params[6].val);
     fclose(f);
     nvs_handle my_handle;
     err = nvs_open("storage", NVS_READWRITE, &my_handle);
