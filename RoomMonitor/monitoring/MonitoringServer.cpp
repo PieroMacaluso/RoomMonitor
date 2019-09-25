@@ -4,6 +4,7 @@
 
 #include <QtCore/QSettings>
 #include <QtSql/QSqlRecord>
+#include <bitset>
 #include "MonitoringServer.h"
 #include "Circle.h"
 #include "../windows/SettingDialog.h"
@@ -559,7 +560,15 @@ int MonitoringServer::getHiddenDevice(uint32_t initTime, uint32_t endTime) {
 }
 
 bool MonitoringServer::isRandomMac(const std::string &basicString) {
-    return (basicString.at(0) >= '4' && basicString.at(0) <= '7') || std::tolower(basicString.at(0)) >= 'c';
+    QString s = QString("0x%1").arg(basicString.at(1));
+    std::stringstream ss;
+    ss << std::hex << s.toStdString();
+    unsigned n;
+    ss >> n;
+    std::bitset<4> b(n);
+//    std::cout << b.to_string() << std::endl;
+//    std::cout << b.to_string()[2] << std::endl;
+    return b.to_string()[2] == '1';
 }
 
 
