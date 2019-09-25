@@ -270,48 +270,46 @@ void SettingDialog::checkModEdits() {
 }
 
 void SettingDialog::resetDB() {
-    {
-        //TODO: ALARM SQL INJECTION?!? Controllare bene
-        QSqlDatabase db{};
-        db = QSqlDatabase::addDatabase("QMYSQL");
-        db.setHostName(s.value("database/host").toString());
-        db.setDatabaseName(s.value("database/name").toString());
-        db.setPort(s.value("database/port").toInt());
-        db.setUserName(s.value("database/user").toString());
-        db.setPassword(s.value("database/pass").toString());
-
-        qDebug() << db.driver()->hasFeature(QSqlDriver::PreparedQueries);
-
-        if (!db.open()) {
-            qDebug() << db.lastError();
-            return;
-        }
+    //TODO: ALARM SQL INJECTION?!? Controllare bene
+    QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+    QSqlDatabase db {};
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(s.value("database/host").toString());
+    db.setDatabaseName(s.value("database/name").toString());
+    db.setPort(s.value("database/port").toInt());
+    db.setUserName(s.value("database/user").toString());
+    db.setPassword(s.value("database/pass").toString());
 
 
-        QSqlQuery query{};
-        query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
-
-        if (!query.exec()) {
-            qDebug() << query.lastError();
-        }
-        query.prepare("CREATE TABLE " + s.value("database/table").toString() +
-                      " ("
-                      "id_packet int auto_increment, "
-                      "hash_fcs varchar(8) NOT NULL, "
-                      "mac_addr varchar(17) NOT NULL, "
-                      "pos_x REAL(5,2) NOT NULL, "
-                      "pos_y REAL(5,2) NOT NULL, "
-                      "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
-                      "ssid varchar(64) NOT NULL, "
-                      "hidden int NOT NULL, "
-                      "PRIMARY KEY (id_packet) "
-                      ");");
-
-        if (!query.exec()) {
-            qDebug() << query.lastError();
-        }
-        db.close();
+    if (!db.open()) {
+        qDebug() << db.lastError();
+        return;
     }
-    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+    qDebug() << db.driver()->hasFeature(QSqlDriver::PreparedQueries);
+
+
+    QSqlQuery query{};
+    query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+    query.prepare("CREATE TABLE " + s.value("database/table").toString() +
+                  " ("
+                  "id_packet int auto_increment, "
+                  "hash_fcs varchar(8) NOT NULL, "
+                  "mac_addr varchar(17) NOT NULL, "
+                  "pos_x REAL(5,2) NOT NULL, "
+                  "pos_y REAL(5,2) NOT NULL, "
+                  "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
+                  "ssid varchar(64) NOT NULL, "
+                  "hidden int NOT NULL, "
+                  "PRIMARY KEY (id_packet) "
+                  ");");
+
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+    }
+    db.close();
 
 }

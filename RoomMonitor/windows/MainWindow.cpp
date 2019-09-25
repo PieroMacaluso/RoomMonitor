@@ -11,6 +11,13 @@
 MainWindow::MainWindow() {
     ui.setupUi(this);
     setupConnect();
+    QSettings su{"VALP", "RoomMonitoring"};
+    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(su.value("database/host").toString());
+    db.setDatabaseName(su.value("database/name").toString());
+    db.setPort(su.value("database/port").toInt());
+    db.setUserName(su.value("database/user").toString());
+    db.setPassword(su.value("database/pass").toString());
     ui.actionMonitoring->triggered(true);
 }
 
@@ -29,7 +36,7 @@ void MainWindow::setupConnect() {
                 ui.startButton->setDisabled(true);
                 ui.stopButton->setDisabled(false);
             }
-            liveGraph.start(1000*60*5);
+            liveGraph.start(1000 * 60 * 5);
             i_time = 0;
             setupMonitoringPlot();
         } catch (std::exception &e) {
@@ -366,67 +373,54 @@ void MainWindow::setupPositionPlot() {
 }
 
 void MainWindow::addLiveData() {
-    {
-        QSettings su{"VALP", "RoomMonitoring"};
-        qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
-        // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
+    QSettings su{"VALP", "RoomMonitoring"};
+    qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
+    // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
 //        startTimestamp = 1569344039 + 60 * 5 * i_time;
 //        i_time++;
-        startTimestamp = startTimestamp / (60 * 5);
-        QDateTime start{};
-        QDateTime end{};
-        QDateTime prev{};
-        start.setSecsSinceEpoch(startTimestamp * 60 * 5);
-        end = start.addSecs(60 * 5);
-        prev = start.addSecs(-60 * 5);
+    startTimestamp = startTimestamp / (60 * 5);
+    QDateTime start{};
+    QDateTime end{};
+    QDateTime prev{};
+    start.setSecsSinceEpoch(startTimestamp * 60 * 5);
+    end = start.addSecs(60 * 5);
+    prev = start.addSecs(-60 * 5);
 
-        QSqlDatabase db{};
-        db = QSqlDatabase::addDatabase("QMYSQL");
-        db.setHostName(su.value("database/host").toString());
-        db.setDatabaseName(su.value("database/name").toString());
-        db.setPort(su.value("database/port").toInt());
-        db.setUserName(su.value("database/user").toString());
-        db.setPassword(su.value("database/pass").toString());
-        if (!db.open()) {
-            qDebug() << db.lastError();
-            return;
-        }
-
-        QSqlQuery query{};
-
-        query.prepare(
-                "SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
-                " WHERE timestamp BETWEEN :fd AND :sd;");
-        query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
-        query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
-        if (!query.exec())
-            qDebug() << query.lastError();
-
-        if (!query.first())
-            ui.monitoringPlot->getChart()->updateData(prev, 0);
-        else
-            ui.monitoringPlot->getChart()->updateData(prev, query.value(0).toInt());
-
-
-        query.clear();
-
-        query.prepare("SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
-                      " WHERE timestamp BETWEEN :fd AND :sd;");
-        query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
-        query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-        if (!query.exec())
-            qDebug() << query.lastError();
-
-        if (!query.first())
-            ui.monitoringPlot->getChart()->addData(start, 0);
-        else
-            ui.monitoringPlot->getChart()->addData(start, query.value(0).toInt());
-
-        db.close();
-
+    QSqlDatabase db = QSqlDatabase::database();
+    if (!db.open()) {
+        qDebug() << db.lastError();
+        return;
     }
 
-    QSqlDatabase::removeDatabase("qt_sql_default_connection");
+    QSqlQuery query{};
+
+    query.prepare(
+            "SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
+            " WHERE timestamp BETWEEN :fd AND :sd;");
+    query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!query.exec())
+        qDebug() << query.lastError();
+
+    if (!query.first())
+        ui.monitoringPlot->getChart()->updateData(prev, 0);
+    else
+        ui.monitoringPlot->getChart()->updateData(prev, query.value(0).toInt());
 
 
+    query.clear();
+
+    query.prepare("SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
+                  " WHERE timestamp BETWEEN :fd AND :sd;");
+    query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!query.exec())
+        qDebug() << query.lastError();
+
+    if (!query.first())
+        ui.monitoringPlot->getChart()->addData(start, 0);
+    else
+        ui.monitoringPlot->getChart()->addData(start, query.value(0).toInt());
+
+    db.close();
 }

@@ -43,25 +43,15 @@ Q_OBJECT
     QTcpServer server{};
     std::map<int, Board> boards;
     bool running;
-    std::deque<std::pair<Packet, int>> packets;
+    std::map<std::string, std::pair<std::deque<Packet>, int>> packets;
+//    std::deque<std::pair<Packet, int>> packets;
     QTimer timer{};
-    QSqlDatabase nDatabase;
     QSettings settings{"VALP", "RoomMonitoring"};
 
 public:
     MonitoringServer();
 
     ~MonitoringServer();
-
-    /**
-     * Connessione al database
-     */
-    void connectDB();
-
-    /**
-     * Disconnessione dal database
-     */
-    void disconnectDB();
 
     bool isRunning();
 
@@ -98,7 +88,7 @@ public:
     template<class Container>
     void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim);
 
-    PositionData fromRssiToXY(std::deque<Packet> deque);
+    PositionData fromRssiToXY(const std::deque<Packet>& deque);
 
     float calculateDistance(signed rssi);
 

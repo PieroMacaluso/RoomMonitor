@@ -10,7 +10,6 @@
 #include "../windows/SettingDialog.h"
 
 MonitoringServer::MonitoringServer() {
-//    nDatabase = QSqlDatabase::addDatabase("QMYSQL");
 }
 
 MonitoringServer::~MonitoringServer() {
@@ -54,7 +53,7 @@ void MonitoringServer::split(const std::string &str, Container &cont, char delim
  * @param deque
  * @return
  */
-PositionData MonitoringServer::fromRssiToXY(std::deque<Packet> deque) {
+PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet>& deque) {
     // Deque di cerchi
     std::deque<Circle> circles{};
     // Deque che ci serve per media pesata
@@ -191,27 +190,7 @@ float MonitoringServer::calculateDistance(signed rssi) {
 
 }
 
-void MonitoringServer::connectDB() {
-
-    if (!nDatabase.open()) {
-        qDebug() << nDatabase.lastError();
-        return;
-    }
-}
-
-void MonitoringServer::disconnectDB() {
-    nDatabase.close();
-}
-
 void MonitoringServer::start() {
-    nDatabase = QSqlDatabase::addDatabase("QMYSQL");
-    nDatabase.setHostName(settings.value("database/host").toString());
-    nDatabase.setDatabaseName(settings.value("database/name").toString());
-    nDatabase.setPort(settings.value("database/port").toInt());
-    nDatabase.setUserName(settings.value("database/user").toString());
-    nDatabase.setPassword(settings.value("database/pass").toString());
-
-//    getHiddenDevice(1569088800, 1569091920);
 
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
@@ -229,7 +208,6 @@ void MonitoringServer::start() {
 void MonitoringServer::stop() {
     QObject::disconnect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
     QObject::disconnect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-    QSqlDatabase::removeDatabase("MonitoringServer");
     qDebug() << "Server Disconnected:" << server.serverPort();
 
     server.close();
@@ -251,7 +229,7 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 
 bool MonitoringServer::is_inside_room(PositionData data) {
     // TODO: margine?
-    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/height").toFloat() &&
+    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/width").toFloat() &&
            data.getY() <= settings.value("room/height").toFloat();
 }
 
@@ -285,10 +263,16 @@ void MonitoringServer::newConnection() {
 
         for (auto &p: packetsConn) {
             DEBUG(p)
-            packets.emplace_back(std::make_pair(p, 0));
-        }
+            auto it = packets.find(p.getFcs());
+            if (it != packets.end()) {
+                it->second.first.push_back(p);
+            } else {
+                std::deque<Packet> l;
+                l.push_back(p);
+                packets.insert(std::make_pair(p.getFcs(), std::make_pair(l, 0)));
+            }
 
-        /** FINE ESECUZIONE THREAD-SAFE */
+        }
     }
 
     //todo controllare se va bene un conteiner pacchetti per ogni newConnection (stesso anche in caso la schedina usi più pacchetti tcp per inviare l'intero elenco)
@@ -300,85 +284,40 @@ void MonitoringServer::newConnection() {
 }
 
 void MonitoringServer::aggregate() {
-
-    connectDB();
+    DEBUG("Starting aggregation")
+    QSqlDatabase db = QSqlDatabase::database();
+    if (db.isOpenError()) {
+        qDebug() << db.lastError();
+        exit(-1);
+    }
 
     // TODO: Capire come aggregare bene
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
 
-    // Generazione Mappa <ChiavePacchetto, DequePacchetto>
-
-    /* TODO: capire se si può fare direttamente in acquisizione, secondo me si può usare la mappa in maniera thread safe
-     * in questo modo si andrebbe a creare l'aggregazione per id pacchetto già in ricezione, limitando lo sforzo
-     * computazionale che viene fatto in aggregate*/
-
     std::map<std::string, std::deque<Packet>> aggregate{};
-    std::for_each(packets.begin(), packets.end(), [&](std::pair<Packet, int> el) {
-        std::string id = el.first.getFcs();
-        el.second++;
-        auto it = aggregate.find(id);
-        if (it == aggregate.end()) {
-            std::deque<Packet> newDeque{};
-            newDeque.push_back(el.first);
-            aggregate.insert(std::make_pair(id, newDeque));
+    for (auto it = packets.begin(); it != packets.end(); it++) {
+        std::string id = it->first;
+        if (it->second.first.size() == nSchedine) {
+            aggregate.insert(std::make_pair(id, it->second.first));
+            it->second.second = 2;
         } else {
-            it->second.push_back(el.first);
-        }
-    });
-
-    // Eliminazione di tutti i pacchetti che non possiedono un numero di elementi pari al numero di schedine.
-    for (auto i = aggregate.begin(), last = aggregate.end(); i != last;) {
-        if (nSchedine != i->second.size()) {
-            i = aggregate.erase(i);
-        } else {
-
-            for (auto it = packets.begin(); it != packets.end();) {
-                if (it->first.getFcs() == i->first) {
-                    it = packets.erase(it);
-                } else {
-                    ++it;
-                }
-            }
-            ++i;
+            it->second.second++;
         }
     }
-    // TODO: verificare inutilità di questa procedura e cancellare
-//    std::map<std::string, PositionData> map_mac_xy;
-//    for (auto i = aggregate.begin(), last = aggregate.end(); i != last; i++) {
-//        std::string mac = i->second.begin()->getMacPeer();
-//        auto it = map_mac_xy.find(mac);
-//        if (it == map_mac_xy.end()) {
-//            // Nuovo MAC
-//            // Calculate x,y da RSSI
-//            PositionData positionData = fromRssiToXY(i->second);
-//            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
-//            map_mac_xy.insert(std::make_pair(mac, positionData));
-//            //todo aggiungere posizionData al pacchetto con quel mac prima di salvarlo nel db
-//        } else {
-//            // MAC già visto
-//            // Calculate x,y da RSSI
-//            PositionData positionData = fromRssiToXY(i->second);
-//            if (positionData.getX() == -1 || positionData.getY() == -1) continue;
-//            it->second.addPacket(positionData);
-//        }
-//    }
-
-
     // Stampa id pacchetti aggregati rilevati.
-    DEBUG("Starting aggregation")
     for (auto fil : aggregate) {
-        DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer())
         /*
          * TODO: Verificare query al database, capire cosa e quanto salvare
          */
-        QSqlQuery query;
+        QSqlQuery query{};
         query.prepare(
                 "INSERT INTO " + settings.value("database/table").toString() +
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
+        DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer()<< " " << positionData.getX() << " " << positionData.getY());
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
@@ -400,29 +339,18 @@ void MonitoringServer::aggregate() {
     }
     DEBUG("Ending aggregation")
 
-    // Stampa id pacchetti aggregati rilevati.
-//    auto clock = std::chrono::system_clock::now();
-//    std::time_t clock_time = std::chrono::system_clock::to_time_t(clock);
-//    std::cout << "Situation at " << std::ctime(&clock_time) << std::endl;
-//    for (auto &fil : map_mac_xy) {
-//        std::cout << "MAC:" << fil.first << " " << fil.second << std::endl;
-//    }
-//    std::cout << "Persone nella stanza: " << map_mac_xy.size() << std::endl;
-
-
-
     // Pulizia deque pacchetti attraverso meccanismo di second chance
     /* Un pacchetto viene eliminato dalla deque solo ed esclusivamente dopo due aggregate. In questo maniera
      * si dovrebbe evitare la possibilità che vengano analizzate ricezioni di pacchetti parziali */
     for (auto it = packets.begin(); it != packets.end();) {
-        if (it->second >= 2) {
+        if (it->second.second >= 2) {
             it = packets.erase(it);
         } else {
             ++it;
         }
     }
 
-    disconnectDB();
+    db.close();
 }
 
 bool MonitoringServer::isRunning() {
@@ -431,8 +359,6 @@ bool MonitoringServer::isRunning() {
 
 std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_t endTime) {
     //query per ottenere i pacchetti con mac hidden nel periodo specificato
-    connectDB();
-
     QDateTime timeInit;
     QDateTime timeEnd;
 
