@@ -13,15 +13,43 @@ const formToJSON = elements => [].reduce.call(elements, (data, element) => {
 }, {});
 
 function validateForm(form) {
-    // TODO: Da fare Validazione Dati lato client
+    var status = true;
+    const id_regex = new RegExp(/^[1-9][0-9]*$/);
+    const ssid_regex = new RegExp(/^[A-Za-z0-9]{1,32}$/);
+    const channel_regex = new RegExp(/^[0-9]$|^1[0-4]$/);
+    const ip_regex = new RegExp(/^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$/);
+    const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,63}$/);
+    // TODO: Controllare validazione e esportare nel Server (Schedina)
     document.getElementById("errors").innerHTML = "";
     // Codice di prova
-    var x = form["id"].value;
-    if (x === "") {
-        document.getElementById("errors").innerHTML += "<li>Inserire campo ID</li>";
-        return false;
+    if (!id_regex.test(form["id"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Campo ID deve essere un numero intero</li>";
+        status = false;
     }
-    return true;
+    if (!ssid_regex.test(form["ssid_ap"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Inserire un Campo SSID AP valido di minimo 1 e massimo 32 caratteri alfanumerici</li>";
+        status = false;
+    }
+    if (!ssid_regex.test(form["ssid_server"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Inserire un Campo SSID Server valido di minimo 1 e massimo 32 caratteri alfanumerici</li>";
+        status = false;
+    }
+    if (!password_regex.test(form["password_ap"].value)) {
+        document.getElementById("errors").innerHTML += "<li>La password deve contenere almeno una lettera maiuscola, una lettera minuscola e un numero</li>";
+        status = false;
+    }
+
+    // Decommentato controllo password server poichè non la complessità non deve essere imposta dal client
+    // if (!password_regex.test(form["password_server"].value)) {
+    //     document.getElementById("errors").innerHTML += "<li>La password deve contenere almeno una lettera maiuscola, una lettera minuscola e un numero</li>";
+    //     status = false;
+    // }
+    if (!ip_regex.test(form["ip_server"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Inserire un indirizzo IP valido</li>";
+        status = false;
+    }
+
+    return status;
 }
 
 /**
