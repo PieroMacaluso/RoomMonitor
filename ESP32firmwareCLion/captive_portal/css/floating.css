@@ -103,3 +103,8 @@ body {
         color: #777;
     }
 }
+
+#errors {
+    color: red;
+    padding: 10px;
+}

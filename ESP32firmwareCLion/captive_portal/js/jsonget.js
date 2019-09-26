@@ -12,6 +12,18 @@ const formToJSON = elements => [].reduce.call(elements, (data, element) => {
 
 }, {});
 
+function validateForm(form) {
+    // TODO: Da fare Validazione Dati lato client
+    document.getElementById("errors").innerHTML = "";
+    // Codice di prova
+    var x = form["id"].value;
+    if (x === "") {
+        document.getElementById("errors").innerHTML += "<li>Inserire campo ID</li>";
+        return false;
+    }
+    return true;
+}
+
 /**
  * A handler function to prevent default submission and run our custom script.
  * @param  {Event} event  the submit event triggered by the user
@@ -22,6 +34,7 @@ const handleFormSubmit = event => {
     // Stop the form from submitting since we’re handling that with AJAX.
     event.preventDefault();
 
+    if (!validateForm(form)) return;
     const data = formToJSON(form.elements);
     const jj = JSON.stringify(data, null, "  ");
     console.log(jj);
