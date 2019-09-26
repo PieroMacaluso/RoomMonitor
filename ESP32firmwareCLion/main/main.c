@@ -870,6 +870,12 @@ int spiffs_save(char *resource, struct netconn *conn) {
     }
     printf("Query string parameters:\n");
     for (i = 0; i < N_PAR; i++) {
+        // TODO: VALIDAZIONE DEI PARAMETRI IN INGRESSO e MODIFICA DEI
+        // Si potrebbe fare usando regex per ogni parametro
+        // ID: [1-9][0-9]*
+        // SSID AP/Server: ^[^!#;+\]\/"\t][^+\]\/"\t]{0,30}[^ !#;+\]\/"\t]$|^[^ !#;+\]\/"\t]$ da controllare
+        // Password AP/Server: ^(.{8,63})$
+        // IP: ^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$
         printf("\t%s: %s\n", url->params[i].key, url->params[i].val);
     }
     FILE *f = fopen("/spiffs/data.json", "w");
