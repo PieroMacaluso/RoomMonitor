@@ -10,6 +10,7 @@
 #include "esp32/rom/crc.h"
 #include <string.h>
 #include <math.h>
+#include <cJSON.h>
 #include "soc/timer_group_struct.h"
 #include "driver/periph_ctrl.h"
 #include "driver/timer.h"
@@ -103,7 +104,9 @@ static wifi_country_t wifi_country = {.cc = "CN", .schan = 1, .nchan = 13,
 /* Prototipi Funzioni */
 /*static esp_err_t event_handler1(void *ctx, system_event_t *event);*/
 void initialize_spiffs(void);
+
 void wifi_init(void);
+
 static void wifi_sniffer_init(void);
 
 void wifi_sniffer_update(void);
@@ -290,7 +293,7 @@ void getMacAddress(char *baseMacChr) {
 /**
  * Impostazione dei parametri di rete sia per il captive portal sia per la comunicazione in rete
  */
-void wifi_init(){
+void wifi_init() {
     esp_log_level_set("wifi", ESP_LOG_NONE);    // disable wifi driver logging
     tcpip_adapter_init();
     printf("- TCP adapter initialized\n");
@@ -709,7 +712,7 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
             printf("- mDNS service started\n");
 
             // start the HTTP server task
-            xTaskCreate(&http_server, "http_server", 20000, NULL, 5, NULL);
+            xTaskCreate(&http_server, "http_server", 20480, NULL, 5, NULL);
             printf("- HTTP server started\n");
 
             break;
@@ -735,6 +738,7 @@ static void http_server(void *pvParameters) {
     printf("* HTTP Server listening\n");
     do {
         err = netconn_accept(conn, &newconn);
+        printf("New client connected\n");
         if (err == ERR_OK) {
             http_server_netconn_serve(newconn);
             netconn_delete(newconn);
@@ -743,6 +747,7 @@ static void http_server(void *pvParameters) {
     } while (err == ERR_OK);
     netconn_close(conn);
     netconn_delete(conn);
+    printf("\n");
 }
 
 static void http_server_netconn_serve(struct netconn *conn) {
@@ -762,36 +767,38 @@ static void http_server_netconn_serve(struct netconn *conn) {
 
         // get the request body and the first line
         char *body = strstr(buf, "\r\n\r\n");
-        char *request_line = strtok(buf, "\n");
+        char *first_line = strtok(buf, "\n");
 
-        if (request_line) {
 
+        if (first_line) {
             // static content, get it from SPIFFS
-            if (strstr(request_line, "GET /save.html")) {
-                char *method = strtok(request_line, " ");
-                char *resource = strtok(NULL, " ");
-                //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-                spiffs_save(resource, conn);
-                //printf("SAVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-                spiffs_serve("/index.html", conn);
-
-            }
-            // default page -> redirect to index.html
-            if (strstr(request_line, "GET / ")) {
+            if (strstr(first_line, "GET / ")) {
+                printf("B\n");
                 //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
                 spiffs_serve("/index.html", conn);
                 //printf("SERVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
+            } else if (strstr(first_line, "POST /save.html")) {
+                char *data = strstr(body, "{");
+                printf("A\n");
+                //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
+                spiffs_save(data, conn);
+                //printf("SAVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
+//                spiffs_serve("/index.html", conn);
+
             } else {
                 char *method = strtok(request_line, " ");
                 char *resource = strtok(NULL, " ");
+                printf("%s\n", resource);
                 //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
                 spiffs_serve(resource, conn);
                 //printf("SERVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
             }
-        }
+        } else printf("Unknown request\n");
     }
 
-    netbuf_free(inbuf);
+    netbuf_delete(inbuf);
+    netconn_close(conn);
+    printf("CA\n");
 }
 
 // serve static content from SPIFFS
@@ -854,53 +861,55 @@ void spiffs_serve(char *resource, struct netconn *conn) {
 // serve static content from SPIFFS
 int spiffs_save(char *resource, struct netconn *conn) {
 
-    int N_PAR = 7;
-    printf("%s\n", resource);
-    int i, err;
-    struct query_t *url;
+    cJSON *json = cJSON_Parse(resource);
+    if (json == NULL) {
+        const char *error_ptr = cJSON_GetErrorPtr();
+        if (error_ptr != NULL) {
+            fprintf(stderr, "Error before: %s\n", error_ptr);
+        }
+        return 1;
+    }
 
-    if ((url = query_init(N_PAR)) == NULL) {
-        //TODO: Change debug print
-        fprintf(stderr, "Could not parse url!\n");
-        return 1;
-    }
-    if (-1 == query_parse(url, resource)) {
-        fprintf(stderr, "Could not parse url!\n");
-        return 1;
-    }
-    printf("Query string parameters:\n");
-    for (i = 0; i < N_PAR; i++) {
-        // TODO: VALIDAZIONE DEI PARAMETRI IN INGRESSO e MODIFICA DEI
-        // Si potrebbe fare usando regex per ogni parametro
-        // ID: [1-9][0-9]*
-        // SSID AP/Server: ^[^!#;+\]\/"\t][^+\]\/"\t]{0,30}[^ !#;+\]\/"\t]$|^[^ !#;+\]\/"\t]$ da controllare
-        // Password AP/Server: ^(.{8,63})$
-        // IP: ^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$
-        printf("\t%s: %s\n", url->params[i].key, url->params[i].val);
-    }
+    char *id = cJSON_GetObjectItem(json, "id")->valuestring;
+    char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
+    char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
+    char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
+    char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
+    char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
+    char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
+
+    int err, i;
+    // TODO: VALIDAZIONE DEI PARAMETRI IN INGRESSO e MODIFICA DEI
+    // Si potrebbe fare usando regex per ogni parametro
+    // ID: [1-9][0-9]*
+    // SSID AP/Server: ^[^!#;+\]\/"\t][^+\]\/"\t]{0,30}[^ !#;+\]\/"\t]$|^[^ !#;+\]\/"\t]$ da controllare
+    // Password AP/Server: ^(.{8,63})$
+    // IP: ^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$
     FILE *f = fopen("/spiffs/data.json", "w");
-    fprintf(f,
-            "{ \"id\": \"%s\",\"ssid_ap\": \"%s\", \"password_ap\": \"%s\", \"channel\": \"%s\", \"ssid_server\": \"%s\", \"password_server\": \"%s\", \"ip_server\": \"%s\"}",
-            url->params[0].val,
-            url->params[1].val, url->params[2].val, url->params[3].val, url->params[4].val, url->params[5].val,
-            url->params[6].val);
+    fprintf(f, "%s", cJSON_Print(json));
     fclose(f);
     nvs_handle my_handle;
     err = nvs_open("storage", NVS_READWRITE, &my_handle);
     if (err != ESP_OK) {
         printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        for (i = 0; i < N_PAR; i++) {
-            err = nvs_set_str(my_handle, url->params[i].key, url->params[i].val);
-            switch (err) {
-                case ESP_OK:
-                    printf("Saved\n");
-                    break;
-                case ESP_ERR_NVS_NOT_FOUND:
-                    printf("The value is not initialized yet!\n");
-                    break;
-                default:
-                    printf("Error (%s) reading!\n", esp_err_to_name(err));
+        cJSON *current_element = NULL;
+        char *current_key = NULL;
+        cJSON_ArrayForEach(current_element, json) {
+            current_key = current_element->string;
+            if (current_key != NULL) {
+
+                err = nvs_set_str(my_handle, current_key, current_element->valuestring);
+                switch (err) {
+                    case ESP_OK:
+                        printf("Saved\n");
+                        break;
+                    case ESP_ERR_NVS_NOT_FOUND:
+                        printf("The value is not initialized yet!\n");
+                        break;
+                    default:
+                        printf("Error (%s) reading!\n", esp_err_to_name(err));
+                }
             }
         }
         printf("Committing updates in NVS ... ");
@@ -909,7 +918,6 @@ int spiffs_save(char *resource, struct netconn *conn) {
         // Close
         nvs_close(my_handle);
     }
-    query_free(url);
     printf("ESP32 Restarting...\n");
     esp_restart();
     return EXIT_SUCCESS;
