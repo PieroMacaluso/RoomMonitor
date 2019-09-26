@@ -25,6 +25,7 @@
 #include "esp_spiffs.h"
 #include "esp_err.h"
 #include "query_resolver.h"
+//#include "re.h"
 
 // set AP CONFIG values
 #ifdef CONFIG_AP_HIDE_SSID
@@ -94,7 +95,11 @@
 #define TCPServerPORT CONFIG_PORT_SERVER
 #define SCANChannel CONFIG_SCAN_CHANNEL
 #define MESSAGE "HelloTCPServer\0"
-
+#define id_regex "^[1-9][0-9]*$"
+#define ssid_regex "^[A-Za-z0-9]{1,32}$"
+#define channel_regex "^[0-9]$|^1[0-4]$"
+#define ip_regex "^(?=.*[^.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).?){4}$"
+#define password_regex "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,63}$"
 const int STA_CONNECTED_BIT = BIT0;
 #define BLINK_GPIO 2                //pin led
 
@@ -781,12 +786,21 @@ static void http_server_netconn_serve(struct netconn *conn) {
                 char *data = strstr(body, "{");
                 printf("A\n");
                 //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-                spiffs_save(data, conn);
+                if (spiffs_save(data, conn)){
+                    spiffs_serve("/error.html", conn);
+                } else {
+                    spiffs_serve("/success.html", conn);
+                    netbuf_delete(inbuf);
+                    netconn_close(conn);
+                    printf("ESP32 Restarting...\n");
+                    esp_restart();
+                }
                 //printf("SAVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
 //                spiffs_serve("/index.html", conn);
 
             } else {
-                char *method = strtok(request_line, " ");
+                printf("C\n");
+                char *method = strtok(first_line, " ");
                 char *resource = strtok(NULL, " ");
                 printf("%s\n", resource);
                 //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
@@ -870,21 +884,25 @@ int spiffs_save(char *resource, struct netconn *conn) {
         return 1;
     }
 
-    char *id = cJSON_GetObjectItem(json, "id")->valuestring;
-    char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
-    char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
-    char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
-    char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
-    char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
-    char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
+    // Validazione input
+    // TODO: REGEX NON DISPONIBILI IN ESP32, provato con re.c e re.h, ma nulla
+//    char *id = cJSON_GetObjectItem(json, "id")->valuestring;
+//    if (!re_match(id, id_regex)) return 1;
+//    char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
+//    if (!re_match(ssid_ap, ssid_regex)) return 1;
+//    char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
+//    if (!re_match(password_ap, password_ap)) return 1;
+//    char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
+//    if (!re_match(channel, channel_regex)) return 1;
+//    char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
+//    if (!re_match(ssid_server, ssid_regex)) return 1;
+//    char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
+//    char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
+//    if (!re_match(ip_server, ip_regex)) return 1;
 
-    int err, i;
-    // TODO: VALIDAZIONE DEI PARAMETRI IN INGRESSO e MODIFICA DEI
-    // Si potrebbe fare usando regex per ogni parametro
-    // ID: [1-9][0-9]*
-    // SSID AP/Server: ^[^!#;+\]\/"\t][^+\]\/"\t]{0,30}[^ !#;+\]\/"\t]$|^[^ !#;+\]\/"\t]$ da controllare
-    // Password AP/Server: ^(.{8,63})$
-    // IP: ^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$
+
+    int err;
+
     FILE *f = fopen("/spiffs/data.json", "w");
     fprintf(f, "%s", cJSON_Print(json));
     fclose(f);
@@ -918,9 +936,7 @@ int spiffs_save(char *resource, struct netconn *conn) {
         // Close
         nvs_close(my_handle);
     }
-    printf("ESP32 Restarting...\n");
-    esp_restart();
-    return EXIT_SUCCESS;
+    return 0;
 }
 
 /**
