@@ -11,6 +11,8 @@ file(GLOB COMPONENT_SRCS
         "query_resolver.h"
         "time.c"
         "time.h"
+        "validation.h"
+        "validation.c"
         )
 set(COMPONENT_ADD_INCLUDEDIRS "")
 

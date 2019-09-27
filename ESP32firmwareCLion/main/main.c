@@ -25,6 +25,7 @@
 #include "esp_spiffs.h"
 #include "esp_err.h"
 #include "query_resolver.h"
+#include "validation.h"
 //#include "re.h"
 
 // set AP CONFIG values
@@ -885,19 +886,47 @@ int spiffs_save(char *resource, struct netconn *conn) {
     }
 
     // Validazione input
+    int res;
+
     // TODO: REGEX NON DISPONIBILI IN ESP32, provato con re.c e re.h, ma nulla
-//    char *id = cJSON_GetObjectItem(json, "id")->valuestring;
+      char *id = cJSON_GetObjectItem(json, "id")->valuestring;
+        res=idValidation(id);
+        if(res==1)
+            return res;
 //    if (!re_match(id, id_regex)) return 1;
-//    char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
+
+       char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
+        res=ssidApValidation(ssid_ap);
+        if(res==1)
+            return res;
 //    if (!re_match(ssid_ap, ssid_regex)) return 1;
-//    char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
+
+      char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
+        res=passwordApValidation(password_ap);
+        if(res==1)
+            return res;
 //    if (!re_match(password_ap, password_ap)) return 1;
-//    char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
+
+      char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
+        res=channelValidation(channel);
+        if(res==1)
+            return res;
 //    if (!re_match(channel, channel_regex)) return 1;
-//    char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
+
+      char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
+        res=ssidServerValidation(ssid_server);
+        if(res==1)
+         return res;
 //    if (!re_match(ssid_server, ssid_regex)) return 1;
-//    char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
-//    char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
+
+      char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
+        res=passServerValidation(password_server);
+        if(res==1)
+            return res;
+      char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
+        res=ipValidation(ip_server);
+        if(res==1)
+            return res;
 //    if (!re_match(ip_server, ip_regex)) return 1;
 
 
