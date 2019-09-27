@@ -35,10 +35,13 @@ void MainWindow::setupConnect() {
                 s.started();
                 ui.startButton->setDisabled(true);
                 ui.stopButton->setDisabled(false);
+                // Pulizia tabella Ultimi MAC
+                lastMacs.clear();
+                liveGraph.start(1000 /** 60 * 5*/);
+                i_time = 0;
+                setupMonitoringPlot();
+
             }
-            liveGraph.start(1000 * 60 * 5);
-            i_time = 0;
-            setupMonitoringPlot();
         } catch (std::exception &e) {
             // Does not started signal
             std::cout << "Non è stato possibile avviare il server." << std::endl;
@@ -304,10 +307,10 @@ void MainWindow::addMacSitua(const QString &mac, qreal posx, qreal posy, bool ra
 void MainWindow::initializeLastMacList() {
     ui.macLastSituation->reset();
     /* SETUP TABLE */
-    ui.macLastSituation->setColumnCount(3);
+    ui.macLastSituation->setColumnCount(4);
     ui.macLastSituation->setRowCount(0);
     QStringList h;
-    h << "MAC" << "X" << "Y";
+    h << "MAC" << "Time" << "X" << "Y";
     ui.macLastSituation->setHorizontalHeaderLabels(h);
     ui.macLastSituation->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.macLastSituation->verticalHeader()->hide();
@@ -315,26 +318,27 @@ void MainWindow::initializeLastMacList() {
     ui.macLastSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
     ui.macLastSituation->setAlternatingRowColors(true);
     ui.macLastSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    // TODO: Cancella dati fittizi alla fine
-    addLastMacPos("BB:BB:BB:BB:BB:BB", 1.0, 3.0);
-    addLastMacPos("CC:CC:CC:CC:CC:CC", 2.0, 0.0);
-    addLastMacPos("AA:AA:AA:AA:AA:AA", 0.0, 2.5);
+//    // TODO: Cancella dati fittizi alla fine
+//    addLastMacPos("BB:BB:BB:BB:BB:BB", 1.0, 3.0);
+//    addLastMacPos("CC:CC:CC:CC:CC:CC", 2.0, 0.0);
+//    addLastMacPos("AA:AA:AA:AA:AA:AA", 0.0, 2.5);
     // FINE
 }
 
-void MainWindow::addLastMacPos(const QString &mac, qreal posx, qreal posy) {
+void MainWindow::addLastMacPos(const QString &mac, const QDateTime &date, qreal posx, qreal posy) {
     int i = ui.macLastSituation->rowCount();
     ui.macLastSituation->insertRow(i);
 
     auto mac_table = new QTableWidgetItem{mac};
+    auto date_table = new QTableWidgetItem{date.toString("dd/MM/yyyy hh:mm")};
     auto posx_table = new QTableWidgetItem{QString::number(posx)};
     auto posy_table = new QTableWidgetItem{QString::number(posy)};
     mac_table->setToolTip(mac);
 
     ui.macLastSituation->setItem(i, 0, mac_table);
-    ui.macLastSituation->setItem(i, 1, posx_table);
-    ui.macLastSituation->setItem(i, 2, posy_table);
-
+    ui.macLastSituation->setItem(i, 1, date_table);
+    ui.macLastSituation->setItem(i, 2, posx_table);
+    ui.macLastSituation->setItem(i, 3, posy_table);
 }
 
 
@@ -376,8 +380,8 @@ void MainWindow::addLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
     // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
-//        startTimestamp = 1569344039 + 60 * 5 * i_time;
-//        i_time++;
+    startTimestamp = 1569420000 + 60 * 5 * i_time;
+    i_time++;
     startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
     QDateTime end{};
@@ -422,5 +426,38 @@ void MainWindow::addLiveData() {
     else
         ui.monitoringPlot->getChart()->addData(start, query.value(0).toInt());
 
+    query.clear();
+
+    query.prepare(
+            "SELECT mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing, avg(pos_x) AS pos_x ,avg(pos_y)AS pos_x FROM eurecomLab WHERE timestamp BETWEEN :fd AND :sd GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :sec ORDER BY timing;");
+    query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sec", 300);
+    if (!query.exec())
+        qDebug() << query.lastError();
+
+    while (query.next()) {
+        QString mac = query.value(0).toString();
+        QDateTime timing = query.value(1).toDateTime();
+        qreal posx = query.value(2).toDouble();
+        qreal posy = query.value(3).toDouble();
+        auto it = lastMacs.find(mac);
+        if (it != lastMacs.end()) {
+            it->update(timing, posx, posy);
+        } else{
+            LastMac lm{mac, timing, posx, posy};
+            lastMacs.insert(mac, lm);
+        }
+    }
+    this->updateLastMac();
+
+
     db.close();
+}
+
+void MainWindow::updateLastMac() {
+    this->initializeLastMacList();
+    for (const auto &i: lastMacs) {
+        this->addLastMacPos(i.getMac(), i.getTiming(), i.getPosx(), i.getPosy());
+    }
 }

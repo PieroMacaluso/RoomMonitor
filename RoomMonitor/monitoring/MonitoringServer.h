@@ -151,6 +151,8 @@ public slots:
     static bool isRandomMac(const std::string &basicString);
 
 
+    static std::list<Packet> getAllPacketsOfMac(const QString& mac, uint32_t time, uint32_t endTime);
+
 signals:
 
     /**
@@ -159,13 +161,11 @@ signals:
      */
     void started();
 
+
     /**
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
-
-
-    std::list<Packet> getAllPacketsOfMac(QString qString, uint32_t time, uint32_t endTime);
 };
 
 

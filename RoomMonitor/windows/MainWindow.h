@@ -14,6 +14,7 @@
 #include <QtCharts>
 #include <windows/plots/monitoring/MonitoringChart.h>
 #include <windows/plots/mac/MacChart.h>
+#include <windows/classes/LastMac.h>
 
 class MainWindow : public QMainWindow {
 
@@ -34,6 +35,8 @@ class MainWindow : public QMainWindow {
     MonitoringServer s{};
 
     QTimer liveGraph{};
+
+    QMap<QString, LastMac> lastMacs{};
 
 public:
     /**
@@ -63,7 +66,7 @@ public:
      * @param posx  coordinata x posizione
      * @param posy  coordinata y posizione
      */
-    void addLastMacPos(const QString &mac, qreal posx, qreal posy);
+    void addLastMacPos(const QString &mac, const QDateTime &date, qreal posx, qreal posy);
 
     /**
      * Inizializza la tabella della situazione dei MAC nel range specificato dall'analisi di lungo periodo
@@ -97,6 +100,8 @@ public:
 
     void addLiveData();
 
+
+    void updateLastMac();
 
 };
 

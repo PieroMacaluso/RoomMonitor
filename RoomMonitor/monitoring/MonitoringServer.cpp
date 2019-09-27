@@ -615,7 +615,7 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
  * @param endTime
  * @return
  */
-std::list<Packet> MonitoringServer::getAllPacketsOfMac(QString mac, uint32_t initTime, uint32_t endTime) {
+std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString& mac, uint32_t initTime, uint32_t endTime) {
     QSqlDatabase db= QSqlDatabase::database();
     QSqlQuery query{};
     QString table="stanza";         //todo vedere da impostazioni
