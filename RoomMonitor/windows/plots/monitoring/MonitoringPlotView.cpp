@@ -55,6 +55,7 @@ void MonitoringPlotView::tooltip(QPointF point, bool state)
         m_tooltip->show();
     } else {
         m_tooltip->hide();
+
     }
 }
 

@@ -80,7 +80,7 @@ public:
      * @param posy  coordinata y posizione
      * @param random    mac randomico o normale?
      */
-    void addMacSitua(const QString &mac, qreal posx, qreal posy, bool random);
+    void addMacSitua(const QString &mac, int frequency, bool random);
 
     /**
      * Setup iniziale del grafico andamento presenze nella analisi di lungo periodo
@@ -103,6 +103,7 @@ public:
 
     void updateLastMac();
 
+    void dataAnalysis();
 };
 
 

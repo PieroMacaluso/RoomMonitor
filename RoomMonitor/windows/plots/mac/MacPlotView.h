@@ -28,6 +28,8 @@ public:
 
     void resizeEvent(QResizeEvent *event);
 
+    MacChart *getChart() const;
+
 };
 
 

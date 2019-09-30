@@ -37,7 +37,8 @@ void MacChart::resetView(int maxMac) {
     if (this->isZoomed())
         this->zoomReset();
 //    aX->setRange(0, 20);
-    aY->setRange(listMac[0], listMac[maxMac < listMac.size() ? maxMac : listMac.size() - 1]);
+    if (!listMac.isEmpty())
+        aY->setRange(listMac[0], listMac[maxMac < listMac.size() ? maxMac : listMac.size() - 1]);
 }
 
 QStringList MacChart::getMacs() {

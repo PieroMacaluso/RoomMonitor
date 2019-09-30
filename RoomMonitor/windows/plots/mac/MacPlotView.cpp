@@ -67,3 +67,7 @@ void MacPlotView::resizeEvent(QResizeEvent *event) {
         this->chart->resetView(mac);
     QChartView::resizeEvent(event);
 }
+
+MacChart *MacPlotView::getChart() const {
+    return chart;
+}

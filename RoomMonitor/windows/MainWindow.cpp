@@ -23,6 +23,8 @@ MainWindow::MainWindow() {
 
 void MainWindow::setupConnect() {
     ui.stopButton->setDisabled(true);
+    ui.startDate->setDateTime(QDateTime::currentDateTime());
+    ui.endDate->setDateTime(QDateTime::currentDateTime().addSecs(60*5));
 
     connect(&liveGraph, &QTimer::timeout, this, &MainWindow::addLiveData);
 
@@ -61,6 +63,7 @@ void MainWindow::setupConnect() {
             m.exec();
             return;
         }
+        dataAnalysis();
 
         // TODO: QUERY ricerca e popolamento grafici
     });
@@ -245,14 +248,14 @@ void MainWindow::setupAnalysisPlot() {
 //    ui.macPlot->setChart(monitoringChart);
 
     // TODO: dati fittizi da rimuovere alla fine
-    QDateTime startTime{};
-    startTime.setDate(QDate(2019, 9, 18));
-    startTime.setTime(QTime(10, 0, 0));
-    for (int i = 0; i < 11; i++) {
-        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
-        monitoringChart->addData(momentInTime, std::rand() % 20);
-    }
-    monitoringChart->updateData(startTime, 0);
+//    QDateTime startTime{};
+//    startTime.setDate(QDate(2019, 9, 18));
+//    startTime.setTime(QTime(10, 0, 0));
+//    for (int i = 0; i < 11; i++) {
+//        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
+//        monitoringChart->addData(momentInTime, std::rand() % 20);
+//    }
+//    monitoringChart->updateData(startTime, 0);
 
     // TODO: Plot MAC occurrences
     setMacPlot();
@@ -271,9 +274,9 @@ void MainWindow::initializeMacSituationList() {
     ui.macSituation->reset();
     ui.macSituation->setRowCount(0);
     /* SETUP TABLE */
-    ui.macSituation->setColumnCount(4);
+    ui.macSituation->setColumnCount(3);
     QStringList h;
-    h << "MAC" << "X" << "Y" << "Random";
+    h << "MAC" << "Frequency" << "Random";
     ui.macSituation->setHorizontalHeaderLabels(h);
     ui.macSituation->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.macSituation->verticalHeader()->hide();
@@ -289,7 +292,7 @@ void MainWindow::initializeMacSituationList() {
             ui.localizeButton->setEnabled(false);
             return;
         }
-        bool ran = i.at(3)->text() == "true";
+        bool ran = i.at(2)->text() == "true";
         if (ran) {
             ui.randomButton->setEnabled(true);
             ui.localizeButton->setEnabled(true);
@@ -299,25 +302,23 @@ void MainWindow::initializeMacSituationList() {
         }
     });
     // TODO: delete fake data
-    addMacSitua("AA:AA:AA:AA:AA:AA", 0, 2.5, true);
-    addMacSitua("BB:BB:BB:BB:BB:BB", 1, 3, false);
-    addMacSitua("CC:CC:CC:CC:CC:CC", 2, 0, false);
+//    addMacSitua("AA:AA:AA:AA:AA:AA", 0, 2.5, true);
+//    addMacSitua("BB:BB:BB:BB:BB:BB", 1, 3, false);
+//    addMacSitua("CC:CC:CC:CC:CC:CC", 2, 0, false);
 }
 
-void MainWindow::addMacSitua(const QString &mac, qreal posx, qreal posy, bool random) {
+void MainWindow::addMacSitua(const QString &mac, int frequency, bool random) {
     int i = ui.macSituation->rowCount();
     ui.macSituation->insertRow(i);
     auto mac_table = new QTableWidgetItem{mac};
     mac_table->setToolTip(mac);
-    auto posx_table = new QTableWidgetItem{QString::number(posx)};
-    auto posy_table = new QTableWidgetItem{QString::number(posy)};
+    auto frequency_table = new QTableWidgetItem{QString::number(frequency)};
     auto random_table = new QTableWidgetItem{random ? "true" : "false"};
 
     mac_table->setToolTip(mac);
     ui.macSituation->setItem(i, 0, mac_table);
-    ui.macSituation->setItem(i, 1, posx_table);
-    ui.macSituation->setItem(i, 2, posy_table);
-    ui.macSituation->setItem(i, 3, random_table);
+    ui.macSituation->setItem(i, 1, frequency_table);
+    ui.macSituation->setItem(i, 2, random_table);
 
 }
 
@@ -363,11 +364,11 @@ void MainWindow::setMacPlot() {
     auto macPlot = new MacChart();
     // TODO: rimuovi dati fittizi alla fine
     QVector<MacOccurrence> macs;
-    for (int i = 0; i < 20; i++) {
-        QString st{"MAC %1"};
-        MacOccurrence m{st.arg(i), i};
-        macs.append(m);
-    }
+//    for (int i = 0; i < 20; i++) {
+//        QString st{"MAC %1"};
+//        MacOccurrence m{st.arg(i), i};
+//        macs.append(m);
+//    }
     macPlot->fillChart(macs);
     // FINE
     ui.macPlot->setChart(macPlot);
@@ -477,4 +478,89 @@ void MainWindow::updateLastMac() {
     for (const auto &i: lastMacs) {
         this->addLastMacPos(i.getMac(), i.getTiming(), i.getPosx(), i.getPosy());
     }
+}
+
+void MainWindow::dataAnalysis() {
+    setupAnalysisPlot();
+    QDateTime start = ui.startDate->dateTime();
+    QDateTime end = ui.endDate->dateTime();
+    QSqlDatabase db = QSqlDatabase::database();
+    QSqlQuery q{};
+    q.prepare("SELECT timing, COUNT(DISTINCT  mac_addr)\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing,\n"
+              "             avg(pos_x),\n"
+              "             avg(pos_y)\n"
+              "      FROM eurecomLab\n"
+              "      WHERE timestamp BETWEEN :fd AND :sd\n"
+              "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 300\n"
+              "      ORDER BY timing) as eL\n"
+              "GROUP BY timing\n"
+              "ORDER BY timing");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    while (q.next()){
+        QDateTime timing = q.value(0).toDateTime();
+        int count_mac = q.value(1).toInt();
+        ui.analysisPlot->getChart()->addData(timing, count_mac);
+    }
+
+    q.clear();
+    q.prepare("SELECT mac_addr, COUNT(*) AS frequency\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing\n"
+              "      FROM eurecomLab\n"
+              "      WHERE timestamp BETWEEN :fd AND :sd\n"
+              "      GROUP BY mac_addr, timing\n"
+              "      ORDER BY timing) as mat\n"
+              "GROUP BY mac_addr\n"
+              "ORDER BY frequency DESC;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    auto macPlot = new MacChart();
+    QVector<MacOccurrence> macs;
+    int i = 0;
+    while (q.next()){
+        QString mac = q.value(0).toString();
+        int frequency = q.value(1).toInt();
+        MacOccurrence m{mac, frequency};
+        macs.append(m);
+        i++;
+    }
+    if (i) {
+        macPlot->fillChart(macs);
+        ui.macPlot->setChart(macPlot);
+    }
+
+    q.clear();
+    initializeMacSituationList();
+    q.prepare("SELECT mac_addr, COUNT(*) AS frequency, hidden\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing, hidden\n"
+              "      FROM eurecomLab\n"
+              "      WHERE timestamp BETWEEN :fd AND :sd\n"
+              "      GROUP BY mac_addr, timing\n"
+              "      ORDER BY timing) as mat\n"
+              "GROUP BY mac_addr\n"
+              "ORDER BY mac_addr;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    while (q.next()){
+        QString mac = q.value(0).toString();
+        int frequency = q.value(1).toInt();
+        bool hidden = q.value(2).toBool();
+        addMacSitua(mac, frequency, hidden);
+    }
+
+
+
 }
