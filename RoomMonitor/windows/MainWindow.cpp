@@ -39,7 +39,7 @@ void MainWindow::setupConnect() {
                 ui.stopButton->setDisabled(false);
                 // Pulizia tabella Ultimi MAC
                 lastMacs.clear();
-                liveGraph.start(1000 /** 60 * 5*/);
+                liveGraph.start(1000 * 60 * 5);
                 i_time = 0;
                 setupMonitoringPlot();
 
@@ -398,8 +398,8 @@ void MainWindow::addLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
     // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
-    startTimestamp = 1569420000 + 60 * 5 * i_time;
-    i_time++;
+//    startTimestamp = 1569420000 + 60 * 5 * i_time;
+//    i_time++;
     startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
     QDateTime end{};
@@ -449,7 +449,7 @@ void MainWindow::addLiveData() {
     query.prepare(
             "SELECT mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing, avg(pos_x) AS pos_x ,avg(pos_y)AS pos_x FROM eurecomLab WHERE timestamp BETWEEN :fd AND :sd GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :sec ORDER BY timing;");
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
-    query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
     if (!query.exec())
         qDebug() << query.lastError();
