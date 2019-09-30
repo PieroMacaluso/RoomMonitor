@@ -2,13 +2,9 @@
 // Created by pieromack on 10/09/19.
 //
 
+#include <QtWidgets/QTableWidgetItem>
 #include "SettingDialog.h"
 #include "../monitoring/Board.h"
-#include <QDebug>
-#include <QtWidgets/QMessageBox>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlField>
-#include <QtSql/QSqlDriver>
 
 
 SettingDialog::SettingDialog() {
@@ -191,6 +187,7 @@ void SettingDialog::openDialogMod() {
 }
 
 void SettingDialog::apply() {
+    if (!isSettingValid()) return;
     s.setValue("monitor/A", ui.aEdit->text().toFloat());
     s.setValue("monitor/n", ui.nEdit->text().toFloat());
     s.setValue("room/width", ui.widthEdit->text().toFloat());
@@ -272,7 +269,7 @@ void SettingDialog::checkModEdits() {
 void SettingDialog::resetDB() {
     //TODO: ALARM SQL INJECTION?!? Controllare bene
     QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
-    QSqlDatabase db {};
+    QSqlDatabase db{};
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName(s.value("database/host").toString());
     db.setDatabaseName(s.value("database/name").toString());
@@ -312,4 +309,60 @@ void SettingDialog::resetDB() {
     }
     db.close();
 
+}
+
+bool SettingDialog::isSettingValid() {
+
+    // TODO: Controllare e testare validazione Input Impostazioni
+    QString err = "";
+    int pos = 0;
+    QRegExp port{"^()([1-9]|[1-5]?[0-9]{2,4}|6[1-4][0-9]{3}|65[1-4][0-9]{2}|655[1-2][0-9]|6553[1-5])$"};
+    QRegExp host{
+            "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"};
+    QRegExp dbName{"^[0-9a-zA-Z$_]+$"};
+
+    /* STANZA */
+    bool x;
+    qreal width = ui.widthEdit->text().toDouble(&x);
+    if (!x || width <= 0) err += "Larghezza stanza non valida.\n";
+    qreal height = ui.heightEdit->text().toDouble(&x);
+    if (!x || height <= 0) err += "Altezza stanza non valida.\n";
+    QRegExpValidator port_v{port, nullptr};
+    QString port_s{ui.portServerEdit->text()};
+    if (port_v.validate(port_s, pos) != QValidator::Acceptable) err += "Porta Server non valida.\n";
+    if (ui.boardTable->rowCount() < 2) err += "Non sono state installate abbastanza schedine.\n";
+
+    /* MONITORAGGIO */
+    int n = ui.nEdit->text().toInt();
+    if (n <= 0 || n >= 4) err += "Costante di propagazione non valida.\n";
+
+    int a = ui.aEdit->text().toInt();
+    if (a >= 0) err += "Potenza in dB a un metro non valida.\n";
+
+    /* DATABASE */
+    QRegExpValidator host_v{host, nullptr};
+    QString host_s{ui.hostEdit->text()};
+    if (host_v.validate(host_s, pos) != QValidator::Acceptable) err += "Host DB non valido.\n";
+
+    QRegExpValidator dbName_v{dbName, nullptr};
+    QString dbName_s{ui.dbEdit->text()};
+    if (dbName_v.validate(dbName_s, pos) != QValidator::Acceptable) err += "Nome DB non valido.\n";
+
+    QString portdb_s{ui.portEdit->text()};
+    if (port_v.validate(portdb_s, pos) != QValidator::Acceptable) err += "Porta DB non valida.\n";
+
+    // TODO: Finire validazione Input Impostazioni
+    // ui.portEdit
+    // ui.userEdit
+    // ui.passEdit
+    // ui.tableEdit
+
+    if (err == "") {
+        return true;
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText(err);
+        msgBox.exec();
+        return false;
+    }
 }

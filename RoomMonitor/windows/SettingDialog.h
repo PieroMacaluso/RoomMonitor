@@ -14,9 +14,16 @@
 #include <QtCore/QSettings>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDebug>
+#include <QtWidgets/QMessageBox>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlField>
+#include <QtSql/QSqlDriver>
+#include <QValidator>
 
 
 class SettingDialog : public QDialog {
+
 Q_OBJECT
 public:
     /**
@@ -137,6 +144,7 @@ public slots:
     void resetDB();
 
 
+    bool isSettingValid();
 };
 
 

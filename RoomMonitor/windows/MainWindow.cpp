@@ -444,7 +444,7 @@ void MainWindow::addLiveData() {
         auto it = lastMacs.find(mac);
         if (it != lastMacs.end()) {
             it->update(timing, posx, posy);
-        } else{
+        } else {
             LastMac lm{mac, timing, posx, posy};
             lastMacs.insert(mac, lm);
         }
