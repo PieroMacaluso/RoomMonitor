@@ -49,9 +49,26 @@ void MainWindow::setupConnect() {
         }
     });
 
+    // Click Search Button
+    QObject::connect(ui.searchButton, &QPushButton::clicked, [&]() {
+        if (ui.startDate->dateTime().addSecs(60 * 5) > ui.endDate->dateTime()) {
+            QMessageBox m{};
+            m.setStandardButtons(QMessageBox::Close);
+            m.setWindowTitle("Errore selezione range");
+            m.setIcon(QMessageBox::Warning);
+            m.setText(
+                    "La data di inizio deve essere antecedente alla data di fine.\nLa loro differenza deve essere maggiore o uguale a 5 minuti.");
+            m.exec();
+            return;
+        }
+
+        // TODO: QUERY ricerca e popolamento grafici
+    });
+
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
         if (s.isRunning()) {
+            // TODO: provare a togliere e testare
             QMessageBox::StandardButton reply;
             reply = QMessageBox::question(this, "Analisi in corso",
                                           "L'analisi in corso verrà interrotta. Continuare?",

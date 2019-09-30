@@ -128,6 +128,9 @@ void SettingDialog::openDialogAdd() {
         if (addBoardDialog.idEdit->text().isEmpty() || addBoardDialog.xEdit->text().isEmpty() ||
             addBoardDialog.yEdit->text().isEmpty()) {
             QMessageBox msgBox;
+            msgBox.setStandardButtons(QMessageBox::Close);
+            msgBox.setWindowTitle("Errore inserimento dati schedina");
+            msgBox.setIcon(QMessageBox::Warning);
             msgBox.setText("Inserimento non valido, riprovare!");
             msgBox.exec();
             return;
@@ -164,16 +167,20 @@ void SettingDialog::openDialogMod() {
         if (modBoardDialog.idEdit->text().isEmpty() || modBoardDialog.xEdit->text().isEmpty() ||
             modBoardDialog.yEdit->text().isEmpty()) {
             QMessageBox msgBox;
+            msgBox.setStandardButtons(QMessageBox::Close);
+            msgBox.setWindowTitle("Errore inserimento dati schedina");
+            msgBox.setIcon(QMessageBox::Warning);
             msgBox.setText("Inserimento non valido, riprovare!");
-            msgBox.exec();
             return;
         }
         for (int i = 0; i < ui.boardTable->rowCount(); i++) {
             if (modBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text() &&
                 modBoardDialog.idEdit->text() != list[0]) {
                 QMessageBox msgBox;
+                msgBox.setStandardButtons(QMessageBox::Close);
+                msgBox.setWindowTitle("Errore inserimento dati schedina");
+                msgBox.setIcon(QMessageBox::Warning);
                 msgBox.setText("ID già presente, riprovare!");
-                msgBox.exec();
                 return;
             }
         }
@@ -364,6 +371,9 @@ bool SettingDialog::isSettingValid() {
         return true;
     } else {
         QMessageBox msgBox;
+        msgBox.setStandardButtons(QMessageBox::Close);
+        msgBox.setWindowTitle("Errore impostazioni");
+        msgBox.setIcon(QMessageBox::Warning);
         msgBox.setText(err);
         msgBox.exec();
         return false;
