@@ -320,6 +320,7 @@ bool SettingDialog::isSettingValid() {
     QRegExp host{
             "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"};
     QRegExp dbName{"^[0-9a-zA-Z$_]+$"};
+    QRegExp username{"^[A-Za-z0-9_]{1,64}$"};
 
     /* STANZA */
     bool x;
@@ -351,11 +352,13 @@ bool SettingDialog::isSettingValid() {
     QString portdb_s{ui.portEdit->text()};
     if (port_v.validate(portdb_s, pos) != QValidator::Acceptable) err += "Porta DB non valida.\n";
 
-    // TODO: Finire validazione Input Impostazioni
-    // ui.portEdit
-    // ui.userEdit
-    // ui.passEdit
-    // ui.tableEdit
+    QRegExpValidator username_v{username, nullptr};
+    QString username_s{ui.userEdit->text()};
+    if (username_v.validate(username_s, pos) != QValidator::Acceptable) err += "Nome utente non valido.\n";
+
+    if (ui.passEdit->text() == "") err += "Password Utente non valida.\n";
+    QString table_s{ui.tableEdit->text()};
+    if (username_v.validate(table_s, pos) != QValidator::Acceptable) err += "Nome tabella non valido.\n";
 
     if (err == "") {
         return true;
