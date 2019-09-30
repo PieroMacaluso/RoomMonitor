@@ -20,7 +20,7 @@ MacPlotView::MacPlotView(QChart *chart, QWidget *parent) : QChartView(chart, par
 void MacPlotView::setChart(MacChart *chart) {
     this->chart = chart;
     connect(this->chart->getBarSeries(), &QHorizontalBarSeries::hovered, this, &MacPlotView::tooltip);
-    int mac = floor(this->height() / 50);
+    int mac = floor(this->height() / 50.0);
     this->chart->resetView(mac);
     QChartView::setChart(chart);
 }
@@ -44,6 +44,7 @@ void MacPlotView::wheelEvent(QWheelEvent *event) {
 }
 
 void MacPlotView::tooltip(bool state, int index, QBarSet *barset) {
+    qDebug() << "TOOL";
     if (m_tooltip == nullptr)
         m_tooltip = new Callout(chart);
 

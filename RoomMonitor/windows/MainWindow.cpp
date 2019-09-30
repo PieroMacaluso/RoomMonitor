@@ -24,10 +24,12 @@ MainWindow::MainWindow() {
 void MainWindow::setupConnect() {
     ui.stopButton->setDisabled(true);
     ui.startDate->setDateTime(QDateTime::currentDateTime());
-    ui.endDate->setDateTime(QDateTime::currentDateTime().addSecs(60*5));
+    ui.endDate->setDateTime(QDateTime::currentDateTime().addSecs(60 * 5));
 
     connect(&liveGraph, &QTimer::timeout, this, &MainWindow::addLiveData);
 
+    // Connect Aggregated per aggiornare grafico live e MAC
+    connect(&s, &MonitoringServer::aggregated, this, &MainWindow::genLiveData);
     // Click Start Button
     QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
         try {
@@ -398,8 +400,8 @@ void MainWindow::addLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
     // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
-//    startTimestamp = 1569420000 + 60 * 5 * i_time;
-//    i_time++;
+    startTimestamp = 1569420000 + 60 * 5 * i_time;
+    i_time++;
     startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
     QDateTime end{};
@@ -417,10 +419,26 @@ void MainWindow::addLiveData() {
     QSqlQuery query{};
 
     query.prepare(
-            "SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
-            " WHERE timestamp BETWEEN :fd AND :sd;");
+            "SELECT COUNT(*)\n"
+            "FROM (SELECT mac_addr,\n"
+            "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,\n"
+            "             COUNT(DISTINCT timing)                                                   AS freq\n"
+            "      FROM (SELECT mac_addr,\n"
+            "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+            "                   avg(pos_x)                                                                    AS pos_x,\n"
+            "                   avg(pos_y)                                                                    AS pos_y\n"
+            "            FROM " + su.value("database/table").toString() + "\n"
+                                                                          "            WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                          "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                          "            ORDER BY timing) as eL\n"
+                                                                          "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
+                                                                          "     ) AS mac_count\n"
+                                                                          "WHERE mac_count.freq >= 3\n"
+                                                                          "GROUP BY timing;");
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sec", 300);
+
     if (!query.exec())
         qDebug() << query.lastError();
 
@@ -432,10 +450,26 @@ void MainWindow::addLiveData() {
 
     query.clear();
 
-    query.prepare("SELECT COUNT(DISTINCT mac_addr) FROM " + su.value("database/table").toString() +
-                  " WHERE timestamp BETWEEN :fd AND :sd;");
+    query.prepare(
+            "SELECT COUNT(*)\n"
+            "FROM (SELECT mac_addr,\n"
+            "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,\n"
+            "             COUNT(DISTINCT timing)                                                   AS freq\n"
+            "      FROM (SELECT mac_addr,\n"
+            "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+            "                   avg(pos_x)                                                                    AS pos_x,\n"
+            "                   avg(pos_y)                                                                    AS pos_y\n"
+            "            FROM " + su.value("database/table").toString() + "\n"
+                                                                          "            WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                          "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                          "            ORDER BY timing) as eL\n"
+                                                                          "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
+                                                                          "     ) AS mac_count\n"
+                                                                          "WHERE mac_count.freq >= 3\n"
+                                                                          "GROUP BY timing;");
     query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sec", 300);
     if (!query.exec())
         qDebug() << query.lastError();
 
@@ -446,14 +480,162 @@ void MainWindow::addLiveData() {
 
     query.clear();
 
+    db.close();
+}
+
+void MainWindow::updateLastMac() {
+    this->initializeLastMacList();
+    for (const auto &i: lastMacs) {
+        this->addLastMacPos(i.getMac(), i.getTiming(), i.getPosx(), i.getPosy());
+    }
+}
+
+void MainWindow::dataAnalysis() {
+    setupAnalysisPlot();
+    QSettings su{"VALP", "RoomMonitoring"};
+    QDateTime start_in = ui.startDate->dateTime();
+    QDateTime end_in = ui.endDate->dateTime();
+    QDateTime start{};
+    start.setSecsSinceEpoch(start_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
+    QDateTime end{};
+    end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
+    QSqlDatabase db = QSqlDatabase::database();
+    QSqlQuery q{};
+    q.prepare(
+            "SELECT timing, COUNT(*)\n"
+            "FROM (SELECT mac_addr,\n"
+            "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,\n"
+            "             COALESCE(COUNT(DISTINCT timing), 0)                                                   AS freq\n"
+            "      FROM (SELECT mac_addr,\n"
+            "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+            "                   avg(pos_x)                                                                    AS pos_x,\n"
+            "                   avg(pos_y)                                                                    AS pos_y\n"
+            "            FROM " + su.value("database/table").toString() + "\n"
+                                                                          "            WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                          "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                          "            ORDER BY timing) as eL\n"
+                                                                          "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
+                                                                          "     ) AS mac_count\n"
+                                                                          "WHERE mac_count.freq >= 3\n"
+                                                                          "GROUP BY timing\n"
+                                                                          "ORDER BY timing;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sec", 300);
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    QDateTime temp = start;
+    while (q.next()) {
+        QDateTime timing = q.value(0).toDateTime();
+        if (!temp.isNull()){
+            int j = 1;
+            while (temp.addSecs(60 * 5 * j) < timing) {
+                ui.analysisPlot->getChart()->addData(temp.addSecs(60 * 5 * j), 0);
+                j++;
+                qDebug() << temp.addSecs(60 * 5 * j);
+            }
+        }
+        int count_mac = q.value(1).toInt();
+        ui.analysisPlot->getChart()->addData(timing, count_mac);
+        temp = timing;
+    }
+
+    q.clear();
+    q.prepare("SELECT mac_addr,\n"
+              "       COUNT(DISTINCT timing) AS freq,\n"
+              "       hidden\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+              "             hidden\n"
+              "      FROM " + su.value("database/table").toString() + "\n"
+                                                                      "      WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                      "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                      "      ORDER BY timing) as eL\n"
+                                                                      "GROUP BY mac_addr\n"
+                                                                      "ORDER BY freq DESC;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    auto macPlot = new MacChart();
+    QVector<MacOccurrence> macs;
+    int i = 0;
+    while (q.next()) {
+        QString mac = q.value(0).toString();
+        int frequency = q.value(1).toInt();
+        MacOccurrence m{mac, frequency};
+        macs.append(m);
+        i++;
+    }
+    if (i) {
+        macPlot->fillChart(macs);
+        ui.macPlot->setChart(macPlot);
+    }
+
+    q.clear();
+    initializeMacSituationList();
+    q.prepare("SELECT mac_addr,\n"
+              "       COUNT(DISTINCT timing) AS freq,\n"
+              "       hidden\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+              "             hidden\n"
+              "      FROM " + su.value("database/table").toString() + "\n"
+                                                                      "      WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                      "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                      "      ORDER BY timing) as eL\n"
+                                                                      "GROUP BY mac_addr;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    while (q.next()) {
+        QString mac = q.value(0).toString();
+        int frequency = q.value(1).toInt();
+        bool hidden = q.value(2).toBool();
+        addMacSitua(mac, frequency, hidden);
+    }
+
+
+}
+
+void MainWindow::genLiveData() {
+    qDebug() << "LiveData\n";
+    QSettings su{"VALP", "RoomMonitoring"};
+    QSqlDatabase db = QSqlDatabase::database();
+    qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
+    startTimestamp = startTimestamp / (60 * 5);
+    QDateTime start{};
+    QDateTime prev{};
+    start.setSecsSinceEpoch(startTimestamp * 60 * 5);
+    prev = start.addSecs(-60 * 5);
+    QSqlQuery query{};
     query.prepare(
-            "SELECT mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing, avg(pos_x) AS pos_x ,avg(pos_y)AS pos_x FROM eurecomLab WHERE timestamp BETWEEN :fd AND :sd GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :sec ORDER BY timing;");
+            "SELECT mac_addr, timing, pos_x, pos_y\n"
+            "FROM (SELECT hash_fcs,\n"
+            "             mac_addr,\n"
+            "             avg(pos_x) as pos_x,\n"
+            "             avg(pos_y) as pos_y,\n"
+            "             timestamp,\n"
+            "             ssid,\n"
+            "             hidden,\n"
+            "             MAX(FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)))\n"
+            "                 OVER (PARTITION BY mac_addr) AS timing\n"
+            "      FROM " + su.value("database/table").toString() + "\n"
+                                                                    "      WHERE timestamp > :fd AND timestamp < :sd\n"
+                                                                    "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                    "      ORDER BY timing) AS s2\n"
+                                                                    "     WHERE FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) = timing\n"
+                                                                    "ORDER BY mac_addr, timestamp DESC;");
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
-    query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-    query.bindValue(":sec", 300);
+    query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     if (!query.exec())
         qDebug() << query.lastError();
 
+    lastMacs.clear();
     while (query.next()) {
         QString mac = query.value(0).toString();
         QDateTime timing = query.value(1).toDateTime();
@@ -468,99 +650,5 @@ void MainWindow::addLiveData() {
         }
     }
     this->updateLastMac();
-
-
-    db.close();
-}
-
-void MainWindow::updateLastMac() {
-    this->initializeLastMacList();
-    for (const auto &i: lastMacs) {
-        this->addLastMacPos(i.getMac(), i.getTiming(), i.getPosx(), i.getPosy());
-    }
-}
-
-void MainWindow::dataAnalysis() {
-    setupAnalysisPlot();
-    QDateTime start = ui.startDate->dateTime();
-    QDateTime end = ui.endDate->dateTime();
-    QSqlDatabase db = QSqlDatabase::database();
-    QSqlQuery q{};
-    q.prepare("SELECT timing, COUNT(DISTINCT  mac_addr)\n"
-              "FROM (SELECT mac_addr,\n"
-              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing,\n"
-              "             avg(pos_x),\n"
-              "             avg(pos_y)\n"
-              "      FROM eurecomLab\n"
-              "      WHERE timestamp BETWEEN :fd AND :sd\n"
-              "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 300\n"
-              "      ORDER BY timing) as eL\n"
-              "GROUP BY timing\n"
-              "ORDER BY timing");
-    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
-    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-    if (!q.exec())
-        qDebug() << q.lastError();
-
-    while (q.next()){
-        QDateTime timing = q.value(0).toDateTime();
-        int count_mac = q.value(1).toInt();
-        ui.analysisPlot->getChart()->addData(timing, count_mac);
-    }
-
-    q.clear();
-    q.prepare("SELECT mac_addr, COUNT(*) AS frequency\n"
-              "FROM (SELECT mac_addr,\n"
-              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing\n"
-              "      FROM eurecomLab\n"
-              "      WHERE timestamp BETWEEN :fd AND :sd\n"
-              "      GROUP BY mac_addr, timing\n"
-              "      ORDER BY timing) as mat\n"
-              "GROUP BY mac_addr\n"
-              "ORDER BY frequency DESC;");
-    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
-    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-    if (!q.exec())
-        qDebug() << q.lastError();
-
-    auto macPlot = new MacChart();
-    QVector<MacOccurrence> macs;
-    int i = 0;
-    while (q.next()){
-        QString mac = q.value(0).toString();
-        int frequency = q.value(1).toInt();
-        MacOccurrence m{mac, frequency};
-        macs.append(m);
-        i++;
-    }
-    if (i) {
-        macPlot->fillChart(macs);
-        ui.macPlot->setChart(macPlot);
-    }
-
-    q.clear();
-    initializeMacSituationList();
-    q.prepare("SELECT mac_addr, COUNT(*) AS frequency, hidden\n"
-              "FROM (SELECT mac_addr,\n"
-              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing, hidden\n"
-              "      FROM eurecomLab\n"
-              "      WHERE timestamp BETWEEN :fd AND :sd\n"
-              "      GROUP BY mac_addr, timing\n"
-              "      ORDER BY timing) as mat\n"
-              "GROUP BY mac_addr\n"
-              "ORDER BY mac_addr;");
-    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
-    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-    if (!q.exec())
-        qDebug() << q.lastError();
-
-    while (q.next()){
-        QString mac = q.value(0).toString();
-        int frequency = q.value(1).toInt();
-        bool hidden = q.value(2).toBool();
-        addMacSitua(mac, frequency, hidden);
-    }
-
-
 
 }

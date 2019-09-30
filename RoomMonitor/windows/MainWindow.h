@@ -99,7 +99,7 @@ public:
     void setupPositionPlot();
 
     void addLiveData();
-
+    void genLiveData();
 
     void updateLastMac();
 

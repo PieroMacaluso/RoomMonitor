@@ -161,6 +161,8 @@ signals:
      */
     void started();
 
+    void aggregated();
+
 
     /**
      * Signal che segnala la chiusura del server TCP

@@ -349,8 +349,8 @@ void MonitoringServer::aggregate() {
             ++it;
         }
     }
-
     db.close();
+    this->aggregated();
 }
 
 bool MonitoringServer::isRunning() {
