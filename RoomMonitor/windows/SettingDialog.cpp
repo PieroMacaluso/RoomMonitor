@@ -292,7 +292,7 @@ void SettingDialog::resetDB() {
     qDebug() << db.driver()->hasFeature(QSqlDriver::PreparedQueries);
 
 
-    QSqlQuery query{};
+    QSqlQuery query{db};
     query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
 
     if (!query.exec()) {

@@ -312,7 +312,7 @@ void MonitoringServer::aggregate() {
         /*
          * TODO: Verificare query al database, capire cosa e quanto salvare
          */
-        QSqlQuery query{};
+        QSqlQuery query{db};
         query.prepare(
                 "INSERT INTO " + settings.value("database/table").toString() +
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
@@ -367,7 +367,7 @@ bool MonitoringServer::isRunning() {
  */
 Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime){
     QSqlDatabase db= Utility::getDB();
-    QSqlQuery query{};
+    QSqlQuery query{db};
     QString table="stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
     QDateTime timeEnd;
@@ -418,6 +418,7 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_
 
     std::deque<Packet> hiddenPackets;
     QString table = "stanza";         //todo vedere da impostazioni
+    // TODO: Aggiustare query e DB management
     QSqlQuery query{};
     query.prepare("SELECT * FROM " + table + " WHERE hidden='1' AND timestamp>='" +
                   timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" +
@@ -620,7 +621,7 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
  */
 std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString& mac, uint32_t initTime, uint32_t endTime) {
     QSqlDatabase db= Utility::getDB();
-    QSqlQuery query{};
+    QSqlQuery query{db};
     QString table="stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
     QDateTime timeEnd;

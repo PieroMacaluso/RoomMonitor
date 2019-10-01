@@ -434,7 +434,7 @@ void MainWindow::addLiveData() {
         return;
     }
 
-    QSqlQuery query{};
+    QSqlQuery query{db};
 
     query.prepare(
             "SELECT COUNT(*)\n"
@@ -520,15 +520,16 @@ void MainWindow::dataAnalysis() {
     QDateTime end{};
     end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
     auto worker = new AnalysisWorker(start, end, chart, macPlot);
+    qDebug() << workerThread.isRunning();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::started, worker, &AnalysisWorker::doWork);
+    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &AnalysisWorker::resultReady, this, &MainWindow::handleResults);
     connect(worker, &AnalysisWorker::updateProgress, this, &MainWindow::updateProgress);
     connect(worker, &AnalysisWorker::macPlotReady, this, &MainWindow::macPlotReady);
     connect(worker, &AnalysisWorker::initializeMacSituation, this, &MainWindow::initializeMacSituationList);
     connect(worker, &AnalysisWorker::addMac, this, &MainWindow::addMacSitua);
     connect(worker, &AnalysisWorker::finished, this, &MainWindow::finishedAnalysisThread);
-    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
 
     ui.searchButton->setEnabled(false);
     workerThread.start();
@@ -544,7 +545,7 @@ void MainWindow::genLiveData() {
     QDateTime prev{};
     start.setSecsSinceEpoch(startTimestamp * 60 * 5);
     prev = start.addSecs(-60 * 5);
-    QSqlQuery query{};
+    QSqlQuery query{db};
     query.prepare(
             "SELECT mac_addr, timing, pos_x, pos_y\n"
             "FROM (SELECT hash_fcs,\n"
@@ -608,6 +609,7 @@ void MainWindow::macPlotReady(QStringList mac, QStringList frequency, MacChart *
 
 void MainWindow::finishedAnalysisThread(){
     workerThread.quit();
+    workerThread.wait();
     ui.progressBar->setValue(100);
     ui.progressBar->setEnabled(false);
     ui.searchButton->setEnabled(true);
