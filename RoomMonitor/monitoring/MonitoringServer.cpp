@@ -5,6 +5,7 @@
 #include <QtCore/QSettings>
 #include <QtSql/QSqlRecord>
 #include <bitset>
+#include <Utility.h>
 #include "MonitoringServer.h"
 #include "Circle.h"
 #include "../windows/SettingDialog.h"
@@ -285,7 +286,7 @@ void MonitoringServer::newConnection() {
 
 void MonitoringServer::aggregate() {
     DEBUG("Starting aggregation")
-    QSqlDatabase db = QSqlDatabase::database();
+    QSqlDatabase db = Utility::getDB();
     if (db.isOpenError()) {
         qDebug() << db.lastError();
         exit(-1);
@@ -365,7 +366,7 @@ bool MonitoringServer::isRunning() {
  * @return
  */
 Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime){
-    QSqlDatabase db= QSqlDatabase::database();
+    QSqlDatabase db= Utility::getDB();
     QSqlQuery query{};
     QString table="stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
@@ -618,7 +619,7 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
  * @return
  */
 std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString& mac, uint32_t initTime, uint32_t endTime) {
-    QSqlDatabase db= QSqlDatabase::database();
+    QSqlDatabase db= Utility::getDB();
     QSqlQuery query{};
     QString table="stanza";         //todo vedere da impostazioni
     QDateTime timeInit;

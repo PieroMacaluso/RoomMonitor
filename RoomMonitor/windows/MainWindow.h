@@ -110,6 +110,10 @@ public:
     void handleResults(MonitoringChart *chart);
 
     void updateProgress(qint64 prog);
+
+    void macPlotReady(QStringList mac, QStringList frequency, MacChart *macPlot);
+
+    void finishedAnalysisThread();
 };
 
 

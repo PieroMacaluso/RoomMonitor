@@ -10,35 +10,22 @@
 #include <windows/plots/monitoring/MonitoringChart.h>
 #include <QtSql>
 #include <utility>
+#include <windows/plots/mac/MacChart.h>
+#include <windows/plots/mac/MacChart.h>
+#include <Utility.h>
+
 
 class AnalysisWorker : public QObject {
 Q_OBJECT
     QDateTime start_in;
     QDateTime end_in;
     MonitoringChart *result;
-public:
-    AnalysisWorker(QDateTime start_in, QDateTime end_in, MonitoringChart *result) : start_in(std::move(start_in)),
-                                                                                    end_in(end_in), result(result) {}
+    MacChart *macPlot;
 
-    static QSqlDatabase getDB() {
-        QSettings su{"VALP", "RoomMonitoring"};
-        auto name = "thread_db";
-        if (QSqlDatabase::contains(name)) {
-            qDebug() << "Not Contain";
-            return QSqlDatabase::database(name);
-        } else {
-            qDebug() << "Contain";
-            QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL", name);
-            db.setHostName(su.value("database/host").toString());
-            db.setDatabaseName(su.value("database/name").toString());
-            db.setPort(su.value("database/port").toInt());
-            db.setUserName(su.value("database/user").toString());
-            db.setPassword(su.value("database/pass").toString());
-            if (!db.open())
-                qDebug() << db.lastError();
-            return db;
-        }
-    }
+public:
+    AnalysisWorker(QDateTime start_in, QDateTime end_in, MonitoringChart *result, MacChart *macPlot)
+            : start_in(std::move(start_in)),
+              end_in(end_in), result(result), macPlot(macPlot) {}
 
 public slots:
 
@@ -80,7 +67,7 @@ public slots:
             bucket = 60;
             freq = 3;
         }
-        QSqlDatabase db = getDB();
+        QSqlDatabase db = Utility::getDB();
         QSqlQuery q{db};
         q.prepare(
                 "SELECT timing, COUNT(*)\n"
@@ -150,15 +137,78 @@ public slots:
                 last = current;
             }
         }
-        db.close();
         emit resultReady(result);
+
+        q.clear();
+        q.prepare("SELECT mac_addr,\n"
+                  "       COUNT(DISTINCT timing) AS freq,\n"
+                  "       hidden\n"
+                  "FROM (SELECT mac_addr,\n"
+                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+                  "             hidden\n"
+                  "      FROM " + su.value("database/table").toString() + "\n"
+                                                                          "      WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                          "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                          "      ORDER BY timing) as eL\n"
+                                                                          "GROUP BY mac_addr\n"
+                                                                          "ORDER BY freq DESC;");
+        q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+        q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+        if (!q.exec())
+            qDebug() << q.lastError();
+
+        QStringList mac{};
+        QStringList frequency_mac{};
+        QVector<MacOccurrence> macs;
+        int i = 0;
+        while (q.next()) {
+            mac << q.value(0).toString();
+            frequency_mac << q.value(1).toString();
+            i++;
+        }
+        if (i) {
+            emit macPlotReady(mac, frequency_mac, macPlot);
+        }
+        q.clear();
+        emit initializeMacSituation();
+        q.prepare("SELECT mac_addr,\n"
+                  "       COUNT(DISTINCT timing) AS freq,\n"
+                  "       hidden\n"
+                  "FROM (SELECT mac_addr,\n"
+                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+                  "             hidden\n"
+                  "      FROM " + su.value("database/table").toString() + "\n"
+                                                                          "      WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                          "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                          "      ORDER BY timing) as eL\n"
+                                                                          "GROUP BY mac_addr;");
+        q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+        q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+        if (!q.exec())
+            qDebug() << q.lastError();
+
+        while (q.next()) {
+            QString mac = q.value(0).toString();
+            int frequency = q.value(1).toInt();
+            bool hidden = q.value(2).toBool();
+            emit addMac(mac, frequency, hidden);
+        }
+        db.close();
+        emit finished();
+
     }
 
 signals:
 
     void resultReady(MonitoringChart *chart);
+    void macPlotReady(QStringList mac, QStringList frequency, MacChart *macPlot);
+    void finished();
+
 
     void updateProgress(qint64 perc);
+    void initializeMacSituation();
+    void addMac(QString mac, int frequency, bool hidden);
+
 
 };
 

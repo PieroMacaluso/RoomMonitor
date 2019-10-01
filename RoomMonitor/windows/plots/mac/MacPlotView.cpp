@@ -46,7 +46,6 @@ void MacPlotView::wheelEvent(QWheelEvent *event) {
 }
 
 void MacPlotView::tooltip(bool state, int index, QBarSet *barset) {
-    qDebug() << "TOOL";
     if (m_tooltip == nullptr)
         m_tooltip = new Callout(chart);
 
