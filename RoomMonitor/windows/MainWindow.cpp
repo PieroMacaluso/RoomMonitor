@@ -528,7 +528,7 @@ void MainWindow::dataAnalysis() {
     connect(worker, &AnalysisWorker::resultReady, this, &MainWindow::handleResults);
     connect(worker, &AnalysisWorker::updateProgress, this, &MainWindow::updateProgress);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-
+    ui.searchButton->setEnabled(false);
     workerThread.start();
     qDebug() << "After Thread";
     QSqlDatabase db = QSqlDatabase::database();
@@ -692,6 +692,7 @@ void MainWindow::handleResults(MonitoringChart *chart) {
     workerThread.quit();
     ui.progressBar->setValue(100);
     ui.progressBar->setEnabled(false);
+    ui.searchButton->setEnabled(true);
 
 }
 
