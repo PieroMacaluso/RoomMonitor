@@ -123,6 +123,7 @@ MonitoringChart::MonitoringChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) 
     QScatterSeries *scatter = new QScatterSeries();
     scatter->setMarkerShape(QScatterSeries::MarkerShapeCircle);
     scatter->setMarkerSize(15.0);
+    scatter->setBorderColor(Qt::darkGreen);
 
     this->setAnimationOptions(QChart::SeriesAnimations);
     this->legend()->hide();

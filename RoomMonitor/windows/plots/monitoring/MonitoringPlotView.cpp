@@ -18,8 +18,12 @@ MonitoringPlotView::MonitoringPlotView(QChart *chart, QWidget *parent) : QChartV
 }
 
 void MonitoringPlotView::setChart(MonitoringChart *chart) {
-    this->chart = chart;
+
+    delete m_tooltip;
+    m_tooltip = nullptr;
+
     QChartView::setChart(chart);
+    this->chart = chart;
     connect(this->chart->getScatter(), &QScatterSeries::hovered, this, &MonitoringPlotView::tooltip);
 }
 
@@ -40,8 +44,7 @@ void MonitoringPlotView::wheelEvent(QWheelEvent *event) {
     }
 }
 
-void MonitoringPlotView::tooltip(QPointF point, bool state)
-{
+void MonitoringPlotView::tooltip(QPointF point, bool state) {
     if (m_tooltip == nullptr)
         m_tooltip = new Callout(chart);
 
@@ -55,7 +58,6 @@ void MonitoringPlotView::tooltip(QPointF point, bool state)
         m_tooltip->show();
     } else {
         m_tooltip->hide();
-
     }
 }
 

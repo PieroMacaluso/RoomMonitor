@@ -17,6 +17,8 @@ PositionPlotView::PositionPlotView(QChart *chart, QWidget *parent) : QChartView(
 }
 
 void PositionPlotView::setChart(PositionPlot *chart) {
+    delete m_tooltip;
+    m_tooltip = nullptr;
     this->chart = chart;
     QChartView::setChart(chart);
     connect(this->chart->getScatter(), &QScatterSeries::hovered, this, &PositionPlotView::tooltip);

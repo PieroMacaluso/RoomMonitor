@@ -401,6 +401,8 @@ Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, ui
         return p;
     }
 
+    db.close();
+
 
 }
 
@@ -651,6 +653,8 @@ std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString& mac, uint3
 
         allPacketsOfMac.push_back(p);
     }
+
+    db.close();
 
     return allPacketsOfMac;
 

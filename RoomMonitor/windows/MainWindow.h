@@ -19,6 +19,8 @@
 class MainWindow : public QMainWindow {
 
     int i_time = 0;
+
+    QThread workerThread;
     /**
      * UI Finestra Principale
      */
@@ -104,6 +106,10 @@ public:
     void updateLastMac();
 
     void dataAnalysis();
+
+    void handleResults(MonitoringChart *chart);
+
+    void updateProgress(qint64 prog);
 };
 
 
