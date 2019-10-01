@@ -531,7 +531,9 @@ void MainWindow::dataAnalysis() {
 
     workerThread.start();
     qDebug() << "After Thread";
-//    q.prepare(
+    QSqlDatabase db = QSqlDatabase::database();
+    QSqlQuery q{db};
+    //    q.prepare(
 //            "SELECT timing, COUNT(*)\n"
 //            "FROM (SELECT mac_addr,\n"
 //            "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,\n"
@@ -571,63 +573,63 @@ void MainWindow::dataAnalysis() {
 //        temp = timing;
 //    }
 
-//    q.clear();
-//    q.prepare("SELECT mac_addr,\n"
-//              "       COUNT(DISTINCT timing) AS freq,\n"
-//              "       hidden\n"
-//              "FROM (SELECT mac_addr,\n"
-//              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
-//              "             hidden\n"
-//              "      FROM " + su.value("database/table").toString() + "\n"
-//                                                                      "      WHERE timestamp BETWEEN :fd AND :sd\n"
-//                                                                      "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-//                                                                      "      ORDER BY timing) as eL\n"
-//                                                                      "GROUP BY mac_addr\n"
-//                                                                      "ORDER BY freq DESC;");
-//    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
-//    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-//    if (!q.exec())
-//        qDebug() << q.lastError();
-//
-//    auto macPlot = new MacChart();
-//    QVector<MacOccurrence> macs;
-//    int i = 0;
-//    while (q.next()) {
-//        QString mac = q.value(0).toString();
-//        int frequency = q.value(1).toInt();
-//        MacOccurrence m{mac, frequency};
-//        macs.append(m);
-//        i++;
-//    }
-//    if (i) {
-//        macPlot->fillChart(macs);
-//        ui.macPlot->setChart(macPlot);
-//    }
-//
-//    q.clear();
-//    initializeMacSituationList();
-//    q.prepare("SELECT mac_addr,\n"
-//              "       COUNT(DISTINCT timing) AS freq,\n"
-//              "       hidden\n"
-//              "FROM (SELECT mac_addr,\n"
-//              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
-//              "             hidden\n"
-//              "      FROM " + su.value("database/table").toString() + "\n"
-//                                                                      "      WHERE timestamp BETWEEN :fd AND :sd\n"
-//                                                                      "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-//                                                                      "      ORDER BY timing) as eL\n"
-//                                                                      "GROUP BY mac_addr;");
-//    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
-//    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
-//    if (!q.exec())
-//        qDebug() << q.lastError();
-//
-//    while (q.next()) {
-//        QString mac = q.value(0).toString();
-//        int frequency = q.value(1).toInt();
-//        bool hidden = q.value(2).toBool();
-//        addMacSitua(mac, frequency, hidden);
-//    }
+    q.clear();
+    q.prepare("SELECT mac_addr,\n"
+              "       COUNT(DISTINCT timing) AS freq,\n"
+              "       hidden\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+              "             hidden\n"
+              "      FROM " + su.value("database/table").toString() + "\n"
+                                                                      "      WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                      "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                      "      ORDER BY timing) as eL\n"
+                                                                      "GROUP BY mac_addr\n"
+                                                                      "ORDER BY freq DESC;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    auto macPlot = new MacChart();
+    QVector<MacOccurrence> macs;
+    int i = 0;
+    while (q.next()) {
+        QString mac = q.value(0).toString();
+        int frequency = q.value(1).toInt();
+        MacOccurrence m{mac, frequency};
+        macs.append(m);
+        i++;
+    }
+    if (i) {
+        macPlot->fillChart(macs);
+        ui.macPlot->setChart(macPlot);
+    }
+
+    q.clear();
+    initializeMacSituationList();
+    q.prepare("SELECT mac_addr,\n"
+              "       COUNT(DISTINCT timing) AS freq,\n"
+              "       hidden\n"
+              "FROM (SELECT mac_addr,\n"
+              "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+              "             hidden\n"
+              "      FROM " + su.value("database/table").toString() + "\n"
+                                                                      "      WHERE timestamp BETWEEN :fd AND :sd\n"
+                                                                      "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                                      "      ORDER BY timing) as eL\n"
+                                                                      "GROUP BY mac_addr;");
+    q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+    if (!q.exec())
+        qDebug() << q.lastError();
+
+    while (q.next()) {
+        QString mac = q.value(0).toString();
+        int frequency = q.value(1).toInt();
+        bool hidden = q.value(2).toBool();
+        addMacSitua(mac, frequency, hidden);
+    }
 
 
 }

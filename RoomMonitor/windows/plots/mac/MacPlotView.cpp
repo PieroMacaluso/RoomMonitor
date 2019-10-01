@@ -18,6 +18,8 @@ MacPlotView::MacPlotView(QChart *chart, QWidget *parent) : QChartView(chart, par
 }
 
 void MacPlotView::setChart(MacChart *chart) {
+    delete m_tooltip;
+    m_tooltip = nullptr;
     this->chart = chart;
     connect(this->chart->getBarSeries(), &QHorizontalBarSeries::hovered, this, &MacPlotView::tooltip);
     int mac = floor(this->height() / 50.0);
