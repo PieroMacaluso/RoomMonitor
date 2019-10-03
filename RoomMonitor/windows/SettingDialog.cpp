@@ -64,6 +64,7 @@ void SettingDialog::setupConnect() {
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
     connect(ui.modBoard, &QPushButton::clicked, this, &SettingDialog::openDialogMod);
+    connect(ui.toolButton, &QPushButton::clicked,this,&SettingDialog::defaultValues);
     connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&]() {
         if (ui.boardTable->selectedItems().size() == 0) {
             ui.modBoard->setDisabled(true);
@@ -271,6 +272,30 @@ void SettingDialog::checkModEdits() {
     modBoardDialog.yEdit->text().toDouble(&y);
 
     modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
+}
+
+void SettingDialog::defaultValues(){
+
+    // Ripristino informazioni iniziali
+
+    s.setValue("monitor/A", -55);
+    s.setValue("monitor/n", 3);
+    s.setValue("room/width", 10);
+    s.setValue("room/height", 10);
+    s.setValue("room/port", 27015);
+
+    QList<QStringList> data{{"0", "1.2", "1.0"},
+                            {"1", "1.3", "2.0"}};
+    s.setValue("room/boards", QVariant::fromValue(data));
+
+    s.setValue("database/host", "localhost");
+    s.setValue("database/name", "data");
+    s.setValue("database/port", 3306);
+    s.setValue("database/user", "root");
+    s.setValue("database/pass", "NewRoot12Kz");
+    s.setValue("database/table", "stanza");
+    qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
+    this->close();
 }
 
 void SettingDialog::resetDB() {

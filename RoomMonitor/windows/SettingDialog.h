@@ -142,7 +142,8 @@ public slots:
      * spunta nelle impostazioni del database.
      */
     void resetDB();
-
+    /** Funzione che ripristina le impostazioni di default*/
+    void defaultValues();
 
     bool isSettingValid();
 };
