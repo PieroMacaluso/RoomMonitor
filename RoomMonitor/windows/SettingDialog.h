@@ -143,6 +143,8 @@ public slots:
      */
     void resetDB();
 
+    /**Ripristina impostazioni iniziali**/
+    void defaultValues();
 
     bool isSettingValid();
 };
