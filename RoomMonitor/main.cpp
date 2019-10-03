@@ -7,7 +7,8 @@
 #include "monitoring/MonitoringServer.h"
 #include "windows/MainWindow.h"
 #include "windows/SettingDialog.h"
-//prova commit lorenzo
+
+//Prova commit Lorenzo
 int main(int argc, char **argv) {
     QApplication a{argc, argv};
     SettingDialog::settingCheckUp();
