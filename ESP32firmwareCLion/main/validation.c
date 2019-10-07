@@ -97,18 +97,39 @@ int passServerValidation(char* password_server){
 }
 
 int ipValidation(char* ip_server){
-    //todo cercare meglio
     int i;
+    int numDot=0;
+    int num;
+    char* numC;
+
     //0.0.0.0 -> 255.255.255.255
 
     if(strlen(ip_server)<7 || strlen(ip_server)>15)
         return 7;
 
     for(i=0;i<strlen(ip_server);i++){
+
         if(!((ip_server[i]>='0' && ip_server[i]<='9' ) || ip_server[i]=='.'))           //isdigit non piace
-            return 8+i;
-        //todo conteggio punti, analisi stringa
+            return 8;
+
+        //Conteggio numero punti
+        if(ip_server[i]=='.'){
+            numDot++;
+            if(numDot>3)
+                return 9;
+        }
+
     }
+
+    //Verifica 4 numeri tra 0 e 255
+    for(i=0;i<4;i++){
+        numC=strtok(ip_server,".");
+        num=atoi(numC);
+        if(num<0 || num>255)
+            return 10;
+    }
+
+
     return 0;
 }
 

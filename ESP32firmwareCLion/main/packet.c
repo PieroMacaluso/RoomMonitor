@@ -148,7 +148,7 @@ int send_packets(int s, node_t h) {
                 i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
-                i->packet->timestamp, i->packet->SSID, i->packet->board);                   //todo eliminare x e y lato server per acquisire in modo corretto tutti i dati
+                i->packet->timestamp, i->packet->SSID, i->packet->board);
 
         buf[strlen(buf)] = '\0';
         result = send(s, buf, strlen(buf), 0);

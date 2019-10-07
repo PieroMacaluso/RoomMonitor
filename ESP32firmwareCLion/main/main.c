@@ -896,7 +896,6 @@ int spiffs_save(char *resource, struct netconn *conn) {
     // Validazione input
     int res;
 
-    // TODO: REGEX NON DISPONIBILI IN ESP32, provato con re.c e re.h, ma nulla
       char *id = cJSON_GetObjectItem(json, "id")->valuestring;
         res=idValidation(id);
         if(res!=0)
