@@ -64,7 +64,7 @@ bool obtain_time(void)
     //time_t now = 0;
     //struct tm timeinfo = { 0 };
     int retry = 0;
-    const int retry_count = 90;
+    const int retry_count = 20;
     while(timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
         printf( "Waiting for system time to be set... (%d/%d)\n", retry, retry_count);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
@@ -88,11 +88,16 @@ bool obtain_time(void)
         return true;
     }
 }
-
+/**
+ * Ogni 5 volte che scatta il timer da un minuto (-> ogni 5 minuti) controlla e aggiorna l'orario
+ * @param n
+ */
 void checkTime(int* n){
 
     (*n)++;
-    if((*n)==SECOND_CHECK_TIME/SECOND_SCAN_MODE/*2*/ || (*n)==-1 ){		//todo		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
+    printf("CheckTime:%d\n",*n);
+    if((*n)==/*SECOND_CHECK_TIME/SECOND_SCAN_MODE*/ 5 || (*n)==-1 ){		//		// SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
+        printf("CheckTime: obtain_time...\n");
         obtain_time();
         (*n)=0;
     }

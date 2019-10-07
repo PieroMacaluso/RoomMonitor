@@ -195,7 +195,7 @@ typedef struct {
  */
 void app_main(void) {
 
-    int nallarm = -1;                //nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
+    int nallarm = 0;                //nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
     bool orario= false;
     /*uint8_t level = 0;*/
 
@@ -268,12 +268,14 @@ void app_main(void) {
 
         vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
 
+
         tcpClient();
 
         checkTime(&nallarm);
 
         esp_wifi_set_promiscuous(true);
     }
+    //todo rendere le funzioni nel while con un valore di ritorno per individuare errori e far ripulire tutto e riavviare magari
     free_packet_list(head);
 }
 

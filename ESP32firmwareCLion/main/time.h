@@ -30,7 +30,7 @@
 #define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
 #define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
 #define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
-#define SECOND_SCAN_MODE	20
+#define SECOND_SCAN_MODE	60
 #define SECOND_CHECK_TIME   300			//ogni 300 sec=5 min
 #define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
 
