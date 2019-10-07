@@ -231,6 +231,10 @@ void app_main(void) {
     initialize_spiffs();
     wifi_init();
 
+    while(my_nvs_get_str("saved")==NULL){               //Evita che la schedina tenti di partire fin se prima non viene inizializzata tramite captive portal
+        sleep(30);
+    }
+
     if(!initialize_sntp()){
         printf("ESP32 Restarting...\n");
         esp_restart();
@@ -787,7 +791,9 @@ static void http_server_netconn_serve(struct netconn *conn) {
                 char *data = strstr(body, "{");
                 printf("A\n");
                 //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-                if (spiffs_save(data, conn)){
+                int err=spiffs_save(data, conn);
+                if (err!=0){
+                    printf("Errore salvataggio %d\n",err);
                     spiffs_serve("/error.html", conn);
                 } else {
                     spiffs_serve("/success.html", conn);
@@ -891,45 +897,45 @@ int spiffs_save(char *resource, struct netconn *conn) {
     // TODO: REGEX NON DISPONIBILI IN ESP32, provato con re.c e re.h, ma nulla
       char *id = cJSON_GetObjectItem(json, "id")->valuestring;
         res=idValidation(id);
-        if(res==1)
+        if(res!=0)
             return res;
 //    if (!re_match(id, id_regex)) return 1;
 
        char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
         res=ssidApValidation(ssid_ap);
-        if(res==1)
+        if(res!=0)
             return res;
 //    if (!re_match(ssid_ap, ssid_regex)) return 1;
 
       char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
         res=passwordApValidation(password_ap);
-        if(res==1)
+        if(res!=0)
             return res;
 //    if (!re_match(password_ap, password_ap)) return 1;
 
       char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
         res=channelValidation(channel);
-        if(res==1)
+        if(res!=0)
             return res;
 //    if (!re_match(channel, channel_regex)) return 1;
 
       char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
         res=ssidServerValidation(ssid_server);
-        if(res==1)
+        if(res!=0)
          return res;
 //    if (!re_match(ssid_server, ssid_regex)) return 1;
 
       char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
         res=passServerValidation(password_server);
-        if(res==1)
+        if(res!=0)
             return res;
       char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
         res=ipValidation(ip_server);
-        if(res==1)
+        if(res!=0)
             return res;
 //    if (!re_match(ip_server, ip_regex)) return 1;
 
-
+    printf("Validazione input eseguita.");
     int err;
 
     FILE *f = fopen("/spiffs/data.json", "w");
@@ -950,6 +956,16 @@ int spiffs_save(char *resource, struct netconn *conn) {
                 switch (err) {
                     case ESP_OK:
                         printf("Saved\n");
+                        err = nvs_set_str(my_handle, "saved", "saved");         //indica che i dati ricevuti sono stati salvati, solo in tale situazione il funzionamento della schedina viene sbloccato
+                        switch (err) {
+                            case ESP_OK:
+                                break;
+                            case ESP_ERR_NVS_NOT_FOUND:
+                                printf("The value is not initialized yet!\n");
+                                break;
+                            default:
+                                printf("Error (%s) reading!\n", esp_err_to_name(err));
+                        }
                         break;
                     case ESP_ERR_NVS_NOT_FOUND:
                         printf("The value is not initialized yet!\n");
