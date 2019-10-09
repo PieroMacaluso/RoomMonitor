@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>960</width>
-    <height>817</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,6 +40,9 @@
     </item>
     <item>
      <widget class="MonitoringPlotView" name="monitoringPlot"/>
+    </item>
+    <item>
+     <widget class="LivePlotView" name="livePlot"/>
     </item>
     <item>
      <widget class="QTabWidget" name="analysisWidget">
@@ -264,7 +267,7 @@
    <property name="minimumSize">
     <size>
      <width>201</width>
-     <height>128</height>
+     <height>159</height>
     </size>
    </property>
    <property name="floating">
@@ -542,6 +545,11 @@
    <class>MacPlotView</class>
    <extends>QGraphicsView</extends>
    <header>windows/plots/mac/MacPlotView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>LivePlotView</class>
+   <extends>QGraphicsView</extends>
+   <header>windows/plots/live/LivePlotView.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

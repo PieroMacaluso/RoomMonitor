@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="resources">
+    <file>resources/board.svg</file>
     <file>resources/wifi.svg</file>
     <file>resources/time.svg</file>
     <file>resources/mac.svg</file>

@@ -62,6 +62,7 @@ void MainWindow::setupConnect() {
                 liveGraph.start(1000 * 60 * 5);
                 i_time = 0;
                 setupMonitoringPlot();
+                setupLivePlot();
 
             }
         } catch (std::exception &e) {
@@ -163,6 +164,7 @@ void MainWindow::setupConnect() {
         ui.monitoringPlot->setVisible(true);
         ui.analysisWidget->setVisible(false);
         setupMonitoringPlot();
+        setupLivePlot();
         initializeLastMacList();
 
     });
@@ -207,6 +209,8 @@ void MainWindow::setupConnect() {
 
         sd.setModal(true);
         sd.exec();
+        ui.actionMonitoring->triggered();
+
 
     });
 
@@ -258,6 +262,31 @@ void MainWindow::setupMonitoringPlot() {
 //        monitoringChart->addData(momentInTime, std::rand() % 20);
 //    }
 //    monitoringChart->updateData(startTime, 0);
+    // Fine dati da rimuovere
+}
+
+void MainWindow::setupLivePlot() {
+    auto liveChart = new LiveChart();
+    ui.livePlot->setChart(liveChart);
+
+    /** PLOT BOARDS **/
+    QSettings su{"VALP", "RoomMonitoring"};
+    QList<QStringList> boards = su.value("room/boards").value<QList<QStringList>>();
+    std::vector<Board> b_v;
+    for (auto i: boards){
+        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble()};
+        b_v.push_back(b);
+    }
+    liveChart->fillBoards(b_v);
+
+//    // TODO: dati fittizi da rimuovere alla fine
+    MacLastPos macLastPos0{"AA:AA:AA:AA:AA:AA", 1, 0};
+    MacLastPos macLastPos1{"BB:BB:BB:BB:BB:BB", 4, 0};
+
+    std::vector<MacLastPos> v;
+    v.push_back(macLastPos0);
+    v.push_back(macLastPos1);
+    liveChart->fillDevices(v);
     // Fine dati da rimuovere
 }
 
