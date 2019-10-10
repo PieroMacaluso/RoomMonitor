@@ -49,9 +49,10 @@ void LivePlotView::tooltipDevice(QPointF point, bool state) {
 
 
     if (state) {
-        for (const auto& i : chart->getDevices()){
-            if (i.getPosx() == point.x()&& i.getPosy() == point.y()){
-                m_tooltip->setText(QString("Device %1 \nPos: (%2, %3)").arg(i.getMac()).arg(point.x()).arg(point.y()));
+        for (const auto &i : chart->getDevices()) {
+            if (i.getPosx() == point.x() && i.getPosy() == point.y()) {
+                m_tooltip->setText(QString("Device %1 \nDate: %2Pos: (%3, %4)").arg(i.getMac()).arg(
+                        i.getTiming().toString("dd/MM/yyyy hh:mm")).arg(point.x()).arg(point.y()));
                 m_tooltip->setAnchor(point);
                 m_tooltip->setZValue(11);
                 m_tooltip->updateGeometry();
@@ -71,8 +72,8 @@ void LivePlotView::tooltipBoard(QPointF point, bool state) {
 
 
     if (state) {
-        for (const auto& i : chart->getBoards()){
-            if (i.getCoord().x() == point.x()&& i.getCoord().y() == point.y()){
+        for (const auto &i : chart->getBoards()) {
+            if (i.getCoord().x() == point.x() && i.getCoord().y() == point.y()) {
                 m_tooltip->setText(QString("Board %1 \nPos: (%2, %3)").arg(i.getId()).arg(point.x()).arg(point.y()));
                 m_tooltip->setAnchor(point);
                 m_tooltip->setZValue(11);
