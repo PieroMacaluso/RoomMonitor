@@ -10,7 +10,7 @@
 #include <windows/classes/LastMac.h>
 
 class LiveChart : public QChart {
-    QVector<LastMac> devices_v{};
+    std::vector<LastMac> devices_v{};
     std::vector<Board> boards_v{};
     QScatterSeries *boards;
     QScatterSeries *devices;
@@ -38,10 +38,10 @@ public:
     qreal getYMax() const;
 
     void fillBoards(std::vector<Board> newData);
-    void fillDevices(QVector<LastMac> newData);
+    void fillDevices(QMap<QString, LastMac> &newData);
 
 
-    const QVector<LastMac> & getDevices() const;
+    const std::vector<LastMac> & getDevices() const;
     const std::vector<Board> &getBoards() const;
 
 };

@@ -278,6 +278,7 @@ void MainWindow::setupLivePlot() {
         b_v.push_back(b);
     }
     liveChart->fillBoards(b_v);
+    liveChart->fillDevices(lastMacs);
 
 //    // TODO: dati fittizi da rimuovere alla fine
     // Fine dati da rimuovere
@@ -606,7 +607,8 @@ void MainWindow::genLiveData() {
         }
     }
     this->updateLastMac();
-    ui.livePlot->getChart()->fillDevices(lastMacs.values().toVector());
+    std::vector<LastMac> v;
+    this->setupLivePlot();
 
     db.close();
 

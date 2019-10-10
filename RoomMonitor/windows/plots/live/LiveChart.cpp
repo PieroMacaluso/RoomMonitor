@@ -120,16 +120,16 @@ void LiveChart::fillBoards(std::vector<Board> newData) {
     }
 }
 
-void LiveChart::fillDevices(QVector<LastMac> newData) {
+void LiveChart::fillDevices(QMap<QString, LastMac> &newData) {
     this->devices_v.clear();
-    this->devices_v = std::move(newData);
     this->currentPos = 0;
-    for (auto &i : this->devices_v){
+    for (auto &i : newData){
         this->devices->append(i.getPosx(), i.getPosy());
+        this->devices_v.push_back(i);
     }
 }
 
-const QVector<LastMac> & LiveChart::getDevices() const {
+const std::vector<LastMac> & LiveChart::getDevices() const {
     return devices_v;
 }
 

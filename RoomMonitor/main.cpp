@@ -10,9 +10,19 @@
 
 int main(int argc, char **argv) {
     QApplication a{argc, argv};
-    SettingDialog::settingCheckUp();
-    MainWindow w;
-    w.show();
-    return QApplication::exec();
+    int ret;
+    try {
+        SettingDialog::settingCheckUp();
+        MainWindow w;
+        w.show();
+        ret = QApplication::exec();
+    } catch (const std::exception & e) {
+        // clean up here, e.g. save the session
+        // and close all config files.
+        std::cout << e.what() << std::endl;
+        return EXIT_FAILURE; // exit the application
+    }
+
+    return ret;
 
 }
