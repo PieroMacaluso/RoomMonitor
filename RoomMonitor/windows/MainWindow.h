@@ -114,6 +114,8 @@ public:
     void macPlotReady(QStringList mac, QStringList frequency, MacChart *macPlot);
 
     void finishedAnalysisThread();
+
+    void setupLivePlot();
 };
 
 

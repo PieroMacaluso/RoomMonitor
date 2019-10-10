@@ -62,6 +62,7 @@ void MainWindow::setupConnect() {
                 liveGraph.start(1000 * 60 * 5);
                 i_time = 0;
                 setupMonitoringPlot();
+                setupLivePlot();
 
             }
         } catch (std::exception &e) {
@@ -126,7 +127,7 @@ void MainWindow::setupConnect() {
         ui.actionMonitoring->setVisible(true);
 
         // Cambia plot
-        ui.monitoringPlot->setVisible(false);
+        ui.monitoringWidget->setVisible(false);
         ui.analysisWidget->setVisible(true);
 
         ui.title->setText(
@@ -160,9 +161,10 @@ void MainWindow::setupConnect() {
                 "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Monitoraggio Stanza</span></p></body></html>");
 
         // Cambia plot
-        ui.monitoringPlot->setVisible(true);
+        ui.monitoringWidget->setVisible(true);
         ui.analysisWidget->setVisible(false);
         setupMonitoringPlot();
+        setupLivePlot();
         initializeLastMacList();
 
     });
@@ -207,6 +209,8 @@ void MainWindow::setupConnect() {
 
         sd.setModal(true);
         sd.exec();
+        ui.actionMonitoring->triggered();
+
 
     });
 
@@ -258,6 +262,24 @@ void MainWindow::setupMonitoringPlot() {
 //        monitoringChart->addData(momentInTime, std::rand() % 20);
 //    }
 //    monitoringChart->updateData(startTime, 0);
+    // Fine dati da rimuovere
+}
+
+void MainWindow::setupLivePlot() {
+    auto liveChart = new LiveChart();
+    ui.livePlot->setChart(liveChart);
+
+    /** PLOT BOARDS **/
+    QSettings su{"VALP", "RoomMonitoring"};
+    QList<QStringList> boards = su.value("room/boards").value<QList<QStringList>>();
+    std::vector<Board> b_v;
+    for (auto i: boards){
+        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble()};
+        b_v.push_back(b);
+    }
+    liveChart->fillBoards(b_v);
+
+//    // TODO: dati fittizi da rimuovere alla fine
     // Fine dati da rimuovere
 }
 
@@ -546,6 +568,7 @@ void MainWindow::genLiveData() {
     start.setSecsSinceEpoch(startTimestamp * 60 * 5);
     prev = start.addSecs(-60 * 5);
     QSqlQuery query{db};
+    /** QUERY_3 **/
     query.prepare(
             "SELECT mac_addr, timing, pos_x, pos_y\n"
             "FROM (SELECT hash_fcs,\n"
@@ -583,6 +606,7 @@ void MainWindow::genLiveData() {
         }
     }
     this->updateLastMac();
+    ui.livePlot->getChart()->fillDevices(lastMacs.values().toVector());
 
     db.close();
 
