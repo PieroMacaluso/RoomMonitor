@@ -127,7 +127,7 @@ void MainWindow::setupConnect() {
         ui.actionMonitoring->setVisible(true);
 
         // Cambia plot
-        ui.monitoringPlot->setVisible(false);
+        ui.monitoringWidget->setVisible(false);
         ui.analysisWidget->setVisible(true);
 
         ui.title->setText(
@@ -161,7 +161,7 @@ void MainWindow::setupConnect() {
                 "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Monitoraggio Stanza</span></p></body></html>");
 
         // Cambia plot
-        ui.monitoringPlot->setVisible(true);
+        ui.monitoringWidget->setVisible(true);
         ui.analysisWidget->setVisible(false);
         setupMonitoringPlot();
         setupLivePlot();
@@ -280,13 +280,6 @@ void MainWindow::setupLivePlot() {
     liveChart->fillBoards(b_v);
 
 //    // TODO: dati fittizi da rimuovere alla fine
-    MacLastPos macLastPos0{"AA:AA:AA:AA:AA:AA", 1, 0};
-    MacLastPos macLastPos1{"BB:BB:BB:BB:BB:BB", 4, 0};
-
-    std::vector<MacLastPos> v;
-    v.push_back(macLastPos0);
-    v.push_back(macLastPos1);
-    liveChart->fillDevices(v);
     // Fine dati da rimuovere
 }
 
@@ -575,6 +568,7 @@ void MainWindow::genLiveData() {
     start.setSecsSinceEpoch(startTimestamp * 60 * 5);
     prev = start.addSecs(-60 * 5);
     QSqlQuery query{db};
+    /** QUERY_3 **/
     query.prepare(
             "SELECT mac_addr, timing, pos_x, pos_y\n"
             "FROM (SELECT hash_fcs,\n"
@@ -612,6 +606,7 @@ void MainWindow::genLiveData() {
         }
     }
     this->updateLastMac();
+    ui.livePlot->getChart()->fillDevices(lastMacs.values().toVector());
 
     db.close();
 

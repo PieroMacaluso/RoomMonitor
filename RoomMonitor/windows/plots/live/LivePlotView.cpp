@@ -50,7 +50,7 @@ void LivePlotView::tooltipDevice(QPointF point, bool state) {
 
     if (state) {
         for (const auto& i : chart->getDevices()){
-            if (i.getX() == point.x()&& i.getY() == point.y()){
+            if (i.getPosx() == point.x()&& i.getPosy() == point.y()){
                 m_tooltip->setText(QString("Device %1 \nPos: (%2, %3)").arg(i.getMac()).arg(point.x()).arg(point.y()));
                 m_tooltip->setAnchor(point);
                 m_tooltip->setZValue(11);

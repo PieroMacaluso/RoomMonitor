@@ -7,10 +7,10 @@
 
 #include <QtCharts>
 #include <monitoring/Board.h>
-#include <windows/classes/MacLastPos.h>
+#include <windows/classes/LastMac.h>
 
 class LiveChart : public QChart {
-    std::vector<MacLastPos> devices_v{};
+    QVector<LastMac> devices_v{};
     std::vector<Board> boards_v{};
     QScatterSeries *boards;
     QScatterSeries *devices;
@@ -38,10 +38,10 @@ public:
     qreal getYMax() const;
 
     void fillBoards(std::vector<Board> newData);
-    void fillDevices(std::vector<MacLastPos> newData);
+    void fillDevices(QVector<LastMac> newData);
 
 
-    const std::vector<MacLastPos> &getDevices() const;
+    const QVector<LastMac> & getDevices() const;
     const std::vector<Board> &getBoards() const;
 
 };

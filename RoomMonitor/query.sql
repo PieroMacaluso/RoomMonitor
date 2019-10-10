@@ -27,6 +27,7 @@ FROM (SELECT mac_addr,
 GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300))
 ORDER BY timing;
 
+-- QUERY_3
 SELECT mac_addr, timing, pos_x, pos_y
 FROM (SELECT hash_fcs,
              mac_addr,

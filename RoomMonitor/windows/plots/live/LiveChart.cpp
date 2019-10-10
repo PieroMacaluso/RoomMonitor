@@ -2,7 +2,7 @@
 // Created by pieromack on 09/10/19.
 //
 
-#include <windows/classes/MacLastPos.h>
+#include <windows/classes/LastMac.h>
 #include "LiveChart.h"
 
 LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(parent, wFlags) {
@@ -120,16 +120,16 @@ void LiveChart::fillBoards(std::vector<Board> newData) {
     }
 }
 
-void LiveChart::fillDevices(std::vector<MacLastPos> newData) {
+void LiveChart::fillDevices(QVector<LastMac> newData) {
     this->devices_v.clear();
     this->devices_v = std::move(newData);
     this->currentPos = 0;
-    for (auto i : this->devices_v){
-        this->devices->append(i.getX(), i.getY());
+    for (auto &i : this->devices_v){
+        this->devices->append(i.getPosx(), i.getPosy());
     }
 }
 
-const std::vector<MacLastPos> &LiveChart::getDevices() const {
+const QVector<LastMac> & LiveChart::getDevices() const {
     return devices_v;
 }
 
