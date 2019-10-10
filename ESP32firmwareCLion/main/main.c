@@ -188,8 +188,6 @@ typedef struct {
 } wifi_ieee80211_packet_t;
 
 
-
-
 /**
  * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
  */
@@ -883,7 +881,6 @@ void spiffs_serve(char *resource, struct netconn *conn) {
 
 // serve static content from SPIFFS
 int spiffs_save(char *resource, struct netconn *conn) {
-
     cJSON *json = cJSON_Parse(resource);
     if (json == NULL) {
         const char *error_ptr = cJSON_GetErrorPtr();
@@ -952,21 +949,18 @@ int spiffs_save(char *resource, struct netconn *conn) {
         cJSON_ArrayForEach(current_element, json) {
             current_key = current_element->string;
             if (current_key != NULL) {
-
+                printf("%s %s", current_key, current_element->valuestring);
                 err = nvs_set_str(my_handle, current_key, current_element->valuestring);
+            }
+        }
+        printf("Committing updates in NVS ... ");
+        switch (err) {
+            case ESP_OK:
+                printf("Saved\n");
+                // indica che i dati ricevuti sono stati salvati, solo in tale situazione il funzionamento della schedina viene sbloccato
+                err = nvs_set_str(my_handle, "saved", "saved");
                 switch (err) {
                     case ESP_OK:
-                        printf("Saved\n");
-                        err = nvs_set_str(my_handle, "saved", "saved");         //indica che i dati ricevuti sono stati salvati, solo in tale situazione il funzionamento della schedina viene sbloccato
-                        switch (err) {
-                            case ESP_OK:
-                                break;
-                            case ESP_ERR_NVS_NOT_FOUND:
-                                printf("The value is not initialized yet!\n");
-                                break;
-                            default:
-                                printf("Error (%s) reading!\n", esp_err_to_name(err));
-                        }
                         break;
                     case ESP_ERR_NVS_NOT_FOUND:
                         printf("The value is not initialized yet!\n");
@@ -974,9 +968,13 @@ int spiffs_save(char *resource, struct netconn *conn) {
                     default:
                         printf("Error (%s) reading!\n", esp_err_to_name(err));
                 }
-            }
+                break;
+            case ESP_ERR_NVS_NOT_FOUND:
+                printf("The value is not initialized yet!\n");
+                break;
+            default:
+                printf("Error (%s) reading!\n", esp_err_to_name(err));
         }
-        printf("Committing updates in NVS ... ");
         err = nvs_commit(my_handle);
         printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
         // Close
