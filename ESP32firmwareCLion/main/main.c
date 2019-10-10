@@ -949,7 +949,7 @@ int spiffs_save(char *resource, struct netconn *conn) {
         cJSON_ArrayForEach(current_element, json) {
             current_key = current_element->string;
             if (current_key != NULL) {
-                printf("%s %s", current_key, current_element->valuestring);
+                printf("%s %s\n", current_key, current_element->valuestring);
                 err = nvs_set_str(my_handle, current_key, current_element->valuestring);
             }
         }
