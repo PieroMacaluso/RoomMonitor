@@ -280,8 +280,6 @@ void MainWindow::setupLivePlot() {
     liveChart->fillBoards(b_v);
     liveChart->fillDevices(lastMacs);
 
-//    // TODO: dati fittizi da rimuovere alla fine
-    // Fine dati da rimuovere
 }
 
 void MainWindow::setupAnalysisPlot() {
@@ -441,8 +439,8 @@ void MainWindow::addLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
     // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
-    startTimestamp = 1569420000 + 60 * 5 * i_time;
-    i_time++;
+//    startTimestamp = 1569420000 + 60 * 5 * i_time;
+//    i_time++;
     startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
     QDateTime end{};
@@ -563,10 +561,9 @@ void MainWindow::genLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
     QSqlDatabase db = Utility::getDB();
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
-    startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
     QDateTime prev{};
-    start.setSecsSinceEpoch(startTimestamp * 60 * 5);
+    start.setSecsSinceEpoch(startTimestamp);
     prev = start.addSecs(-60 * 5);
     QSqlQuery query{db};
     /** QUERY_3 **/

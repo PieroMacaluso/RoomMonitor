@@ -201,7 +201,7 @@ void MonitoringServer::start() {
         QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
         qDebug() << "Server Started on port:" << server.serverPort();
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-        timer.start(30000);
+        timer.start(60000);
     }
 
 }
