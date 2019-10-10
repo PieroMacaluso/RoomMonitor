@@ -102,18 +102,24 @@ int ipValidation(char* ip_server){
     int num;
     char* numC;
 
+    /*char* ip[strlen(ip_server)];
+
+    for(i=0;i<strlen(ip_server);i++){           //todo dealloc
+        ip[i]=ip_server[i];
+    }
+
     //0.0.0.0 -> 255.255.255.255
 
-    if(strlen(ip_server)<7 || strlen(ip_server)>15)
+    if(strlen(ip)<7 || strlen(ip)>15)
         return 7;
 
-    for(i=0;i<strlen(ip_server);i++){
+    for(i=0;i<strlen(ip);i++){
 
-        if(!((ip_server[i]>='0' && ip_server[i]<='9' ) || ip_server[i]=='.'))           //isdigit non piace
+        if(!((ip[i]>='0' && ip[i]<='9' ) || ip[i]=='.'))           //isdigit non piace
             return 8;
 
         //Conteggio numero punti
-        if(ip_server[i]=='.'){
+        if(ip[i]=='.'){
             numDot++;
             if(numDot>3)
                 return 9;
@@ -123,11 +129,11 @@ int ipValidation(char* ip_server){
 
     //Verifica 4 numeri tra 0 e 255
     for(i=0;i<4;i++){
-        numC=strtok(ip_server,".");
+        numC=strtok(ip,".");
         num=atoi(numC);
         if(num<0 || num>255)
             return 10;
-    }
+    }*/
 
 
     return 0;
