@@ -51,7 +51,7 @@ void LivePlotView::tooltipDevice(QPointF point, bool state) {
     if (state) {
         for (const auto &i : chart->getDevices()) {
             if (i.getPosx() == point.x() && i.getPosy() == point.y()) {
-                m_tooltip->setText(QString("Device %1 \nDate: %2Pos: (%3, %4)").arg(i.getMac()).arg(
+                m_tooltip->setText(QString("Device %1 \nDate: %2\nPos: (%3, %4)").arg(i.getMac()).arg(
                         i.getTiming().toString("dd/MM/yyyy hh:mm")).arg(point.x()).arg(point.y()));
                 m_tooltip->setAnchor(point);
                 m_tooltip->setZValue(11);
