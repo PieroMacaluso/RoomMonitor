@@ -1,7 +1,8 @@
 # Progetto Programmazione di Sistema
 
 ## Progetti
-* [**Firmware ESP**](https://github.com/pimack/PDSproject/tree/master/ESP32firmware)
+* [**Firmware ESP**](https://github.com/pimack/PDSproject/tree/master/ESP32firmwareCLion)
+* [**Server App**](https://github.com/pimack/PDSproject/tree/master/RoomMonitor)
 
 
 ## Team
