@@ -1,0 +1,35 @@
+# Meta
+set(AM_MULTI_CONFIG "FALSE")
+set(AM_PARALLEL "4")
+set(AM_VERBOSITY "")
+# Directories
+set(AM_CMAKE_SOURCE_DIR "/home/pieromack/development/esp32/PDSproject/Server")
+set(AM_CMAKE_BINARY_DIR "/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug")
+set(AM_CMAKE_CURRENT_SOURCE_DIR "/home/pieromack/development/esp32/PDSproject/Server")
+set(AM_CMAKE_CURRENT_BINARY_DIR "/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug")
+set(AM_CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE "")
+set(AM_BUILD_DIR "/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/Server_autogen")
+set(AM_INCLUDE_DIR "/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/Server_autogen/include")
+# Files
+set(AM_SOURCES "/home/pieromack/development/esp32/PDSproject/Server/Aggregazione.cpp;/home/pieromack/development/esp32/PDSproject/Server/DequeThreadSafe.cpp;/home/pieromack/development/esp32/PDSproject/Server/Packet.cpp;/home/pieromack/development/esp32/PDSproject/Server/Ricezione.cpp;/home/pieromack/development/esp32/PDSproject/Server/main.cpp")
+set(AM_HEADERS "/home/pieromack/development/esp32/PDSproject/Server/Aggregazione.h;/home/pieromack/development/esp32/PDSproject/Server/DequeThreadSafe.h;/home/pieromack/development/esp32/PDSproject/Server/Packet.h;/home/pieromack/development/esp32/PDSproject/Server/Ricezione.h")
+set(AM_SETTINGS_FILE "/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/CMakeFiles/Server_autogen.dir/AutogenOldSettings.txt")
+# Qt
+set(AM_QT_VERSION_MAJOR 5)
+set(AM_QT_MOC_EXECUTABLE "/home/pieromack/Qt/5.13.0/gcc_64/bin/moc")
+set(AM_QT_UIC_EXECUTABLE "/home/pieromack/Qt/5.13.0/gcc_64/bin/uic")
+# MOC settings
+set(AM_MOC_SKIP "")
+set(AM_MOC_DEFINITIONS "QT_CHARTS_LIB;QT_CORE_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_WIDGETS_LIB")
+set(AM_MOC_INCLUDES "/home/pieromack/Qt/5.13.0/gcc_64/lib/cmake;/home/pieromack/Qt/5.13.0/gcc_64/include;/home/pieromack/Qt/5.13.0/gcc_64/include/QtCore;/home/pieromack/Qt/5.13.0/gcc_64/./mkspecs/linux-g++;/home/pieromack/Qt/5.13.0/gcc_64/include/QtGui;/home/pieromack/Qt/5.13.0/gcc_64/include/QtWidgets;/home/pieromack/Qt/5.13.0/gcc_64/include/QtCharts;/home/pieromack/Qt/5.13.0/gcc_64/include/QtNetwork;/usr/include")
+set(AM_MOC_OPTIONS "")
+set(AM_MOC_RELAXED_MODE "")
+set(AM_MOC_MACRO_NAMES "Q_OBJECT;Q_GADGET;Q_NAMESPACE")
+set(AM_MOC_DEPEND_FILTERS "")
+set(AM_MOC_PREDEFS_CMD "/usr/bin/c++;-dM;-E;-c;/home/pieromack/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/191.6183.77/bin/cmake/linux/share/cmake-3.13/Modules/CMakeCXXCompilerABI.cpp")
+# UIC settings
+set(AM_UIC_SKIP "")
+set(AM_UIC_TARGET_OPTIONS "")
+set(AM_UIC_OPTIONS_FILES "")
+set(AM_UIC_OPTIONS_OPTIONS "")
+set(AM_UIC_SEARCH_PATHS "")

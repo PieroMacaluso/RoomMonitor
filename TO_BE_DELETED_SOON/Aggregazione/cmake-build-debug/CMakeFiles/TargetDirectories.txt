@@ -1,0 +1,3 @@
+C:/Users/Emily/CLionProjects/Aggregazione/cmake-build-debug/CMakeFiles/Aggregazione.dir
+C:/Users/Emily/CLionProjects/Aggregazione/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Emily/CLionProjects/Aggregazione/cmake-build-debug/CMakeFiles/rebuild_cache.dir

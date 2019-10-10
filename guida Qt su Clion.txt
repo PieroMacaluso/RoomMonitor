@@ -1,9 +1,0 @@
--essere sicuro di avere Qt con minGw64 e non 32;
--in Clion->Settings->Build,Execution,Deployment->Toolchains aggiungere un nuovo elemento premendo sul tasto più, dare un nome(es Qt), configurare come Environment MinGW e selezionare il percorso del tipo "D:\Qt\Tools\mingw730_64" (conforme al percorso di installazione di Qt). in automatico dovrebbero essere compilati gli altri campi. Assicurarsi di spostare l'oggetto creato (Qt) come primo elemento della lista selezionandolo e cliccando la freccia verso l'alto. (tale passaggio può essere omesso se si dispone già di minGW64 comprendente qt);
-
-- in Clion->Settings->Build,Execution,Deployment->Cmake aggiungere nel campo CMake options 
-"-DCMAKE_PREFIX_PATH=D:/Qt/5.12.3/mingw73_64/lib/cmake" (con percorso conforme),tale modifica va fatta per ogni progetto.
-
-- aggiungere alla variabile di ambiente di Windows PATH il percorso "D:\Qt\5.12.3\mingw73_64\bin" (conforme installazione Qt)
-
-

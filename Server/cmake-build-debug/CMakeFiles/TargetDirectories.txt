@@ -1,4 +1,0 @@
-/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/CMakeFiles/Server.dir
-/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/pieromack/development/esp32/PDSproject/Server/cmake-build-debug/CMakeFiles/Server_autogen.dir

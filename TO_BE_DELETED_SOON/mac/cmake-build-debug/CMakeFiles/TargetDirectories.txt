@@ -1,0 +1,3 @@
+/home/pieromack/development/esp32/PDSproject/mac/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/pieromack/development/esp32/PDSproject/mac/cmake-build-debug/CMakeFiles/mac.dir
+/home/pieromack/development/esp32/PDSproject/mac/cmake-build-debug/CMakeFiles/edit_cache.dir
