@@ -18,6 +18,7 @@ SettingDialog::SettingDialog() {
     ui.aEdit->setValidator(new QIntValidator());
     ui.nEdit->setText(s.value("monitor/n").toString());
     ui.nEdit->setValidator(new QIntValidator());
+    ui.minEdit->setValue(s.value("monitor/min").toInt());
     ui.widthEdit->setText(s.value("room/width").toString());
     ui.widthEdit->setValidator(new QDoubleValidator());
     ui.heightEdit->setText(s.value("room/height").toString());
@@ -42,6 +43,7 @@ void SettingDialog::settingCheckUp() {
     if (su.value("monitor/A").isNull())
         su.setValue("monitor/A", 3);
     if (su.value("monitor/n").isNull()) su.setValue("monitor/n", -55);
+    if (su.value("monitor/min").isNull()) su.setValue("monitor/min", 3);
     if (su.value("room/width").isNull()) su.setValue("room/width", 10);
     if (su.value("room/height").isNull()) su.setValue("room/height", 10);
     if (su.value("room/port").isNull()) su.setValue("room/port", 27015);
@@ -198,6 +200,7 @@ void SettingDialog::apply() {
     if (!isSettingValid()) return;
     s.setValue("monitor/A", ui.aEdit->text().toFloat());
     s.setValue("monitor/n", ui.nEdit->text().toFloat());
+    s.setValue("monitor/min", ui.minEdit->text().toFloat());
     s.setValue("room/width", ui.widthEdit->text().toFloat());
     s.setValue("room/height", ui.heightEdit->text().toFloat());
     s.setValue("room/port", ui.portServerEdit->text().toInt());
@@ -280,6 +283,7 @@ void SettingDialog::defaultValues(){
 
     s.setValue("monitor/A", -55);
     s.setValue("monitor/n", 3);
+    s.setValue("monitor/min", 3);
     s.setValue("room/width", 10);
     s.setValue("room/height", 10);
     s.setValue("room/port", 27015);
