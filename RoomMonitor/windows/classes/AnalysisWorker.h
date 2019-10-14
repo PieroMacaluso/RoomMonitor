@@ -62,22 +62,21 @@ public slots:
             freq = 1;
 
         } else {
-            result->setTitle(title + "Modalità: GIORNO - Granularità: 5m|" + freq + "m");
+            freq = su.value("monitor/min").toInt();
+            result->setTitle(title + "Modalità: GIORNO - Granularità: 5m|" + QString::fromStdString(std::to_string(freq)) + "m");
             granularity = 60 * 5;
             bucket = 60;
-            freq = su.value("monitor/min").toInt();
         }
         QSqlDatabase db = Utility::getDB();
         QSqlQuery q{db};
+        /** QUERY_4 **/
         q.prepare(
                 "SELECT timing, COUNT(*)\n"
                 "FROM (SELECT mac_addr,\n"
                 "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec)) AS timing,\n"
-                "             COALESCE(COUNT(DISTINCT timing), 0)                                                   AS freq\n"
+                "             COUNT(DISTINCT timing)                                                  AS freq\n"
                 "      FROM (SELECT mac_addr,\n"
-                "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :bucket)) AS timing,\n"
-                "                   avg(pos_x)                                                                    AS pos_x,\n"
-                "                   avg(pos_y)                                                                    AS pos_y\n"
+                "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :bucket)) AS timing\n"
                 "            FROM " + su.value("database/table").toString() + "\n"
                                                                               "            WHERE timestamp BETWEEN :fd AND :sd\n"
                                                                               "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :bucket\n"
@@ -140,20 +139,35 @@ public slots:
         emit resultReady(result);
 
         q.clear();
+        /** QUERY_5B **/
         q.prepare("SELECT mac_addr,\n"
-                  "       COUNT(DISTINCT timing) AS freq,\n"
+                  "       COUNT(*) AS freq,\n"
                   "       hidden\n"
                   "FROM (SELECT mac_addr,\n"
-                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec)) AS timing,\n"
+                  "             COUNT(DISTINCT timing)                                              AS freq,\n"
                   "             hidden\n"
-                  "      FROM " + su.value("database/table").toString() + "\n"
-                                                                          "      WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                          "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-                                                                          "      ORDER BY timing) as eL\n"
-                                                                          "GROUP BY mac_addr\n"
-                                                                          "ORDER BY freq DESC;");
+                  "      FROM (SELECT mac_addr,\n"
+                  "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :freq)) AS timing,\n"
+                  "                   COUNT(DISTINCT timestamp),\n"
+                  "                   hidden\n"
+                  "            FROM "+ su.value("database/table").toString() + "\n"
+                  "            WHERE timestamp BETWEEN :fd AND :sd\n"
+                  "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :bucket\n"
+                  "            ORDER BY timing) as eL\n"
+                  "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
+                  "     ) AS mac_count\n"
+                  "WHERE mac_count.freq >= :freq\n"
+                  "GROUP BY mac_addr\n"
+                  "ORDER BY freq DESC;");
         q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+        q.bindValue(":bucket", bucket);
+        q.bindValue(":sec", granularity);
+        q.bindValue(":freq", freq);
+
+
+
         if (!q.exec())
             qDebug() << q.lastError();
 
@@ -171,19 +185,32 @@ public slots:
         }
         q.clear();
         emit initializeMacSituation();
+        /** QUERY_6 **/
         q.prepare("SELECT mac_addr,\n"
-                  "       COUNT(DISTINCT timing) AS freq,\n"
+                  "       COUNT(*) AS freq,\n"
                   "       hidden\n"
                   "FROM (SELECT mac_addr,\n"
-                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec)) AS timing,\n"
+                  "             COUNT(DISTINCT timing)                                              AS freq,\n"
                   "             hidden\n"
-                  "      FROM " + su.value("database/table").toString() + "\n"
-                                                                          "      WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                          "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-                                                                          "      ORDER BY timing) as eL\n"
-                                                                          "GROUP BY mac_addr;");
+                  "      FROM (SELECT mac_addr,\n"
+                  "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :bucket)) AS timing,\n"
+                  "                   COALESCE(COUNT(DISTINCT timestamp)  ,0),\n"
+                  "                   hidden\n"
+                  "            FROM "+ su.value("database/table").toString() + "\n"
+                  "            WHERE timestamp BETWEEN :fd AND :sd\n"
+                  "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :bucket\n"
+                  "            ORDER BY timing) as eL\n"
+                  "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
+                  "     ) AS mac_count\n"
+                  "WHERE mac_count.freq >= :freq\n"
+                  "GROUP BY mac_addr\n"
+                  "ORDER BY mac_addr;");
         q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+        q.bindValue(":bucket", bucket);
+        q.bindValue(":sec", granularity);
+        q.bindValue(":freq", freq);
         if (!q.exec())
             qDebug() << q.lastError();
 

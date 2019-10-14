@@ -46,21 +46,17 @@ FROM (SELECT hash_fcs,
 WHERE FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) = timing
 ORDER BY mac_addr, timestamp DESC;
 
-SELECT DISTINCT(mac_addr), timestamp, pos_x, pos_y
-FROM eurecomLab s1
-WHERE timestamp = (SELECT MAX(timestamp) FROM eurecomLab s2 WHERE s1.mac_addr = s2.mac_addr LIMIT 1)
-ORDER BY mac_addr, timestamp DESC;
-
+-- QUERY_4
 -- Conteggio MAC rilevati più di 5 minuti all'interno di bucket di 5 minuti
-SELECT timing, COALESCE(COUNT(*)  ,0)
+SELECT timing, COUNT(*)
 FROM (SELECT mac_addr,
              FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,
-             COALESCE(COUNT(DISTINCT timing)  ,0)                                                 AS freq
+             COUNT(DISTINCT timing)                                              AS freq
       FROM (SELECT mac_addr,
                    FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
                    COALESCE(COUNT(DISTINCT timestamp)  ,0)
-            FROM eurecomLab
-            WHERE timestamp BETWEEN '2019-09-25 16:05:00' AND '2019-09-25 17:20:00'
+            FROM home
+            WHERE timestamp BETWEEN '2019-10-9 16:05:00' AND '2019-10-11 17:20:00'
             GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
             ORDER BY timing) as eL
       GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300))
@@ -70,7 +66,47 @@ WHERE mac_count.freq >= 3
 GROUP BY timing
 ORDER BY timing;
 
--- Conteggio frequenza MAC
+-- QUERY_5
+-- Conteggio frequenza MAC ordinati per frequenze
+SELECT mac_addr,
+       COUNT(DISTINCT timing) AS freq,
+       hidden
+FROM (SELECT mac_addr,
+             FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
+             hidden
+      FROM eurecomLab
+      WHERE timestamp BETWEEN '2019-09-25 16:00:00' AND '2019-09-25 17:00:00'
+      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
+      ORDER BY timing) as eL
+GROUP BY mac_addr
+ORDER BY freq DESC;
+
+-- QUERY_5B
+-- Conteggio MAC rilevati più di 5 minuti all'interno di bucket di 5 minuti
+SELECT mac_addr,
+       COUNT(*) AS freq,
+       hidden
+FROM (SELECT mac_addr,
+             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,
+             COUNT(DISTINCT timing)                                              AS freq,
+             hidden
+      FROM (SELECT mac_addr,
+                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
+                   COALESCE(COUNT(DISTINCT timestamp)  ,0),
+                   hidden
+            FROM home
+            WHERE timestamp BETWEEN '2019-10-9 16:05:00' AND '2019-10-11 17:20:00'
+            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
+            ORDER BY timing) as eL
+      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300))
+     ) AS mac_count
+-- Meglio mettere 3 in questo punto per una stima migliore
+WHERE mac_count.freq >= 1
+GROUP BY mac_addr
+ORDER BY freq DESC;
+
+-- QUERY_6
+-- Conteggio frequenza MAC ordinati per MAC
 SELECT mac_addr,
        COUNT(DISTINCT timing) AS freq,
        hidden
@@ -82,6 +118,37 @@ FROM (SELECT mac_addr,
       GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
       ORDER BY timing) as eL
 GROUP BY mac_addr;
+
+-- QUERY_6B
+-- Conteggio MAC rilevati più di 5 minuti all'interno di bucket di 5 minuti
+SELECT mac_addr,
+       COUNT(*) AS freq,
+       hidden
+FROM (SELECT mac_addr,
+             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,
+             COUNT(DISTINCT timing)                                              AS freq,
+             hidden
+      FROM (SELECT mac_addr,
+                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
+                   COALESCE(COUNT(DISTINCT timestamp)  ,0),
+                   hidden
+            FROM home
+            WHERE timestamp BETWEEN '2019-10-9 16:05:00' AND '2019-10-11 17:20:00'
+            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
+            ORDER BY timing) as eL
+      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300))
+     ) AS mac_count
+-- Meglio mettere 3 in questo punto per una stima migliore
+WHERE mac_count.freq >= 1
+GROUP BY mac_addr
+ORDER BY mac_addr;
+
+
+SELECT DISTINCT(mac_addr), timestamp, pos_x, pos_y
+FROM eurecomLab s1
+WHERE timestamp = (SELECT MAX(timestamp) FROM eurecomLab s2 WHERE s1.mac_addr = s2.mac_addr LIMIT 1)
+ORDER BY mac_addr, timestamp DESC;
+
 
 -- FREQUENZE MAC RANGE
 -- Dati inizio e fine raggruppa in piccoli gruppi di 5 minuti e calcola quanto è frequente un MAC, bucket di 5 minuti
