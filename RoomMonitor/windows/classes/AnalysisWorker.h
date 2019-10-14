@@ -35,37 +35,37 @@ public slots:
         f.setBold(true);
         result->setTitleFont(f);
         QSettings su{"VALP", "RoomMonitoring"};
-        int granularity = 60*5;
+        int granularity = 60 * 5;
         int bucket = 1;
-        int freq = 3;
+        int freq = su.value("monitor/min").toInt();
         QDateTime start{};
         start.setSecsSinceEpoch(start_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
         QDateTime end{};
         end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
         qint64 diff = end.toSecsSinceEpoch() - start.toSecsSinceEpoch();
-        if (diff >= 10*12*30*24*60*60){
+        // TODO: Frequenza minima personalizzata per ogni granularità? Issue #23
+        if (diff >= 10 * 12 * 30 * 24 * 60 * 60) {
             result->setTitle(title + "Modalità: DECENNIO - Granularità: 30d|1d");
-            granularity = 60*60*24*30;
-            bucket = 60*60*24;
+            granularity = 60 * 60 * 24 * 30;
+            bucket = 60 * 60 * 24;
             freq = 1;
-        }
-        else if (diff >= 12*30*24*60*60){
+        } else if (diff >= 12 * 30 * 24 * 60 * 60) {
             result->setTitle(title + "Modalità: ANNO - Granularità: 1w|1d");
-            granularity = 60*60*24*7;
-            bucket = 60*60*24;
+            granularity = 60 * 60 * 24 * 7;
+            bucket = 60 * 60 * 24;
             freq = 1;
 
-        } else if (diff > 31*24*60*60){
+        } else if (diff > 31 * 24 * 60 * 60) {
             result->setTitle(title + "Modalità: MESE - Granularità: 1d|1h");
-            granularity = 60*60*24;
-            bucket = 60*60;
+            granularity = 60 * 60 * 24;
+            bucket = 60 * 60;
             freq = 1;
 
         } else {
-            result->setTitle(title + "Modalità: GIORNO - Granularità: 5m|1m");
-            granularity = 60*5;
+            result->setTitle(title + "Modalità: GIORNO - Granularità: 5m|" + freq + "m");
+            granularity = 60 * 5;
             bucket = 60;
-            freq = 3;
+            freq = su.value("monitor/min").toInt();
         }
         QSqlDatabase db = Utility::getDB();
         QSqlQuery q{db};
@@ -201,12 +201,16 @@ public slots:
 signals:
 
     void resultReady(MonitoringChart *chart);
+
     void macPlotReady(QStringList mac, QStringList frequency, MacChart *macPlot);
+
     void finished();
 
 
     void updateProgress(qint64 perc);
+
     void initializeMacSituation();
+
     void addMac(QString mac, int frequency, bool hidden);
 
 
