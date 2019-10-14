@@ -8,10 +8,15 @@
 #include "windows/MainWindow.h"
 #include "windows/SettingDialog.h"
 
+/**
+ * Questo è il main principale, da cui tutto parte
+ */
 int main(int argc, char **argv) {
     QApplication a{argc, argv};
     int ret;
+    // TODO: eliminazione TRY CATCH?
     try {
+        // Controllo che le impostazioni siano già state configurate, altrimenti riconfiguro
         SettingDialog::settingCheckUp();
         MainWindow w;
         w.show();
