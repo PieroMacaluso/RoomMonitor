@@ -13,20 +13,18 @@ MainWindow::MainWindow() {
     ui.setupUi(this);
     setupConnect();
     QSettings su{"VALP", "RoomMonitoring"};
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName(su.value("database/host").toString());
-    db.setDatabaseName(su.value("database/name").toString());
-    db.setPort(su.value("database/port").toInt());
-    db.setUserName(su.value("database/user").toString());
-    db.setPassword(su.value("database/pass").toString());
     ui.actionMonitoring->triggered(true);
 }
 
 void MainWindow::setupConnect() {
+    // Disabilita pulsante di STOP
     ui.stopButton->setDisabled(true);
+
+    // Imposta range di 5 minuti
     ui.startDate->setDateTime(QDateTime::currentDateTime());
     ui.endDate->setDateTime(QDateTime::currentDateTime().addSecs(60 * 5));
 
+    // Connetti timeout liveGraph a addLiveData
     connect(&liveGraph, &QTimer::timeout, this, &MainWindow::addLiveData);
 
     // Connect Aggregated per aggiornare grafico live e MAC
@@ -40,6 +38,7 @@ void MainWindow::setupConnect() {
         ui.startDate->setDateTime(t);
 
     });
+    // Arrotonda di 5 minuti i valori inseriti nella QDateTimeEdit
     connect(ui.endDate, &QDateTimeEdit::dateTimeChanged, [&](QDateTime dateTime) {
         qint64 ts = dateTime.toSecsSinceEpoch() / (60 * 5) * (60 * 5);
         QDateTime t;
@@ -63,7 +62,6 @@ void MainWindow::setupConnect() {
                 i_time = 0;
                 setupMonitoringPlot();
                 setupLivePlot();
-
             }
         } catch (std::exception &e) {
             // Does not started signal
@@ -85,8 +83,6 @@ void MainWindow::setupConnect() {
             return;
         }
         dataAnalysis();
-
-        // TODO: QUERY ricerca e popolamento grafici
     });
 
     // Click Analysis Button
@@ -252,17 +248,6 @@ void MainWindow::setupConnect() {
 void MainWindow::setupMonitoringPlot() {
     auto monitoringChart = new MonitoringChart();
     ui.monitoringPlot->setChart(monitoringChart);
-
-//    // TODO: dati fittizi da rimuovere alla fine
-//    QDateTime startTime{};
-//    startTime.setDate(QDate(2019, 9, 18));
-//    startTime.setTime(QTime(10, 0, 0));
-//    for (int i = 0; i < 11; i++) {
-//        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
-//        monitoringChart->addData(momentInTime, std::rand() % 20);
-//    }
-//    monitoringChart->updateData(startTime, 0);
-    // Fine dati da rimuovere
 }
 
 void MainWindow::setupLivePlot() {
@@ -271,7 +256,7 @@ void MainWindow::setupLivePlot() {
 
     /** PLOT BOARDS **/
     QSettings su{"VALP", "RoomMonitoring"};
-    QList<QStringList> boards = su.value("room/boards").value<QList<QStringList>>();
+    auto boards = su.value("room/boards").value<QList<QStringList>>();
     std::vector<Board> b_v;
     for (auto i: boards){
         Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble()};
@@ -286,29 +271,7 @@ void MainWindow::setupAnalysisPlot() {
     auto monitoringChart = new MonitoringChart();
     // Plot Analysis Chart
     ui.analysisPlot->setChart(monitoringChart);
-//    ui.macPlot->setChart(monitoringChart);
-
-    // TODO: dati fittizi da rimuovere alla fine
-//    QDateTime startTime{};
-//    startTime.setDate(QDate(2019, 9, 18));
-//    startTime.setTime(QTime(10, 0, 0));
-//    for (int i = 0; i < 11; i++) {
-//        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
-//        monitoringChart->addData(momentInTime, std::rand() % 20);
-//    }
-//    monitoringChart->updateData(startTime, 0);
-
-    // TODO: Plot MAC occurrences
     setMacPlot();
-//    startTime.setDate(QDate(2019, 9, 18));
-//    startTime.setTime(QTime(10, 0, 0));
-//    for (int i = 0; i < 11; i++) {
-//        QDateTime momentInTime = startTime.addSecs(60 * 5 * i_time);
-//        i_time++;
-//        monitoringChart->addData(momentInTime, std::rand() % 20);
-//    }
-//    monitoringChart->updateData(startTime, 0);
-
 }
 
 void MainWindow::initializeMacSituationList() {
@@ -317,7 +280,7 @@ void MainWindow::initializeMacSituationList() {
     /* SETUP TABLE */
     ui.macSituation->setColumnCount(3);
     QStringList h;
-    h << "MAC" << "Frequency" << "Random";
+    h << "MAC" << "Frequenza" << "Random";
     ui.macSituation->setHorizontalHeaderLabels(h);
     ui.macSituation->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.macSituation->verticalHeader()->hide();
@@ -334,18 +297,11 @@ void MainWindow::initializeMacSituationList() {
             return;
         }
         bool ran = i.at(2)->text() == "true";
-        if (ran) {
-            ui.randomButton->setEnabled(true);
-            ui.localizeButton->setEnabled(true);
-        } else {
-            ui.randomButton->setEnabled(false);
+        {
+            ui.randomButton->setEnabled(ran);
             ui.localizeButton->setEnabled(true);
         }
     });
-    // TODO: delete fake data
-//    addMacSitua("AA:AA:AA:AA:AA:AA", 0, 2.5, true);
-//    addMacSitua("BB:BB:BB:BB:BB:BB", 1, 3, false);
-//    addMacSitua("CC:CC:CC:CC:CC:CC", 2, 0, false);
 }
 
 void MainWindow::addMacSitua(const QString &mac, int frequency, bool random) {
@@ -377,11 +333,6 @@ void MainWindow::initializeLastMacList() {
     ui.macLastSituation->setSelectionMode(QHeaderView::SelectionMode::SingleSelection);
     ui.macLastSituation->setAlternatingRowColors(true);
     ui.macLastSituation->setEditTriggers(QAbstractItemView::NoEditTriggers);
-//    // TODO: Cancella dati fittizi alla fine
-//    addLastMacPos("BB:BB:BB:BB:BB:BB", 1.0, 3.0);
-//    addLastMacPos("CC:CC:CC:CC:CC:CC", 2.0, 0.0);
-//    addLastMacPos("AA:AA:AA:AA:AA:AA", 0.0, 2.5);
-    // FINE
 }
 
 void MainWindow::addLastMacPos(const QString &mac, const QDateTime &date, qreal posx, qreal posy) {
@@ -438,9 +389,6 @@ void MainWindow::setupPositionPlot() {
 void MainWindow::addLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
-    // TODO: Decommenta queste due linee per testing. Da cancellare alla fine
-//    startTimestamp = 1569420000 + 60 * 5 * i_time;
-//    i_time++;
     startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
     QDateTime end{};
@@ -560,7 +508,6 @@ void MainWindow::dataAnalysis() {
 }
 
 void MainWindow::genLiveData() {
-    qDebug() << "LiveData\n";
     QSettings su{"VALP", "RoomMonitoring"};
     QSqlDatabase db = Utility::getDB();
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
