@@ -36,8 +36,16 @@ class MainWindow : public QMainWindow {
      */
     MonitoringServer s{};
 
+    /**
+     * Timer utilizzato per poter triggerare la query che permette di riempire il grafico con
+     * le presenze negli ultimi 5 minuti
+     */
     QTimer liveGraph{};
 
+    /**
+     * Mappa che viene pulita e riempita ogni volta che è vengono fatte le query corrispondenti alle
+     * posizioni degli ultimi MAC
+     */
     QMap<QString, LastMac> lastMacs{};
 
 public:
@@ -100,21 +108,67 @@ public:
      */
     void setupPositionPlot();
 
+    /**
+     * Funzione triggerata dal timer `liveGraph` ogni 5 minuti. Conteggio MAC nello slot degli ultimi 5 minuti e in quello
+     * dei precedenti ultimi 5 minuti. Serve solo a riempire il grafico delle presenze in monitoraggio.
+     */
     void addLiveData();
+
+    /**
+     * Funzione triggerata dal segnale `MonitoringServer::aggregated` che viene emesso ogni volta che l'aggregazione
+     * viene effettuata. Si preoccupa di andare a calcolare le ultime posizioni dei MAC rilevati negli ultimi 5 minuti
+     * per riempire il grafico delle posizioni LIVE e preparare i dati per riempire le tabelle degli ultimi MAC.
+     */
     void genLiveData();
 
+    /**
+     * Funzione da chiamare per riempire la tabella degli ultimi MAC con i dati contenuti nella variabile
+     * globale `lastMacs`
+     */
     void updateLastMac();
 
+    /**
+     * Funzione chiamata dal click sul pulsante Cerca in modalità di Analisi. Si occupa di chiamare il thread che andrà
+     * ad effettuare le query necessarie per il calcolo e il popolamento dei grafici.
+     */
     void dataAnalysis();
 
+    /**
+     * Funzione richiamata dall'emissione del segnale `AnalysisWorker::resultReady` una volta che il thread ha terminato
+     * le operazioni di recupero dei dati con le query.
+     * @param chart puntatore al grafico che deve essere inserito al posto del precedente nella schermata principale.
+     */
     void handleResults(MonitoringChart *chart);
 
+    /**
+     * Funzione che permette di all'utente di monitorare la percentuale di completamento delle operazioni eseguite dal
+     * thread. Questa funzione viene richiamata all'emissione del segnale `AnalysisWorker::updateProgress`
+     * @param prog
+     */
     void updateProgress(qint64 prog);
 
+    /**
+     * Funzione richiamata dall'emissione del segnale `AnalysisWorker::macPlotReady` una volta che il thread ha terminato
+     * le operazioni di recupero dei dati con le query per le posizioni degli ultimi MAC.
+     * @param chart puntatore al grafico che deve essere inserito al posto del precedente nella schermata principale.
+     */
+    /**
+     * Funzione richiamata dall'emissione del segnale `AnalysisWorker::macPlotReady` una volta che il thread ha terminato
+     * le operazioni di recupero dei dati con le query per le posizioni degli ultimi MAC.
+     * @param mac QStringList dei Mac
+     * @param frequency QStringList delle frequenze dei mac
+     * @param macPlot puntatore al grafico MAC da popolare
+     */
     void macPlotReady(QStringList mac, QStringList frequency, MacChart *macPlot);
 
+    /**
+     * Funzione chiamata dall'emissione del segnale `AnalysisWorker::finished` per concludere il thread senza problemi
+     */
     void finishedAnalysisThread();
 
+    /**
+     * Funzione da chiamare per popolare il grafico delle posizioni LIVE con i dati presenti
+     */
     void setupLivePlot();
 };
 
