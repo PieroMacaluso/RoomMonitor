@@ -472,11 +472,12 @@ void MainWindow::addLiveData() {
                                                                           "            ORDER BY timing) as eL\n"
                                                                           "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
                                                                           "     ) AS mac_count\n"
-                                                                          "WHERE mac_count.freq >= 3\n"
+                                                                          "WHERE mac_count.freq >= :freq\n"
                                                                           "GROUP BY timing;");
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
+    query.bindValue(":freq", su.value("monitor/min").toInt());
 
     if (!query.exec())
         qDebug() << query.lastError();
@@ -504,11 +505,13 @@ void MainWindow::addLiveData() {
                                                                           "            ORDER BY timing) as eL\n"
                                                                           "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
                                                                           "     ) AS mac_count\n"
-                                                                          "WHERE mac_count.freq >= 3\n"
+                                                                          "WHERE mac_count.freq >= :freq\n"
                                                                           "GROUP BY timing;");
     query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
+    query.bindValue(":freq", su.value("monitor/min").toInt());
+
     if (!query.exec())
         qDebug() << query.lastError();
 
