@@ -14,7 +14,7 @@ const formToJSON = elements => [].reduce.call(elements, (data, element) => {
 
 function validateForm(form) {
     var status = true;
-    const id_regex = new RegExp(/^[1-9][0-9]*$/);
+    const id_regex = new RegExp(/^[0-9][0-9]*$/);
     const ssid_regex = new RegExp(/^[A-Za-z0-9]{1,32}$/);
     const channel_regex = new RegExp(/^[0-9]$|^1[0-4]$/);
     const ip_regex = new RegExp(/^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$/);

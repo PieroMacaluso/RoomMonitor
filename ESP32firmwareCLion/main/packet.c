@@ -164,6 +164,8 @@ void free_node(node_t n) {
     if (n->next != NULL)
         free_node(n->next);
     free(n->packet->SSID);
+    free(n->packet);
+    n->packet = NULL;
     free(n);
     n = NULL;
 }
