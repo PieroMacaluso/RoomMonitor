@@ -268,6 +268,7 @@ void app_main(void) {
 
 
         tcpClient();
+        printf("tcpClient done\n");
 
         checkTime(&nallarm);
 
@@ -515,7 +516,8 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     }
 
     // Set Packet
-    addto_packet_list(ppkt, head);
+    for(int i=0;i<100;i++)                    //todo prova aumento pacchetti
+        addto_packet_list(ppkt, head);
 
     // Stampa dei dati a video
     uint32_t plen = 0;
@@ -1056,6 +1058,7 @@ int tcpClient() {
     }
     // Messaggi inviati, svuoto comunque la lista
     reset_packet_list(head);
+    printf("reset packet list done\n");
     close(s);
     gpio_set_level(BLINK_GPIO, 0);
     return retValue;

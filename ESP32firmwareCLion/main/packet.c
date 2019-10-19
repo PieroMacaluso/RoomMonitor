@@ -33,6 +33,7 @@ typedef struct packet {
 struct node {
     Packet *packet;
     struct node *next;
+    struct node *prev;
 };
 
 /**
@@ -74,6 +75,7 @@ node_t init_packet_list(char baseMacChr[18]) {
     head = malloc(sizeof(struct node));
     head->packet = NULL;
     head->next = NULL;
+    head->prev=NULL;
 
     strcpy(macESP, baseMacChr);
 
@@ -123,6 +125,7 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     if (current->packet == NULL) {
         h->packet = setPacket(ppkt);
         h->next = NULL;
+        h->prev=NULL;
         return h;
     }
 
@@ -131,6 +134,7 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     current->next = malloc(sizeof(struct node));
     current->next->packet = setPacket(ppkt);
     current->next->next = NULL;
+    current->next->prev=current;
 //	printf("Inserito correttamente");
     return h;
 }
@@ -161,15 +165,37 @@ int send_packets(int s, node_t h) {
 }
 
 void free_node(node_t n) {
-    if (n->next != NULL)
+    if (n->next != NULL){
+        printf("%u packet\n",n->next->packet->fcs);
         free_node(n->next);
-    free(n->packet->SSID);
+    }
+    if(n->packet->SSID!=NULL)
+        free(n->packet->SSID);
+    free(n->packet);
     free(n);
     n = NULL;
 }
 
+void free_node2(node_t n) {
+
+    node_t current = n;
+    node_t prev;
+
+    while (current->next != NULL)                   //arrivo alla fine della lista
+        current = current->next;
+
+    while(current->prev!=NULL){                     //while che elimina l'ultimo pacchetto e risale di uno tornando verso la testa (Testa = pacchetto con prev==NULL)
+        if(current->packet->SSID!=NULL)
+            free(current->packet->SSID);
+        free(current->packet);                          //non necessita di free su next perchè è già null
+        prev=current->prev;
+        free(current);
+        current = prev;
+    }
+
+}
 void free_packet_list(node_t h) {
-    free_node(h);
+    free_node2(h);
 }
 
 /**
@@ -180,16 +206,22 @@ void reset_packet_list(node_t h) {
     // If the HEAD is NULL or the head is not null but there aren't packets , simply returns
     if (h == NULL) return;
     if (h->packet == NULL) return;
-
+    printf("free_node init\n");
     if (h->next != NULL) {
         // Next is not NULL, so Recursive Free on nodes!
-        free_node(h->next);
+        free_node2(h->next);
     }
 
-    free(h->packet->SSID);
-    free(h->packet);
+    printf("free_node done\n");
+
+    /*if(h->packet->SSID!=NULL){          //todo controllare perchè in free_node chiama già free di SSID e altro
+        free(h->packet->SSID);
+        free(h->packet);
+    }*/
+
     h->packet = NULL;
     h->next = NULL;
+    h->prev=NULL;
 }
 
 #endif
