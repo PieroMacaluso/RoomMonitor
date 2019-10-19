@@ -268,7 +268,6 @@ void app_main(void) {
 
 
         tcpClient();
-        printf("tcpClient done\n");
 
         checkTime(&nallarm);
 
@@ -1058,7 +1057,6 @@ int tcpClient() {
     }
     // Messaggi inviati, svuoto comunque la lista
     reset_packet_list(head);
-    printf("reset packet list done\n");
     close(s);
     gpio_set_level(BLINK_GPIO, 0);
     return retValue;

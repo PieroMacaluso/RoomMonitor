@@ -166,7 +166,6 @@ int send_packets(int s, node_t h) {
 
 void free_node(node_t n) {
     if (n->next != NULL){
-        printf("%u packet\n",n->next->packet->fcs);
         free_node(n->next);
     }
     if(n->packet->SSID!=NULL)
@@ -206,13 +205,11 @@ void reset_packet_list(node_t h) {
     // If the HEAD is NULL or the head is not null but there aren't packets , simply returns
     if (h == NULL) return;
     if (h->packet == NULL) return;
-    printf("free_node init\n");
+
     if (h->next != NULL) {
         // Next is not NULL, so Recursive Free on nodes!
         free_node2(h->next);
     }
-
-    printf("free_node done\n");
 
     /*if(h->packet->SSID!=NULL){          //todo controllare perchè in free_node chiama già free di SSID e altro
         free(h->packet->SSID);
