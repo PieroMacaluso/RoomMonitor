@@ -164,7 +164,7 @@ int send_packets(int s, node_t h) {
     return LENPACKET;
 }
 
-void free_node(node_t n) {
+/*void free_node(node_t n) {                    //non va bene per ricorsione su tanti pacchetti
     if (n->next != NULL){
         free_node(n->next);
     }
@@ -173,7 +173,7 @@ void free_node(node_t n) {
     free(n->packet);
     free(n);
     n = NULL;
-}
+}*/
 
 void free_node2(node_t n) {
 

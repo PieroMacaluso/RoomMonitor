@@ -515,7 +515,7 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     }
 
     // Set Packet
-    for(int i=0;i<100;i++)                    //todo prova aumento pacchetti
+    //for(int i=0;i<100;i++)                    //prova aumento pacchetti
         addto_packet_list(ppkt, head);
 
     // Stampa dei dati a video
