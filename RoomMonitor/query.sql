@@ -28,6 +28,18 @@ GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(tim
 ORDER BY timing;
 
 -- QUERY_3
+SELECT mac_addr,
+       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
+       avg(pos_x)                                                                    as pos_x,
+       avg(pos_y)                                                                    as pos_y
+FROM stanza3_23102019
+WHERE timestamp > '2019-10-23 12:00:00'
+  AND timestamp < '2019-10-23 13:00:00'
+  AND mac_addr = '58:b1:0f:d0:e0:22'
+GROUP BY UNIX_TIMESTAMP(timestamp) DIV 60
+ORDER BY timing;
+
+-- QUERY_3
 SELECT mac_addr, timing, pos_x, pos_y
 FROM (SELECT hash_fcs,
              mac_addr,
@@ -38,9 +50,9 @@ FROM (SELECT hash_fcs,
              hidden,
              MAX(FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)))
                  OVER (PARTITION BY mac_addr) AS timing
-      FROM eurecomLab
-      WHERE timestamp > '2019-09-25 16:35:00'
-        AND timestamp < '2019-09-25 16:40:00'
+      FROM stanza3_23102019
+      WHERE timestamp > '2019-10-23 12:00:00'
+        AND timestamp < '2019-10-23 13:00:00'
       GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
       ORDER BY timing) AS s2
 WHERE FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) = timing
@@ -51,10 +63,10 @@ ORDER BY mac_addr, timestamp DESC;
 SELECT timing, COUNT(*)
 FROM (SELECT mac_addr,
              FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,
-             COUNT(DISTINCT timing)                                              AS freq
+             COUNT(DISTINCT timing)                                                   AS freq
       FROM (SELECT mac_addr,
                    FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
-                   COALESCE(COUNT(DISTINCT timestamp)  ,0)
+                   COALESCE(COUNT(DISTINCT timestamp), 0)
             FROM home
             WHERE timestamp BETWEEN '2019-10-9 16:05:00' AND '2019-10-11 17:20:00'
             GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60
@@ -88,11 +100,11 @@ SELECT mac_addr,
        hidden
 FROM (SELECT mac_addr,
              FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,
-             COUNT(DISTINCT timing)                                              AS freq,
+             COUNT(DISTINCT timing)                                                   AS freq,
              hidden
       FROM (SELECT mac_addr,
                    FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
-                   COALESCE(COUNT(DISTINCT timestamp)  ,0),
+                   COALESCE(COUNT(DISTINCT timestamp), 0),
                    hidden
             FROM home
             WHERE timestamp BETWEEN '2019-10-9 16:05:00' AND '2019-10-11 17:20:00'
@@ -126,11 +138,11 @@ SELECT mac_addr,
        hidden
 FROM (SELECT mac_addr,
              FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,
-             COUNT(DISTINCT timing)                                              AS freq,
+             COUNT(DISTINCT timing)                                                   AS freq,
              hidden
       FROM (SELECT mac_addr,
                    FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
-                   COALESCE(COUNT(DISTINCT timestamp)  ,0),
+                   COALESCE(COUNT(DISTINCT timestamp), 0),
                    hidden
             FROM home
             WHERE timestamp BETWEEN '2019-10-9 16:05:00' AND '2019-10-11 17:20:00'

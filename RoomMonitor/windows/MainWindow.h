@@ -106,7 +106,7 @@ public:
      * Setup iniziale del grafico che rappresenta le varie posizioni del MAC selezionato nella relativa finestra di
      * dialogo
      */
-    void setupPositionPlot();
+    void setupPositionPlot(QString mac);
 
     /**
      * Funzione triggerata dal timer `liveGraph` ogni 5 minuti. Conteggio MAC nello slot degli ultimi 5 minuti e in quello

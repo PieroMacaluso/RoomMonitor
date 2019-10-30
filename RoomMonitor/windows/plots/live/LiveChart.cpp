@@ -28,7 +28,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
     this->addDevicesSeries(d);
 
 
-    QValueAxis *axisX = new QValueAxis;
+    QValueAxis *axisX = new QValueAxis();
     axisX->setLabelFormat("%i");
     axisX->setTitleText("x");
     this->addX(axisX);
@@ -36,7 +36,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
     d->attachAxis(axisX);
 
 
-    QValueAxis *axisY = new QValueAxis;
+    QValueAxis *axisY = new QValueAxis();
     axisY->setLabelFormat("%i");
     axisY->setTitleText("y");
     this->addY(axisY);

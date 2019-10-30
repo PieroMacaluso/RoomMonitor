@@ -216,8 +216,9 @@ void MainWindow::setupConnect() {
         QString mac = ui.macSituation->selectedItems().at(0)->text();
         QDialog localize{};
         positionDialog.setupUi(&localize);
+        ui.macSituation->selectedItems().first()->row();
         positionDialog.macLabel->setText(mac);
-        setupPositionPlot();
+        setupPositionPlot(mac);
         localize.setModal(true);
         localize.exec();
 
@@ -366,24 +367,61 @@ void MainWindow::setMacPlot() {
     ui.macPlot->setChart(macPlot);
 }
 
-void MainWindow::setupPositionPlot() {
+void MainWindow::setupPositionPlot(QString mac) {
     auto posPlot = new PositionPlot();// Plot Analysis Chart
     positionDialog.positionPlot->setChart(posPlot);
-    // TODO: Cancella dati fittizi
+    QDateTime start_in = ui.startDate->dateTime();
+    QDateTime end_in = ui.endDate->dateTime();
+    QSqlDatabase db = Utility::getDB();
+    if (!db.open()) {
+        qDebug() << db.lastError();
+        return;
+    }
+    QSqlQuery query{db};
+    query.prepare(
+            "SELECT mac_addr,\n"
+            "       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
+            "       avg(pos_x)                                                                    as pos_x,\n"
+            "       avg(pos_y)                                                                    as pos_y\n"
+            "FROM stanza3_23102019\n"
+            "WHERE timestamp >= :fd\n"
+            "  AND timestamp < :sd\n"
+            "  AND mac_addr = :mac\n"
+            "GROUP BY UNIX_TIMESTAMP(timestamp) DIV 60\n"
+            "ORDER BY timing;");
+    query.bindValue(":fd", start_in.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", end_in.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":mac", mac);
+
+
+    if (!query.exec())
+        qDebug() << query.lastError();
+
     std::vector<PositionDataPlot> v;
-    QDateTime startTime{};
-    startTime.setDate(QDate(2019, 9, 18));
-    startTime.setTime(QTime(10, 0, 0));
-    for (int i = 0; i < 100; i++) {
-        QDateTime momentInTime = startTime.addSecs(60 * 5 * i);
-        PositionDataPlot p{momentInTime, (std::rand() % 10) * 1.0, (std::rand() % 10) * 1.0};
+    while (query.next()) {
+        QDateTime timing = query.value(1).toDateTime();
+        qreal posx = query.value(2).toDouble();
+        qreal posy = query.value(3).toDouble();
+        PositionDataPlot p{timing, posx, posy};
         v.push_back(p);
     }
-
     posPlot->fillData(v);
-    positionDialog.horizontalSlider->setRange(0, v.size());
+    positionDialog.horizontalSlider->setData(v);
+    positionDialog.horizontalSlider->setRange(0, v.size()-1);
+    positionDialog.startDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
+    positionDialog.startPos->setText("(" + QString::number(v[0].getX()) + ", " + QString::number(v[0].getY()) + ")");
+    positionDialog.endDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
+    positionDialog.endPos->setText("(" + QString::number(v[0].getX()) + ", " + QString::number(v[0].getY()) + ")");
+
+
     // FINE
     connect(positionDialog.horizontalSlider, &QSlider::valueChanged, posPlot, &PositionPlot::sliderChanged);
+    connect(positionDialog.horizontalSlider, &QTimeSlider::emitDateMax, [&](PositionDataPlot e){
+        positionDialog.endDate->setText(e.getData().toString("yyyy-MM-dd hh:mm:ss"));
+        positionDialog.endPos->setText("(" + QString::number(e.getX()) + ", " + QString::number(e.getY()) + ")");
+
+    });
+
 }
 
 void MainWindow::addLiveData() {
