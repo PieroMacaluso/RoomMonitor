@@ -39,6 +39,8 @@ public:
 
     void fillBoards(std::vector<Board> newData);
     void fillDevices(QMap<QString, LastMac> &newData);
+    void fillDevicesV(std::vector<LastMac> &newData);
+
 
 
     const std::vector<LastMac> & getDevices() const;

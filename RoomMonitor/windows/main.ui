@@ -105,6 +105,39 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>Mappa Posizioni</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <widget class="LivePlotView" name="mapPlot"/>
+        </item>
+        <item>
+         <widget class="QMapSlider" name="mapSlider">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>1</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="dateTimePlot">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -586,6 +619,11 @@
    <class>LivePlotView</class>
    <extends>QGraphicsView</extends>
    <header>windows/plots/live/LivePlotView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QMapSlider</class>
+   <extends>QSlider</extends>
+   <header>windows/elements/QMapSlider.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

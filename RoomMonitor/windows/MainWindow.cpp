@@ -260,11 +260,35 @@ void MainWindow::setupLivePlot() {
     auto boards = su.value("room/boards").value<QList<QStringList>>();
     std::vector<Board> b_v;
     for (auto i: boards){
-        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble()};
+        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble(), i[3].toInt()};
         b_v.push_back(b);
     }
     liveChart->fillBoards(b_v);
     liveChart->fillDevices(lastMacs);
+
+}
+
+void MainWindow::setupMapPlot() {
+    auto liveChart = new LiveChart();
+    ui.mapPlot->setChart(liveChart);
+
+    /** PLOT BOARDS **/
+    QSettings su{"VALP", "RoomMonitoring"};
+    auto boards = su.value("room/boards").value<QList<QStringList>>();
+    std::vector<Board> b_v;
+    for (auto i: boards){
+        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble(), i[3].toInt()};
+        b_v.push_back(b);
+    }
+    liveChart->fillBoards(b_v);
+    connect(ui.mapSlider, &QMapSlider::initialized, [&](){
+        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
+        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
+    });
+    connect(ui.mapSlider, &QSlider::valueChanged, [&](int value){
+        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
+        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
+    });
 
 }
 
@@ -273,6 +297,7 @@ void MainWindow::setupAnalysisPlot() {
     // Plot Analysis Chart
     ui.analysisPlot->setChart(monitoringChart);
     setMacPlot();
+    setupMapPlot();
 }
 
 void MainWindow::initializeMacSituationList() {
@@ -522,6 +547,7 @@ void MainWindow::dataAnalysis() {
     setupAnalysisPlot();
     auto chart = new MonitoringChart();
     auto macPlot = new MacChart();
+    auto liveChart = new LiveChart();
     QSettings su{"VALP", "RoomMonitoring"};
     QDateTime start_in = ui.startDate->dateTime();
     QDateTime end_in = ui.endDate->dateTime();
@@ -529,7 +555,7 @@ void MainWindow::dataAnalysis() {
     start.setSecsSinceEpoch(start_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
     QDateTime end{};
     end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
-    auto worker = new AnalysisWorker(start, end, chart, macPlot);
+    auto worker = new AnalysisWorker(start, end, chart, macPlot, ui.mapSlider);
     qDebug() << workerThread.isRunning();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::started, worker, &AnalysisWorker::doWork);

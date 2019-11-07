@@ -41,15 +41,15 @@ void SettingDialog::settingCheckUp() {
     // Inizializzo le impostazioni, se non sono mai state configurate
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     if (su.value("monitor/A").isNull())
-        su.setValue("monitor/A", 3);
-    if (su.value("monitor/n").isNull()) su.setValue("monitor/n", -55);
+        su.setValue("monitor/A", -55);
+    if (su.value("monitor/n").isNull()) su.setValue("monitor/n", 3);
     if (su.value("monitor/min").isNull()) su.setValue("monitor/min", 3);
     if (su.value("room/width").isNull()) su.setValue("room/width", 10);
     if (su.value("room/height").isNull()) su.setValue("room/height", 10);
     if (su.value("room/port").isNull()) su.setValue("room/port", 27015);
     if (su.value("room/boards").isNull()) {
-        QList<QStringList> data{{"0", "1.2", "1.0"},
-                                {"1", "1.3", "2.0"}};
+        QList<QStringList> data{{"0", "1.2", "1.0", "-55"},
+                                {"1", "1.3", "2.0", "-55"}};
         su.setValue("room/boards", QVariant::fromValue(data));
     }
     if (su.value("database/host").isNull()) su.setValue("database/host", "localhost");
@@ -80,9 +80,9 @@ void SettingDialog::setupConnect() {
 
 void SettingDialog::initializeBoardList() {
     /* SETUP TABLE */
-    ui.boardTable->setColumnCount(3);
+    ui.boardTable->setColumnCount(4);
     QStringList h;
-    h << "ID" << "X" << "Y";
+    h << "ID" << "X" << "Y" << "A";
     ui.boardTable->setHorizontalHeaderLabels(h);
     ui.boardTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.boardTable->verticalHeader()->hide();
@@ -97,6 +97,8 @@ void SettingDialog::initializeBoardList() {
         ui.boardTable->setItem(i, 0, new QTableWidgetItem(board[0]));
         ui.boardTable->setItem(i, 1, new QTableWidgetItem(board[1]));
         ui.boardTable->setItem(i, 2, new QTableWidgetItem(board[2]));
+        ui.boardTable->setItem(i, 3, new QTableWidgetItem(board[3]));
+
     }
     // TODO: controlla che la funzione elementChanged serva ancora effettivamente
     connect(ui.boardTable, &QTableWidget::cellChanged, this, &SettingDialog::elementChanged);
@@ -129,7 +131,7 @@ void SettingDialog::openDialogAdd() {
     setupAddBoard();
     if (add.exec()) {
         if (addBoardDialog.idEdit->text().isEmpty() || addBoardDialog.xEdit->text().isEmpty() ||
-            addBoardDialog.yEdit->text().isEmpty()) {
+            addBoardDialog.yEdit->text().isEmpty() || addBoardDialog.aEdit->text().isEmpty()) {
             QMessageBox msgBox;
             msgBox.setStandardButtons(QMessageBox::Close);
             msgBox.setWindowTitle("Errore inserimento dati schedina");
@@ -147,7 +149,8 @@ void SettingDialog::openDialogAdd() {
             }
         }
 
-        addBoard(addBoardDialog.idEdit->text(), addBoardDialog.xEdit->text(), addBoardDialog.yEdit->text());
+        addBoard(addBoardDialog.idEdit->text(), addBoardDialog.xEdit->text(), addBoardDialog.yEdit->text(),
+                 addBoardDialog.aEdit->text());
     }
 
 
@@ -165,10 +168,12 @@ void SettingDialog::openDialogMod() {
     modBoardDialog.idEdit->setText(list[0]);
     modBoardDialog.xEdit->setText(list[1]);
     modBoardDialog.yEdit->setText(list[2]);
+    modBoardDialog.aEdit->setText(list[3]);
+
     setupModBoard();
     if (add.exec()) {
         if (modBoardDialog.idEdit->text().isEmpty() || modBoardDialog.xEdit->text().isEmpty() ||
-            modBoardDialog.yEdit->text().isEmpty()) {
+            modBoardDialog.yEdit->text().isEmpty() || modBoardDialog.aEdit->text().isEmpty()) {
             QMessageBox msgBox;
             msgBox.setStandardButtons(QMessageBox::Close);
             msgBox.setWindowTitle("Errore inserimento dati schedina");
@@ -191,6 +196,9 @@ void SettingDialog::openDialogMod() {
         ui.boardTable->setItem(i, 0, new QTableWidgetItem(modBoardDialog.idEdit->text()));
         ui.boardTable->setItem(i, 1, new QTableWidgetItem(modBoardDialog.xEdit->text()));
         ui.boardTable->setItem(i, 2, new QTableWidgetItem(modBoardDialog.yEdit->text()));
+        ui.boardTable->setItem(i, 3, new QTableWidgetItem(modBoardDialog.aEdit->text()));
+
+
     }
 
 
@@ -214,7 +222,7 @@ void SettingDialog::apply() {
     QList<QStringList> b;
     for (int i = 0; i < ui.boardTable->rowCount(); i++) {
         b.append({ui.boardTable->item(i, 0)->text(), ui.boardTable->item(i, 1)->text(),
-                  ui.boardTable->item(i, 2)->text()});
+                  ui.boardTable->item(i, 2)->text(), ui.boardTable->item(i, 3)->text()});
     }
     s.setValue("room/boards", QVariant::fromValue(b));
 
@@ -225,12 +233,14 @@ void SettingDialog::apply() {
 
 }
 
-void SettingDialog::addBoard(const QString &id, const QString &x, const QString &y) {
+void SettingDialog::addBoard(const QString &id, const QString &x, const QString &y, const QString &a) {
     int i = ui.boardTable->rowCount();
     ui.boardTable->insertRow(ui.boardTable->rowCount());
     ui.boardTable->setItem(i, 0, new QTableWidgetItem(id));
     ui.boardTable->setItem(i, 1, new QTableWidgetItem(x));
     ui.boardTable->setItem(i, 2, new QTableWidgetItem(y));
+    ui.boardTable->setItem(i, 3, new QTableWidgetItem(a));
+
 
 }
 
@@ -238,19 +248,24 @@ void SettingDialog::setupAddBoard() {
     addBoardDialog.idEdit->setValidator(new QIntValidator());
     addBoardDialog.xEdit->setValidator(new QDoubleValidator());
     addBoardDialog.yEdit->setValidator(new QDoubleValidator());
+    addBoardDialog.aEdit->setValidator(new QIntValidator());
     checkAddEdits();
     connect(addBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
     connect(addBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
     connect(addBoardDialog.yEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
+    connect(addBoardDialog.aEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
+
 }
 
 void SettingDialog::checkAddEdits() {
     bool id;
     bool x;
     bool y;
+    bool a;
     addBoardDialog.idEdit->text().toInt(&id);
     addBoardDialog.xEdit->text().toDouble(&x);
     addBoardDialog.yEdit->text().toDouble(&y);
+    addBoardDialog.yEdit->text().toInt(&a);
 
     addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
 }
@@ -260,19 +275,24 @@ void SettingDialog::setupModBoard() {
     modBoardDialog.idEdit->setValidator(new QIntValidator());
     modBoardDialog.xEdit->setValidator(new QDoubleValidator());
     modBoardDialog.yEdit->setValidator(new QDoubleValidator());
+    modBoardDialog.aEdit->setValidator(new QIntValidator());
     checkModEdits();
     connect(modBoardDialog.idEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
     connect(modBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
     connect(modBoardDialog.yEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
+    connect(modBoardDialog.aEdit, &QLineEdit::textChanged, this, &SettingDialog::checkModEdits);
+
 }
 
 void SettingDialog::checkModEdits() {
     bool id;
     bool x;
     bool y;
+    bool a;
     modBoardDialog.idEdit->text().toInt(&id);
     modBoardDialog.xEdit->text().toDouble(&x);
     modBoardDialog.yEdit->text().toDouble(&y);
+    modBoardDialog.aEdit->text().toInt(&a);
 
     modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
 }
@@ -288,8 +308,8 @@ void SettingDialog::defaultValues(){
     s.setValue("room/height", 10);
     s.setValue("room/port", 27015);
 
-    QList<QStringList> data{{"0", "1.2", "1.0"},
-                            {"1", "1.3", "2.0"}};
+    QList<QStringList> data{{"0", "1.2", "1.0", "-55"},
+                            {"1", "1.3", "2.0", "-55"}};
     s.setValue("room/boards", QVariant::fromValue(data));
 
     s.setValue("database/host", "localhost");

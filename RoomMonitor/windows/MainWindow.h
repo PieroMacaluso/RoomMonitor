@@ -170,6 +170,8 @@ public:
      * Funzione da chiamare per popolare il grafico delle posizioni LIVE con i dati presenti
      */
     void setupLivePlot();
+
+    void setupMapPlot();
 };
 
 

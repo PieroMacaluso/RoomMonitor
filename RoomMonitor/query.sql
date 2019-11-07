@@ -27,7 +27,19 @@ FROM (SELECT mac_addr,
 GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300))
 ORDER BY timing;
 
--- QUERY_3
+
+-- QUERY_1
+SELECT mac_addr,
+       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 300)) AS timing,
+       avg(pos_x)                                                                    as pos_x,
+       avg(pos_y)                                                                    as pos_y
+FROM stanza3_23102019
+WHERE timestamp > '2019-10-23 12:00:00'
+  AND timestamp < '2019-10-23 13:00:00'
+GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 300
+ORDER BY timing;
+
+-- QUERY_2
 SELECT mac_addr,
        FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,
        avg(pos_x)                                                                    as pos_x,

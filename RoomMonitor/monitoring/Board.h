@@ -12,11 +12,12 @@
 class Board {
     int id;
     Point2d coord;
+    int A;
 public:
     Board(){};
     Board(int id, Point2d coord) : id(id), coord(coord) {};
 
-    Board(int id, double x, double y) : id(id) {
+    Board(int id, double x, double y, int A) : id(id), A(A) {
         coord = Point2d{x, y};
     };
 
@@ -24,6 +25,8 @@ public:
     int getId() const;
 
     const Point2d &getCoord() const;
+
+    int getA() const;
 
     static std::map<int, Board> extract_from_setting();
 };

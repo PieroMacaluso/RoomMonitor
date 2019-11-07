@@ -10,11 +10,16 @@
 #include <windows/common/callout.h>
 #include <QtWidgets/QLabel>
 #include <windows/classes/PositionDataPlot.h>
+#include <windows/classes/MacLastPos.h>
+#include <windows/classes/LastMac.h>
+
 
 class QTimeSlider: public QSlider {
     Q_OBJECT
     void mouseMoveEvent(QMouseEvent *ev) override;
     std::vector<PositionDataPlot> data;
+    std::vector<QDateTime> keyMap;
+
 public:
     explicit QTimeSlider(QWidget *parent = nullptr);
 

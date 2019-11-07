@@ -90,7 +90,7 @@ public:
 
     PositionData fromRssiToXY(const std::deque<Packet>& deque);
 
-    float calculateDistance(signed rssi);
+    float calculateDistance(signed rssi, int A);
 
     bool is_inside_room(PositionData data);
 

@@ -137,3 +137,13 @@ const std::vector<Board> &LiveChart::getBoards() const {
     return boards_v;
 }
 
+void LiveChart::fillDevicesV(std::vector<LastMac> &newData) {
+    this->devices_v.clear();
+    this->devices->clear();
+    this->currentPos = 0;
+    for (auto &i : newData){
+        this->devices->append(i.getPosx(), i.getPosy());
+        this->devices_v.push_back(i);
+    }
+}
+

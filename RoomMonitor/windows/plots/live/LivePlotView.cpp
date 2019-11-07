@@ -93,5 +93,5 @@ void LivePlotView::resizeEvent(QResizeEvent *event) {
 }
 
 LiveChart *LivePlotView::getChart() const {
-    return nullptr;
+    return chart;
 }

@@ -86,7 +86,7 @@ public slots:
      * @param x     coordinata x della schedina
      * @param y     coordinata y della schedina
      */
-    void addBoard(const QString &id, const QString &x, const QString &y);
+    void addBoard(const QString &id, const QString &x, const QString &y, const QString &a);
 
     /**
      * Funzione che che gestisce il segnale lanciato dalla view della tabella quando una casella viene modificata

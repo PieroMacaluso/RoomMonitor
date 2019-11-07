@@ -74,7 +74,7 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet>& deque) {
         for (auto &packet: deque) {
             auto b = boards.find(packet.getIdSchedina());
             if (b == boards.end()) return PositionData(-1, -1);
-            double dist = calculateDistance(packet.getRssi() + delta);
+            double dist = calculateDistance(packet.getRssi() + delta, b->second.getA());
             Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
             circles.push_back(res);
         }
@@ -179,10 +179,9 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet>& deque) {
  *
  * @return     float in metri
  */
-float MonitoringServer::calculateDistance(signed rssi) {
+float MonitoringServer::calculateDistance(signed rssi, int A) {
     // n: Costante di propagazione del segnale. Costante 2 in ambiente aperto.
     // TODO: vedere se applicabile a stanza
-    const float A = settings.value("monitor/A").toFloat();
     // A: potenza del segnale ricevuto in dBm ad un metro
     // TODO: da ricercare sperimentalmente
     const float cost = settings.value("monitor/n").toFloat();

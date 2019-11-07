@@ -13,6 +13,11 @@
 #include <windows/plots/mac/MacChart.h>
 #include <windows/plots/mac/MacChart.h>
 #include <Utility.h>
+#include <windows/plots/live/LiveChart.h>
+#include <windows/elements/QTimeSlider.h>
+#include <windows/elements/QMapSlider.h>
+#include "PositionDataPlot.h"
+#include "MacLastPos.h"
 
 
 class AnalysisWorker : public QObject {
@@ -21,11 +26,13 @@ Q_OBJECT
     QDateTime end_in;
     MonitoringChart *result;
     MacChart *macPlot;
+    QMapSlider *timeSlider;
 
 public:
-    AnalysisWorker(QDateTime start_in, QDateTime end_in, MonitoringChart *result, MacChart *macPlot)
+    AnalysisWorker(QDateTime start_in, QDateTime end_in, MonitoringChart *result, MacChart *macPlot,
+                   QMapSlider *timeSlider)
             : start_in(std::move(start_in)),
-              end_in(end_in), result(result), macPlot(macPlot) {}
+              end_in(end_in), result(result), macPlot(macPlot), timeSlider(timeSlider) {}
 
 public slots:
 
@@ -220,6 +227,48 @@ public slots:
             bool hidden = q.value(2).toBool();
             emit addMac(mac, frequency, hidden);
         }
+        q.clear();
+
+        /** QUERY_1**/
+        /* Con questa query otteniamo una entry per ogni mac e per ogni granularità con la posizione mediata in base a
+         * tutti i pacchetti trovati nel range selezionato */
+        q.prepare("SELECT mac_addr,\n"
+                  "       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :sec)) AS timing,\n"
+                  "       avg(pos_x)                                                                    as pos_x,\n"
+                  "       avg(pos_y)                                                                    as pos_y\n"
+                  "FROM "+ su.value("database/table").toString() + "\n"
+                  "WHERE timestamp > :fd\n"
+                  "  AND timestamp < :sd\n"
+                  "GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :sec\n"
+                  "ORDER BY timing;");
+        q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
+        q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
+        q.bindValue(":sec", granularity);
+        if (!q.exec())
+            qDebug() << q.lastError();
+
+        // Creo una mappa da Data a vettore di Mac e relative posizioni
+        std::map<QDateTime, std::vector<LastMac>> map;
+        while (q.next()) {
+            QString mac = q.value(0).toString();
+            QDateTime date = q.value(1).toDateTime();
+            qreal posx = q.value(2).toReal();
+            qreal posy = q.value(3).toReal();
+            auto el = map.find(date);
+            if (el != map.end()){
+                LastMac p{mac, date, posx, posy};
+                el->second.push_back(p);
+            } else {
+                std::vector<LastMac> v;
+                LastMac p{mac, date, posx, posy};
+                v.push_back(p);
+                map.insert(std::make_pair(date, v));
+            }
+        }
+        // Setto la mappa all'interno dello slider
+        timeSlider->setMap(map);
+        timeSlider->setSliderPosition(0);
+
         db.close();
         emit finished();
 
