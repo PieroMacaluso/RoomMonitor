@@ -24,7 +24,12 @@ std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string
     for (const std::string &s:p) {
         std::vector<std::string> values;
         split(s, values, ',');
-
+        //todo alcuni pacchetti non vengono inviati del tutto, metà stringa
+        //"2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxx" -> "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
+        if(values.size()!=7){
+            qDebug()<< "Interruzione Stringa: "<< QString::fromStdString(s);
+            continue;
+        }
         if (values[5] == "~")        //alcuni pacchetti contengono l'ssid e altri no
             //no ssid
             ssid = "Nan";
