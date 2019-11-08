@@ -13,8 +13,11 @@
  */
 int main(int argc, char **argv) {
     QApplication a{argc, argv};
+    /*QSettings su{"VALP","RoomMonitoring"};
+    su.clear();*/
     int ret;
     // TODO: eliminazione TRY CATCH?
+
     try {
         // Controllo che le impostazioni siano già state configurate, altrimenti riconfiguro
         SettingDialog::settingCheckUp();
