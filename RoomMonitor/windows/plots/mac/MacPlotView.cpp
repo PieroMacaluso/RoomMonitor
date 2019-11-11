@@ -30,7 +30,7 @@ void MacPlotView::setChart(MacChart *chart) {
 void MacPlotView::mouseDoubleClickEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         int mac = floor(this->height() / 50);
-//        this->chart->zoomReset();
+//        this->positionPlot->zoomReset();
         this->chart->resetView(mac);
     }
 
@@ -64,7 +64,7 @@ void MacPlotView::tooltip(bool state, int index, QBarSet *barset) {
 
 void MacPlotView::resizeEvent(QResizeEvent *event) {
     int mac = floor(this->height() / 50);
-//        this->chart->zoomReset();
+//        this->positionPlot->zoomReset();
     if (this->chart != nullptr)
         this->chart->resetView(mac);
     QChartView::resizeEvent(event);

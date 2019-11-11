@@ -29,10 +29,14 @@ void QMapSlider::setMap(const std::map<QDateTime, std::vector<LastMac>> &mapOut)
     emit initialized();
 }
 
-std::vector<LastMac>& QMapSlider::getMapIndex(int value) {
+std::vector<LastMac> QMapSlider::getMapIndex(int value) {
     auto el = this->map.find(keyMap[value]);
     if (el != this->map.end()){
         return el->second;
+    } else {
+        // Ritorno .end() se non sono presenti dati
+        std::vector<LastMac> empty{};
+        return empty;
     }
 }
 QDateTime QMapSlider::getKeyIndex(int value) {

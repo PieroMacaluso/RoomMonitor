@@ -10,7 +10,7 @@
 #include "windows/common/callout.h"
 
 class PositionPlotView : public QChartView {
-    PositionPlot * chart;
+    PositionPlot * positionPlot;
     Callout *m_tooltip = nullptr;
 public:
     explicit PositionPlotView(QWidget *parent = nullptr);

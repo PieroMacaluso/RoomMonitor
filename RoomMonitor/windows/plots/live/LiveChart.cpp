@@ -91,8 +91,8 @@ QScatterSeries *LiveChart::getDevicesScatter() {
 }
 
 void LiveChart::resetView() {
-    aX->setRange(-1, xMax+1);
-    aY->setRange(-1, yMax+1);
+    aX->setRange(-1, xMax + 1);
+    aY->setRange(-1, yMax + 1);
 }
 
 qreal LiveChart::getXMax() const {
@@ -109,12 +109,12 @@ void LiveChart::fillBoards(std::vector<Board> newData) {
     this->boards_v.clear();
     this->boards_v = std::move(newData);
     this->currentPos = 0;
-    for (auto i : this->boards_v){
+    for (auto i : this->boards_v) {
         this->boards->append(i.getCoord().x(), i.getCoord().y());
-        if (i.getCoord().x() > xMax){
+        if (i.getCoord().x() > xMax) {
             xMax = i.getCoord().x();
         }
-        if (i.getCoord().y() > yMax){
+        if (i.getCoord().y() > yMax) {
             yMax = i.getCoord().y();
         }
     }
@@ -123,13 +123,13 @@ void LiveChart::fillBoards(std::vector<Board> newData) {
 void LiveChart::fillDevices(QMap<QString, LastMac> &newData) {
     this->devices_v.clear();
     this->currentPos = 0;
-    for (auto &i : newData){
+    for (auto &i : newData) {
         this->devices->append(i.getPosx(), i.getPosy());
         this->devices_v.push_back(i);
     }
 }
 
-const std::vector<LastMac> & LiveChart::getDevices() const {
+const std::vector<LastMac> &LiveChart::getDevices() const {
     return devices_v;
 }
 
@@ -137,11 +137,11 @@ const std::vector<Board> &LiveChart::getBoards() const {
     return boards_v;
 }
 
-void LiveChart::fillDevicesV(std::vector<LastMac> &newData) {
+void LiveChart::fillDevicesV(std::vector<LastMac> newData) {
     this->devices_v.clear();
     this->devices->clear();
     this->currentPos = 0;
-    for (auto &i : newData){
+    for (auto &i : newData) {
         this->devices->append(i.getPosx(), i.getPosy());
         this->devices_v.push_back(i);
     }

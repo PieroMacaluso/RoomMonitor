@@ -27,7 +27,7 @@ public:
 
     void setMap(const std::map<QDateTime, std::vector<LastMac>> &mapOut);
 
-    std::vector<LastMac> &getMapIndex(int value);
+    std::vector<LastMac> getMapIndex(int value);
 
     QDateTime getKeyIndex(int value);
 

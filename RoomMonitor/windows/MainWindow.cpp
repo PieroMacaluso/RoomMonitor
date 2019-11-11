@@ -12,7 +12,7 @@
 MainWindow::MainWindow() {
     ui.setupUi(this);
     setupConnect();
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{"xVALP", "RoomMonitoring"};
     ui.actionMonitoring->triggered(true);
 }
 
@@ -259,7 +259,7 @@ void MainWindow::setupLivePlot() {
     QSettings su{"VALP", "RoomMonitoring"};
     auto boards = su.value("room/boards").value<QList<QStringList>>();
     std::vector<Board> b_v;
-    for (auto i: boards){
+    for (auto i: boards) {
         Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble(), i[3].toInt()};
         b_v.push_back(b);
     }
@@ -276,16 +276,16 @@ void MainWindow::setupMapPlot() {
     QSettings su{"VALP", "RoomMonitoring"};
     auto boards = su.value("room/boards").value<QList<QStringList>>();
     std::vector<Board> b_v;
-    for (auto i: boards){
+    for (auto i: boards) {
         Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble(), i[3].toInt()};
         b_v.push_back(b);
     }
     liveChart->fillBoards(b_v);
-    connect(ui.mapSlider, &QMapSlider::initialized, [&](){
+    connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
         ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
         ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
     });
-    connect(ui.mapSlider, &QSlider::valueChanged, [&](int value){
+    connect(ui.mapSlider, &QSlider::valueChanged, [&](int value) {
         ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
         ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
     });
@@ -393,6 +393,7 @@ void MainWindow::setMacPlot() {
 }
 
 void MainWindow::setupPositionPlot(QString mac) {
+    QSettings su{"VALP", "RoomMonitoring"};
     auto posPlot = new PositionPlot();// Plot Analysis Chart
     positionDialog.positionPlot->setChart(posPlot);
     QDateTime start_in = ui.startDate->dateTime();
@@ -408,12 +409,12 @@ void MainWindow::setupPositionPlot(QString mac) {
             "       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
             "       avg(pos_x)                                                                    as pos_x,\n"
             "       avg(pos_y)                                                                    as pos_y\n"
-            "FROM stanza3_23102019\n"
-            "WHERE timestamp >= :fd\n"
-            "  AND timestamp < :sd\n"
-            "  AND mac_addr = :mac\n"
-            "GROUP BY UNIX_TIMESTAMP(timestamp) DIV 60\n"
-            "ORDER BY timing;");
+            "FROM " + su.value("database/table").toString() + "\n"
+                                                              "WHERE timestamp >= :fd\n"
+                                                              "  AND timestamp < :sd\n"
+                                                              "  AND mac_addr = :mac\n"
+                                                              "GROUP BY UNIX_TIMESTAMP(timestamp) DIV 60\n"
+                                                              "ORDER BY timing;");
     query.bindValue(":fd", start_in.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end_in.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":mac", mac);
@@ -432,7 +433,7 @@ void MainWindow::setupPositionPlot(QString mac) {
     }
     posPlot->fillData(v);
     positionDialog.horizontalSlider->setData(v);
-    positionDialog.horizontalSlider->setRange(0, v.size()-1);
+    positionDialog.horizontalSlider->setRange(0, v.size() - 1);
     positionDialog.startDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
     positionDialog.startPos->setText("(" + QString::number(v[0].getX()) + ", " + QString::number(v[0].getY()) + ")");
     positionDialog.endDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
@@ -440,11 +441,23 @@ void MainWindow::setupPositionPlot(QString mac) {
 
 
     // FINE
+    connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
+        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
+        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
+    });
+    connect(ui.mapSlider, &QSlider::valueChanged, [&](int value) {
+        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
+        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
+    });
+
     connect(positionDialog.horizontalSlider, &QSlider::valueChanged, posPlot, &PositionPlot::sliderChanged);
-    connect(positionDialog.horizontalSlider, &QTimeSlider::emitDateMax, [&](PositionDataPlot e){
+    connect(posPlot, &PositionPlot::dataChanged, [&](PositionDataPlot e) {
         positionDialog.endDate->setText(e.getData().toString("yyyy-MM-dd hh:mm:ss"));
         positionDialog.endPos->setText("(" + QString::number(e.getX()) + ", " + QString::number(e.getY()) + ")");
-
+    });
+    connect(positionDialog.horizontalSlider, &QTimeSlider::emitDateMax, [&](PositionDataPlot e) {
+        positionDialog.endDate->setText(e.getData().toString("yyyy-MM-dd hh:mm:ss"));
+        positionDialog.endPos->setText("(" + QString::number(e.getX()) + ", " + QString::number(e.getY()) + ")");
     });
 
 }
@@ -636,7 +649,7 @@ void MainWindow::updateProgress(qint64 prog) {
 
 void MainWindow::macPlotReady(QStringList mac, QStringList frequency, MacChart *macPlot) {
     QVector<MacOccurrence> macs{};
-    for (int i=0 ; i< mac.size(); i++){
+    for (int i = 0; i < mac.size(); i++) {
         MacOccurrence m{mac[i], frequency[i].toInt()};
         macs.append(m);
     }
@@ -644,7 +657,7 @@ void MainWindow::macPlotReady(QStringList mac, QStringList frequency, MacChart *
     ui.macPlot->setChart(macPlot);
 }
 
-void MainWindow::finishedAnalysisThread(){
+void MainWindow::finishedAnalysisThread() {
     workerThread.quit();
     workerThread.wait();
     ui.progressBar->setValue(100);

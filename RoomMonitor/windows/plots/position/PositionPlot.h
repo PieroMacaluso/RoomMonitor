@@ -9,6 +9,7 @@
 #include <windows/classes/PositionDataPlot.h>
 
 class PositionPlot: public QChart  {
+    Q_OBJECT
     std::vector<PositionDataPlot> data;
     QLineSeries *lineSeries;
     QScatterSeries *scatter;
@@ -41,6 +42,9 @@ public:
     const PositionDataPlot &getData(int index) const;
 
     const std::vector<PositionDataPlot> &getData1() const;
+
+signals:
+    void dataChanged(PositionDataPlot p);
 };
 
 

@@ -234,8 +234,9 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 
 bool MonitoringServer::is_inside_room(PositionData data) {
     // TODO: margine?
-    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/width").toFloat() &&
-           data.getY() <= settings.value("room/height").toFloat();
+    return true;
+//    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/width").toFloat() &&
+//           data.getY() <= settings.value("room/height").toFloat();
 }
 
 void MonitoringServer::newConnection() {

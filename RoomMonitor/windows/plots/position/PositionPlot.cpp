@@ -106,6 +106,7 @@ void PositionPlot::sliderChanged(int position){
         }
     }
     currentPos = position;
+    emit dataChanged(data[currentPos]);
 }
 
 const PositionDataPlot &PositionPlot::getData(int index) const {
