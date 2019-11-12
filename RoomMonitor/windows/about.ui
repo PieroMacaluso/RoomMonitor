@@ -33,7 +33,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Questo software è stato sviluppato da:&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Macaluso Piero&lt;br/&gt;Manicone Lorenzo&lt;br/&gt;Rosso Valentino&lt;br/&gt;Turco Angelo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Questo software è stato sviluppato da:&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Macaluso Piero&lt;br/&gt;Manicone Lorenzo&lt;br/&gt;Turco Angelo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
