@@ -92,7 +92,8 @@ void SettingDialog::openDialogAdd() {
     addBoardDialog.setupUi(&add);
     add.setModal(true);
     setupAddBoard();
-    if (add.exec()) {
+
+    while (add.exec()) {
         if (addBoardDialog.idEdit->text().isEmpty() || addBoardDialog.xEdit->text().isEmpty() ||
             addBoardDialog.yEdit->text().isEmpty() || addBoardDialog.aEdit->text().isEmpty()) {
             QMessageBox msgBox;
@@ -101,18 +102,23 @@ void SettingDialog::openDialogAdd() {
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.setText("Inserimento non valido, riprovare!");
             msgBox.exec();
-            return;
+            continue;
         }
+        bool valid = true;
         for (int i = 0; i < ui.boardTable->rowCount(); i++) {
             if (addBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text()) {
                 QMessageBox msgBox;
                 msgBox.setText("ID già presente, riprovare!");
                 msgBox.exec();
-                return;
+                valid = false;
+                break;
             }
         }
-        addBoard(addBoardDialog.idEdit->text(), addBoardDialog.xEdit->text(), addBoardDialog.yEdit->text(),
-                 addBoardDialog.aEdit->text());
+        if (valid) {
+            addBoard(addBoardDialog.idEdit->text(), addBoardDialog.xEdit->text(), addBoardDialog.yEdit->text(),
+                     addBoardDialog.aEdit->text());
+            break;
+        }
     }
 }
 
@@ -130,7 +136,7 @@ void SettingDialog::openDialogMod() {
     modBoardDialog.aEdit->setText(list[3]);
 
     setupModBoard();
-    if (add.exec()) {
+    while (add.exec()) {
         if (modBoardDialog.idEdit->text().isEmpty() || modBoardDialog.xEdit->text().isEmpty() ||
             modBoardDialog.yEdit->text().isEmpty() || modBoardDialog.aEdit->text().isEmpty()) {
             QMessageBox msgBox;
@@ -138,8 +144,9 @@ void SettingDialog::openDialogMod() {
             msgBox.setWindowTitle("Errore inserimento dati schedina");
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.setText("Inserimento non valido, riprovare!");
-            return;
+            continue;
         }
+        bool valid = true;
         for (int i = 0; i < ui.boardTable->rowCount(); i++) {
             if (modBoardDialog.idEdit->text() == ui.boardTable->item(i, 0)->text() &&
                 modBoardDialog.idEdit->text() != list[0]) {
@@ -149,14 +156,18 @@ void SettingDialog::openDialogMod() {
                 msgBox.setIcon(QMessageBox::Warning);
                 msgBox.setText("ID già presente, riprovare!");
                 msgBox.exec();
-                return;
+                valid = false;
+                break;
             }
         }
-        int i = ui.boardTable->selectedItems().first()->row();
-        ui.boardTable->setItem(i, 0, new QTableWidgetItem(modBoardDialog.idEdit->text()));
-        ui.boardTable->setItem(i, 1, new QTableWidgetItem(modBoardDialog.xEdit->text()));
-        ui.boardTable->setItem(i, 2, new QTableWidgetItem(modBoardDialog.yEdit->text()));
-        ui.boardTable->setItem(i, 3, new QTableWidgetItem(modBoardDialog.aEdit->text()));
+        if (valid) {
+            int i = ui.boardTable->selectedItems().first()->row();
+            ui.boardTable->setItem(i, 0, new QTableWidgetItem(modBoardDialog.idEdit->text()));
+            ui.boardTable->setItem(i, 1, new QTableWidgetItem(modBoardDialog.xEdit->text()));
+            ui.boardTable->setItem(i, 2, new QTableWidgetItem(modBoardDialog.yEdit->text()));
+            ui.boardTable->setItem(i, 3, new QTableWidgetItem(modBoardDialog.aEdit->text()));
+            break;
+        }
     }
 
 
@@ -220,7 +231,7 @@ void SettingDialog::checkAddEdits() {
     addBoardDialog.xEdit->text().toDouble(&x);
     addBoardDialog.yEdit->text().toDouble(&y);
     addBoardDialog.yEdit->text().toInt(&a);
-    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
+    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y && a));
 }
 
 
@@ -246,7 +257,7 @@ void SettingDialog::checkModEdits() {
     modBoardDialog.xEdit->text().toDouble(&x);
     modBoardDialog.yEdit->text().toDouble(&y);
     modBoardDialog.aEdit->text().toInt(&a);
-    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
+    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y && a));
 }
 
 void SettingDialog::defaultValues() {
