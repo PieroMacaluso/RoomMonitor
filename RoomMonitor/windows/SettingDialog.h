@@ -10,7 +10,8 @@
 #include "ui_settings.h"
 #include "ui_addboard.h"
 #include "ui_modboard.h"
-
+#include <QtWidgets/QTableWidgetItem>
+#include "../monitoring/Board.h"
 #include <QtCore/QSettings>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -89,15 +90,6 @@ public slots:
     void addBoard(const QString &id, const QString &x, const QString &y, const QString &a);
 
     /**
-     * Funzione che che gestisce il segnale lanciato dalla view della tabella quando una casella viene modificata
-     * all'interno della stessa.
-     *
-     * @param row
-     * @param column
-     */
-    void elementChanged(int row, int column);
-
-    /**
      * Rimuove la schedina che è selezionata al momento. Viene triggerata dal pulsante `removeBoard`
      */
     void removeSelected();
@@ -142,10 +134,18 @@ public slots:
      * spunta nelle impostazioni del database.
      */
     void resetDB();
-    /** Funzione che ripristina le impostazioni di default*/
+
+    /**
+     * Funzione che ripristina le impostazioni di default
+    */
     void defaultValues();
 
+    /**
+     * Controllo e validazione delle impostazioni inserite
+    */
     bool isSettingValid();
+
+    void compileValues();
 };
 
 

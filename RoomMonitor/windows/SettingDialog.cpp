@@ -2,10 +2,7 @@
 // Created by pieromack on 10/09/19.
 //
 
-#include <QtWidgets/QTableWidgetItem>
 #include "SettingDialog.h"
-#include "../monitoring/Board.h"
-
 
 SettingDialog::SettingDialog() {
     // Linea che serve per poter salvare nelle impostazioni una QList<QStringList>
@@ -14,31 +11,12 @@ SettingDialog::SettingDialog() {
     settingCheckUp();
     ui.setupUi(this);
     setupConnect();
-    ui.aEdit->setText(s.value("monitor/A").toString());
-    ui.aEdit->setValidator(new QIntValidator());
-    ui.nEdit->setText(s.value("monitor/n").toString());
-    ui.nEdit->setValidator(new QIntValidator());
-    ui.minEdit->setValue(s.value("monitor/min").toInt());
-    ui.widthEdit->setText(s.value("room/width").toString());
-    ui.widthEdit->setValidator(new QDoubleValidator());
-    ui.heightEdit->setText(s.value("room/height").toString());
-    ui.heightEdit->setValidator(new QDoubleValidator());
-    ui.portServerEdit->setText(s.value("room/port").toString());
-    ui.portServerEdit->setValidator(new QIntValidator());
-    ui.hostEdit->setText(s.value("database/host").toString());
-    ui.dbEdit->setText(s.value("database/name").toString());
-    ui.portEdit->setText(s.value("database/port").toString());
-    ui.portEdit->setValidator(new QIntValidator());
-    ui.userEdit->setText(s.value("database/user").toString());
-    ui.passEdit->setText(s.value("database/pass").toString());
-    ui.tableEdit->setText(s.value("database/table").toString());
-    boardList = s.value("room/boards").value<QList<QStringList>>();
-    initializeBoardList();
+    this->compileValues();
 }
 
 void SettingDialog::settingCheckUp() {
-    QSettings su{"VALP", "RoomMonitoring"};
     // Inizializzo le impostazioni, se non sono mai state configurate
+    QSettings su{"VALP", "RoomMonitoring"};
     qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     if (su.value("monitor/A").isNull())
         su.setValue("monitor/A", -55);
@@ -66,9 +44,9 @@ void SettingDialog::setupConnect() {
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
     connect(ui.modBoard, &QPushButton::clicked, this, &SettingDialog::openDialogMod);
-    connect(ui.toolButton, &QPushButton::clicked,this,&SettingDialog::defaultValues);
+    connect(ui.buttonBox->button(QDialogButtonBox::Reset), &QPushButton::clicked, this, &SettingDialog::defaultValues);
     connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&]() {
-        if (ui.boardTable->selectedItems().size() == 0) {
+        if (ui.boardTable->selectedItems().empty()) {
             ui.modBoard->setDisabled(true);
             ui.removeBoard->setDisabled(true);
         } else {
@@ -79,6 +57,8 @@ void SettingDialog::setupConnect() {
 }
 
 void SettingDialog::initializeBoardList() {
+    ui.boardTable->clear();
+    ui.boardTable->setRowCount(0);
     /* SETUP TABLE */
     ui.boardTable->setColumnCount(4);
     QStringList h;
@@ -99,23 +79,6 @@ void SettingDialog::initializeBoardList() {
         ui.boardTable->setItem(i, 2, new QTableWidgetItem(board[2]));
         ui.boardTable->setItem(i, 3, new QTableWidgetItem(board[3]));
 
-    }
-    // TODO: controlla che la funzione elementChanged serva ancora effettivamente
-    connect(ui.boardTable, &QTableWidget::cellChanged, this, &SettingDialog::elementChanged);
-
-
-}
-
-void SettingDialog::elementChanged(int row, int column) {
-    if (column == 0) {
-        for (int i = 0; i < ui.boardTable->rowCount(); i++) {
-            if (i == row) continue;
-            if (ui.boardTable->item(row, column)->text() == ui.boardTable->item(i, column)->text()) {
-                qDebug() << "ERRORE DUPLICATO";
-                ui.boardTable->item(row, column)->setText(boardList[row][column]);
-                return;
-            }
-        }
     }
 }
 
@@ -148,16 +111,12 @@ void SettingDialog::openDialogAdd() {
                 return;
             }
         }
-
         addBoard(addBoardDialog.idEdit->text(), addBoardDialog.xEdit->text(), addBoardDialog.yEdit->text(),
                  addBoardDialog.aEdit->text());
     }
-
-
 }
 
 void SettingDialog::openDialogMod() {
-
     QDialog add;
     modBoardDialog.setupUi(&add);
     add.setModal(true);
@@ -189,6 +148,7 @@ void SettingDialog::openDialogMod() {
                 msgBox.setWindowTitle("Errore inserimento dati schedina");
                 msgBox.setIcon(QMessageBox::Warning);
                 msgBox.setText("ID già presente, riprovare!");
+                msgBox.exec();
                 return;
             }
         }
@@ -197,8 +157,6 @@ void SettingDialog::openDialogMod() {
         ui.boardTable->setItem(i, 1, new QTableWidgetItem(modBoardDialog.xEdit->text()));
         ui.boardTable->setItem(i, 2, new QTableWidgetItem(modBoardDialog.yEdit->text()));
         ui.boardTable->setItem(i, 3, new QTableWidgetItem(modBoardDialog.aEdit->text()));
-
-
     }
 
 
@@ -230,7 +188,6 @@ void SettingDialog::apply() {
         resetDB();
     }
     this->close();
-
 }
 
 void SettingDialog::addBoard(const QString &id, const QString &x, const QString &y, const QString &a) {
@@ -240,8 +197,6 @@ void SettingDialog::addBoard(const QString &id, const QString &x, const QString 
     ui.boardTable->setItem(i, 1, new QTableWidgetItem(x));
     ui.boardTable->setItem(i, 2, new QTableWidgetItem(y));
     ui.boardTable->setItem(i, 3, new QTableWidgetItem(a));
-
-
 }
 
 void SettingDialog::setupAddBoard() {
@@ -254,7 +209,6 @@ void SettingDialog::setupAddBoard() {
     connect(addBoardDialog.xEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
     connect(addBoardDialog.yEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
     connect(addBoardDialog.aEdit, &QLineEdit::textChanged, this, &SettingDialog::checkAddEdits);
-
 }
 
 void SettingDialog::checkAddEdits() {
@@ -266,7 +220,6 @@ void SettingDialog::checkAddEdits() {
     addBoardDialog.xEdit->text().toDouble(&x);
     addBoardDialog.yEdit->text().toDouble(&y);
     addBoardDialog.yEdit->text().toInt(&a);
-
     addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
 }
 
@@ -293,37 +246,42 @@ void SettingDialog::checkModEdits() {
     modBoardDialog.xEdit->text().toDouble(&x);
     modBoardDialog.yEdit->text().toDouble(&y);
     modBoardDialog.aEdit->text().toInt(&a);
-
     modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y));
 }
 
-void SettingDialog::defaultValues(){
+void SettingDialog::defaultValues() {
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Reset Impostazioni",
+                                  "Sei sicuro di voler reimpostare le impostazioni di default?",
+                                  QMessageBox::Yes | QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+        qDebug() << "Yes was clicked";
+        // Ripristino informazioni iniziali
+        s.setValue("monitor/A", -55);
+        s.setValue("monitor/n", 3);
+        s.setValue("monitor/min", 3);
+        s.setValue("room/width", 10);
+        s.setValue("room/height", 10);
+        s.setValue("room/port", 27015);
+        QList<QStringList> data{{"0", "1.2", "1.0", "-55"},
+                                {"1", "1.3", "2.0", "-55"}};
+        s.setValue("room/boards", QVariant::fromValue(data));
+        s.setValue("database/host", "localhost");
+        s.setValue("database/name", "data");
+        s.setValue("database/port", 3306);
+        s.setValue("database/user", "root");
+        s.setValue("database/pass", "NewRoot12Kz");
+        s.setValue("database/table", "stanza");
+        qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
+        this->compileValues();
+    } else {
+        qDebug() << "Yes was *not* clicked";
+        return;
+    }
 
-    // Ripristino informazioni iniziali
-
-    s.setValue("monitor/A", -55);
-    s.setValue("monitor/n", 3);
-    s.setValue("monitor/min", 3);
-    s.setValue("room/width", 10);
-    s.setValue("room/height", 10);
-    s.setValue("room/port", 27015);
-
-    QList<QStringList> data{{"0", "1.2", "1.0", "-55"},
-                            {"1", "1.3", "2.0", "-55"}};
-    s.setValue("room/boards", QVariant::fromValue(data));
-
-    s.setValue("database/host", "localhost");
-    s.setValue("database/name", "data");
-    s.setValue("database/port", 3306);
-    s.setValue("database/user", "root");
-    s.setValue("database/pass", "NewRoot12Kz");
-    s.setValue("database/table", "stanza");
-    qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
-    this->close();
 }
 
 void SettingDialog::resetDB() {
-    //TODO: ALARM SQL INJECTION?!? Controllare bene
     QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
     QSqlDatabase db{};
     db = QSqlDatabase::addDatabase("QMYSQL");
@@ -333,17 +291,13 @@ void SettingDialog::resetDB() {
     db.setUserName(s.value("database/user").toString());
     db.setPassword(s.value("database/pass").toString());
 
-
     if (!db.open()) {
         qDebug() << db.lastError();
         return;
     }
-    qDebug() << db.driver()->hasFeature(QSqlDriver::PreparedQueries);
-
 
     QSqlQuery query{db};
     query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
-
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
@@ -359,22 +313,19 @@ void SettingDialog::resetDB() {
                   "hidden int NOT NULL, "
                   "PRIMARY KEY (id_packet) "
                   ");");
-
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
     db.close();
-
 }
 
 bool SettingDialog::isSettingValid() {
-
     // TODO: Controllare e testare validazione Input Impostazioni
     QString err = "";
     int pos = 0;
     QRegExp port{"^()([1-9]|[1-5]?[0-9]{2,4}|6[1-4][0-9]{3}|65[1-4][0-9]{2}|655[1-2][0-9]|6553[1-5])$"};
     QRegExp host{
-            "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"};
+            R"(^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)"};
     QRegExp dbName{"^[0-9a-zA-Z$_]+$"};
     QRegExp username{"^[A-Za-z0-9_]{1,64}$"};
 
@@ -427,4 +378,29 @@ bool SettingDialog::isSettingValid() {
         msgBox.exec();
         return false;
     }
+}
+
+void SettingDialog::compileValues() {
+    // Riempimento dei vari campi grafici
+    ui.aEdit->setText(s.value("monitor/A").toString());
+    ui.aEdit->setValidator(new QIntValidator());
+    ui.nEdit->setText(s.value("monitor/n").toString());
+    ui.nEdit->setValidator(new QIntValidator());
+    ui.minEdit->setValue(s.value("monitor/min").toInt());
+    ui.widthEdit->setText(s.value("room/width").toString());
+    ui.widthEdit->setValidator(new QDoubleValidator());
+    ui.heightEdit->setText(s.value("room/height").toString());
+    ui.heightEdit->setValidator(new QDoubleValidator());
+    ui.portServerEdit->setText(s.value("room/port").toString());
+    ui.portServerEdit->setValidator(new QIntValidator());
+    ui.hostEdit->setText(s.value("database/host").toString());
+    ui.dbEdit->setText(s.value("database/name").toString());
+    ui.portEdit->setText(s.value("database/port").toString());
+    ui.portEdit->setValidator(new QIntValidator());
+    ui.userEdit->setText(s.value("database/user").toString());
+    ui.passEdit->setText(s.value("database/pass").toString());
+    ui.tableEdit->setText(s.value("database/table").toString());
+    boardList = s.value("room/boards").value<QList<QStringList>>();
+    initializeBoardList();
+
 }
