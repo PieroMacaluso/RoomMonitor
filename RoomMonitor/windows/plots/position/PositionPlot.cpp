@@ -5,9 +5,11 @@
 #include <monitoring/PositionData.h>
 
 #include <utility>
+#include <Utility.h>
 #include "PositionPlot.h"
 
 PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(parent, wFlags) {
+    QLineSeries* roomPerimeter = Utility::generateRoomSeries(this);
     QLineSeries *ls = new QLineSeries();
     QScatterSeries *scatter = new QScatterSeries();
     scatter->setMarkerShape(QScatterSeries::MarkerShapeCircle);
@@ -17,6 +19,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     this->legend()->hide();
     this->addSeries(ls);
     this->addSeries(scatter);
+    QChart::addSeries(roomPerimeter);
 
 
     QValueAxis *axisX = new QValueAxis;
@@ -25,6 +28,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     this->addX(axisX);
     lineSeries->attachAxis(axisX);
     scatter->attachAxis(axisX);
+    roomPerimeter->attachAxis(axisX);
 
     QValueAxis *axisY = new QValueAxis;
     axisY->setLabelFormat("%i");
@@ -32,6 +36,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     this->addY(axisY);
     lineSeries->attachAxis(axisY);
     scatter->attachAxis(axisY);
+    roomPerimeter->attachAxis(axisY);
     QSettings s{"VALP", "RoomMonitoring"};
     xMax = s.value("room/width").toReal();
     yMax = s.value("room/height").toReal();

@@ -3,11 +3,14 @@
 //
 
 #include <windows/classes/LastMac.h>
+#include <Utility.h>
 #include "LiveChart.h"
 
 LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(parent, wFlags) {
-    QScatterSeries *b = new QScatterSeries();
-    QScatterSeries *d = new QScatterSeries();
+    QScatterSeries *b = new QScatterSeries(this);
+    QScatterSeries *d = new QScatterSeries(this);
+    QLineSeries* roomPerimeter = Utility::generateRoomSeries(this);
+    QChart::addSeries(roomPerimeter);
     b->setName("Board");
     d->setName("Device");
     b->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
@@ -32,6 +35,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
     axisX->setLabelFormat("%i");
     axisX->setTitleText("x");
     this->addX(axisX);
+    roomPerimeter->attachAxis(axisX);
     b->attachAxis(axisX);
     d->attachAxis(axisX);
 
@@ -40,6 +44,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
     axisY->setLabelFormat("%i");
     axisY->setTitleText("y");
     this->addY(axisY);
+    roomPerimeter->attachAxis(axisY);
     b->attachAxis(axisY);
     d->attachAxis(axisY);
     QSettings s{"VALP", "RoomMonitoring"};

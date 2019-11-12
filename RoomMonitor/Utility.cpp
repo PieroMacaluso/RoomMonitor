@@ -23,3 +23,16 @@ QSqlDatabase Utility::getDB() {
         return db;
     }
 }
+
+QLineSeries *Utility::generateRoomSeries(QObject *parent) {
+    QSettings su {"VALP", "RoomMonitoring"};
+    QLineSeries* series = new QLineSeries(parent);
+    series->setColor(QColor("green"));
+    series->append(0, 0);
+    series->append(su.value("room/width").toInt(), 0);
+    series->append(su.value("room/width").toInt(), su.value("room/height").toInt());
+    series->append(0, su.value("room/height").toInt());
+    series->append(0, 0);
+    series->setName("Perimeter");
+    return series;
+}

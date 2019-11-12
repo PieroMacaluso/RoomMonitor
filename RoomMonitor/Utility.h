@@ -10,10 +10,12 @@
 #include <QtCore/QSettings>
 #include <QDebug>
 #include <QThread>
+#include <QtCharts>
 
 class Utility {
 public:
     static QSqlDatabase getDB();
+    static QLineSeries * generateRoomSeries(QObject *parent = nullptr);
 
 };
 

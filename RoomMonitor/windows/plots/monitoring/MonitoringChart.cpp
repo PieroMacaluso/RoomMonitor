@@ -2,6 +2,7 @@
 // Created by pieromack on 18/09/19.
 //
 
+#include <Utility.h>
 #include "MonitoringChart.h"
 #include "MonitoringPlotView.h"
 
