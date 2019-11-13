@@ -11,12 +11,17 @@
 #include <QDebug>
 #include <QThread>
 #include <QtCharts>
+#include <jmorecfg.h>
+#include "Strings.h"
 
 class Utility {
 public:
-    static QSqlDatabase getDB();
+    static QSqlDatabase getDB(bool &error);
     static QLineSeries * generateRoomSeries(QObject *parent = nullptr);
+    static void warningMessage(const QString &title, const QString &text, const QString &error);
+    static bool yesNoMessage(QWidget *parent, const QString &title, const QString &text);
 
+    static bool testTable(QSqlDatabase &db);
 };
 
 

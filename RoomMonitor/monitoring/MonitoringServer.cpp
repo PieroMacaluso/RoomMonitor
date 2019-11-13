@@ -291,11 +291,9 @@ void MonitoringServer::newConnection() {
 
 void MonitoringServer::aggregate() {
     DEBUG("Starting aggregation")
-    QSqlDatabase db = Utility::getDB();
-    if (db.isOpenError()) {
-        qDebug() << db.lastError();
-        exit(-1);
-    }
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
 
     // TODO: Capire come aggregare bene
 
@@ -371,7 +369,9 @@ bool MonitoringServer::isRunning() {
  * @return
  */
 Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime){
-    QSqlDatabase db= Utility::getDB();
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
     QSqlQuery query{db};
     QString table="stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
@@ -625,7 +625,9 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
  * @return
  */
 std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString& mac, uint32_t initTime, uint32_t endTime) {
-    QSqlDatabase db= Utility::getDB();
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
     QSqlQuery query{db};
     QString table="stanza";         //todo vedere da impostazioni
     QDateTime timeInit;

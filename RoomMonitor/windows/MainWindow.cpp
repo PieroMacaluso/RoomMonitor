@@ -12,7 +12,7 @@
 MainWindow::MainWindow() {
     ui.setupUi(this);
     setupConnect();
-    QSettings su{"xVALP", "RoomMonitoring"};
+    QSettings su{"VALP", "RoomMonitoring"};
     ui.actionMonitoring->triggered(true);
 }
 
@@ -53,6 +53,10 @@ void MainWindow::setupConnect() {
             // TODO: insert from settings
             int n = 2;
             if (n > 0) {
+                bool error = false;
+                QSqlDatabase db = Utility::getDB(error);
+                if (error) return;
+                if (!Utility::testTable(db)) return;
                 s.started();
                 ui.startButton->setDisabled(true);
                 ui.stopButton->setDisabled(false);
@@ -65,7 +69,7 @@ void MainWindow::setupConnect() {
             }
         } catch (std::exception &e) {
             // Does not started signal
-            std::cout << "Non è stato possibile avviare il server." << std::endl;
+            qDebug() << Strings::SRV_NOT_STARTED;
             return;
         }
     });
@@ -75,10 +79,9 @@ void MainWindow::setupConnect() {
         if (ui.startDate->dateTime().addSecs(60 * 5) > ui.endDate->dateTime()) {
             QMessageBox m{};
             m.setStandardButtons(QMessageBox::Close);
-            m.setWindowTitle("Errore selezione range");
+            m.setWindowTitle(Strings::RANGE_ERROR);
             m.setIcon(QMessageBox::Warning);
-            m.setText(
-                    "La data di inizio deve essere antecedente alla data di fine.\nLa loro differenza deve essere maggiore o uguale a 5 minuti.");
+            m.setText(Strings::RANGE_ERROR_MSG);
             m.exec();
             return;
         }
@@ -87,18 +90,9 @@ void MainWindow::setupConnect() {
 
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
-        if (s.isRunning()) {
+        if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
             // TODO: provare a togliere e testare
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "Analisi in corso",
-                                          "L'analisi in corso verrà interrotta. Continuare?",
-                                          QMessageBox::Yes | QMessageBox::No);
-            if (reply == QMessageBox::Yes) {
-                qDebug() << "Yes was clicked";
-            } else {
-                qDebug() << "Yes was *not* clicked";
-                return;
-            }
+
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
@@ -127,7 +121,8 @@ void MainWindow::setupConnect() {
         ui.analysisWidget->setVisible(true);
 
         ui.title->setText(
-                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Analisi dei Dati</span></p></body></html>");
+                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">" + Strings::ANA +
+                "</span></p></body></html>");
         setupAnalysisPlot();
         initializeMacSituationList();
 
@@ -154,7 +149,8 @@ void MainWindow::setupConnect() {
         ui.actionMonitoring->setVisible(false);
 
         ui.title->setText(
-                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">Monitoraggio Stanza</span></p></body></html>");
+                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">" + Strings::MON +
+                "</span></p></body></html>");
 
         // Cambia plot
         ui.monitoringWidget->setVisible(true);
@@ -181,23 +177,13 @@ void MainWindow::setupConnect() {
 
     // Conseguenze Click Stop Button
     QObject::connect(&s, &MonitoringServer::stopped, [&]() {
-        std::cout << "Stopped" << std::endl;
+        qDebug() << "Stopped";
     });
 
     // Azione Impostazioni
     QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
         SettingDialog sd{};
-        if (s.isRunning()) {
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::question(this, "Analisi in corso",
-                                          "L'analisi in corso verrà interrotta. Continuare?",
-                                          QMessageBox::Yes | QMessageBox::No);
-            if (reply == QMessageBox::Yes) {
-                qDebug() << "Yes was clicked";
-            } else {
-                qDebug() << "Yes was *not* clicked";
-                return;
-            }
+        if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
@@ -286,8 +272,10 @@ void MainWindow::setupMapPlot() {
         ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
     });
     connect(ui.mapSlider, &QSlider::valueChanged, [&](int value) {
-        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
-        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
+        if (value > -1) {
+            ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
+            ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
+        }
     });
 
 }
@@ -398,11 +386,9 @@ void MainWindow::setupPositionPlot(QString mac) {
     positionDialog.positionPlot->setChart(posPlot);
     QDateTime start_in = ui.startDate->dateTime();
     QDateTime end_in = ui.endDate->dateTime();
-    QSqlDatabase db = Utility::getDB();
-    if (!db.open()) {
-        qDebug() << db.lastError();
-        return;
-    }
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) return;
     QSqlQuery query{db};
     query.prepare(
             "SELECT mac_addr,\n"
@@ -420,8 +406,14 @@ void MainWindow::setupPositionPlot(QString mac) {
     query.bindValue(":mac", mac);
 
 
-    if (!query.exec())
+    if (!query.exec()) {
         qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                db.lastError().text());
+        db.close();
+        return;
+    }
 
     std::vector<PositionDataPlot> v;
     while (query.next()) {
@@ -473,11 +465,9 @@ void MainWindow::addLiveData() {
     end = start.addSecs(60 * 5);
     prev = start.addSecs(-60 * 5);
 
-    QSqlDatabase db = Utility::getDB();
-    if (!db.open()) {
-        qDebug() << db.lastError();
-        return;
-    }
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) return;
 
     QSqlQuery query{db};
 
@@ -579,6 +569,8 @@ void MainWindow::dataAnalysis() {
     connect(worker, &AnalysisWorker::initializeMacSituation, this, &MainWindow::initializeMacSituationList);
     connect(worker, &AnalysisWorker::addMac, this, &MainWindow::addMacSitua);
     connect(worker, &AnalysisWorker::finished, this, &MainWindow::finishedAnalysisThread);
+    connect(worker, &AnalysisWorker::warning, this, &Utility::warningMessage);
+
 
     ui.searchButton->setEnabled(false);
     workerThread.start();
@@ -586,7 +578,9 @@ void MainWindow::dataAnalysis() {
 
 void MainWindow::genLiveData() {
     QSettings su{"VALP", "RoomMonitoring"};
-    QSqlDatabase db = Utility::getDB();
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) return;
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
     QDateTime start{};
     QDateTime prev{};
