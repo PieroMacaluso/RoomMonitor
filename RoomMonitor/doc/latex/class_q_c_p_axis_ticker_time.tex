@@ -1,0 +1,259 @@
+\hypertarget{class_q_c_p_axis_ticker_time}{}\section{Q\+C\+P\+Axis\+Ticker\+Time Class Reference}
+\label{class_q_c_p_axis_ticker_time}\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+
+
+Specialized axis ticker for time spans in units of milliseconds to days.  
+
+
+
+
+{\ttfamily \#include $<$qcustomplot.\+h$>$}
+
+
+
+Inheritance diagram for Q\+C\+P\+Axis\+Ticker\+Time\+:
+% FIG 0
+
+
+Collaboration diagram for Q\+C\+P\+Axis\+Ticker\+Time\+:
+% FIG 1
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} \{ \newline
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea809db637d2a7f601287c8790facc25cf}{tu\+Milliseconds}, 
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea22b2c1842215272ae827eea2d1cc037d}{tu\+Seconds}, 
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea682de6640daef46cffd8a080348d7d00}{tu\+Minutes}, 
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea83a5713594424ba17f1f62f18f0e5935}{tu\+Hours}, 
+\newline
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3eaf9729e64545307a80a0e3527d6da6556}{tu\+Days}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_q_c_p_axis_ticker_time_a5145aac1d2117fdac411d9e8552cc41b}{Q\+C\+P\+Axis\+Ticker\+Time} ()
+\item 
+Q\+String \hyperlink{class_q_c_p_axis_ticker_time_a99ad61dc7434a7fed1850e96bf748834}{time\+Format} () const
+\item 
+int \hyperlink{class_q_c_p_axis_ticker_time_a6b58a98e4d64c6764aa61a707e4a344d}{field\+Width} (\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} unit) const
+\item 
+void \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format} (const Q\+String \&format)
+\item 
+void \hyperlink{class_q_c_p_axis_ticker_time_adc13e54fc969be98a5c0e3fa0dbaa293}{set\+Field\+Width} (\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} unit, int width)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual double \hyperlink{class_q_c_p_axis_ticker_time_a5615064642090fe193797caea8b98cb4}{get\+Tick\+Step} (const \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \&range) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual int \hyperlink{class_q_c_p_axis_ticker_time_acace84c46598176aa53837e147595471}{get\+Sub\+Tick\+Count} (double tick\+Step) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual Q\+String \hyperlink{class_q_c_p_axis_ticker_time_a046eb771bdf2a959f570db542b3a0be6}{get\+Tick\+Label} (double tick, const Q\+Locale \&locale, Q\+Char format\+Char, int precision) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+void \hyperlink{class_q_c_p_axis_ticker_time_a03b6c980be36f2672e3fc31d109a28a0}{replace\+Unit} (Q\+String \&text, \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} unit, int value) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Q\+String \hyperlink{class_q_c_p_axis_ticker_time_a800af3fe0a7c1a8110c043b82169bc9d}{m\+Time\+Format}
+\item 
+Q\+Hash$<$ \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit}, int $>$ \hyperlink{class_q_c_p_axis_ticker_time_a58305b56f847bcab8b3c852a21bdb91a}{m\+Field\+Width}
+\item 
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} \hyperlink{class_q_c_p_axis_ticker_time_a61033c493cec76a69628d1aaa5b07abf}{m\+Smallest\+Unit}
+\item 
+\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} \hyperlink{class_q_c_p_axis_ticker_time_a349b2debe07adc591996aa73dec9a757}{m\+Biggest\+Unit}
+\item 
+Q\+Hash$<$ \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit}, Q\+String $>$ \hyperlink{class_q_c_p_axis_ticker_time_adfc8221afbccb99343aa61f75419908d}{m\+Format\+Pattern}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Specialized axis ticker for time spans in units of milliseconds to days. 
+
+
+
+This \hyperlink{class_q_c_p_axis_ticker}{Q\+C\+P\+Axis\+Ticker} subclass generates ticks that corresponds to time intervals.
+
+The format of the time display in the tick labels is controlled with \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format} and \hyperlink{class_q_c_p_axis_ticker_time_adc13e54fc969be98a5c0e3fa0dbaa293}{set\+Field\+Width}. The time coordinate is in the unit of seconds with respect to the time coordinate zero. Unlike with \hyperlink{class_q_c_p_axis_ticker_date_time}{Q\+C\+P\+Axis\+Ticker\+Date\+Time}, the ticks don\textquotesingle{}t correspond to a specific calendar date and time.
+
+The time can be displayed in milliseconds, seconds, minutes, hours and days. Depending on the largest available unit in the format specified with \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format}, any time spans above will be carried in that largest unit. So for example if the format string is \char`\"{}\%m\+:\%s\char`\"{} and a tick at coordinate value 7815 (being 2 hours, 10 minutes and 15 seconds) is created, the resulting tick label will show \char`\"{}130\+:15\char`\"{} (130 minutes, 15 seconds). If the format string is \char`\"{}\%h\+:\%m\+:\%s\char`\"{}, the hour unit will be used and the label will thus be \char`\"{}02\+:10\+:15\char`\"{}. Negative times with respect to the axis zero will carry a leading minus sign.
+
+The ticker can be created and assigned to an axis like this\+: 
+\begin{DoxyCodeInclude}
+\end{DoxyCodeInclude}
+ Here is an example of a time axis providing time information in days, hours and minutes. Due to the axis range spanning a few days and the wanted tick count (\hyperlink{class_q_c_p_axis_ticker_a47752abba8293e6dc18491501ae34008}{set\+Tick\+Count}), the ticker decided to use tick steps of 12 hours\+:
+
+
+
+The format string for this example is 
+\begin{DoxyCodeInclude}
+\end{DoxyCodeInclude}
+ \begin{DoxyNote}{Note}
+If you rather wish to display calendar dates and times, have a look at \hyperlink{class_q_c_p_axis_ticker_date_time}{Q\+C\+P\+Axis\+Ticker\+Date\+Time} instead. 
+\end{DoxyNote}
+
+
+\subsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}\label{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!Time\+Unit@{Time\+Unit}}
+\index{Time\+Unit@{Time\+Unit}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{Time\+Unit}{TimeUnit}}
+{\footnotesize\ttfamily enum \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Q\+C\+P\+Axis\+Ticker\+Time\+::\+Time\+Unit}}
+
+Defines the logical units in which fractions of time spans can be expressed.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_axis_ticker_time_adc13e54fc969be98a5c0e3fa0dbaa293}{set\+Field\+Width}, \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format} 
+\end{DoxySeeAlso}
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{tu\+Milliseconds@{tu\+Milliseconds}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!tu\+Milliseconds@{tu\+Milliseconds}}}\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea809db637d2a7f601287c8790facc25cf}\label{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea809db637d2a7f601287c8790facc25cf}} 
+tu\+Milliseconds&Milliseconds, one thousandth of a second (\%z in \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format}) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{tu\+Seconds@{tu\+Seconds}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!tu\+Seconds@{tu\+Seconds}}}\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea22b2c1842215272ae827eea2d1cc037d}\label{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea22b2c1842215272ae827eea2d1cc037d}} 
+tu\+Seconds&Seconds (\%s in \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format}) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{tu\+Minutes@{tu\+Minutes}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!tu\+Minutes@{tu\+Minutes}}}\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea682de6640daef46cffd8a080348d7d00}\label{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea682de6640daef46cffd8a080348d7d00}} 
+tu\+Minutes&Minutes (\%m in \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format}) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{tu\+Hours@{tu\+Hours}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!tu\+Hours@{tu\+Hours}}}\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea83a5713594424ba17f1f62f18f0e5935}\label{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3ea83a5713594424ba17f1f62f18f0e5935}} 
+tu\+Hours&Hours (\%h in \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format}) \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{tu\+Days@{tu\+Days}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!tu\+Days@{tu\+Days}}}\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3eaf9729e64545307a80a0e3527d6da6556}\label{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3eaf9729e64545307a80a0e3527d6da6556}} 
+tu\+Days&Days (\%d in \hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format}) \\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5145aac1d2117fdac411d9e8552cc41b}\label{class_q_c_p_axis_ticker_time_a5145aac1d2117fdac411d9e8552cc41b}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{Q\+C\+P\+Axis\+Ticker\+Time()}{QCPAxisTickerTime()}}
+{\footnotesize\ttfamily Q\+C\+P\+Axis\+Ticker\+Time\+::\+Q\+C\+P\+Axis\+Ticker\+Time (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Constructs the ticker and sets reasonable default values. Axis tickers are commonly created managed by a Q\+Shared\+Pointer, which then can be passed to \hyperlink{class_q_c_p_axis_a4ee03fcd2c74d05cd1a419b9af5cfbdc}{Q\+C\+P\+Axis\+::set\+Ticker}. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a6b58a98e4d64c6764aa61a707e4a344d}\label{class_q_c_p_axis_ticker_time_a6b58a98e4d64c6764aa61a707e4a344d}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!field\+Width@{field\+Width}}
+\index{field\+Width@{field\+Width}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{field\+Width()}{fieldWidth()}}
+{\footnotesize\ttfamily int Q\+C\+P\+Axis\+Ticker\+Time\+::field\+Width (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit}}]{unit }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_acace84c46598176aa53837e147595471}\label{class_q_c_p_axis_ticker_time_acace84c46598176aa53837e147595471}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!get\+Sub\+Tick\+Count@{get\+Sub\+Tick\+Count}}
+\index{get\+Sub\+Tick\+Count@{get\+Sub\+Tick\+Count}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{get\+Sub\+Tick\+Count()}{getSubTickCount()}}
+{\footnotesize\ttfamily int Q\+C\+P\+Axis\+Ticker\+Time\+::get\+Sub\+Tick\+Count (\begin{DoxyParamCaption}\item[{double}]{tick\+Step }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_axis_ticker_a4ccc403ced7a1457ce6ba293509933c8}{Q\+C\+P\+Axis\+Ticker}.
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a046eb771bdf2a959f570db542b3a0be6}\label{class_q_c_p_axis_ticker_time_a046eb771bdf2a959f570db542b3a0be6}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!get\+Tick\+Label@{get\+Tick\+Label}}
+\index{get\+Tick\+Label@{get\+Tick\+Label}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{get\+Tick\+Label()}{getTickLabel()}}
+{\footnotesize\ttfamily Q\+String Q\+C\+P\+Axis\+Ticker\+Time\+::get\+Tick\+Label (\begin{DoxyParamCaption}\item[{double}]{tick,  }\item[{const Q\+Locale \&}]{locale,  }\item[{Q\+Char}]{format\+Char,  }\item[{int}]{precision }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_axis_ticker_a8201eb4aa8be192bf786b126eb5ee089}{Q\+C\+P\+Axis\+Ticker}.
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a5615064642090fe193797caea8b98cb4}\label{class_q_c_p_axis_ticker_time_a5615064642090fe193797caea8b98cb4}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!get\+Tick\+Step@{get\+Tick\+Step}}
+\index{get\+Tick\+Step@{get\+Tick\+Step}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{get\+Tick\+Step()}{getTickStep()}}
+{\footnotesize\ttfamily double Q\+C\+P\+Axis\+Ticker\+Time\+::get\+Tick\+Step (\begin{DoxyParamCaption}\item[{const \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \&}]{range }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_axis_ticker_a910d69bcec2de37e92d8d4e1ecf201e2}{Q\+C\+P\+Axis\+Ticker}.
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a03b6c980be36f2672e3fc31d109a28a0}\label{class_q_c_p_axis_ticker_time_a03b6c980be36f2672e3fc31d109a28a0}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!replace\+Unit@{replace\+Unit}}
+\index{replace\+Unit@{replace\+Unit}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{replace\+Unit()}{replaceUnit()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Axis\+Ticker\+Time\+::replace\+Unit (\begin{DoxyParamCaption}\item[{Q\+String \&}]{text,  }\item[{\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Q\+C\+P\+Axis\+Ticker\+Time\+::\+Time\+Unit}}]{unit,  }\item[{int}]{value }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_adc13e54fc969be98a5c0e3fa0dbaa293}\label{class_q_c_p_axis_ticker_time_adc13e54fc969be98a5c0e3fa0dbaa293}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!set\+Field\+Width@{set\+Field\+Width}}
+\index{set\+Field\+Width@{set\+Field\+Width}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{set\+Field\+Width()}{setFieldWidth()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Axis\+Ticker\+Time\+::set\+Field\+Width (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Q\+C\+P\+Axis\+Ticker\+Time\+::\+Time\+Unit}}]{unit,  }\item[{int}]{width }\end{DoxyParamCaption})}
+
+Sets the field widh of the specified {\itshape unit} to be {\itshape width} digits, when displayed in the tick label. If the number for the specific unit is shorter than {\itshape width}, it will be padded with an according number of zeros to the left in order to reach the field width.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}{set\+Time\+Format} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}\label{class_q_c_p_axis_ticker_time_a2f30b6e5125bce4256be9ce3177088ea}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!set\+Time\+Format@{set\+Time\+Format}}
+\index{set\+Time\+Format@{set\+Time\+Format}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{set\+Time\+Format()}{setTimeFormat()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Axis\+Ticker\+Time\+::set\+Time\+Format (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{format }\end{DoxyParamCaption})}
+
+Sets the format that will be used to display time in the tick labels.
+
+The available patterns are\+:
+\begin{DoxyItemize}
+\item \%z for milliseconds
+\item \%s for seconds
+\item \%m for minutes
+\item \%h for hours
+\item \%d for days
+\end{DoxyItemize}
+
+The field width (zero padding) can be controlled for each unit with \hyperlink{class_q_c_p_axis_ticker_time_adc13e54fc969be98a5c0e3fa0dbaa293}{set\+Field\+Width}.
+
+The largest unit that appears in {\itshape format} will carry all the remaining time of a certain tick coordinate, even if it overflows the natural limit of the unit. For example, if \%m is the largest unit it might become larger than 59 in order to consume larger time values. If on the other hand \%h is available, the minutes will wrap around to zero after 59 and the time will carry to the hour digit. \mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a99ad61dc7434a7fed1850e96bf748834}\label{class_q_c_p_axis_ticker_time_a99ad61dc7434a7fed1850e96bf748834}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!time\+Format@{time\+Format}}
+\index{time\+Format@{time\+Format}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{time\+Format()}{timeFormat()}}
+{\footnotesize\ttfamily Q\+String Q\+C\+P\+Axis\+Ticker\+Time\+::time\+Format (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a349b2debe07adc591996aa73dec9a757}\label{class_q_c_p_axis_ticker_time_a349b2debe07adc591996aa73dec9a757}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!m\+Biggest\+Unit@{m\+Biggest\+Unit}}
+\index{m\+Biggest\+Unit@{m\+Biggest\+Unit}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{m\+Biggest\+Unit}{mBiggestUnit}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} Q\+C\+P\+Axis\+Ticker\+Time\+::m\+Biggest\+Unit\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a58305b56f847bcab8b3c852a21bdb91a}\label{class_q_c_p_axis_ticker_time_a58305b56f847bcab8b3c852a21bdb91a}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!m\+Field\+Width@{m\+Field\+Width}}
+\index{m\+Field\+Width@{m\+Field\+Width}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{m\+Field\+Width}{mFieldWidth}}
+{\footnotesize\ttfamily Q\+Hash$<$\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit}, int$>$ Q\+C\+P\+Axis\+Ticker\+Time\+::m\+Field\+Width\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_adfc8221afbccb99343aa61f75419908d}\label{class_q_c_p_axis_ticker_time_adfc8221afbccb99343aa61f75419908d}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!m\+Format\+Pattern@{m\+Format\+Pattern}}
+\index{m\+Format\+Pattern@{m\+Format\+Pattern}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{m\+Format\+Pattern}{mFormatPattern}}
+{\footnotesize\ttfamily Q\+Hash$<$\hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit}, Q\+String$>$ Q\+C\+P\+Axis\+Ticker\+Time\+::m\+Format\+Pattern\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a61033c493cec76a69628d1aaa5b07abf}\label{class_q_c_p_axis_ticker_time_a61033c493cec76a69628d1aaa5b07abf}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!m\+Smallest\+Unit@{m\+Smallest\+Unit}}
+\index{m\+Smallest\+Unit@{m\+Smallest\+Unit}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{m\+Smallest\+Unit}{mSmallestUnit}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis_ticker_time_a5c48ded8c6d3a1aca9b68219469fea3e}{Time\+Unit} Q\+C\+P\+Axis\+Ticker\+Time\+::m\+Smallest\+Unit\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_axis_ticker_time_a800af3fe0a7c1a8110c043b82169bc9d}\label{class_q_c_p_axis_ticker_time_a800af3fe0a7c1a8110c043b82169bc9d}} 
+\index{Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}!m\+Time\+Format@{m\+Time\+Format}}
+\index{m\+Time\+Format@{m\+Time\+Format}!Q\+C\+P\+Axis\+Ticker\+Time@{Q\+C\+P\+Axis\+Ticker\+Time}}
+\subsubsection{\texorpdfstring{m\+Time\+Format}{mTimeFormat}}
+{\footnotesize\ttfamily Q\+String Q\+C\+P\+Axis\+Ticker\+Time\+::m\+Time\+Format\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{qcustomplot_8h}{qcustomplot.\+h}\item 
+\hyperlink{qcustomplot_8cpp}{qcustomplot.\+cpp}\end{DoxyCompactItemize}

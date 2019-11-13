@@ -1,0 +1,11 @@
+digraph "windows/plots/monitoring" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_e71b46db7c9d6461f5052c9025042cf3 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="plots" fontname="Helvetica", fontsize="10", URL="dir_e71b46db7c9d6461f5052c9025042cf3.html"]
+  dir_b977703e3a52518bcf45d240dca2cbd7 [shape=box, label="monitoring", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_b977703e3a52518bcf45d240dca2cbd7.html"];
+  }
+  dir_89353dab8439e9af87fd3a91970e1a6b [shape=box label="common" URL="dir_89353dab8439e9af87fd3a91970e1a6b.html"];
+  dir_b977703e3a52518bcf45d240dca2cbd7->dir_89353dab8439e9af87fd3a91970e1a6b [headlabel="1", labeldistance=1.5 headhref="dir_000008_000003.html"];
+}

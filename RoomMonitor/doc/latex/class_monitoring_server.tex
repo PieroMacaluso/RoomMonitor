@@ -1,0 +1,373 @@
+\hypertarget{class_monitoring_server}{}\section{Monitoring\+Server Class Reference}
+\label{class_monitoring_server}\index{Monitoring\+Server@{Monitoring\+Server}}
+
+
+{\ttfamily \#include $<$Monitoring\+Server.\+h$>$}
+
+
+
+Inheritance diagram for Monitoring\+Server\+:
+% FIG 0
+
+
+Collaboration diagram for Monitoring\+Server\+:
+% FIG 1
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_monitoring_server_a54ae4688c3cb974fdb690f095b9ef5cf}{new\+Connection} ()
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_monitoring_server_a2e115786d37661f8b68d4ffd9e6f81a7}{started} ()
+\item 
+void \hyperlink{class_monitoring_server_af90198642c809ec801d07afa789a6869}{aggregated} ()
+\item 
+void \hyperlink{class_monitoring_server_a5884af90abe908f8dc09cb540d738559}{stopped} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_monitoring_server_aa1162d5ef34903e51c1fe2134f1e3959}{Monitoring\+Server} ()
+\item 
+\hyperlink{class_monitoring_server_a746c8d1673afb88e6ea7149b20c766d4}{$\sim$\+Monitoring\+Server} ()
+\item 
+bool \hyperlink{class_monitoring_server_a8bc22df08a9db6280136cbd24bf907f1}{is\+Running} ()
+\item 
+std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ \hyperlink{class_monitoring_server_a184b7dece607f724cfa5cc05add554ce}{string2packet} (const std\+::vector$<$ std\+::string $>$ \&packets)
+\item 
+{\footnotesize template$<$class Container $>$ }\\void \hyperlink{class_monitoring_server_a1398ffaaddcc6859474083c353975581}{split} (const std\+::string \&str, Container \&cont, char delim)
+\item 
+void \hyperlink{class_monitoring_server_a00eefeea4d3a341babdb1d48d8b7cca5}{start} ()
+\item 
+void \hyperlink{class_monitoring_server_aa07082c64076b67ba802bfc2adec235b}{stop} ()
+\item 
+{\footnotesize template$<$class Container $>$ }\\void \hyperlink{class_monitoring_server_a1d242318daca890ae72cd675694a6411}{split\+String} (const std\+::string \&str, Container \&cont, std\+::string \&start\+Delim, std\+::string \&stop\+Delim)
+\item 
+\hyperlink{class_position_data}{Position\+Data} \hyperlink{class_monitoring_server_aa18eeed56d82fb3de1a4fe1ac1820b73}{from\+Rssi\+To\+XY} (const std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ \&deque)
+\item 
+float \hyperlink{class_monitoring_server_a34a8e8240fa207c0be29ba9bd2906d78}{calculate\+Distance} (signed rssi, int A)
+\begin{DoxyCompactList}\small\item\em Conversione molto grossolana da R\+S\+SI a Metri. \end{DoxyCompactList}\item 
+bool \hyperlink{class_monitoring_server_a5e3a184c4a5682cf798125aa9cec1fdf}{is\+\_\+inside\+\_\+room} (\hyperlink{class_position_data}{Position\+Data} data)
+\item 
+bool \hyperlink{class_monitoring_server_a3bafba709daa02510e3194d91fd86170}{get\+Hidden\+Device\+For} (\hyperlink{class_packet}{Packet} source, uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time, std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ \&hidden\+Packets)
+\item 
+bool \hyperlink{class_monitoring_server_a5dc421b81970cf4523c84e3653dada41}{get\+Hidden\+Mac\+For} (Q\+String mac, uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time)
+\item 
+int \hyperlink{class_monitoring_server_ae86353505417c1ee5510dd4fcaee972c}{get\+Hidden\+Device} (uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time)
+\item 
+std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ \hyperlink{class_monitoring_server_abf46ea7e4384479240573963b30eda23}{get\+Hidden\+Packets} (uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time)
+\item 
+\hyperlink{class_packet}{Packet} \hyperlink{class_monitoring_server_a56c13fabe5959bd524865d9686a42d43}{get\+Last\+Packet\+With\+Mac} (Q\+String mac, uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time)
+\item 
+std\+::list$<$ \hyperlink{class_position_data}{Position\+Data} $>$ \hyperlink{class_monitoring_server_a1e12a2ee3d7ecb73e1316e8818e64374}{get\+All\+Position\+Of\+Mac} (Q\+String mac, uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time)
+\item 
+std\+::list$<$ uint32\+\_\+t $>$ \hyperlink{class_monitoring_server_ac505f5aa1e6b6c4f855537e3297b0214}{get\+All\+Time\+Stamp\+Of\+Mac} (Q\+String mac, uint32\+\_\+t init\+Time, uint32\+\_\+t end\+Time)
+\item 
+double \hyperlink{class_monitoring_server_a645e06f62742717a286f2cfd9bad6fb0}{check\+Time\+Stamp} (uint32\+\_\+t timestamp, std\+::list$<$ uint32\+\_\+t $>$ list)
+\item 
+double \hyperlink{class_monitoring_server_a1e9a9e70156471a2fdc73d3bdadbd308}{check\+Pos} (\hyperlink{class_position_data}{Position\+Data} data, std\+::list$<$ \hyperlink{class_position_data}{Position\+Data} $>$ list)
+\item 
+void \hyperlink{class_monitoring_server_addc87726ec0ad24c95905b388ce794e5}{aggregate} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static bool \hyperlink{class_monitoring_server_acb617118322490550d1c996a8337d412}{is\+Random\+Mac} (const std\+::string \&basic\+String)
+\item 
+static std\+::list$<$ \hyperlink{class_packet}{Packet} $>$ \hyperlink{class_monitoring_server_a5a1e4be78d806bf0960eb35b445b45b2}{get\+All\+Packets\+Of\+Mac} (const Q\+String \&mac, uint32\+\_\+t time, uint32\+\_\+t end\+Time)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_monitoring_server_aa1162d5ef34903e51c1fe2134f1e3959}\label{class_monitoring_server_aa1162d5ef34903e51c1fe2134f1e3959}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!Monitoring\+Server@{Monitoring\+Server}}
+\index{Monitoring\+Server@{Monitoring\+Server}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{Monitoring\+Server()}{MonitoringServer()}}
+{\footnotesize\ttfamily Monitoring\+Server\+::\+Monitoring\+Server (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_a746c8d1673afb88e6ea7149b20c766d4}\label{class_monitoring_server_a746c8d1673afb88e6ea7149b20c766d4}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!````~Monitoring\+Server@{$\sim$\+Monitoring\+Server}}
+\index{````~Monitoring\+Server@{$\sim$\+Monitoring\+Server}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{$\sim$\+Monitoring\+Server()}{~MonitoringServer()}}
+{\footnotesize\ttfamily Monitoring\+Server\+::$\sim$\+Monitoring\+Server (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_monitoring_server_addc87726ec0ad24c95905b388ce794e5}\label{class_monitoring_server_addc87726ec0ad24c95905b388ce794e5}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!aggregate@{aggregate}}
+\index{aggregate@{aggregate}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{aggregate()}{aggregate()}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::aggregate (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_af90198642c809ec801d07afa789a6869}\label{class_monitoring_server_af90198642c809ec801d07afa789a6869}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!aggregated@{aggregated}}
+\index{aggregated@{aggregated}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{aggregated}{aggregated}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::aggregated (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+\mbox{\Hypertarget{class_monitoring_server_a34a8e8240fa207c0be29ba9bd2906d78}\label{class_monitoring_server_a34a8e8240fa207c0be29ba9bd2906d78}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!calculate\+Distance@{calculate\+Distance}}
+\index{calculate\+Distance@{calculate\+Distance}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{calculate\+Distance()}{calculateDistance()}}
+{\footnotesize\ttfamily float Monitoring\+Server\+::calculate\+Distance (\begin{DoxyParamCaption}\item[{signed}]{rssi,  }\item[{int}]{A }\end{DoxyParamCaption})}
+
+
+
+Conversione molto grossolana da R\+S\+SI a Metri. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em rssi} & R\+S\+SI\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+float in metri 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_a1e9a9e70156471a2fdc73d3bdadbd308}\label{class_monitoring_server_a1e9a9e70156471a2fdc73d3bdadbd308}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!check\+Pos@{check\+Pos}}
+\index{check\+Pos@{check\+Pos}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{check\+Pos()}{checkPos()}}
+{\footnotesize\ttfamily double Monitoring\+Server\+::check\+Pos (\begin{DoxyParamCaption}\item[{\hyperlink{class_position_data}{Position\+Data}}]{data,  }\item[{std\+::list$<$ \hyperlink{class_position_data}{Position\+Data} $>$}]{list }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_a645e06f62742717a286f2cfd9bad6fb0}\label{class_monitoring_server_a645e06f62742717a286f2cfd9bad6fb0}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!check\+Time\+Stamp@{check\+Time\+Stamp}}
+\index{check\+Time\+Stamp@{check\+Time\+Stamp}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{check\+Time\+Stamp()}{checkTimeStamp()}}
+{\footnotesize\ttfamily double Monitoring\+Server\+::check\+Time\+Stamp (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{timestamp,  }\item[{std\+::list$<$ uint32\+\_\+t $>$}]{list }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_aa18eeed56d82fb3de1a4fe1ac1820b73}\label{class_monitoring_server_aa18eeed56d82fb3de1a4fe1ac1820b73}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!from\+Rssi\+To\+XY@{from\+Rssi\+To\+XY}}
+\index{from\+Rssi\+To\+XY@{from\+Rssi\+To\+XY}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{from\+Rssi\+To\+X\+Y()}{fromRssiToXY()}}
+{\footnotesize\ttfamily \hyperlink{class_position_data}{Position\+Data} Monitoring\+Server\+::from\+Rssi\+To\+XY (\begin{DoxyParamCaption}\item[{const std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ \&}]{deque }\end{DoxyParamCaption})}
+
+Questa funzione prende in ingresso una coda di pacchetti con lo stesso F\+C\+S(hash) e provenienti da schede differenti. L\textquotesingle{}obiettivo è restituire la posizione stimata. Restituisce \hyperlink{class_position_data}{Position\+Data}(-\/1,-\/1) se dato non va bene. 
+\begin{DoxyParams}{Parameters}
+{\em deque} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+Se i cerchi non si intersecano si va ad aumentare il modulo dell\textquotesingle{}R\+S\+SI per poter raggiungere una migliore stima della posizione fino ad un massimo di 1000 volte\mbox{\Hypertarget{class_monitoring_server_a5a1e4be78d806bf0960eb35b445b45b2}\label{class_monitoring_server_a5a1e4be78d806bf0960eb35b445b45b2}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+All\+Packets\+Of\+Mac@{get\+All\+Packets\+Of\+Mac}}
+\index{get\+All\+Packets\+Of\+Mac@{get\+All\+Packets\+Of\+Mac}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+All\+Packets\+Of\+Mac()}{getAllPacketsOfMac()}}
+{\footnotesize\ttfamily std\+::list$<$ \hyperlink{class_packet}{Packet} $>$ Monitoring\+Server\+::get\+All\+Packets\+Of\+Mac (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{mac,  }\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Funzione che ottiene tutti i pacchetti di un determinato mac in un determinato intervallo temporale 
+\begin{DoxyParams}{Parameters}
+{\em mac} & \\
+\hline
+{\em init\+Time} & \\
+\hline
+{\em end\+Time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_a1e12a2ee3d7ecb73e1316e8818e64374}\label{class_monitoring_server_a1e12a2ee3d7ecb73e1316e8818e64374}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+All\+Position\+Of\+Mac@{get\+All\+Position\+Of\+Mac}}
+\index{get\+All\+Position\+Of\+Mac@{get\+All\+Position\+Of\+Mac}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+All\+Position\+Of\+Mac()}{getAllPositionOfMac()}}
+{\footnotesize\ttfamily std\+::list$<$\hyperlink{class_position_data}{Position\+Data}$>$ Monitoring\+Server\+::get\+All\+Position\+Of\+Mac (\begin{DoxyParamCaption}\item[{Q\+String}]{mac,  }\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_ac505f5aa1e6b6c4f855537e3297b0214}\label{class_monitoring_server_ac505f5aa1e6b6c4f855537e3297b0214}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+All\+Time\+Stamp\+Of\+Mac@{get\+All\+Time\+Stamp\+Of\+Mac}}
+\index{get\+All\+Time\+Stamp\+Of\+Mac@{get\+All\+Time\+Stamp\+Of\+Mac}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+All\+Time\+Stamp\+Of\+Mac()}{getAllTimeStampOfMac()}}
+{\footnotesize\ttfamily std\+::list$<$uint32\+\_\+t$>$ Monitoring\+Server\+::get\+All\+Time\+Stamp\+Of\+Mac (\begin{DoxyParamCaption}\item[{Q\+String}]{mac,  }\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_ae86353505417c1ee5510dd4fcaee972c}\label{class_monitoring_server_ae86353505417c1ee5510dd4fcaee972c}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+Hidden\+Device@{get\+Hidden\+Device}}
+\index{get\+Hidden\+Device@{get\+Hidden\+Device}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+Hidden\+Device()}{getHiddenDevice()}}
+{\footnotesize\ttfamily int Monitoring\+Server\+::get\+Hidden\+Device (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})}
+
+Restituisce una stima del numero di dispositivi con mac nascosto nell\textquotesingle{}intervallo di tempo passato. Separato su due funzioni per avere anche solo la ricerca per un singolo mac. 
+\begin{DoxyParams}{Parameters}
+{\em init\+Time} & \\
+\hline
+{\em end\+Time} & init\+Time e end\+Time corrispondono al periodo di osservazione (esempio alcune ore) tolleranza\+Timestamp corrisponde al tempo in cui la posizione deve essere simile per dire che il mac è uguale ad un altro (esempio 1 minuto)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_a3bafba709daa02510e3194d91fd86170}\label{class_monitoring_server_a3bafba709daa02510e3194d91fd86170}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+Hidden\+Device\+For@{get\+Hidden\+Device\+For}}
+\index{get\+Hidden\+Device\+For@{get\+Hidden\+Device\+For}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+Hidden\+Device\+For()}{getHiddenDeviceFor()}}
+{\footnotesize\ttfamily bool Monitoring\+Server\+::get\+Hidden\+Device\+For (\begin{DoxyParamCaption}\item[{\hyperlink{class_packet}{Packet}}]{source,  }\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time,  }\item[{std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ \&}]{hidden\+Packets }\end{DoxyParamCaption})}
+
+veririca se sono presenti mac simili a source oppure no. Mac selezionato da interfaccia. Vengono ottenuti dal db tutti i pacchetti hidden nel lasso di tempo specificato. 
+\begin{DoxyParams}{Parameters}
+{\em source} & \\
+\hline
+{\em init\+Time} & \\
+\hline
+{\em end\+Time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_a5dc421b81970cf4523c84e3653dada41}\label{class_monitoring_server_a5dc421b81970cf4523c84e3653dada41}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+Hidden\+Mac\+For@{get\+Hidden\+Mac\+For}}
+\index{get\+Hidden\+Mac\+For@{get\+Hidden\+Mac\+For}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+Hidden\+Mac\+For()}{getHiddenMacFor()}}
+{\footnotesize\ttfamily bool Monitoring\+Server\+::get\+Hidden\+Mac\+For (\begin{DoxyParamCaption}\item[{Q\+String}]{mac,  }\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})}
+
+Stessa cosa della funzione get\+Hidden\+Device\+For ma questa volta partendo solo dalla stringa del mac e non da un intero pacchetto 
+\begin{DoxyParams}{Parameters}
+{\em mac} & \\
+\hline
+{\em init\+Time} & \\
+\hline
+{\em end\+Time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_abf46ea7e4384479240573963b30eda23}\label{class_monitoring_server_abf46ea7e4384479240573963b30eda23}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+Hidden\+Packets@{get\+Hidden\+Packets}}
+\index{get\+Hidden\+Packets@{get\+Hidden\+Packets}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+Hidden\+Packets()}{getHiddenPackets()}}
+{\footnotesize\ttfamily std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ Monitoring\+Server\+::get\+Hidden\+Packets (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})}
+
+Funzione che recupera dal db tutti i pacchetti con mac hidden nel periodo specificato 
+\begin{DoxyParams}{Parameters}
+{\em init\+Time} & \\
+\hline
+{\em end\+Time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_a56c13fabe5959bd524865d9686a42d43}\label{class_monitoring_server_a56c13fabe5959bd524865d9686a42d43}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!get\+Last\+Packet\+With\+Mac@{get\+Last\+Packet\+With\+Mac}}
+\index{get\+Last\+Packet\+With\+Mac@{get\+Last\+Packet\+With\+Mac}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{get\+Last\+Packet\+With\+Mac()}{getLastPacketWithMac()}}
+{\footnotesize\ttfamily \hyperlink{class_packet}{Packet} Monitoring\+Server\+::get\+Last\+Packet\+With\+Mac (\begin{DoxyParamCaption}\item[{Q\+String}]{mac,  }\item[{uint32\+\_\+t}]{init\+Time,  }\item[{uint32\+\_\+t}]{end\+Time }\end{DoxyParamCaption})}
+
+Funzione utilizzata per ottenere il pacchetto con il maggior timestamp di un determinato mac 
+\begin{DoxyParams}{Parameters}
+{\em mac} & \\
+\hline
+{\em init\+Time} & \\
+\hline
+{\em end\+Time} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_monitoring_server_a5e3a184c4a5682cf798125aa9cec1fdf}\label{class_monitoring_server_a5e3a184c4a5682cf798125aa9cec1fdf}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!is\+\_\+inside\+\_\+room@{is\+\_\+inside\+\_\+room}}
+\index{is\+\_\+inside\+\_\+room@{is\+\_\+inside\+\_\+room}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{is\+\_\+inside\+\_\+room()}{is\_inside\_room()}}
+{\footnotesize\ttfamily bool Monitoring\+Server\+::is\+\_\+inside\+\_\+room (\begin{DoxyParamCaption}\item[{\hyperlink{class_position_data}{Position\+Data}}]{data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_acb617118322490550d1c996a8337d412}\label{class_monitoring_server_acb617118322490550d1c996a8337d412}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!is\+Random\+Mac@{is\+Random\+Mac}}
+\index{is\+Random\+Mac@{is\+Random\+Mac}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{is\+Random\+Mac()}{isRandomMac()}}
+{\footnotesize\ttfamily bool Monitoring\+Server\+::is\+Random\+Mac (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{basic\+String }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_monitoring_server_a8bc22df08a9db6280136cbd24bf907f1}\label{class_monitoring_server_a8bc22df08a9db6280136cbd24bf907f1}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!is\+Running@{is\+Running}}
+\index{is\+Running@{is\+Running}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{is\+Running()}{isRunning()}}
+{\footnotesize\ttfamily bool Monitoring\+Server\+::is\+Running (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_a54ae4688c3cb974fdb690f095b9ef5cf}\label{class_monitoring_server_a54ae4688c3cb974fdb690f095b9ef5cf}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!new\+Connection@{new\+Connection}}
+\index{new\+Connection@{new\+Connection}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{new\+Connection}{newConnection}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::new\+Connection (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [slot]}}
+
+Slot new Connection E\textquotesingle{} il corpo principale che rappresenta cosa bisogna fare ogni volta che si presenta una nuova connessione I\+N\+I\+Z\+IO E\+S\+E\+C\+U\+Z\+I\+O\+NE T\+H\+R\+E\+A\+D-\/\+S\+A\+FE \mbox{\Hypertarget{class_monitoring_server_a1398ffaaddcc6859474083c353975581}\label{class_monitoring_server_a1398ffaaddcc6859474083c353975581}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!split@{split}}
+\index{split@{split}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{split()}{split()}}
+{\footnotesize\ttfamily template$<$class Container $>$ \\
+void Monitoring\+Server\+::split (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str,  }\item[{Container \&}]{cont,  }\item[{char}]{delim }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_monitoring_server_a1d242318daca890ae72cd675694a6411}\label{class_monitoring_server_a1d242318daca890ae72cd675694a6411}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!split\+String@{split\+String}}
+\index{split\+String@{split\+String}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{split\+String()}{splitString()}}
+{\footnotesize\ttfamily template$<$class Container $>$ \\
+void Monitoring\+Server\+::split\+String (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str,  }\item[{Container \&}]{cont,  }\item[{std\+::string \&}]{start\+Delim,  }\item[{std\+::string \&}]{stop\+Delim }\end{DoxyParamCaption})}
+
+Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina 
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Container} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em str} & \\
+\hline
+{\em cont} & \\
+\hline
+{\em start\+Delim} & \\
+\hline
+{\em stop\+Delim} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_monitoring_server_a00eefeea4d3a341babdb1d48d8b7cca5}\label{class_monitoring_server_a00eefeea4d3a341babdb1d48d8b7cca5}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!start@{start}}
+\index{start@{start}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{start()}{start()}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::start (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione che viene avviata non appena viene premuto il pulsante Start Si occupa di inizializzare il server (127.\+0.\+0.\+1\+:27015) e di impostare la callback di ogni nuova connessione a this-\/$>$new\+Connection \mbox{\Hypertarget{class_monitoring_server_a2e115786d37661f8b68d4ffd9e6f81a7}\label{class_monitoring_server_a2e115786d37661f8b68d4ffd9e6f81a7}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!started@{started}}
+\index{started@{started}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{started}{started}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::started (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+Signal che segnala l\textquotesingle{}avvio del Server T\+CP 
+\begin{DoxyParams}{Parameters}
+{\em n\+Schedine} & numero delle schedine a disposizione \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_monitoring_server_aa07082c64076b67ba802bfc2adec235b}\label{class_monitoring_server_aa07082c64076b67ba802bfc2adec235b}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!stop@{stop}}
+\index{stop@{stop}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Chiude il server non appena viene premuto il pulsante di stop \mbox{\Hypertarget{class_monitoring_server_a5884af90abe908f8dc09cb540d738559}\label{class_monitoring_server_a5884af90abe908f8dc09cb540d738559}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!stopped@{stopped}}
+\index{stopped@{stopped}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{stopped}{stopped}}
+{\footnotesize\ttfamily void Monitoring\+Server\+::stopped (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+Signal che segnala la chiusura del server T\+CP \mbox{\Hypertarget{class_monitoring_server_a184b7dece607f724cfa5cc05add554ce}\label{class_monitoring_server_a184b7dece607f724cfa5cc05add554ce}} 
+\index{Monitoring\+Server@{Monitoring\+Server}!string2packet@{string2packet}}
+\index{string2packet@{string2packet}!Monitoring\+Server@{Monitoring\+Server}}
+\subsubsection{\texorpdfstring{string2packet()}{string2packet()}}
+{\footnotesize\ttfamily std\+::deque$<$ \hyperlink{class_packet}{Packet} $>$ Monitoring\+Server\+::string2packet (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ std\+::string $>$ \&}]{packets }\end{DoxyParamCaption})}
+
+Funzione utilizzata per convertire il vettore di stringhe ricevute dalla esp in oggetti packet 
+\begin{DoxyParams}{Parameters}
+{\em packets} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+monitoring/\hyperlink{_monitoring_server_8h}{Monitoring\+Server.\+h}\item 
+monitoring/\hyperlink{_monitoring_server_8cpp}{Monitoring\+Server.\+cpp}\end{DoxyCompactItemize}

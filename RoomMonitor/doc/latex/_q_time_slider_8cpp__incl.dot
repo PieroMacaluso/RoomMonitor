@@ -1,0 +1,38 @@
+digraph "windows/elements/QTimeSlider.cpp"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node0 [label="windows/elements/QTimeSlider.cpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node0 -> Node1 [color="midnightblue",fontsize="10",style="solid"];
+  Node1 [label="QTimeSlider.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_q_time_slider_8h.html"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid"];
+  Node2 [label="QtWidgets/QSlider",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid"];
+  Node3 [label="windows/common/callout.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$callout_8h.html"];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid"];
+  Node4 [label="QtCharts/QChartGlobal",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node5 [color="midnightblue",fontsize="10",style="solid"];
+  Node5 [label="QtWidgets/QGraphicsItem",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node3 -> Node6 [color="midnightblue",fontsize="10",style="solid"];
+  Node6 [label="QtGui/QFont",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid"];
+  Node7 [label="QtWidgets/QLabel",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid"];
+  Node8 [label="windows/classes/Position\lDataPlot.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_position_data_plot_8h.html"];
+  Node8 -> Node9 [color="midnightblue",fontsize="10",style="solid"];
+  Node9 [label="QtCore/QDateTime",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node10 [color="midnightblue",fontsize="10",style="solid"];
+  Node10 [label="windows/classes/MacLastPos.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_mac_last_pos_8h.html"];
+  Node10 -> Node11 [color="midnightblue",fontsize="10",style="solid"];
+  Node11 [label="QtCore/QtGlobal",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node10 -> Node12 [color="midnightblue",fontsize="10",style="solid"];
+  Node12 [label="QString",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node13 [color="midnightblue",fontsize="10",style="solid"];
+  Node13 [label="windows/classes/LastMac.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_last_mac_8h.html"];
+  Node13 -> Node9 [color="midnightblue",fontsize="10",style="solid"];
+  Node0 -> Node14 [color="midnightblue",fontsize="10",style="solid"];
+  Node14 [label="QDebug",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node0 -> Node15 [color="midnightblue",fontsize="10",style="solid"];
+  Node15 [label="QSlider",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node0 -> Node7 [color="midnightblue",fontsize="10",style="solid"];
+}

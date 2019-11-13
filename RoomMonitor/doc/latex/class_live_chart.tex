@@ -1,0 +1,165 @@
+\hypertarget{class_live_chart}{}\section{Live\+Chart Class Reference}
+\label{class_live_chart}\index{Live\+Chart@{Live\+Chart}}
+
+
+{\ttfamily \#include $<$Live\+Chart.\+h$>$}
+
+
+
+Inheritance diagram for Live\+Chart\+:
+% FIG 0
+
+
+Collaboration diagram for Live\+Chart\+:
+% FIG 1
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_live_chart_ac03ec2247d586d044a7b5483f58df92d}{Live\+Chart} (Q\+Graphics\+Item $\ast$parent=nullptr, Qt\+::\+Window\+Flags w\+Flags=Qt\+::\+Window\+Flags())
+\item 
+void \hyperlink{class_live_chart_a611bd4a559e178df00527a138fa4b3bf}{add\+Boards\+Series} (Q\+Scatter\+Series $\ast$series)
+\item 
+void \hyperlink{class_live_chart_a69d9fa408a72a003c8995267dd26b712}{add\+Devices\+Series} (Q\+Scatter\+Series $\ast$series)
+\item 
+void \hyperlink{class_live_chart_ac721a5c2154777d516f8f280ebee3182}{add\+Board} (qreal x\+Value, qreal y\+Value)
+\item 
+void \hyperlink{class_live_chart_a216e4fb970fceb8d6234ef40f0399391}{add\+Device} (qreal x\+Value, qreal y\+Value)
+\item 
+void \hyperlink{class_live_chart_a978b5af6dbc43e47c239c002da321444}{addX} (Q\+Value\+Axis $\ast$axisX)
+\item 
+void \hyperlink{class_live_chart_a6d066e097ed4285fbc4488b9c8dc8413}{addY} (Q\+Value\+Axis $\ast$axisY)
+\item 
+Q\+Scatter\+Series $\ast$ \hyperlink{class_live_chart_a568a649fcc3cdeb7460a7e84e0572060}{get\+Boards\+Scatter} ()
+\item 
+Q\+Scatter\+Series $\ast$ \hyperlink{class_live_chart_a8cc7eeca378b44c8c3e0c5f747c4f371}{get\+Devices\+Scatter} ()
+\item 
+void \hyperlink{class_live_chart_a337dce6b6f316c6bdb186c5248794b89}{reset\+View} ()
+\item 
+qreal \hyperlink{class_live_chart_a98a181f02aab9a8520c827918c10b17b}{get\+X\+Max} () const
+\item 
+qreal \hyperlink{class_live_chart_a07e50443776326949c789a76b66f6710}{get\+Y\+Max} () const
+\item 
+void \hyperlink{class_live_chart_a9f5da08d9d15d3c17ff2e818ea8ecccd}{fill\+Boards} (std\+::vector$<$ \hyperlink{class_board}{Board} $>$ new\+Data)
+\item 
+void \hyperlink{class_live_chart_acb2cf3c9acdbbc1614f20a1e07eeb4a7}{fill\+Devices} (Q\+Map$<$ Q\+String, \hyperlink{class_last_mac}{Last\+Mac} $>$ \&new\+Data)
+\item 
+void \hyperlink{class_live_chart_accae06e7d26ab24bd161df2eae4e72e8}{fill\+DevicesV} (std\+::vector$<$ \hyperlink{class_last_mac}{Last\+Mac} $>$ new\+Data)
+\item 
+const std\+::vector$<$ \hyperlink{class_last_mac}{Last\+Mac} $>$ \& \hyperlink{class_live_chart_a98e3b63456491d6ab60b7b406ef2db70}{get\+Devices} () const
+\item 
+const std\+::vector$<$ \hyperlink{class_board}{Board} $>$ \& \hyperlink{class_live_chart_abe38f270dd1ea9ac2ea0c13ede4650e0}{get\+Boards} () const
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_live_chart_ac03ec2247d586d044a7b5483f58df92d}\label{class_live_chart_ac03ec2247d586d044a7b5483f58df92d}} 
+\index{Live\+Chart@{Live\+Chart}!Live\+Chart@{Live\+Chart}}
+\index{Live\+Chart@{Live\+Chart}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{Live\+Chart()}{LiveChart()}}
+{\footnotesize\ttfamily Live\+Chart\+::\+Live\+Chart (\begin{DoxyParamCaption}\item[{Q\+Graphics\+Item $\ast$}]{parent = {\ttfamily nullptr},  }\item[{Qt\+::\+Window\+Flags}]{w\+Flags = {\ttfamily Qt\+:\+:WindowFlags()} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_live_chart_ac721a5c2154777d516f8f280ebee3182}\label{class_live_chart_ac721a5c2154777d516f8f280ebee3182}} 
+\index{Live\+Chart@{Live\+Chart}!add\+Board@{add\+Board}}
+\index{add\+Board@{add\+Board}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{add\+Board()}{addBoard()}}
+{\footnotesize\ttfamily void Live\+Chart\+::add\+Board (\begin{DoxyParamCaption}\item[{qreal}]{x\+Value,  }\item[{qreal}]{y\+Value }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a611bd4a559e178df00527a138fa4b3bf}\label{class_live_chart_a611bd4a559e178df00527a138fa4b3bf}} 
+\index{Live\+Chart@{Live\+Chart}!add\+Boards\+Series@{add\+Boards\+Series}}
+\index{add\+Boards\+Series@{add\+Boards\+Series}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{add\+Boards\+Series()}{addBoardsSeries()}}
+{\footnotesize\ttfamily void Live\+Chart\+::add\+Boards\+Series (\begin{DoxyParamCaption}\item[{Q\+Scatter\+Series $\ast$}]{series }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a216e4fb970fceb8d6234ef40f0399391}\label{class_live_chart_a216e4fb970fceb8d6234ef40f0399391}} 
+\index{Live\+Chart@{Live\+Chart}!add\+Device@{add\+Device}}
+\index{add\+Device@{add\+Device}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{add\+Device()}{addDevice()}}
+{\footnotesize\ttfamily void Live\+Chart\+::add\+Device (\begin{DoxyParamCaption}\item[{qreal}]{x\+Value,  }\item[{qreal}]{y\+Value }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a69d9fa408a72a003c8995267dd26b712}\label{class_live_chart_a69d9fa408a72a003c8995267dd26b712}} 
+\index{Live\+Chart@{Live\+Chart}!add\+Devices\+Series@{add\+Devices\+Series}}
+\index{add\+Devices\+Series@{add\+Devices\+Series}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{add\+Devices\+Series()}{addDevicesSeries()}}
+{\footnotesize\ttfamily void Live\+Chart\+::add\+Devices\+Series (\begin{DoxyParamCaption}\item[{Q\+Scatter\+Series $\ast$}]{series }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a978b5af6dbc43e47c239c002da321444}\label{class_live_chart_a978b5af6dbc43e47c239c002da321444}} 
+\index{Live\+Chart@{Live\+Chart}!addX@{addX}}
+\index{addX@{addX}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{add\+X()}{addX()}}
+{\footnotesize\ttfamily void Live\+Chart\+::addX (\begin{DoxyParamCaption}\item[{Q\+Value\+Axis $\ast$}]{axisX }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a6d066e097ed4285fbc4488b9c8dc8413}\label{class_live_chart_a6d066e097ed4285fbc4488b9c8dc8413}} 
+\index{Live\+Chart@{Live\+Chart}!addY@{addY}}
+\index{addY@{addY}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{add\+Y()}{addY()}}
+{\footnotesize\ttfamily void Live\+Chart\+::addY (\begin{DoxyParamCaption}\item[{Q\+Value\+Axis $\ast$}]{axisY }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a9f5da08d9d15d3c17ff2e818ea8ecccd}\label{class_live_chart_a9f5da08d9d15d3c17ff2e818ea8ecccd}} 
+\index{Live\+Chart@{Live\+Chart}!fill\+Boards@{fill\+Boards}}
+\index{fill\+Boards@{fill\+Boards}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{fill\+Boards()}{fillBoards()}}
+{\footnotesize\ttfamily void Live\+Chart\+::fill\+Boards (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \hyperlink{class_board}{Board} $>$}]{new\+Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_acb2cf3c9acdbbc1614f20a1e07eeb4a7}\label{class_live_chart_acb2cf3c9acdbbc1614f20a1e07eeb4a7}} 
+\index{Live\+Chart@{Live\+Chart}!fill\+Devices@{fill\+Devices}}
+\index{fill\+Devices@{fill\+Devices}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{fill\+Devices()}{fillDevices()}}
+{\footnotesize\ttfamily void Live\+Chart\+::fill\+Devices (\begin{DoxyParamCaption}\item[{Q\+Map$<$ Q\+String, \hyperlink{class_last_mac}{Last\+Mac} $>$ \&}]{new\+Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_accae06e7d26ab24bd161df2eae4e72e8}\label{class_live_chart_accae06e7d26ab24bd161df2eae4e72e8}} 
+\index{Live\+Chart@{Live\+Chart}!fill\+DevicesV@{fill\+DevicesV}}
+\index{fill\+DevicesV@{fill\+DevicesV}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{fill\+Devices\+V()}{fillDevicesV()}}
+{\footnotesize\ttfamily void Live\+Chart\+::fill\+DevicesV (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \hyperlink{class_last_mac}{Last\+Mac} $>$}]{new\+Data }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_abe38f270dd1ea9ac2ea0c13ede4650e0}\label{class_live_chart_abe38f270dd1ea9ac2ea0c13ede4650e0}} 
+\index{Live\+Chart@{Live\+Chart}!get\+Boards@{get\+Boards}}
+\index{get\+Boards@{get\+Boards}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{get\+Boards()}{getBoards()}}
+{\footnotesize\ttfamily const std\+::vector$<$ \hyperlink{class_board}{Board} $>$ \& Live\+Chart\+::get\+Boards (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_live_chart_a568a649fcc3cdeb7460a7e84e0572060}\label{class_live_chart_a568a649fcc3cdeb7460a7e84e0572060}} 
+\index{Live\+Chart@{Live\+Chart}!get\+Boards\+Scatter@{get\+Boards\+Scatter}}
+\index{get\+Boards\+Scatter@{get\+Boards\+Scatter}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{get\+Boards\+Scatter()}{getBoardsScatter()}}
+{\footnotesize\ttfamily Q\+Scatter\+Series $\ast$ Live\+Chart\+::get\+Boards\+Scatter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a98e3b63456491d6ab60b7b406ef2db70}\label{class_live_chart_a98e3b63456491d6ab60b7b406ef2db70}} 
+\index{Live\+Chart@{Live\+Chart}!get\+Devices@{get\+Devices}}
+\index{get\+Devices@{get\+Devices}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{get\+Devices()}{getDevices()}}
+{\footnotesize\ttfamily const std\+::vector$<$ \hyperlink{class_last_mac}{Last\+Mac} $>$ \& Live\+Chart\+::get\+Devices (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_live_chart_a8cc7eeca378b44c8c3e0c5f747c4f371}\label{class_live_chart_a8cc7eeca378b44c8c3e0c5f747c4f371}} 
+\index{Live\+Chart@{Live\+Chart}!get\+Devices\+Scatter@{get\+Devices\+Scatter}}
+\index{get\+Devices\+Scatter@{get\+Devices\+Scatter}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{get\+Devices\+Scatter()}{getDevicesScatter()}}
+{\footnotesize\ttfamily Q\+Scatter\+Series $\ast$ Live\+Chart\+::get\+Devices\+Scatter (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_live_chart_a98a181f02aab9a8520c827918c10b17b}\label{class_live_chart_a98a181f02aab9a8520c827918c10b17b}} 
+\index{Live\+Chart@{Live\+Chart}!get\+X\+Max@{get\+X\+Max}}
+\index{get\+X\+Max@{get\+X\+Max}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{get\+X\+Max()}{getXMax()}}
+{\footnotesize\ttfamily qreal Live\+Chart\+::get\+X\+Max (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_live_chart_a07e50443776326949c789a76b66f6710}\label{class_live_chart_a07e50443776326949c789a76b66f6710}} 
+\index{Live\+Chart@{Live\+Chart}!get\+Y\+Max@{get\+Y\+Max}}
+\index{get\+Y\+Max@{get\+Y\+Max}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{get\+Y\+Max()}{getYMax()}}
+{\footnotesize\ttfamily qreal Live\+Chart\+::get\+Y\+Max (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_live_chart_a337dce6b6f316c6bdb186c5248794b89}\label{class_live_chart_a337dce6b6f316c6bdb186c5248794b89}} 
+\index{Live\+Chart@{Live\+Chart}!reset\+View@{reset\+View}}
+\index{reset\+View@{reset\+View}!Live\+Chart@{Live\+Chart}}
+\subsubsection{\texorpdfstring{reset\+View()}{resetView()}}
+{\footnotesize\ttfamily void Live\+Chart\+::reset\+View (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+windows/plots/live/\hyperlink{_live_chart_8h}{Live\+Chart.\+h}\item 
+windows/plots/live/\hyperlink{_live_chart_8cpp}{Live\+Chart.\+cpp}\end{DoxyCompactItemize}

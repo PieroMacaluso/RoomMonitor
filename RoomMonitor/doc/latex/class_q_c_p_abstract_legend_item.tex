@@ -1,0 +1,386 @@
+\hypertarget{class_q_c_p_abstract_legend_item}{}\section{Q\+C\+P\+Abstract\+Legend\+Item Class Reference}
+\label{class_q_c_p_abstract_legend_item}\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+
+
+The abstract base class for all entries in a \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}.  
+
+
+
+
+{\ttfamily \#include $<$qcustomplot.\+h$>$}
+
+
+
+Inheritance diagram for Q\+C\+P\+Abstract\+Legend\+Item\+:
+% FIG 0
+
+
+Collaboration diagram for Q\+C\+P\+Abstract\+Legend\+Item\+:
+% FIG 1
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_q_c_p_abstract_legend_item_a7cb61fdfbaf69c590bacb8f9e7099d9e}{selection\+Changed} (bool \hyperlink{class_q_c_p_abstract_legend_item_adf427dbb05d5f1a8e84c6abcb05becdf}{selected})
+\item 
+void \hyperlink{class_q_c_p_abstract_legend_item_abc4d779b938cc9235f9196737dbaa6bd}{selectable\+Changed} (bool \hyperlink{class_q_c_p_abstract_legend_item_af054a668038bcd7e35a35a07d1e79a23}{selectable})
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_q_c_p_abstract_legend_item_afaff87610e8da0fa238ecf552872d774}{Q\+C\+P\+Abstract\+Legend\+Item} (\hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend} $\ast$parent)
+\item 
+\hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend} $\ast$ \hyperlink{class_q_c_p_abstract_legend_item_a15709a3f6b2ce3946261fe90422ae32e}{parent\+Legend} () const
+\item 
+Q\+Font \hyperlink{class_q_c_p_abstract_legend_item_a699b18e1d9e70372e51e75f462dbb643}{font} () const
+\item 
+Q\+Color \hyperlink{class_q_c_p_abstract_legend_item_a35b35fa697dcece86cf7e5818c0820b2}{text\+Color} () const
+\item 
+Q\+Font \hyperlink{class_q_c_p_abstract_legend_item_ace98814b31762578228f6b32111cd3c0}{selected\+Font} () const
+\item 
+Q\+Color \hyperlink{class_q_c_p_abstract_legend_item_a09540594509fb0074f3a1b39548e3bdc}{selected\+Text\+Color} () const
+\item 
+bool \hyperlink{class_q_c_p_abstract_legend_item_af054a668038bcd7e35a35a07d1e79a23}{selectable} () const
+\item 
+bool \hyperlink{class_q_c_p_abstract_legend_item_adf427dbb05d5f1a8e84c6abcb05becdf}{selected} () const
+\item 
+void \hyperlink{class_q_c_p_abstract_legend_item_a409c53455d8112f71d70c0c43eb10265}{set\+Font} (const Q\+Font \&\hyperlink{class_q_c_p_abstract_legend_item_a699b18e1d9e70372e51e75f462dbb643}{font})
+\item 
+void \hyperlink{class_q_c_p_abstract_legend_item_a6ebace6aaffaedcdab2d74e88acc2d1e}{set\+Text\+Color} (const Q\+Color \&color)
+\item 
+void \hyperlink{class_q_c_p_abstract_legend_item_a91db5aee48617a9d3206e61376807365}{set\+Selected\+Font} (const Q\+Font \&\hyperlink{class_q_c_p_abstract_legend_item_a699b18e1d9e70372e51e75f462dbb643}{font})
+\item 
+void \hyperlink{class_q_c_p_abstract_legend_item_a4d01d008ee1a5bfe9905b0397a421936}{set\+Selected\+Text\+Color} (const Q\+Color \&color)
+\item 
+Q\+\_\+\+S\+L\+OT void \hyperlink{class_q_c_p_abstract_legend_item_a9913ef48730551b696e7f98a2391c599}{set\+Selectable} (bool \hyperlink{class_q_c_p_abstract_legend_item_af054a668038bcd7e35a35a07d1e79a23}{selectable})
+\item 
+Q\+\_\+\+S\+L\+OT void \hyperlink{class_q_c_p_abstract_legend_item_a6eed93b0ab99cb3eabb043fb08179c2b}{set\+Selected} (bool \hyperlink{class_q_c_p_abstract_legend_item_adf427dbb05d5f1a8e84c6abcb05becdf}{selected})
+\item 
+virtual double \hyperlink{class_q_c_p_abstract_legend_item_a80ec112a6608fc39dbed56239849b187}{select\+Test} (const Q\+PointF \&pos, bool only\+Selectable, Q\+Variant $\ast$details=0) const \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{namespace_q_c_p_a2ad6bb6281c7c2d593d4277b44c2b037}{Q\+C\+P\+::\+Interaction} \hyperlink{class_q_c_p_abstract_legend_item_af8eb0fda0e11b0a23e1051b0102c8c6a}{selection\+Category} () const \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_abstract_legend_item_a6bfbcb9ace779f4f6fe22241c32a67c9}{apply\+Default\+Antialiasing\+Hint} (\hyperlink{class_q_c_p_painter}{Q\+C\+P\+Painter} $\ast$painter) const \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual Q\+Rect \hyperlink{class_q_c_p_abstract_legend_item_a806fa4d0104bdfc141aa8a36fcc9d51c}{clip\+Rect} () const \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_abstract_legend_item_a14ce0b09f5b814c765a0d790bd838909}{draw} (\hyperlink{class_q_c_p_painter}{Q\+C\+P\+Painter} $\ast$painter) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}=0
+\item 
+virtual void \hyperlink{class_q_c_p_abstract_legend_item_a0081acfd8c4bb8ac4e9dcfe0f6c49b74}{select\+Event} (Q\+Mouse\+Event $\ast$event, bool additive, const Q\+Variant \&details, bool $\ast$selection\+State\+Changed) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_abstract_legend_item_aa1c0620558cc8e2a2e6fb7ab558f6097}{deselect\+Event} (bool $\ast$selection\+State\+Changed) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend} $\ast$ \hyperlink{class_q_c_p_abstract_legend_item_aafcd9fc6fcb10f4a8d46037011afafe8}{m\+Parent\+Legend}
+\item 
+Q\+Font \hyperlink{class_q_c_p_abstract_legend_item_ae916a78ac0d2a60e20a17ca2f24f9754}{m\+Font}
+\item 
+Q\+Color \hyperlink{class_q_c_p_abstract_legend_item_a974b21e9930227d281344bd2242d289d}{m\+Text\+Color}
+\item 
+Q\+Font \hyperlink{class_q_c_p_abstract_legend_item_ab971df604306b192875a7d097feb1e21}{m\+Selected\+Font}
+\item 
+Q\+Color \hyperlink{class_q_c_p_abstract_legend_item_a4965c13854d970b24c284f0a4f005fbd}{m\+Selected\+Text\+Color}
+\item 
+bool \hyperlink{class_q_c_p_abstract_legend_item_aa84029f57b1b32f642fb7db63c3fc2c2}{m\+Selectable}
+\item 
+bool \hyperlink{class_q_c_p_abstract_legend_item_ae58ebebbd0c36cc6fe897483369984d2}{m\+Selected}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_q_c_p_abstract_legend_item_a8429035e7adfbd7f05805a6530ad5e3b}{Q\+C\+P\+Legend}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+The abstract base class for all entries in a \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}. 
+
+It defines a very basic interface for entries in a \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}. For representing plottables in the legend, the subclass \hyperlink{class_q_c_p_plottable_legend_item}{Q\+C\+P\+Plottable\+Legend\+Item} is more suitable.
+
+Only derive directly from this class when you need absolute freedom (e.\+g. a custom legend entry that\textquotesingle{}s not even associated with a plottable).
+
+You must implement the following pure virtual functions\+: \begin{DoxyItemize}
+\item \hyperlink{class_q_c_p_abstract_legend_item_a14ce0b09f5b814c765a0d790bd838909}{draw} (from \hyperlink{class_q_c_p_layerable}{Q\+C\+P\+Layerable})\end{DoxyItemize}
+You inherit the following members you may use\+: \tabulinesep=1mm
+\begin{longtabu} spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend} $\ast${\bfseries m\+Parent\+Legend}  &A pointer to the parent \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}. \\\cline{1-2}
+Q\+Font {\bfseries m\+Font}  &The generic font of the item. You should use this font for all or at least the most prominent text of the item.  \\\cline{1-2}
+\end{longtabu}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_afaff87610e8da0fa238ecf552872d774}\label{class_q_c_p_abstract_legend_item_afaff87610e8da0fa238ecf552872d774}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{Q\+C\+P\+Abstract\+Legend\+Item()}{QCPAbstractLegendItem()}}
+{\footnotesize\ttfamily Q\+C\+P\+Abstract\+Legend\+Item\+::\+Q\+C\+P\+Abstract\+Legend\+Item (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend} $\ast$}]{parent }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Constructs a \hyperlink{class_q_c_p_abstract_legend_item}{Q\+C\+P\+Abstract\+Legend\+Item} and associates it with the \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend} {\itshape parent}. This does not cause the item to be added to {\itshape parent}, so \hyperlink{class_q_c_p_legend_a3ab274de52d2951faea45a6d975e6b3f}{Q\+C\+P\+Legend\+::add\+Item} must be called separately. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a6bfbcb9ace779f4f6fe22241c32a67c9}\label{class_q_c_p_abstract_legend_item_a6bfbcb9ace779f4f6fe22241c32a67c9}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!apply\+Default\+Antialiasing\+Hint@{apply\+Default\+Antialiasing\+Hint}}
+\index{apply\+Default\+Antialiasing\+Hint@{apply\+Default\+Antialiasing\+Hint}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{apply\+Default\+Antialiasing\+Hint()}{applyDefaultAntialiasingHint()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::apply\+Default\+Antialiasing\+Hint (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_painter}{Q\+C\+P\+Painter} $\ast$}]{painter }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layout_element_a0a8f18141bcf46cf40ad4c13324ff346}{Q\+C\+P\+Layout\+Element}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a806fa4d0104bdfc141aa8a36fcc9d51c}\label{class_q_c_p_abstract_legend_item_a806fa4d0104bdfc141aa8a36fcc9d51c}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!clip\+Rect@{clip\+Rect}}
+\index{clip\+Rect@{clip\+Rect}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{clip\+Rect()}{clipRect()}}
+{\footnotesize\ttfamily Q\+Rect Q\+C\+P\+Abstract\+Legend\+Item\+::clip\+Rect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_acbcfc9ecc75433747b1978a77b1864b3}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_aa1c0620558cc8e2a2e6fb7ab558f6097}\label{class_q_c_p_abstract_legend_item_aa1c0620558cc8e2a2e6fb7ab558f6097}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!deselect\+Event@{deselect\+Event}}
+\index{deselect\+Event@{deselect\+Event}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{deselect\+Event()}{deselectEvent()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::deselect\+Event (\begin{DoxyParamCaption}\item[{bool $\ast$}]{selection\+State\+Changed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_ae546370644a5551c76af739afc008bee}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a14ce0b09f5b814c765a0d790bd838909}\label{class_q_c_p_abstract_legend_item_a14ce0b09f5b814c765a0d790bd838909}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!draw@{draw}}
+\index{draw@{draw}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily virtual void Q\+C\+P\+Abstract\+Legend\+Item\+::draw (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_painter}{Q\+C\+P\+Painter} $\ast$}]{painter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [pure virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layout_element_ad1c597b1d608cfdd86e7b76819a94cfb}{Q\+C\+P\+Layout\+Element}.
+
+
+
+Implemented in \hyperlink{class_q_c_p_plottable_legend_item_a5838366619200e99680afa6d355d13fa}{Q\+C\+P\+Plottable\+Legend\+Item}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a699b18e1d9e70372e51e75f462dbb643}\label{class_q_c_p_abstract_legend_item_a699b18e1d9e70372e51e75f462dbb643}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!font@{font}}
+\index{font@{font}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{font()}{font()}}
+{\footnotesize\ttfamily Q\+Font Q\+C\+P\+Abstract\+Legend\+Item\+::font (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a15709a3f6b2ce3946261fe90422ae32e}\label{class_q_c_p_abstract_legend_item_a15709a3f6b2ce3946261fe90422ae32e}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!parent\+Legend@{parent\+Legend}}
+\index{parent\+Legend@{parent\+Legend}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{parent\+Legend()}{parentLegend()}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}$\ast$ Q\+C\+P\+Abstract\+Legend\+Item\+::parent\+Legend (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_af054a668038bcd7e35a35a07d1e79a23}\label{class_q_c_p_abstract_legend_item_af054a668038bcd7e35a35a07d1e79a23}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selectable@{selectable}}
+\index{selectable@{selectable}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selectable()}{selectable()}}
+{\footnotesize\ttfamily bool Q\+C\+P\+Abstract\+Legend\+Item\+::selectable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_abc4d779b938cc9235f9196737dbaa6bd}\label{class_q_c_p_abstract_legend_item_abc4d779b938cc9235f9196737dbaa6bd}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selectable\+Changed@{selectable\+Changed}}
+\index{selectable\+Changed@{selectable\+Changed}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selectable\+Changed}{selectableChanged}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::selectable\+Changed (\begin{DoxyParamCaption}\item[{bool}]{selectable }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_adf427dbb05d5f1a8e84c6abcb05becdf}\label{class_q_c_p_abstract_legend_item_adf427dbb05d5f1a8e84c6abcb05becdf}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selected@{selected}}
+\index{selected@{selected}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selected()}{selected()}}
+{\footnotesize\ttfamily bool Q\+C\+P\+Abstract\+Legend\+Item\+::selected (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_ace98814b31762578228f6b32111cd3c0}\label{class_q_c_p_abstract_legend_item_ace98814b31762578228f6b32111cd3c0}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selected\+Font@{selected\+Font}}
+\index{selected\+Font@{selected\+Font}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selected\+Font()}{selectedFont()}}
+{\footnotesize\ttfamily Q\+Font Q\+C\+P\+Abstract\+Legend\+Item\+::selected\+Font (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a09540594509fb0074f3a1b39548e3bdc}\label{class_q_c_p_abstract_legend_item_a09540594509fb0074f3a1b39548e3bdc}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selected\+Text\+Color@{selected\+Text\+Color}}
+\index{selected\+Text\+Color@{selected\+Text\+Color}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selected\+Text\+Color()}{selectedTextColor()}}
+{\footnotesize\ttfamily Q\+Color Q\+C\+P\+Abstract\+Legend\+Item\+::selected\+Text\+Color (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a0081acfd8c4bb8ac4e9dcfe0f6c49b74}\label{class_q_c_p_abstract_legend_item_a0081acfd8c4bb8ac4e9dcfe0f6c49b74}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!select\+Event@{select\+Event}}
+\index{select\+Event@{select\+Event}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{select\+Event()}{selectEvent()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::select\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event,  }\item[{bool}]{additive,  }\item[{const Q\+Variant \&}]{details,  }\item[{bool $\ast$}]{selection\+State\+Changed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_a7498c2d0d081cf7cad0fb3bb93aa0e91}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_af8eb0fda0e11b0a23e1051b0102c8c6a}\label{class_q_c_p_abstract_legend_item_af8eb0fda0e11b0a23e1051b0102c8c6a}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selection\+Category@{selection\+Category}}
+\index{selection\+Category@{selection\+Category}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selection\+Category()}{selectionCategory()}}
+{\footnotesize\ttfamily \hyperlink{namespace_q_c_p_a2ad6bb6281c7c2d593d4277b44c2b037}{Q\+C\+P\+::\+Interaction} Q\+C\+P\+Abstract\+Legend\+Item\+::selection\+Category (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_a908c9edda761886f33893be326dab77d}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a7cb61fdfbaf69c590bacb8f9e7099d9e}\label{class_q_c_p_abstract_legend_item_a7cb61fdfbaf69c590bacb8f9e7099d9e}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!selection\+Changed@{selection\+Changed}}
+\index{selection\+Changed@{selection\+Changed}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{selection\+Changed}{selectionChanged}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::selection\+Changed (\begin{DoxyParamCaption}\item[{bool}]{selected }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+This signal is emitted when the selection state of this legend item has changed, either by user interaction or by a direct call to \hyperlink{class_q_c_p_abstract_legend_item_a6eed93b0ab99cb3eabb043fb08179c2b}{set\+Selected}. \mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a80ec112a6608fc39dbed56239849b187}\label{class_q_c_p_abstract_legend_item_a80ec112a6608fc39dbed56239849b187}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!select\+Test@{select\+Test}}
+\index{select\+Test@{select\+Test}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{select\+Test()}{selectTest()}}
+{\footnotesize\ttfamily double Q\+C\+P\+Abstract\+Legend\+Item\+::select\+Test (\begin{DoxyParamCaption}\item[{const Q\+PointF \&}]{pos,  }\item[{bool}]{only\+Selectable,  }\item[{Q\+Variant $\ast$}]{details = {\ttfamily 0} }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+Layout elements are sensitive to events inside their outer rect. If {\itshape pos} is within the outer rect, this method returns a value corresponding to 0.\+99 times the parent plot\textquotesingle{}s selection tolerance. However, layout elements are not selectable by default. So if {\itshape only\+Selectable} is true, -\/1.\+0 is returned.
+
+See \hyperlink{class_q_c_p_layerable_a04db8351fefd44cfdb77958e75c6288e}{Q\+C\+P\+Layerable\+::select\+Test} for a general explanation of this virtual method.
+
+\hyperlink{class_q_c_p_layout_element}{Q\+C\+P\+Layout\+Element} subclasses may reimplement this method to provide more specific selection test behaviour. 
+
+Reimplemented from \hyperlink{class_q_c_p_layout_element_ae97f483cccedadbf18ea4525ef240ee4}{Q\+C\+P\+Layout\+Element}.
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a409c53455d8112f71d70c0c43eb10265}\label{class_q_c_p_abstract_legend_item_a409c53455d8112f71d70c0c43eb10265}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!set\+Font@{set\+Font}}
+\index{set\+Font@{set\+Font}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{set\+Font()}{setFont()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::set\+Font (\begin{DoxyParamCaption}\item[{const Q\+Font \&}]{font }\end{DoxyParamCaption})}
+
+Sets the default font of this specific legend item to {\itshape font}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_abstract_legend_item_a6ebace6aaffaedcdab2d74e88acc2d1e}{set\+Text\+Color}, \hyperlink{class_q_c_p_legend_aa4cda8499e3cb0f3be415edc02984c73}{Q\+C\+P\+Legend\+::set\+Font} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a9913ef48730551b696e7f98a2391c599}\label{class_q_c_p_abstract_legend_item_a9913ef48730551b696e7f98a2391c599}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!set\+Selectable@{set\+Selectable}}
+\index{set\+Selectable@{set\+Selectable}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{set\+Selectable()}{setSelectable()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::set\+Selectable (\begin{DoxyParamCaption}\item[{bool}]{selectable }\end{DoxyParamCaption})}
+
+Sets whether this specific legend item is selectable.
+
+\begin{DoxySeeAlso}{See also}
+set\+Selected\+Parts, \hyperlink{class_q_custom_plot_a5ee1e2f6ae27419deca53e75907c27e5}{Q\+Custom\+Plot\+::set\+Interactions} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a6eed93b0ab99cb3eabb043fb08179c2b}\label{class_q_c_p_abstract_legend_item_a6eed93b0ab99cb3eabb043fb08179c2b}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!set\+Selected@{set\+Selected}}
+\index{set\+Selected@{set\+Selected}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{set\+Selected()}{setSelected()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::set\+Selected (\begin{DoxyParamCaption}\item[{bool}]{selected }\end{DoxyParamCaption})}
+
+Sets whether this specific legend item is selected.
+
+It is possible to set the selection state of this item by calling this function directly, even if set\+Selectable is set to false.
+
+\begin{DoxySeeAlso}{See also}
+set\+Selectable\+Parts, \hyperlink{class_q_custom_plot_a5ee1e2f6ae27419deca53e75907c27e5}{Q\+Custom\+Plot\+::set\+Interactions} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a91db5aee48617a9d3206e61376807365}\label{class_q_c_p_abstract_legend_item_a91db5aee48617a9d3206e61376807365}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!set\+Selected\+Font@{set\+Selected\+Font}}
+\index{set\+Selected\+Font@{set\+Selected\+Font}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{set\+Selected\+Font()}{setSelectedFont()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::set\+Selected\+Font (\begin{DoxyParamCaption}\item[{const Q\+Font \&}]{font }\end{DoxyParamCaption})}
+
+When this legend item is selected, {\itshape font} is used to draw generic text, instead of the normal font set with \hyperlink{class_q_c_p_abstract_legend_item_a409c53455d8112f71d70c0c43eb10265}{set\+Font}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_abstract_legend_item_a409c53455d8112f71d70c0c43eb10265}{set\+Font}, \hyperlink{class_q_c_p_legend_ab580a01c3c0a239374ed66c29edf5ad2}{Q\+C\+P\+Legend\+::set\+Selected\+Font} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a4d01d008ee1a5bfe9905b0397a421936}\label{class_q_c_p_abstract_legend_item_a4d01d008ee1a5bfe9905b0397a421936}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!set\+Selected\+Text\+Color@{set\+Selected\+Text\+Color}}
+\index{set\+Selected\+Text\+Color@{set\+Selected\+Text\+Color}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{set\+Selected\+Text\+Color()}{setSelectedTextColor()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::set\+Selected\+Text\+Color (\begin{DoxyParamCaption}\item[{const Q\+Color \&}]{color }\end{DoxyParamCaption})}
+
+When this legend item is selected, {\itshape color} is used to draw generic text, instead of the normal color set with \hyperlink{class_q_c_p_abstract_legend_item_a6ebace6aaffaedcdab2d74e88acc2d1e}{set\+Text\+Color}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_abstract_legend_item_a6ebace6aaffaedcdab2d74e88acc2d1e}{set\+Text\+Color}, \hyperlink{class_q_c_p_legend_a7674dfc7a1f30e1abd1018c0ed45e0bc}{Q\+C\+P\+Legend\+::set\+Selected\+Text\+Color} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a6ebace6aaffaedcdab2d74e88acc2d1e}\label{class_q_c_p_abstract_legend_item_a6ebace6aaffaedcdab2d74e88acc2d1e}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!set\+Text\+Color@{set\+Text\+Color}}
+\index{set\+Text\+Color@{set\+Text\+Color}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{set\+Text\+Color()}{setTextColor()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Abstract\+Legend\+Item\+::set\+Text\+Color (\begin{DoxyParamCaption}\item[{const Q\+Color \&}]{color }\end{DoxyParamCaption})}
+
+Sets the default text color of this specific legend item to {\itshape color}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_abstract_legend_item_a409c53455d8112f71d70c0c43eb10265}{set\+Font}, \hyperlink{class_q_c_p_legend_ae1eb239ff4a4632fe1b6c3e668d845c6}{Q\+C\+P\+Legend\+::set\+Text\+Color} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a35b35fa697dcece86cf7e5818c0820b2}\label{class_q_c_p_abstract_legend_item_a35b35fa697dcece86cf7e5818c0820b2}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!text\+Color@{text\+Color}}
+\index{text\+Color@{text\+Color}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{text\+Color()}{textColor()}}
+{\footnotesize\ttfamily Q\+Color Q\+C\+P\+Abstract\+Legend\+Item\+::text\+Color (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a8429035e7adfbd7f05805a6530ad5e3b}\label{class_q_c_p_abstract_legend_item_a8429035e7adfbd7f05805a6530ad5e3b}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!Q\+C\+P\+Legend@{Q\+C\+P\+Legend}}
+\index{Q\+C\+P\+Legend@{Q\+C\+P\+Legend}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{Q\+C\+P\+Legend}{QCPLegend}}
+{\footnotesize\ttfamily friend class \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_ae916a78ac0d2a60e20a17ca2f24f9754}\label{class_q_c_p_abstract_legend_item_ae916a78ac0d2a60e20a17ca2f24f9754}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Font@{m\+Font}}
+\index{m\+Font@{m\+Font}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Font}{mFont}}
+{\footnotesize\ttfamily Q\+Font Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Font\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_aafcd9fc6fcb10f4a8d46037011afafe8}\label{class_q_c_p_abstract_legend_item_aafcd9fc6fcb10f4a8d46037011afafe8}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Parent\+Legend@{m\+Parent\+Legend}}
+\index{m\+Parent\+Legend@{m\+Parent\+Legend}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Parent\+Legend}{mParentLegend}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_legend}{Q\+C\+P\+Legend}$\ast$ Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Parent\+Legend\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_aa84029f57b1b32f642fb7db63c3fc2c2}\label{class_q_c_p_abstract_legend_item_aa84029f57b1b32f642fb7db63c3fc2c2}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Selectable@{m\+Selectable}}
+\index{m\+Selectable@{m\+Selectable}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Selectable}{mSelectable}}
+{\footnotesize\ttfamily bool Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Selectable\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_ae58ebebbd0c36cc6fe897483369984d2}\label{class_q_c_p_abstract_legend_item_ae58ebebbd0c36cc6fe897483369984d2}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Selected@{m\+Selected}}
+\index{m\+Selected@{m\+Selected}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Selected}{mSelected}}
+{\footnotesize\ttfamily bool Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Selected\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_ab971df604306b192875a7d097feb1e21}\label{class_q_c_p_abstract_legend_item_ab971df604306b192875a7d097feb1e21}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Selected\+Font@{m\+Selected\+Font}}
+\index{m\+Selected\+Font@{m\+Selected\+Font}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Selected\+Font}{mSelectedFont}}
+{\footnotesize\ttfamily Q\+Font Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Selected\+Font\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a4965c13854d970b24c284f0a4f005fbd}\label{class_q_c_p_abstract_legend_item_a4965c13854d970b24c284f0a4f005fbd}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Selected\+Text\+Color@{m\+Selected\+Text\+Color}}
+\index{m\+Selected\+Text\+Color@{m\+Selected\+Text\+Color}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Selected\+Text\+Color}{mSelectedTextColor}}
+{\footnotesize\ttfamily Q\+Color Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Selected\+Text\+Color\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_abstract_legend_item_a974b21e9930227d281344bd2242d289d}\label{class_q_c_p_abstract_legend_item_a974b21e9930227d281344bd2242d289d}} 
+\index{Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}!m\+Text\+Color@{m\+Text\+Color}}
+\index{m\+Text\+Color@{m\+Text\+Color}!Q\+C\+P\+Abstract\+Legend\+Item@{Q\+C\+P\+Abstract\+Legend\+Item}}
+\subsubsection{\texorpdfstring{m\+Text\+Color}{mTextColor}}
+{\footnotesize\ttfamily Q\+Color Q\+C\+P\+Abstract\+Legend\+Item\+::m\+Text\+Color\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{qcustomplot_8h}{qcustomplot.\+h}\item 
+\hyperlink{qcustomplot_8cpp}{qcustomplot.\+cpp}\end{DoxyCompactItemize}

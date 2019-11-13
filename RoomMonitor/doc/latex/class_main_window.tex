@@ -1,0 +1,230 @@
+\hypertarget{class_main_window}{}\section{Main\+Window Class Reference}
+\label{class_main_window}\index{Main\+Window@{Main\+Window}}
+
+
+{\ttfamily \#include $<$Main\+Window.\+h$>$}
+
+
+
+Inheritance diagram for Main\+Window\+:
+% FIG 0
+
+
+Collaboration diagram for Main\+Window\+:
+% FIG 1
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_main_window_a34c4b4207b46d11a4100c9b19f0e81bb}{Main\+Window} ()
+\item 
+void \hyperlink{class_main_window_af0e6678a3e8aec9bd72220299c17825a}{setup\+Connect} ()
+\item 
+void \hyperlink{class_main_window_ac5366ffa03d44a3a76e4fb259676f8e5}{setup\+Monitoring\+Plot} ()
+\item 
+void \hyperlink{class_main_window_aa3df0144e4ca4f616bdb0b0dab87f6bd}{initialize\+Last\+Mac\+List} ()
+\item 
+void \hyperlink{class_main_window_a6253fe0e0f06ecee8474453d0f0321d0}{add\+Last\+Mac\+Pos} (const Q\+String \&mac, const Q\+Date\+Time \&date, qreal posx, qreal posy)
+\item 
+void \hyperlink{class_main_window_a23772b94e161e6e2e5529167efd48037}{initialize\+Mac\+Situation\+List} ()
+\item 
+void \hyperlink{class_main_window_a74f25cc26b4fa6af344c8ffca35b000e}{add\+Mac\+Situa} (const Q\+String \&mac, int frequency, bool random)
+\item 
+void \hyperlink{class_main_window_a0021497d1ed74835ebef527f99c9f658}{setup\+Analysis\+Plot} ()
+\item 
+void \hyperlink{class_main_window_ad22d851ff76ed4437bd8d3bb24d5571d}{set\+Mac\+Plot} ()
+\item 
+void \hyperlink{class_main_window_a14ceceafe4942bdc557a884ef116e7d8}{setup\+Position\+Plot} (Q\+String mac)
+\item 
+void \hyperlink{class_main_window_a55cbd37d45de540c0b6ada477bbd9029}{add\+Live\+Data} ()
+\item 
+void \hyperlink{class_main_window_a9793bf5dbf95a30840b022fcf9689ebc}{gen\+Live\+Data} ()
+\item 
+void \hyperlink{class_main_window_a723b5a1e4c2d4e52e053edd0b5123b20}{update\+Last\+Mac} ()
+\item 
+void \hyperlink{class_main_window_a398d1844c3af3e3c888ce2dbfdc61033}{data\+Analysis} ()
+\item 
+void \hyperlink{class_main_window_af7a262630fb46f1fac49bb816f9e1c30}{handle\+Results} (\hyperlink{class_monitoring_chart}{Monitoring\+Chart} $\ast$chart)
+\item 
+void \hyperlink{class_main_window_a5334b6d12b44c664697a1447fcbcc18b}{update\+Progress} (qint64 prog)
+\item 
+void \hyperlink{class_main_window_a3f57c01d85e1d4790edb3308b944e3d2}{mac\+Plot\+Ready} (Q\+String\+List mac, Q\+String\+List frequency, \hyperlink{class_mac_chart}{Mac\+Chart} $\ast$mac\+Plot)
+\item 
+void \hyperlink{class_main_window_a8daf60fe5b01afd6ffcc54669346f3d8}{finished\+Analysis\+Thread} ()
+\item 
+void \hyperlink{class_main_window_a0d3c324e794a29ad0b3d54a098f86d5c}{setup\+Live\+Plot} ()
+\item 
+void \hyperlink{class_main_window_aa09367d7985f9b85de28c04d7f2bb255}{setup\+Map\+Plot} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_main_window_a34c4b4207b46d11a4100c9b19f0e81bb}\label{class_main_window_a34c4b4207b46d11a4100c9b19f0e81bb}} 
+\index{Main\+Window@{Main\+Window}!Main\+Window@{Main\+Window}}
+\index{Main\+Window@{Main\+Window}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{Main\+Window()}{MainWindow()}}
+{\footnotesize\ttfamily Main\+Window\+::\+Main\+Window (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Costruttore\+: si occupa di fare il setup della UI, inizializzare le connect e infine triggerare una funzione per attivare la visualizzazione iniziale, ovvero quella del monitoraggio. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_main_window_a6253fe0e0f06ecee8474453d0f0321d0}\label{class_main_window_a6253fe0e0f06ecee8474453d0f0321d0}} 
+\index{Main\+Window@{Main\+Window}!add\+Last\+Mac\+Pos@{add\+Last\+Mac\+Pos}}
+\index{add\+Last\+Mac\+Pos@{add\+Last\+Mac\+Pos}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{add\+Last\+Mac\+Pos()}{addLastMacPos()}}
+{\footnotesize\ttfamily void Main\+Window\+::add\+Last\+Mac\+Pos (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{mac,  }\item[{const Q\+Date\+Time \&}]{date,  }\item[{qreal}]{posx,  }\item[{qreal}]{posy }\end{DoxyParamCaption})}
+
+Aggiunta di una ultima posizione M\+AC alla tabella delle ultime posizioni. 
+\begin{DoxyParams}{Parameters}
+{\em mac} & M\+AC del dispositivo \\
+\hline
+{\em posx} & coordinata x posizione \\
+\hline
+{\em posy} & coordinata y posizione \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_main_window_a55cbd37d45de540c0b6ada477bbd9029}\label{class_main_window_a55cbd37d45de540c0b6ada477bbd9029}} 
+\index{Main\+Window@{Main\+Window}!add\+Live\+Data@{add\+Live\+Data}}
+\index{add\+Live\+Data@{add\+Live\+Data}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{add\+Live\+Data()}{addLiveData()}}
+{\footnotesize\ttfamily void Main\+Window\+::add\+Live\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione triggerata dal timer {\ttfamily live\+Graph} ogni 5 minuti. Conteggio M\+AC nello slot degli ultimi 5 minuti e in quello dei precedenti ultimi 5 minuti. Serve solo a riempire il grafico delle presenze in monitoraggio. \mbox{\Hypertarget{class_main_window_a74f25cc26b4fa6af344c8ffca35b000e}\label{class_main_window_a74f25cc26b4fa6af344c8ffca35b000e}} 
+\index{Main\+Window@{Main\+Window}!add\+Mac\+Situa@{add\+Mac\+Situa}}
+\index{add\+Mac\+Situa@{add\+Mac\+Situa}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{add\+Mac\+Situa()}{addMacSitua()}}
+{\footnotesize\ttfamily void Main\+Window\+::add\+Mac\+Situa (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{mac,  }\item[{int}]{frequency,  }\item[{bool}]{random }\end{DoxyParamCaption})}
+
+Aggiunta M\+AC alla lista della situazione M\+AC nella statistica di lungo periodo. 
+\begin{DoxyParams}{Parameters}
+{\em mac} & M\+AC del dispositivo \\
+\hline
+{\em posx} & coordinata x posizione \\
+\hline
+{\em posy} & coordinata y posizione \\
+\hline
+{\em random} & mac randomico o normale? \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_main_window_a398d1844c3af3e3c888ce2dbfdc61033}\label{class_main_window_a398d1844c3af3e3c888ce2dbfdc61033}} 
+\index{Main\+Window@{Main\+Window}!data\+Analysis@{data\+Analysis}}
+\index{data\+Analysis@{data\+Analysis}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{data\+Analysis()}{dataAnalysis()}}
+{\footnotesize\ttfamily void Main\+Window\+::data\+Analysis (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione chiamata dal click sul pulsante Cerca in modalità di Analisi. Si occupa di chiamare il thread che andrà ad effettuare le query necessarie per il calcolo e il popolamento dei grafici. \mbox{\Hypertarget{class_main_window_a8daf60fe5b01afd6ffcc54669346f3d8}\label{class_main_window_a8daf60fe5b01afd6ffcc54669346f3d8}} 
+\index{Main\+Window@{Main\+Window}!finished\+Analysis\+Thread@{finished\+Analysis\+Thread}}
+\index{finished\+Analysis\+Thread@{finished\+Analysis\+Thread}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{finished\+Analysis\+Thread()}{finishedAnalysisThread()}}
+{\footnotesize\ttfamily void Main\+Window\+::finished\+Analysis\+Thread (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione chiamata dall\textquotesingle{}emissione del segnale {\ttfamily \hyperlink{class_analysis_worker_adf45ce89d5a8e078f250d2f074138f7b}{Analysis\+Worker\+::finished}} per concludere il thread senza problemi \mbox{\Hypertarget{class_main_window_a9793bf5dbf95a30840b022fcf9689ebc}\label{class_main_window_a9793bf5dbf95a30840b022fcf9689ebc}} 
+\index{Main\+Window@{Main\+Window}!gen\+Live\+Data@{gen\+Live\+Data}}
+\index{gen\+Live\+Data@{gen\+Live\+Data}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{gen\+Live\+Data()}{genLiveData()}}
+{\footnotesize\ttfamily void Main\+Window\+::gen\+Live\+Data (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione triggerata dal segnale {\ttfamily \hyperlink{class_monitoring_server_af90198642c809ec801d07afa789a6869}{Monitoring\+Server\+::aggregated}} che viene emesso ogni volta che l\textquotesingle{}aggregazione viene effettuata. Si preoccupa di andare a calcolare le ultime posizioni dei M\+AC rilevati negli ultimi 5 minuti per riempire il grafico delle posizioni L\+I\+VE e preparare i dati per riempire le tabelle degli ultimi M\+AC. Q\+U\+E\+R\+Y\+\_\+3 \mbox{\Hypertarget{class_main_window_af7a262630fb46f1fac49bb816f9e1c30}\label{class_main_window_af7a262630fb46f1fac49bb816f9e1c30}} 
+\index{Main\+Window@{Main\+Window}!handle\+Results@{handle\+Results}}
+\index{handle\+Results@{handle\+Results}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{handle\+Results()}{handleResults()}}
+{\footnotesize\ttfamily void Main\+Window\+::handle\+Results (\begin{DoxyParamCaption}\item[{\hyperlink{class_monitoring_chart}{Monitoring\+Chart} $\ast$}]{chart }\end{DoxyParamCaption})}
+
+Funzione richiamata dall\textquotesingle{}emissione del segnale {\ttfamily \hyperlink{class_analysis_worker_aa02712f415266b80f078a65ef45defe9}{Analysis\+Worker\+::result\+Ready}} una volta che il thread ha terminato le operazioni di recupero dei dati con le query. 
+\begin{DoxyParams}{Parameters}
+{\em chart} & puntatore al grafico che deve essere inserito al posto del precedente nella schermata principale. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_main_window_aa3df0144e4ca4f616bdb0b0dab87f6bd}\label{class_main_window_aa3df0144e4ca4f616bdb0b0dab87f6bd}} 
+\index{Main\+Window@{Main\+Window}!initialize\+Last\+Mac\+List@{initialize\+Last\+Mac\+List}}
+\index{initialize\+Last\+Mac\+List@{initialize\+Last\+Mac\+List}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{initialize\+Last\+Mac\+List()}{initializeLastMacList()}}
+{\footnotesize\ttfamily void Main\+Window\+::initialize\+Last\+Mac\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Inizializza la lista delle ultime posizioni dei Mac rilevati \mbox{\Hypertarget{class_main_window_a23772b94e161e6e2e5529167efd48037}\label{class_main_window_a23772b94e161e6e2e5529167efd48037}} 
+\index{Main\+Window@{Main\+Window}!initialize\+Mac\+Situation\+List@{initialize\+Mac\+Situation\+List}}
+\index{initialize\+Mac\+Situation\+List@{initialize\+Mac\+Situation\+List}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{initialize\+Mac\+Situation\+List()}{initializeMacSituationList()}}
+{\footnotesize\ttfamily void Main\+Window\+::initialize\+Mac\+Situation\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Inizializza la tabella della situazione dei M\+AC nel range specificato dall\textquotesingle{}analisi di lungo periodo \mbox{\Hypertarget{class_main_window_a3f57c01d85e1d4790edb3308b944e3d2}\label{class_main_window_a3f57c01d85e1d4790edb3308b944e3d2}} 
+\index{Main\+Window@{Main\+Window}!mac\+Plot\+Ready@{mac\+Plot\+Ready}}
+\index{mac\+Plot\+Ready@{mac\+Plot\+Ready}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{mac\+Plot\+Ready()}{macPlotReady()}}
+{\footnotesize\ttfamily void Main\+Window\+::mac\+Plot\+Ready (\begin{DoxyParamCaption}\item[{Q\+String\+List}]{mac,  }\item[{Q\+String\+List}]{frequency,  }\item[{\hyperlink{class_mac_chart}{Mac\+Chart} $\ast$}]{mac\+Plot }\end{DoxyParamCaption})}
+
+Funzione richiamata dall\textquotesingle{}emissione del segnale {\ttfamily \hyperlink{class_analysis_worker_a44e7df8efd66c1b071d6f43a313ed6ef}{Analysis\+Worker\+::mac\+Plot\+Ready}} una volta che il thread ha terminato le operazioni di recupero dei dati con le query per le posizioni degli ultimi M\+AC. 
+\begin{DoxyParams}{Parameters}
+{\em chart} & puntatore al grafico che deve essere inserito al posto del precedente nella schermata principale. Funzione richiamata dall\textquotesingle{}emissione del segnale {\ttfamily \hyperlink{class_analysis_worker_a44e7df8efd66c1b071d6f43a313ed6ef}{Analysis\+Worker\+::mac\+Plot\+Ready}} una volta che il thread ha terminato le operazioni di recupero dei dati con le query per le posizioni degli ultimi M\+AC. \\
+\hline
+{\em mac} & Q\+String\+List dei Mac \\
+\hline
+{\em frequency} & Q\+String\+List delle frequenze dei mac \\
+\hline
+{\em mac\+Plot} & puntatore al grafico M\+AC da popolare \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_main_window_ad22d851ff76ed4437bd8d3bb24d5571d}\label{class_main_window_ad22d851ff76ed4437bd8d3bb24d5571d}} 
+\index{Main\+Window@{Main\+Window}!set\+Mac\+Plot@{set\+Mac\+Plot}}
+\index{set\+Mac\+Plot@{set\+Mac\+Plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{set\+Mac\+Plot()}{setMacPlot()}}
+{\footnotesize\ttfamily void Main\+Window\+::set\+Mac\+Plot (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Setup iniziale del grafico con le differenti rilevazioni dei M\+AC \mbox{\Hypertarget{class_main_window_a0021497d1ed74835ebef527f99c9f658}\label{class_main_window_a0021497d1ed74835ebef527f99c9f658}} 
+\index{Main\+Window@{Main\+Window}!setup\+Analysis\+Plot@{setup\+Analysis\+Plot}}
+\index{setup\+Analysis\+Plot@{setup\+Analysis\+Plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{setup\+Analysis\+Plot()}{setupAnalysisPlot()}}
+{\footnotesize\ttfamily void Main\+Window\+::setup\+Analysis\+Plot (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Setup iniziale del grafico andamento presenze nella analisi di lungo periodo \mbox{\Hypertarget{class_main_window_af0e6678a3e8aec9bd72220299c17825a}\label{class_main_window_af0e6678a3e8aec9bd72220299c17825a}} 
+\index{Main\+Window@{Main\+Window}!setup\+Connect@{setup\+Connect}}
+\index{setup\+Connect@{setup\+Connect}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{setup\+Connect()}{setupConnect()}}
+{\footnotesize\ttfamily void Main\+Window\+::setup\+Connect (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Setup delle connect di tutta la \hyperlink{class_main_window}{Main\+Window} \mbox{\Hypertarget{class_main_window_a0d3c324e794a29ad0b3d54a098f86d5c}\label{class_main_window_a0d3c324e794a29ad0b3d54a098f86d5c}} 
+\index{Main\+Window@{Main\+Window}!setup\+Live\+Plot@{setup\+Live\+Plot}}
+\index{setup\+Live\+Plot@{setup\+Live\+Plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{setup\+Live\+Plot()}{setupLivePlot()}}
+{\footnotesize\ttfamily void Main\+Window\+::setup\+Live\+Plot (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione da chiamare per popolare il grafico delle posizioni L\+I\+VE con i dati presenti P\+L\+OT B\+O\+A\+R\+DS \mbox{\Hypertarget{class_main_window_aa09367d7985f9b85de28c04d7f2bb255}\label{class_main_window_aa09367d7985f9b85de28c04d7f2bb255}} 
+\index{Main\+Window@{Main\+Window}!setup\+Map\+Plot@{setup\+Map\+Plot}}
+\index{setup\+Map\+Plot@{setup\+Map\+Plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{setup\+Map\+Plot()}{setupMapPlot()}}
+{\footnotesize\ttfamily void Main\+Window\+::setup\+Map\+Plot (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+P\+L\+OT B\+O\+A\+R\+DS \mbox{\Hypertarget{class_main_window_ac5366ffa03d44a3a76e4fb259676f8e5}\label{class_main_window_ac5366ffa03d44a3a76e4fb259676f8e5}} 
+\index{Main\+Window@{Main\+Window}!setup\+Monitoring\+Plot@{setup\+Monitoring\+Plot}}
+\index{setup\+Monitoring\+Plot@{setup\+Monitoring\+Plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{setup\+Monitoring\+Plot()}{setupMonitoringPlot()}}
+{\footnotesize\ttfamily void Main\+Window\+::setup\+Monitoring\+Plot (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione per impostare il grafico del monitoraggio \mbox{\Hypertarget{class_main_window_a14ceceafe4942bdc557a884ef116e7d8}\label{class_main_window_a14ceceafe4942bdc557a884ef116e7d8}} 
+\index{Main\+Window@{Main\+Window}!setup\+Position\+Plot@{setup\+Position\+Plot}}
+\index{setup\+Position\+Plot@{setup\+Position\+Plot}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{setup\+Position\+Plot()}{setupPositionPlot()}}
+{\footnotesize\ttfamily void Main\+Window\+::setup\+Position\+Plot (\begin{DoxyParamCaption}\item[{Q\+String}]{mac }\end{DoxyParamCaption})}
+
+Setup iniziale del grafico che rappresenta le varie posizioni del M\+AC selezionato nella relativa finestra di dialogo \mbox{\Hypertarget{class_main_window_a723b5a1e4c2d4e52e053edd0b5123b20}\label{class_main_window_a723b5a1e4c2d4e52e053edd0b5123b20}} 
+\index{Main\+Window@{Main\+Window}!update\+Last\+Mac@{update\+Last\+Mac}}
+\index{update\+Last\+Mac@{update\+Last\+Mac}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{update\+Last\+Mac()}{updateLastMac()}}
+{\footnotesize\ttfamily void Main\+Window\+::update\+Last\+Mac (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Funzione da chiamare per riempire la tabella degli ultimi M\+AC con i dati contenuti nella variabile globale {\ttfamily last\+Macs} \mbox{\Hypertarget{class_main_window_a5334b6d12b44c664697a1447fcbcc18b}\label{class_main_window_a5334b6d12b44c664697a1447fcbcc18b}} 
+\index{Main\+Window@{Main\+Window}!update\+Progress@{update\+Progress}}
+\index{update\+Progress@{update\+Progress}!Main\+Window@{Main\+Window}}
+\subsubsection{\texorpdfstring{update\+Progress()}{updateProgress()}}
+{\footnotesize\ttfamily void Main\+Window\+::update\+Progress (\begin{DoxyParamCaption}\item[{qint64}]{prog }\end{DoxyParamCaption})}
+
+Funzione che permette di all\textquotesingle{}utente di monitorare la percentuale di completamento delle operazioni eseguite dal thread. Questa funzione viene richiamata all\textquotesingle{}emissione del segnale {\ttfamily \hyperlink{class_analysis_worker_a4a7f46d081dfd2872a498f1183581ea9}{Analysis\+Worker\+::update\+Progress}} 
+\begin{DoxyParams}{Parameters}
+{\em prog} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+windows/\hyperlink{_main_window_8h}{Main\+Window.\+h}\item 
+windows/\hyperlink{_main_window_8cpp}{Main\+Window.\+cpp}\end{DoxyCompactItemize}

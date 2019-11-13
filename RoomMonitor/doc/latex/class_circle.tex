@@ -1,0 +1,107 @@
+\hypertarget{class_circle}{}\section{Circle Class Reference}
+\label{class_circle}\index{Circle@{Circle}}
+
+
+{\ttfamily \#include $<$Circle.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_circle_a7b136937f096d73ff2f38ffabb052b5b}{Circle} (double R, \hyperlink{class_point2d}{Point2d} \&C)
+\item 
+\hyperlink{class_circle_a8745f76d4b164c4cc225a0710158eb4d}{Circle} (double R, double X, double Y)
+\item 
+\hyperlink{class_point2d}{Point2d} \hyperlink{class_circle_a3c261e77ada27aa079cc3b2a1b0101c8}{getC} () const
+\item 
+double \hyperlink{class_circle_a9a44a938e3d8df0b6ecb6f3f00a0878d}{getR} () const
+\item 
+void \hyperlink{class_circle_a74d675a63d50d899cfeda335ce13d161}{increaseR} (double increment)
+\item 
+bool \hyperlink{class_circle_a86a55c904fcda3dcb44e503894007aa1}{contains\+Point} (\hyperlink{class_point2d}{Point2d} x)
+\item 
+int \hyperlink{class_circle_aef8608916a5c51ec2de281eccb5276dc}{intersect} (const \hyperlink{class_circle}{Circle} \&C2, \hyperlink{class_point2d}{Point2d} \&i1, \hyperlink{class_point2d}{Point2d} \&i2)
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \hyperlink{class_circle_a3f0511cf13a23beca631b23f41b491b5}{operator$<$$<$} (std\+::ostream \&s, const \hyperlink{class_circle}{Circle} \&C)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_circle_a7b136937f096d73ff2f38ffabb052b5b}\label{class_circle_a7b136937f096d73ff2f38ffabb052b5b}} 
+\index{Circle@{Circle}!Circle@{Circle}}
+\index{Circle@{Circle}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{Circle()}{Circle()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Circle\+::\+Circle (\begin{DoxyParamCaption}\item[{double}]{R,  }\item[{\hyperlink{class_point2d}{Point2d} \&}]{C }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em R} & -\/ radius \\
+\hline
+{\em C} & -\/ center \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_circle_a8745f76d4b164c4cc225a0710158eb4d}\label{class_circle_a8745f76d4b164c4cc225a0710158eb4d}} 
+\index{Circle@{Circle}!Circle@{Circle}}
+\index{Circle@{Circle}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{Circle()}{Circle()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Circle\+::\+Circle (\begin{DoxyParamCaption}\item[{double}]{R,  }\item[{double}]{X,  }\item[{double}]{Y }\end{DoxyParamCaption})}
+
+
+\begin{DoxyParams}{Parameters}
+{\em R} & -\/ radius \\
+\hline
+{\em X} & -\/ center\textquotesingle{}s x coordinate \\
+\hline
+{\em Y} & -\/ center\textquotesingle{}s y coordinate \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_circle_a86a55c904fcda3dcb44e503894007aa1}\label{class_circle_a86a55c904fcda3dcb44e503894007aa1}} 
+\index{Circle@{Circle}!contains\+Point@{contains\+Point}}
+\index{contains\+Point@{contains\+Point}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{contains\+Point()}{containsPoint()}}
+{\footnotesize\ttfamily bool Circle\+::contains\+Point (\begin{DoxyParamCaption}\item[{\hyperlink{class_point2d}{Point2d}}]{x }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_circle_a3c261e77ada27aa079cc3b2a1b0101c8}\label{class_circle_a3c261e77ada27aa079cc3b2a1b0101c8}} 
+\index{Circle@{Circle}!getC@{getC}}
+\index{getC@{getC}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{get\+C()}{getC()}}
+{\footnotesize\ttfamily \hyperlink{class_point2d}{Point2d} Circle\+::getC (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_circle_a9a44a938e3d8df0b6ecb6f3f00a0878d}\label{class_circle_a9a44a938e3d8df0b6ecb6f3f00a0878d}} 
+\index{Circle@{Circle}!getR@{getR}}
+\index{getR@{getR}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{get\+R()}{getR()}}
+{\footnotesize\ttfamily double Circle\+::getR (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_circle_a74d675a63d50d899cfeda335ce13d161}\label{class_circle_a74d675a63d50d899cfeda335ce13d161}} 
+\index{Circle@{Circle}!increaseR@{increaseR}}
+\index{increaseR@{increaseR}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{increase\+R()}{increaseR()}}
+{\footnotesize\ttfamily void Circle\+::increaseR (\begin{DoxyParamCaption}\item[{double}]{increment }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_circle_aef8608916a5c51ec2de281eccb5276dc}\label{class_circle_aef8608916a5c51ec2de281eccb5276dc}} 
+\index{Circle@{Circle}!intersect@{intersect}}
+\index{intersect@{intersect}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{intersect()}{intersect()}}
+{\footnotesize\ttfamily int Circle\+::intersect (\begin{DoxyParamCaption}\item[{const \hyperlink{class_circle}{Circle} \&}]{C2,  }\item[{\hyperlink{class_point2d}{Point2d} \&}]{i1,  }\item[{\hyperlink{class_point2d}{Point2d} \&}]{i2 }\end{DoxyParamCaption})}
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{class_circle_a3f0511cf13a23beca631b23f41b491b5}\label{class_circle_a3f0511cf13a23beca631b23f41b491b5}} 
+\index{Circle@{Circle}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!Circle@{Circle}}
+\subsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{s,  }\item[{const \hyperlink{class_circle}{Circle} \&}]{C }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+monitoring/\hyperlink{_circle_8h}{Circle.\+h}\item 
+monitoring/\hyperlink{_circle_8cpp}{Circle.\+cpp}\end{DoxyCompactItemize}

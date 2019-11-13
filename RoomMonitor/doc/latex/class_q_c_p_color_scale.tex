@@ -1,0 +1,500 @@
+\hypertarget{class_q_c_p_color_scale}{}\section{Q\+C\+P\+Color\+Scale Class Reference}
+\label{class_q_c_p_color_scale}\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+
+
+A color scale for use with color coding data such as \hyperlink{class_q_c_p_color_map}{Q\+C\+P\+Color\+Map}.  
+
+
+
+
+{\ttfamily \#include $<$qcustomplot.\+h$>$}
+
+
+
+Inheritance diagram for Q\+C\+P\+Color\+Scale\+:
+% FIG 0
+
+
+Collaboration diagram for Q\+C\+P\+Color\+Scale\+:
+% FIG 1
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_q_c_p_color_scale_a685717490a6aa83c5e711a4f34e837f9}{data\+Range\+Changed} (const \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \&new\+Range)
+\item 
+void \hyperlink{class_q_c_p_color_scale_a61558b962f7791ff2f15a565dcf60181}{data\+Scale\+Type\+Changed} (\hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type} scale\+Type)
+\item 
+void \hyperlink{class_q_c_p_color_scale_a5e5f8c5626242c8f7308bfab74d3d989}{gradient\+Changed} (const \hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} \&new\+Gradient)
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_q_c_p_color_scale_aa8debce1be38b54287c04d4f584394b4}{Q\+C\+P\+Color\+Scale} (\hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} $\ast$\hyperlink{class_q_c_p_layerable_a473edb813a4c1929d6b6a8fe3ff3faf7}{parent\+Plot})
+\item 
+virtual \hyperlink{class_q_c_p_color_scale_a49d8d2d155c15fa315fdc0427194c9ea}{$\sim$\+Q\+C\+P\+Color\+Scale} ()
+\item 
+\hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis} $\ast$ \hyperlink{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}{axis} () const
+\item 
+\hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18a}{Q\+C\+P\+Axis\+::\+Axis\+Type} \hyperlink{class_q_c_p_color_scale_a85d7e286fbfc0c04c4b480aff3cb66fb}{type} () const
+\item 
+\hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \hyperlink{class_q_c_p_color_scale_a51f5756f99867bd91e570eddefeb1ef4}{data\+Range} () const
+\item 
+\hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type} \hyperlink{class_q_c_p_color_scale_ad864329d93cbd7396af1b2024db7fcfe}{data\+Scale\+Type} () const
+\item 
+\hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} \hyperlink{class_q_c_p_color_scale_a31d4e3b49461bf6b265eabd028d0f7b2}{gradient} () const
+\item 
+Q\+String \hyperlink{class_q_c_p_color_scale_a3dbac1121a90172d62f01ab80b1ad641}{label} () const
+\item 
+int \hyperlink{class_q_c_p_color_scale_ae02ab8e4bfaa919577992e73242f491f}{bar\+Width} () const
+\item 
+bool \hyperlink{class_q_c_p_color_scale_a2a0670492f2a780596ea455ea8496a78}{range\+Drag} () const
+\item 
+bool \hyperlink{class_q_c_p_color_scale_adb4c3ada2b1e5ebbdead3b097064ff0b}{range\+Zoom} () const
+\item 
+void \hyperlink{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}{set\+Type} (\hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18a}{Q\+C\+P\+Axis\+::\+Axis\+Type} \hyperlink{class_q_c_p_color_scale_a85d7e286fbfc0c04c4b480aff3cb66fb}{type})
+\item 
+Q\+\_\+\+S\+L\+OT void \hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range} (const \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \&\hyperlink{class_q_c_p_color_scale_a51f5756f99867bd91e570eddefeb1ef4}{data\+Range})
+\item 
+Q\+\_\+\+S\+L\+OT void \hyperlink{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}{set\+Data\+Scale\+Type} (\hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type} scale\+Type)
+\item 
+Q\+\_\+\+S\+L\+OT void \hyperlink{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}{set\+Gradient} (const \hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} \&\hyperlink{class_q_c_p_color_scale_a31d4e3b49461bf6b265eabd028d0f7b2}{gradient})
+\item 
+void \hyperlink{class_q_c_p_color_scale_aee124ae8396320cacf8276e9a0fbb8ce}{set\+Label} (const Q\+String \&str)
+\item 
+void \hyperlink{class_q_c_p_color_scale_ab9dcc0c1cd583477496209b1413bcb99}{set\+Bar\+Width} (int width)
+\item 
+void \hyperlink{class_q_c_p_color_scale_a21c51a55e4fd581b6feadca9ee5b38d5}{set\+Range\+Drag} (bool enabled)
+\item 
+void \hyperlink{class_q_c_p_color_scale_a96bd60fb6317ad6821841b539c93eeeb}{set\+Range\+Zoom} (bool enabled)
+\item 
+Q\+List$<$ \hyperlink{class_q_c_p_color_map}{Q\+C\+P\+Color\+Map} $\ast$ $>$ \hyperlink{class_q_c_p_color_scale_a556adc6b0216ebc1cc4317c541956d06}{color\+Maps} () const
+\item 
+void \hyperlink{class_q_c_p_color_scale_a425983db4478543924ddbd04ea20a356}{rescale\+Data\+Range} (bool only\+Visible\+Maps)
+\item 
+virtual void \hyperlink{class_q_c_p_color_scale_a259dcb6d3053a2cc3c197e9b1191ddbe}{update} (\hyperlink{class_q_c_p_layout_element_a0d83360e05735735aaf6d7983c56374d}{Update\+Phase} phase) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{class_q_c_p_color_scale_af1b24d24a70f25b65d29f09e413390a8}{apply\+Default\+Antialiasing\+Hint} (\hyperlink{class_q_c_p_painter}{Q\+C\+P\+Painter} $\ast$painter) const \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event} (Q\+Mouse\+Event $\ast$event, const Q\+Variant \&details) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}{mouse\+Move\+Event} (Q\+Mouse\+Event $\ast$event, const Q\+PointF \&start\+Pos) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}{mouse\+Release\+Event} (Q\+Mouse\+Event $\ast$event, const Q\+PointF \&start\+Pos) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\item 
+virtual void \hyperlink{class_q_c_p_color_scale_a63cf19be184f6670c9495ad3a9a1baeb}{wheel\+Event} (Q\+Wheel\+Event $\ast$event) \hyperlink{qcustomplot_8h_a42cc5eaeb25b85f8b52d2a4b94c56f55}{Q\+\_\+\+D\+E\+C\+L\+\_\+\+O\+V\+E\+R\+R\+I\+DE}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18a}{Q\+C\+P\+Axis\+::\+Axis\+Type} \hyperlink{class_q_c_p_color_scale_a7d47ed4ab76f38e50164e9d77fe33789}{m\+Type}
+\item 
+\hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \hyperlink{class_q_c_p_color_scale_a5d4853feb32cd0077bb2b871687c844b}{m\+Data\+Range}
+\item 
+\hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type} \hyperlink{class_q_c_p_color_scale_a2754d6a78736f64a241e333fbd955372}{m\+Data\+Scale\+Type}
+\item 
+\hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} \hyperlink{class_q_c_p_color_scale_ae195a385032066b5c46cc3301af58922}{m\+Gradient}
+\item 
+int \hyperlink{class_q_c_p_color_scale_a409d2ab78dff1f92da5e6acfb062e811}{m\+Bar\+Width}
+\item 
+Q\+Pointer$<$ \hyperlink{class_q_c_p_color_scale_axis_rect_private}{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private} $>$ \hyperlink{class_q_c_p_color_scale_a6e37f7d49cd614dc50ef1caae60461b9}{m\+Axis\+Rect}
+\item 
+Q\+Pointer$<$ \hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis} $>$ \hyperlink{class_q_c_p_color_scale_a2efbc90fd31898fe05d2b74a8422b1d5}{m\+Color\+Axis}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_q_c_p_color_scale_a1441d8c09d7227c0c29a8d0a96d55bfe}{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A color scale for use with color coding data such as \hyperlink{class_q_c_p_color_map}{Q\+C\+P\+Color\+Map}. 
+
+This layout element can be placed on the plot to correlate a color gradient with data values. It is usually used in combination with one or multiple \hyperlink{class_q_c_p_color_map}{Q\+C\+P\+Color\+Maps}.
+
+
+
+The color scale can be either horizontal or vertical, as shown in the image above. The orientation and the side where the numbers appear is controlled with \hyperlink{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}{set\+Type}.
+
+Use \hyperlink{class_q_c_p_color_map_aa828921db364fe3c6af4619580ab85fd}{Q\+C\+P\+Color\+Map\+::set\+Color\+Scale} to connect a color map with a color scale. Once they are connected, they share their gradient, data range and data scale type (\hyperlink{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}{set\+Gradient}, \hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range}, \hyperlink{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}{set\+Data\+Scale\+Type}). Multiple color maps may be associated with a single color scale, to make them all synchronize these properties.
+
+To have finer control over the number display and axis behaviour, you can directly access the \hyperlink{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}{axis}. See the documentation of \hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis} for details about configuring axes. For example, if you want to change the number of automatically generated ticks, call 
+\begin{DoxyCodeInclude}
+\end{DoxyCodeInclude}
+ Placing a color scale next to the main axis rect works like with any other layout element\+: 
+\begin{DoxyCodeInclude}
+\end{DoxyCodeInclude}
+In this case we have placed it to the right of the default axis rect, so it wasn\textquotesingle{}t necessary to call \hyperlink{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}{set\+Type}, since \hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18aadf5509f7d29199ef2f263b1dd224b345}{Q\+C\+P\+Axis\+::at\+Right} is already the default. The text next to the color scale can be set with \hyperlink{class_q_c_p_color_scale_aee124ae8396320cacf8276e9a0fbb8ce}{set\+Label}.
+
+For optimum appearance (like in the image above), it may be desirable to line up the axis rect and the borders of the color scale. Use a \hyperlink{class_q_c_p_margin_group}{Q\+C\+P\+Margin\+Group} to achieve this\+: 
+\begin{DoxyCodeInclude}
+\end{DoxyCodeInclude}
+ Color scales are initialized with a non-\/zero minimum top and bottom margin (\hyperlink{class_q_c_p_layout_element_a0a8a17abc16b7923159fcc7608f94673}{set\+Minimum\+Margins}), because vertical color scales are most common and the minimum top/bottom margin makes sure it keeps some distance to the top/bottom widget border. So if you change to a horizontal color scale by setting \hyperlink{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}{set\+Type} to \hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18aa220d68888516b6c3b493d144f1ba438f}{Q\+C\+P\+Axis\+::at\+Bottom} or \hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18aac0ece2b680d3f545e701f75af1655977}{Q\+C\+P\+Axis\+::at\+Top}, you might want to also change the minimum margins accordingly, e.\+g. {\ttfamily set\+Minimum\+Margins(\+Q\+Margins(6, 0, 6, 0))}. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_q_c_p_color_scale_aa8debce1be38b54287c04d4f584394b4}\label{class_q_c_p_color_scale_aa8debce1be38b54287c04d4f584394b4}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{Q\+C\+P\+Color\+Scale()}{QCPColorScale()}}
+{\footnotesize\ttfamily Q\+C\+P\+Color\+Scale\+::\+Q\+C\+P\+Color\+Scale (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} $\ast$}]{parent\+Plot }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+Constructs a new \hyperlink{class_q_c_p_color_scale}{Q\+C\+P\+Color\+Scale}. \mbox{\Hypertarget{class_q_c_p_color_scale_a49d8d2d155c15fa315fdc0427194c9ea}\label{class_q_c_p_color_scale_a49d8d2d155c15fa315fdc0427194c9ea}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!````~Q\+C\+P\+Color\+Scale@{$\sim$\+Q\+C\+P\+Color\+Scale}}
+\index{````~Q\+C\+P\+Color\+Scale@{$\sim$\+Q\+C\+P\+Color\+Scale}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{$\sim$\+Q\+C\+P\+Color\+Scale()}{~QCPColorScale()}}
+{\footnotesize\ttfamily Q\+C\+P\+Color\+Scale\+::$\sim$\+Q\+C\+P\+Color\+Scale (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_q_c_p_color_scale_af1b24d24a70f25b65d29f09e413390a8}\label{class_q_c_p_color_scale_af1b24d24a70f25b65d29f09e413390a8}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!apply\+Default\+Antialiasing\+Hint@{apply\+Default\+Antialiasing\+Hint}}
+\index{apply\+Default\+Antialiasing\+Hint@{apply\+Default\+Antialiasing\+Hint}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{apply\+Default\+Antialiasing\+Hint()}{applyDefaultAntialiasingHint()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::apply\+Default\+Antialiasing\+Hint (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_painter}{Q\+C\+P\+Painter} $\ast$}]{painter }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \hyperlink{class_q_c_p_layout_element_a0a8f18141bcf46cf40ad4c13324ff346}{Q\+C\+P\+Layout\+Element}.
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}\label{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!axis@{axis}}
+\index{axis@{axis}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{axis()}{axis()}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis} $\ast$ Q\+C\+P\+Color\+Scale\+::axis (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+Returns the internal \hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis} instance of this color scale. You can access it to alter the appearance and behaviour of the axis. \hyperlink{class_q_c_p_color_scale}{Q\+C\+P\+Color\+Scale} duplicates some properties in its interface for convenience. Those are \hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range} (\hyperlink{class_q_c_p_axis_aebdfea5d44c3a0ad2b4700cd4d25b641}{Q\+C\+P\+Axis\+::set\+Range}), \hyperlink{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}{set\+Data\+Scale\+Type} (\hyperlink{class_q_c_p_axis_adef29cae617af4f519f6c40d1a866ca6}{Q\+C\+P\+Axis\+::set\+Scale\+Type}), and the method \hyperlink{class_q_c_p_color_scale_aee124ae8396320cacf8276e9a0fbb8ce}{set\+Label} (\hyperlink{class_q_c_p_axis_a33bcc382c111c9f31bb0687352a2dea4}{Q\+C\+P\+Axis\+::set\+Label}). As they each are connected, it does not matter whether you use the method on the \hyperlink{class_q_c_p_color_scale}{Q\+C\+P\+Color\+Scale} or on its \hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis}.
+
+If the type of the color scale is changed with \hyperlink{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}{set\+Type}, the axis returned by this method will change, too, to either the left, right, bottom or top axis, depending on which type was set. \mbox{\Hypertarget{class_q_c_p_color_scale_ae02ab8e4bfaa919577992e73242f491f}\label{class_q_c_p_color_scale_ae02ab8e4bfaa919577992e73242f491f}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!bar\+Width@{bar\+Width}}
+\index{bar\+Width@{bar\+Width}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{bar\+Width()}{barWidth()}}
+{\footnotesize\ttfamily int Q\+C\+P\+Color\+Scale\+::bar\+Width (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a556adc6b0216ebc1cc4317c541956d06}\label{class_q_c_p_color_scale_a556adc6b0216ebc1cc4317c541956d06}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!color\+Maps@{color\+Maps}}
+\index{color\+Maps@{color\+Maps}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{color\+Maps()}{colorMaps()}}
+{\footnotesize\ttfamily Q\+List$<$ \hyperlink{class_q_c_p_color_map}{Q\+C\+P\+Color\+Map} $\ast$ $>$ Q\+C\+P\+Color\+Scale\+::color\+Maps (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+Returns a list of all the color maps associated with this color scale. \mbox{\Hypertarget{class_q_c_p_color_scale_a51f5756f99867bd91e570eddefeb1ef4}\label{class_q_c_p_color_scale_a51f5756f99867bd91e570eddefeb1ef4}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!data\+Range@{data\+Range}}
+\index{data\+Range@{data\+Range}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{data\+Range()}{dataRange()}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} Q\+C\+P\+Color\+Scale\+::data\+Range (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a685717490a6aa83c5e711a4f34e837f9}\label{class_q_c_p_color_scale_a685717490a6aa83c5e711a4f34e837f9}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!data\+Range\+Changed@{data\+Range\+Changed}}
+\index{data\+Range\+Changed@{data\+Range\+Changed}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{data\+Range\+Changed}{dataRangeChanged}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::data\+Range\+Changed (\begin{DoxyParamCaption}\item[{const \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \&}]{new\+Range }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+This signal is emitted when the data range changes.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_ad864329d93cbd7396af1b2024db7fcfe}\label{class_q_c_p_color_scale_ad864329d93cbd7396af1b2024db7fcfe}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!data\+Scale\+Type@{data\+Scale\+Type}}
+\index{data\+Scale\+Type@{data\+Scale\+Type}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{data\+Scale\+Type()}{dataScaleType()}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type} Q\+C\+P\+Color\+Scale\+::data\+Scale\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a61558b962f7791ff2f15a565dcf60181}\label{class_q_c_p_color_scale_a61558b962f7791ff2f15a565dcf60181}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!data\+Scale\+Type\+Changed@{data\+Scale\+Type\+Changed}}
+\index{data\+Scale\+Type\+Changed@{data\+Scale\+Type\+Changed}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{data\+Scale\+Type\+Changed}{dataScaleTypeChanged}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::data\+Scale\+Type\+Changed (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type}}]{scale\+Type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+This signal is emitted when the data scale type changes.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}{set\+Data\+Scale\+Type} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_a31d4e3b49461bf6b265eabd028d0f7b2}\label{class_q_c_p_color_scale_a31d4e3b49461bf6b265eabd028d0f7b2}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!gradient@{gradient}}
+\index{gradient@{gradient}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{gradient()}{gradient()}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} Q\+C\+P\+Color\+Scale\+::gradient (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a5e5f8c5626242c8f7308bfab74d3d989}\label{class_q_c_p_color_scale_a5e5f8c5626242c8f7308bfab74d3d989}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!gradient\+Changed@{gradient\+Changed}}
+\index{gradient\+Changed@{gradient\+Changed}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{gradient\+Changed}{gradientChanged}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::gradient\+Changed (\begin{DoxyParamCaption}\item[{const \hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} \&}]{new\+Gradient }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [signal]}}
+
+This signal is emitted when the gradient changes.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}{set\+Gradient} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_a3dbac1121a90172d62f01ab80b1ad641}\label{class_q_c_p_color_scale_a3dbac1121a90172d62f01ab80b1ad641}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!label@{label}}
+\index{label@{label}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{label()}{label()}}
+{\footnotesize\ttfamily Q\+String Q\+C\+P\+Color\+Scale\+::label (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}\label{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!mouse\+Move\+Event@{mouse\+Move\+Event}}
+\index{mouse\+Move\+Event@{mouse\+Move\+Event}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{mouse\+Move\+Event()}{mouseMoveEvent()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::mouse\+Move\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event,  }\item[{const Q\+PointF \&}]{start\+Pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+This event gets called when the user moves the mouse while holding a mouse button, after this layerable has become the mouse grabber by accepting the preceding \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event}.
+
+The current pixel position of the cursor on the \hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} widget is accessible via {\ttfamily event-\/$>$pos()}. The parameter {\itshape start\+Pos} indicates the position where the initial \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event} occured, that started the mouse interaction.
+
+The default implementation does nothing.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event}, \hyperlink{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}{mouse\+Release\+Event}, \hyperlink{class_q_c_p_layerable_a4171e2e823aca242dd0279f00ed2de81}{mouse\+Double\+Click\+Event}, \hyperlink{class_q_c_p_color_scale_a63cf19be184f6670c9495ad3a9a1baeb}{wheel\+Event} 
+\end{DoxySeeAlso}
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_a9eee1ba47fd69be111059ca3881933e4}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}\label{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!mouse\+Press\+Event@{mouse\+Press\+Event}}
+\index{mouse\+Press\+Event@{mouse\+Press\+Event}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{mouse\+Press\+Event()}{mousePressEvent()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::mouse\+Press\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event,  }\item[{const Q\+Variant \&}]{details }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+This event gets called when the user presses a mouse button while the cursor is over the layerable. Whether a cursor is over the layerable is decided by a preceding call to \hyperlink{class_q_c_p_layout_element_ae97f483cccedadbf18ea4525ef240ee4}{select\+Test}.
+
+The current pixel position of the cursor on the \hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} widget is accessible via {\ttfamily event-\/$>$pos()}. The parameter {\itshape details} contains layerable-\/specific details about the hit, which were generated in the previous call to \hyperlink{class_q_c_p_layout_element_ae97f483cccedadbf18ea4525ef240ee4}{select\+Test}. For example, One-\/dimensional plottables like \hyperlink{class_q_c_p_graph}{Q\+C\+P\+Graph} or \hyperlink{class_q_c_p_bars}{Q\+C\+P\+Bars} convey the clicked data point in the {\itshape details} parameter, as \hyperlink{class_q_c_p_data_selection}{Q\+C\+P\+Data\+Selection} packed as Q\+Variant. Multi-\/part objects convey the specific {\ttfamily Selectable\+Part} that was hit (e.\+g. \hyperlink{class_q_c_p_axis_abee4c7a54c468b1385dfce2c898b115f}{Q\+C\+P\+Axis\+::\+Selectable\+Part} in the case of axes).
+
+\hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} uses an event propagation system that works the same as Qt\textquotesingle{}s system. If your layerable doesn\textquotesingle{}t reimplement the \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event} or explicitly calls {\ttfamily event-\/$>$ignore()} in its reimplementation, the event will be propagated to the next layerable in the stacking order.
+
+Once a layerable has accepted the \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event}, it is considered the mouse grabber and will receive all following calls to \hyperlink{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}{mouse\+Move\+Event} or \hyperlink{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}{mouse\+Release\+Event} for this mouse interaction (a \char`\"{}mouse interaction\char`\"{} in this context ends with the release).
+
+The default implementation does nothing except explicitly ignoring the event with {\ttfamily event-\/$>$ignore()}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}{mouse\+Move\+Event}, \hyperlink{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}{mouse\+Release\+Event}, \hyperlink{class_q_c_p_layerable_a4171e2e823aca242dd0279f00ed2de81}{mouse\+Double\+Click\+Event}, \hyperlink{class_q_c_p_color_scale_a63cf19be184f6670c9495ad3a9a1baeb}{wheel\+Event} 
+\end{DoxySeeAlso}
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_af6567604818db90f4fd52822f8bc8376}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}\label{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!mouse\+Release\+Event@{mouse\+Release\+Event}}
+\index{mouse\+Release\+Event@{mouse\+Release\+Event}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{mouse\+Release\+Event()}{mouseReleaseEvent()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::mouse\+Release\+Event (\begin{DoxyParamCaption}\item[{Q\+Mouse\+Event $\ast$}]{event,  }\item[{const Q\+PointF \&}]{start\+Pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+This event gets called when the user releases the mouse button, after this layerable has become the mouse grabber by accepting the preceding \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event}.
+
+The current pixel position of the cursor on the \hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} widget is accessible via {\ttfamily event-\/$>$pos()}. The parameter {\itshape start\+Pos} indicates the position where the initial \hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event} occured, that started the mouse interaction.
+
+The default implementation does nothing.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event}, \hyperlink{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}{mouse\+Move\+Event}, \hyperlink{class_q_c_p_layerable_a4171e2e823aca242dd0279f00ed2de81}{mouse\+Double\+Click\+Event}, \hyperlink{class_q_c_p_color_scale_a63cf19be184f6670c9495ad3a9a1baeb}{wheel\+Event} 
+\end{DoxySeeAlso}
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_aa0d79b005686f668622bbe66ac03ba2c}{Q\+C\+P\+Layerable}.
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a2a0670492f2a780596ea455ea8496a78}\label{class_q_c_p_color_scale_a2a0670492f2a780596ea455ea8496a78}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!range\+Drag@{range\+Drag}}
+\index{range\+Drag@{range\+Drag}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{range\+Drag()}{rangeDrag()}}
+{\footnotesize\ttfamily bool Q\+C\+P\+Color\+Scale\+::range\+Drag (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_adb4c3ada2b1e5ebbdead3b097064ff0b}\label{class_q_c_p_color_scale_adb4c3ada2b1e5ebbdead3b097064ff0b}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!range\+Zoom@{range\+Zoom}}
+\index{range\+Zoom@{range\+Zoom}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{range\+Zoom()}{rangeZoom()}}
+{\footnotesize\ttfamily bool Q\+C\+P\+Color\+Scale\+::range\+Zoom (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a425983db4478543924ddbd04ea20a356}\label{class_q_c_p_color_scale_a425983db4478543924ddbd04ea20a356}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!rescale\+Data\+Range@{rescale\+Data\+Range}}
+\index{rescale\+Data\+Range@{rescale\+Data\+Range}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{rescale\+Data\+Range()}{rescaleDataRange()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::rescale\+Data\+Range (\begin{DoxyParamCaption}\item[{bool}]{only\+Visible\+Maps }\end{DoxyParamCaption})}
+
+Changes the data range such that all color maps associated with this color scale are fully mapped to the gradient in the data dimension.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_ab9dcc0c1cd583477496209b1413bcb99}\label{class_q_c_p_color_scale_ab9dcc0c1cd583477496209b1413bcb99}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Bar\+Width@{set\+Bar\+Width}}
+\index{set\+Bar\+Width@{set\+Bar\+Width}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Bar\+Width()}{setBarWidth()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Bar\+Width (\begin{DoxyParamCaption}\item[{int}]{width }\end{DoxyParamCaption})}
+
+Sets the width (or height, for horizontal color scales) the bar where the gradient is displayed will have. \mbox{\Hypertarget{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}\label{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Data\+Range@{set\+Data\+Range}}
+\index{set\+Data\+Range@{set\+Data\+Range}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Data\+Range()}{setDataRange()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Data\+Range (\begin{DoxyParamCaption}\item[{const \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} \&}]{data\+Range }\end{DoxyParamCaption})}
+
+Sets the range spanned by the color gradient and that is shown by the axis in the color scale.
+
+It is equivalent to calling \hyperlink{class_q_c_p_color_map_a980b42837821159786a85b4b7dcb8774}{Q\+C\+P\+Color\+Map\+::set\+Data\+Range} on any of the connected color maps. It is also equivalent to directly accessing the \hyperlink{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}{axis} and setting its range with \hyperlink{class_q_c_p_axis_aebdfea5d44c3a0ad2b4700cd4d25b641}{Q\+C\+P\+Axis\+::set\+Range}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}{set\+Data\+Scale\+Type}, \hyperlink{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}{set\+Gradient}, \hyperlink{class_q_c_p_color_scale_a425983db4478543924ddbd04ea20a356}{rescale\+Data\+Range} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}\label{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Data\+Scale\+Type@{set\+Data\+Scale\+Type}}
+\index{set\+Data\+Scale\+Type@{set\+Data\+Scale\+Type}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Data\+Scale\+Type()}{setDataScaleType()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Data\+Scale\+Type (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type}}]{scale\+Type }\end{DoxyParamCaption})}
+
+Sets the scale type of the color scale, i.\+e. whether values are linearly associated with colors or logarithmically.
+
+It is equivalent to calling \hyperlink{class_q_c_p_color_map_a9d20aa08e3c1f20f22908c45b9c06511}{Q\+C\+P\+Color\+Map\+::set\+Data\+Scale\+Type} on any of the connected color maps. It is also equivalent to directly accessing the \hyperlink{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}{axis} and setting its scale type with \hyperlink{class_q_c_p_axis_adef29cae617af4f519f6c40d1a866ca6}{Q\+C\+P\+Axis\+::set\+Scale\+Type}.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range}, \hyperlink{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}{set\+Gradient} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}\label{class_q_c_p_color_scale_a1f29583bb6f1e7f473b62fb712be3940}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Gradient@{set\+Gradient}}
+\index{set\+Gradient@{set\+Gradient}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Gradient()}{setGradient()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Gradient (\begin{DoxyParamCaption}\item[{const \hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} \&}]{gradient }\end{DoxyParamCaption})}
+
+Sets the color gradient that will be used to represent data values.
+
+It is equivalent to calling \hyperlink{class_q_c_p_color_map_a7313c78360471cead3576341a2c50377}{Q\+C\+P\+Color\+Map\+::set\+Gradient} on any of the connected color maps.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range}, \hyperlink{class_q_c_p_color_scale_aeb6107d67dd7325145b2498abae67fc3}{set\+Data\+Scale\+Type} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{class_q_c_p_color_scale_aee124ae8396320cacf8276e9a0fbb8ce}\label{class_q_c_p_color_scale_aee124ae8396320cacf8276e9a0fbb8ce}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Label@{set\+Label}}
+\index{set\+Label@{set\+Label}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Label()}{setLabel()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Label (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{str }\end{DoxyParamCaption})}
+
+Sets the axis label of the color scale. This is equivalent to calling \hyperlink{class_q_c_p_axis_a33bcc382c111c9f31bb0687352a2dea4}{Q\+C\+P\+Axis\+::set\+Label} on the internal \hyperlink{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}{axis}. \mbox{\Hypertarget{class_q_c_p_color_scale_a21c51a55e4fd581b6feadca9ee5b38d5}\label{class_q_c_p_color_scale_a21c51a55e4fd581b6feadca9ee5b38d5}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Range\+Drag@{set\+Range\+Drag}}
+\index{set\+Range\+Drag@{set\+Range\+Drag}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Range\+Drag()}{setRangeDrag()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Range\+Drag (\begin{DoxyParamCaption}\item[{bool}]{enabled }\end{DoxyParamCaption})}
+
+Sets whether the user can drag the data range (\hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range}).
+
+Note that \hyperlink{namespace_q_c_p_a2ad6bb6281c7c2d593d4277b44c2b037a2c4432b9aceafb94000be8d1b589ef18}{Q\+C\+P\+::i\+Range\+Drag} must be in the \hyperlink{class_q_custom_plot}{Q\+Custom\+Plot}\textquotesingle{}s interactions (\hyperlink{class_q_custom_plot_a5ee1e2f6ae27419deca53e75907c27e5}{Q\+Custom\+Plot\+::set\+Interactions}) to allow range dragging. \mbox{\Hypertarget{class_q_c_p_color_scale_a96bd60fb6317ad6821841b539c93eeeb}\label{class_q_c_p_color_scale_a96bd60fb6317ad6821841b539c93eeeb}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Range\+Zoom@{set\+Range\+Zoom}}
+\index{set\+Range\+Zoom@{set\+Range\+Zoom}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Range\+Zoom()}{setRangeZoom()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Range\+Zoom (\begin{DoxyParamCaption}\item[{bool}]{enabled }\end{DoxyParamCaption})}
+
+Sets whether the user can zoom the data range (\hyperlink{class_q_c_p_color_scale_abe88633003a26d1e756aa74984587fef}{set\+Data\+Range}) by scrolling the mouse wheel.
+
+Note that \hyperlink{namespace_q_c_p_a2ad6bb6281c7c2d593d4277b44c2b037abee1e94353525a636aeaf0ba32b72e14}{Q\+C\+P\+::i\+Range\+Zoom} must be in the \hyperlink{class_q_custom_plot}{Q\+Custom\+Plot}\textquotesingle{}s interactions (\hyperlink{class_q_custom_plot_a5ee1e2f6ae27419deca53e75907c27e5}{Q\+Custom\+Plot\+::set\+Interactions}) to allow range dragging. \mbox{\Hypertarget{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}\label{class_q_c_p_color_scale_a1bf9bdb291927c422dd66b404b206f1f}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!set\+Type@{set\+Type}}
+\index{set\+Type@{set\+Type}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{set\+Type()}{setType()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::set\+Type (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18a}{Q\+C\+P\+Axis\+::\+Axis\+Type}}]{type }\end{DoxyParamCaption})}
+
+Sets at which side of the color scale the axis is placed, and thus also its orientation.
+
+Note that after setting {\itshape type} to a different value, the axis returned by \hyperlink{class_q_c_p_color_scale_a39bdbdb3b212602a5a57f9f3ea444190}{axis()} will be a different one. The new axis will adopt the following properties from the previous axis\+: The range, scale type, label and ticker (the latter will be shared and not copied). \mbox{\Hypertarget{class_q_c_p_color_scale_a85d7e286fbfc0c04c4b480aff3cb66fb}\label{class_q_c_p_color_scale_a85d7e286fbfc0c04c4b480aff3cb66fb}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!type@{type}}
+\index{type@{type}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{type()}{type()}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18a}{Q\+C\+P\+Axis\+::\+Axis\+Type} Q\+C\+P\+Color\+Scale\+::type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a259dcb6d3053a2cc3c197e9b1191ddbe}\label{class_q_c_p_color_scale_a259dcb6d3053a2cc3c197e9b1191ddbe}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!update@{update}}
+\index{update@{update}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::update (\begin{DoxyParamCaption}\item[{\hyperlink{class_q_c_p_layout_element_a0d83360e05735735aaf6d7983c56374d}{Update\+Phase}}]{phase }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+Updates the layout element and sub-\/elements. This function is automatically called before every replot by the parent layout element. It is called multiple times, once for every \hyperlink{class_q_c_p_layout_element_a0d83360e05735735aaf6d7983c56374d}{Update\+Phase}. The phases are run through in the order of the enum values. For details about what happens at the different phases, see the documentation of \hyperlink{class_q_c_p_layout_element_a0d83360e05735735aaf6d7983c56374d}{Update\+Phase}.
+
+Layout elements that have child elements should call the \hyperlink{class_q_c_p_color_scale_a259dcb6d3053a2cc3c197e9b1191ddbe}{update} method of their child elements, and pass the current {\itshape phase} unchanged.
+
+The default implementation executes the automatic margin mechanism in the \hyperlink{class_q_c_p_layout_element_a0d83360e05735735aaf6d7983c56374da288cb59a92280e47261a341f2813e676}{up\+Margins} phase. Subclasses should make sure to call the base class implementation. 
+
+Reimplemented from \hyperlink{class_q_c_p_layout_element_a929c2ec62e0e0e1d8418eaa802e2af9b}{Q\+C\+P\+Layout\+Element}.
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a63cf19be184f6670c9495ad3a9a1baeb}\label{class_q_c_p_color_scale_a63cf19be184f6670c9495ad3a9a1baeb}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!wheel\+Event@{wheel\+Event}}
+\index{wheel\+Event@{wheel\+Event}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{wheel\+Event()}{wheelEvent()}}
+{\footnotesize\ttfamily void Q\+C\+P\+Color\+Scale\+::wheel\+Event (\begin{DoxyParamCaption}\item[{Q\+Wheel\+Event $\ast$}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}, {\ttfamily [virtual]}}
+
+This event gets called when the user turns the mouse scroll wheel while the cursor is over the layerable. Whether a cursor is over the layerable is decided by a preceding call to \hyperlink{class_q_c_p_layout_element_ae97f483cccedadbf18ea4525ef240ee4}{select\+Test}.
+
+The current pixel position of the cursor on the \hyperlink{class_q_custom_plot}{Q\+Custom\+Plot} widget is accessible via {\ttfamily event-\/$>$pos()}.
+
+The {\ttfamily event-\/$>$delta()} indicates how far the mouse wheel was turned, which is usually +/-\/ 120 for single rotation steps. However, if the mouse wheel is turned rapidly, multiple steps may accumulate to one event, making {\ttfamily event-\/$>$delta()} larger. On the other hand, if the wheel has very smooth steps or none at all, the delta may be smaller.
+
+The default implementation does nothing.
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{class_q_c_p_color_scale_a91f633b97ffcd57fdf8cd814974c20e6}{mouse\+Press\+Event}, \hyperlink{class_q_c_p_color_scale_a3b2bd79725aefaf2630fc76e90939442}{mouse\+Move\+Event}, \hyperlink{class_q_c_p_color_scale_a6a35dd39ab4e5cb2d7b29ebb4d5b61b0}{mouse\+Release\+Event}, \hyperlink{class_q_c_p_layerable_a4171e2e823aca242dd0279f00ed2de81}{mouse\+Double\+Click\+Event} 
+\end{DoxySeeAlso}
+
+
+Reimplemented from \hyperlink{class_q_c_p_layerable_a47dfd7b8fd99c08ca54e09c362b6f022}{Q\+C\+P\+Layerable}.
+
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{class_q_c_p_color_scale_a1441d8c09d7227c0c29a8d0a96d55bfe}\label{class_q_c_p_color_scale_a1441d8c09d7227c0c29a8d0a96d55bfe}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private@{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private}}
+\index{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private@{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private}{QCPColorScaleAxisRectPrivate}}
+{\footnotesize\ttfamily friend class \hyperlink{class_q_c_p_color_scale_axis_rect_private}{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private}\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_q_c_p_color_scale_a6e37f7d49cd614dc50ef1caae60461b9}\label{class_q_c_p_color_scale_a6e37f7d49cd614dc50ef1caae60461b9}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Axis\+Rect@{m\+Axis\+Rect}}
+\index{m\+Axis\+Rect@{m\+Axis\+Rect}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Axis\+Rect}{mAxisRect}}
+{\footnotesize\ttfamily Q\+Pointer$<$\hyperlink{class_q_c_p_color_scale_axis_rect_private}{Q\+C\+P\+Color\+Scale\+Axis\+Rect\+Private}$>$ Q\+C\+P\+Color\+Scale\+::m\+Axis\+Rect\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a409d2ab78dff1f92da5e6acfb062e811}\label{class_q_c_p_color_scale_a409d2ab78dff1f92da5e6acfb062e811}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Bar\+Width@{m\+Bar\+Width}}
+\index{m\+Bar\+Width@{m\+Bar\+Width}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Bar\+Width}{mBarWidth}}
+{\footnotesize\ttfamily int Q\+C\+P\+Color\+Scale\+::m\+Bar\+Width\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a2efbc90fd31898fe05d2b74a8422b1d5}\label{class_q_c_p_color_scale_a2efbc90fd31898fe05d2b74a8422b1d5}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Color\+Axis@{m\+Color\+Axis}}
+\index{m\+Color\+Axis@{m\+Color\+Axis}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Color\+Axis}{mColorAxis}}
+{\footnotesize\ttfamily Q\+Pointer$<$\hyperlink{class_q_c_p_axis}{Q\+C\+P\+Axis}$>$ Q\+C\+P\+Color\+Scale\+::m\+Color\+Axis\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a5d4853feb32cd0077bb2b871687c844b}\label{class_q_c_p_color_scale_a5d4853feb32cd0077bb2b871687c844b}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Data\+Range@{m\+Data\+Range}}
+\index{m\+Data\+Range@{m\+Data\+Range}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Data\+Range}{mDataRange}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_range}{Q\+C\+P\+Range} Q\+C\+P\+Color\+Scale\+::m\+Data\+Range\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a2754d6a78736f64a241e333fbd955372}\label{class_q_c_p_color_scale_a2754d6a78736f64a241e333fbd955372}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Data\+Scale\+Type@{m\+Data\+Scale\+Type}}
+\index{m\+Data\+Scale\+Type@{m\+Data\+Scale\+Type}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Data\+Scale\+Type}{mDataScaleType}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis_a36d8e8658dbaa179bf2aeb973db2d6f0}{Q\+C\+P\+Axis\+::\+Scale\+Type} Q\+C\+P\+Color\+Scale\+::m\+Data\+Scale\+Type\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_ae195a385032066b5c46cc3301af58922}\label{class_q_c_p_color_scale_ae195a385032066b5c46cc3301af58922}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Gradient@{m\+Gradient}}
+\index{m\+Gradient@{m\+Gradient}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Gradient}{mGradient}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_color_gradient}{Q\+C\+P\+Color\+Gradient} Q\+C\+P\+Color\+Scale\+::m\+Gradient\hspace{0.3cm}{\ttfamily [protected]}}
+
+\mbox{\Hypertarget{class_q_c_p_color_scale_a7d47ed4ab76f38e50164e9d77fe33789}\label{class_q_c_p_color_scale_a7d47ed4ab76f38e50164e9d77fe33789}} 
+\index{Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}!m\+Type@{m\+Type}}
+\index{m\+Type@{m\+Type}!Q\+C\+P\+Color\+Scale@{Q\+C\+P\+Color\+Scale}}
+\subsubsection{\texorpdfstring{m\+Type}{mType}}
+{\footnotesize\ttfamily \hyperlink{class_q_c_p_axis_ae2bcc1728b382f10f064612b368bc18a}{Q\+C\+P\+Axis\+::\+Axis\+Type} Q\+C\+P\+Color\+Scale\+::m\+Type\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{qcustomplot_8h}{qcustomplot.\+h}\item 
+\hyperlink{qcustomplot_8cpp}{qcustomplot.\+cpp}\end{DoxyCompactItemize}
