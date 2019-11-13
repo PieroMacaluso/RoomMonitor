@@ -8,8 +8,10 @@
 
 #include <string>
 #include <QtCore/QString>
+#include <QtCore>
 
-class Strings {
+class Strings: public QObject {
+    Q_OBJECT
 public:
     static const QString ERR_DB;
     static const QString ERR_DB_MSG;
