@@ -4,6 +4,9 @@
 
 #include "Utility.h"
 
+const QString Utility::ORGANIZATION = "VALP";
+const QString Utility::APPLICATION = "RoomMonitoring";
+
 QSqlDatabase Utility::getDB(bool &error) {
     QSettings su{"VALP", "RoomMonitoring"};
     auto name = "my_db_" + QString::number((quint64) QThread::currentThread(), 16);
@@ -32,7 +35,16 @@ QSqlDatabase Utility::getDB(bool &error) {
 bool Utility::testTable(QSqlDatabase &db) {
     QSettings su{"VALP", "RoomMonitoring"};
     QSqlQuery query{db};
-    query.prepare("SELECT * FROM " + su.value("database/table").toString() + ";");
+    query.prepare(Query::SELECT_ALL_PACKET.arg(su.value("database/table").toString()));
+    if (!query.exec()) {
+        qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
+        db.close();
+        return false;
+    }
+    query.prepare(Query::SELECT_ALL_BOARD.arg(su.value("database/table").toString()));
     if (!query.exec()) {
         qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB,
@@ -78,3 +90,61 @@ bool Utility::yesNoMessage(QWidget *parent, const QString &title, const QString 
     qDebug() << "Yes was *not* clicked";
     return false;
 }
+
+std::vector<Board> Utility::getBoards() {
+    std::vector<Board> res;
+    QSettings su{"VALP", "RoomMonitoring"};
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
+
+    QSqlQuery query{db};
+    query.prepare(Query::SELECT_ALL_BOARD.arg(su.value("database/table").toString()));
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        exit(-1);
+    }
+    while (query.next()) {
+        int id = query.value(0).toInt();
+        qreal posx = query.value(1).toDouble();
+        qreal posy = query.value(2).toDouble();
+        int A = query.value(3).toInt();
+        Board b{id, posx, posy, A};
+        res.push_back(b);
+    }
+    db.close();
+    return res;
+}
+
+
+void Utility::dropBoards() {
+    std::vector<Board> res;
+    QSettings su{"VALP", "RoomMonitoring"};
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
+
+    QSqlQuery query{db};
+    query.prepare(Query::DROP_TABLE_BOARD.arg(su.value("database/table").toString()));
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        exit(-1);
+    }
+    query.prepare(Query::CREATE_TABLE_BOARD.arg(su.value("database/table").toString()));
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        exit(-1);
+    }
+    db.close();
+}
+
+void Utility::infoMessage(const QString &title, const QString &text) {
+    QMessageBox m{};
+    m.setStandardButtons(QMessageBox::Ok);
+    m.setWindowTitle(title);
+    m.setIcon(QMessageBox::Information);
+    m.setText(text);
+    m.exec();
+}
+
+

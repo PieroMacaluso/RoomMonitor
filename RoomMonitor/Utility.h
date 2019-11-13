@@ -13,15 +13,25 @@
 #include <QtCharts>
 #include <jmorecfg.h>
 #include "Strings.h"
+#include <vector>
+#include <monitoring/Board.h>
+#include "Query.h"
 
 class Utility {
 public:
+    static const QString ORGANIZATION;
+    static const QString APPLICATION;
     static QSqlDatabase getDB(bool &error);
     static QLineSeries * generateRoomSeries(QObject *parent = nullptr);
     static void warningMessage(const QString &title, const QString &text, const QString &error);
+    static void infoMessage(const QString &title, const QString &text);
     static bool yesNoMessage(QWidget *parent, const QString &title, const QString &text);
 
     static bool testTable(QSqlDatabase &db);
+
+    static std::vector<Board> getBoards();
+
+    static void dropBoards();
 };
 
 

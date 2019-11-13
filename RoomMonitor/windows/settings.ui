@@ -116,23 +116,6 @@
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <layout class="QFormLayout" name="formLayout">
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="aEdit"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="aLabel">
-           <property name="text">
-            <string>Potenza in dB ad un metro (A)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="nEdit">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="nLabel">
            <property name="lineWidth">
@@ -146,14 +129,21 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="nEdit">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
           <widget class="QLabel" name="minLabel">
            <property name="text">
             <string>Minimo minuti per conteggio presenza</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QSpinBox" name="minEdit">
            <property name="minimum">
             <number>1</number>
@@ -171,7 +161,20 @@
       <attribute name="title">
        <string>Database</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Per il corretto funzionamento del programma ti consigliamo di preparare il database avendo cura di inserire correttamente i dati sottostanti.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignJustify|Qt::AlignVCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
        <item>
         <layout class="QFormLayout" name="formLayout_3">
          <item row="0" column="0">
@@ -181,6 +184,9 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="hostEdit"/>
+         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="dbLabel">
            <property name="text">
@@ -188,8 +194,8 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="hostEdit"/>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="dbEdit"/>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="portLabel">
@@ -198,6 +204,9 @@
            </property>
           </widget>
          </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="portEdit"/>
+         </item>
          <item row="3" column="0">
           <widget class="QLabel" name="userLabel">
            <property name="text">
@@ -205,17 +214,8 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="dbEdit"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="portEdit"/>
-         </item>
          <item row="3" column="1">
           <widget class="QLineEdit" name="userEdit"/>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="passEdit"/>
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="passLabel">
@@ -223,6 +223,9 @@
             <string>Password</string>
            </property>
           </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="passEdit"/>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="tableLabel">

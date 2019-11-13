@@ -6,8 +6,17 @@
 #define ROOMMONITOR_QUERY_H
 
 
-class Query {
+#include <QtCore/QString>
 
+class Query {
+public:
+    static const QString DROP_TABLE_PACKET;
+    static const QString DROP_TABLE_BOARD;
+    static const QString CREATE_TABLE_PACKET;
+    static const QString CREATE_TABLE_BOARD;
+    static const QString SELECT_ALL_BOARD;
+    static const QString INSERT_BOARD;
+    static const QString SELECT_ALL_PACKET;
 };
 
 

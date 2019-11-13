@@ -1,3 +1,9 @@
+CREATE TABLE board_asdrubale (
+                                          id_board int NOT NULL,
+                                          pos_x REAL(5,2) NOT NULL,
+                                          pos_y REAL(5,2) NOT NULL,
+                                          a int NOT NULL, PRIMARY KEY (id_board));
+
 -- PRESENZE RANGE
 -- Dati inizio e fine raggruppa in piccoli gruppi di 5 minuti e calcola media in quelli
 SELECT timing, COUNT(DISTINCT mac_addr)

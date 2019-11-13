@@ -21,6 +21,9 @@
 #include <QtSql/QSqlField>
 #include <QtSql/QSqlDriver>
 #include <QValidator>
+#include <Query.h>
+#include <Utility.h>
+
 
 
 class SettingDialog : public QDialog {
@@ -45,12 +48,7 @@ public:
     /**
      * Impostazioni
      */
-    QSettings s{"VALP", "RoomMonitoring"};
-
-    /**
-     * Lista delle schedine che viene popolata nel costruttore dopo averla estratta dalle impostazioni
-     */
-    QList<QStringList> boardList;
+    QSettings s{Utility::ORGANIZATION, Utility::APPLICATION};
 
     /**
     * Costruttore di default che va a popolare tutte le impostazioni prelevandole da `QSettings`
@@ -61,7 +59,7 @@ public:
      * Questa è una funzione statica utile per inizializzare il programma con le impostazioni predefinite nel caso
      * in cui queste non fossero ancora disponibili. Viene chiamato nel `main.cpp` all'avvio del programma.
      */
-    static void settingCheckUp();
+    static bool settingCheckUp();
 
     /**
      * Funzione di inizializzazione di tutte le connect utili della finestra SettingDialog
@@ -133,7 +131,7 @@ public slots:
      * Routine di reset del sistema che viene chiamata premendo il pulsante applica dopo aver attivato la relativa
      * spunta nelle impostazioni del database.
      */
-    void resetDB();
+    bool resetDB();
 
     /**
      * Funzione che ripristina le impostazioni di default
@@ -146,6 +144,10 @@ public slots:
     bool isSettingValid();
 
     void compileValues();
+
+    void addBoardToDB(const QString& id_board, const QString& pos_x, const QString& pos_y, const QString& a);
+
+    void fillBoardList();
 };
 
 

@@ -11,31 +11,25 @@ SettingDialog::SettingDialog() {
     settingCheckUp();
     ui.setupUi(this);
     setupConnect();
-    this->compileValues();
+    initializeBoardList();
+    if (SettingDialog::settingCheckUp()) this->compileValues();
+    else {
+        ui.resetCheck->setChecked(true);
+        ui.resetCheck->setDisabled(true);
+    }
 }
 
-void SettingDialog::settingCheckUp() {
+bool SettingDialog::settingCheckUp() {
     // Inizializzo le impostazioni, se non sono mai state configurate
-    QSettings su{"VALP", "RoomMonitoring"};
-    qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
-    if (su.value("monitor/A").isNull())
-        su.setValue("monitor/A", -55);
-    if (su.value("monitor/n").isNull()) su.setValue("monitor/n", 3);
-    if (su.value("monitor/min").isNull()) su.setValue("monitor/min", 3);
-    if (su.value("room/width").isNull()) su.setValue("room/width", 10);
-    if (su.value("room/height").isNull()) su.setValue("room/height", 10);
-    if (su.value("room/port").isNull()) su.setValue("room/port", 27015);
-    if (su.value("room/boards").isNull()) {
-        QList<QStringList> data{{"0", "1.2", "1.0", "-55"},
-                                {"1", "1.3", "2.0", "-55"}};
-        su.setValue("room/boards", QVariant::fromValue(data));
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    QVariant val = su.value("first_time");
+    if (val.isValid()) {
+        bool error = false;
+        QSqlDatabase db = Utility::getDB(error);
+        if (error) return false;
+        if (!Utility::testTable(db)) return false;
     }
-    if (su.value("database/host").isNull()) su.setValue("database/host", "localhost");
-    if (su.value("database/name").isNull()) su.setValue("database/name", "data");
-    if (su.value("database/port").isNull()) su.setValue("database/port", 3306);
-    if (su.value("database/user").isNull()) su.setValue("database/user", "root");
-    if (su.value("database/pass").isNull()) su.setValue("database/pass", "NewRoot12Kz");
-    if (su.value("database/table").isNull()) su.setValue("database/table", "stanza");
+    return val.isValid();
 }
 
 void SettingDialog::setupConnect() {
@@ -71,13 +65,19 @@ void SettingDialog::initializeBoardList() {
     ui.boardTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui.modBoard->setDisabled(true);
     ui.removeBoard->setDisabled(true);
+}
+
+void SettingDialog::fillBoardList() {
+    std::vector<Board> boardList = Utility::getBoards();
+    ui.boardTable->clear();
+    ui.boardTable->setRowCount(0);
     for (auto board: boardList) {
         int i = ui.boardTable->rowCount();
         ui.boardTable->insertRow(ui.boardTable->rowCount());
-        ui.boardTable->setItem(i, 0, new QTableWidgetItem(board[0]));
-        ui.boardTable->setItem(i, 1, new QTableWidgetItem(board[1]));
-        ui.boardTable->setItem(i, 2, new QTableWidgetItem(board[2]));
-        ui.boardTable->setItem(i, 3, new QTableWidgetItem(board[3]));
+        ui.boardTable->setItem(i, 0, new QTableWidgetItem(QString::number(board.getId())));
+        ui.boardTable->setItem(i, 1, new QTableWidgetItem(QString::number(board.getCoord().x())));
+        ui.boardTable->setItem(i, 2, new QTableWidgetItem(QString::number(board.getCoord().y())));
+        ui.boardTable->setItem(i, 3, new QTableWidgetItem(QString::number(board.getA())));
 
     }
 }
@@ -175,7 +175,9 @@ void SettingDialog::openDialogMod() {
 
 void SettingDialog::apply() {
     if (!isSettingValid()) return;
-    s.setValue("monitor/A", ui.aEdit->text().toFloat());
+    if (ui.resetCheck->isChecked()) {
+        if (!resetDB()) return;
+    }
     s.setValue("monitor/n", ui.nEdit->text().toFloat());
     s.setValue("monitor/min", ui.minEdit->text().toFloat());
     s.setValue("room/width", ui.widthEdit->text().toFloat());
@@ -187,18 +189,13 @@ void SettingDialog::apply() {
     s.setValue("database/user", ui.userEdit->text());
     s.setValue("database/pass", ui.passEdit->text());
     s.setValue("database/table", ui.tableEdit->text());
-    qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
-    QList<QStringList> b;
+    s.setValue("first_time", true);
+    Utility::dropBoards();
     for (int i = 0; i < ui.boardTable->rowCount(); i++) {
-        b.append({ui.boardTable->item(i, 0)->text(), ui.boardTable->item(i, 1)->text(),
-                  ui.boardTable->item(i, 2)->text(), ui.boardTable->item(i, 3)->text()});
+        addBoardToDB(ui.boardTable->item(i, 0)->text(), ui.boardTable->item(i, 1)->text(),
+                     ui.boardTable->item(i, 2)->text(), ui.boardTable->item(i, 3)->text());
     }
-    s.setValue("room/boards", QVariant::fromValue(b));
-
-    if (ui.resetCheck->isChecked()) {
-        resetDB();
-    }
-    this->close();
+    this->accept();
 }
 
 void SettingDialog::addBoard(const QString &id, const QString &x, const QString &y, const QString &a) {
@@ -230,8 +227,8 @@ void SettingDialog::checkAddEdits() {
     addBoardDialog.idEdit->text().toInt(&id);
     addBoardDialog.xEdit->text().toDouble(&x);
     addBoardDialog.yEdit->text().toDouble(&y);
-    addBoardDialog.yEdit->text().toInt(&a);
-    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y && a));
+    addBoardDialog.aEdit->text().toInt(&a);
+    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y &&  addBoardDialog.aEdit->text().toInt(&a) < 0));
 }
 
 
@@ -257,34 +254,25 @@ void SettingDialog::checkModEdits() {
     modBoardDialog.xEdit->text().toDouble(&x);
     modBoardDialog.yEdit->text().toDouble(&y);
     modBoardDialog.aEdit->text().toInt(&a);
-    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y && a));
+    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y && a && modBoardDialog.aEdit->text().toInt(&a) < 0));
 }
 
 void SettingDialog::defaultValues() {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Reset Impostazioni",
-                                  "Sei sicuro di voler reimpostare le impostazioni di default?",
-                                  QMessageBox::Yes | QMessageBox::No);
-    if (reply == QMessageBox::Yes) {
+    if (Utility::yesNoMessage(this, Strings::SET_DEF, Strings::SET_DEF_MSG)) {
         qDebug() << "Yes was clicked";
         // Ripristino informazioni iniziali
-        s.setValue("monitor/A", -55);
-        s.setValue("monitor/n", 3);
-        s.setValue("monitor/min", 3);
-        s.setValue("room/width", 10);
-        s.setValue("room/height", 10);
-        s.setValue("room/port", 27015);
-        QList<QStringList> data{{"0", "1.2", "1.0", "-55"},
-                                {"1", "1.3", "2.0", "-55"}};
-        s.setValue("room/boards", QVariant::fromValue(data));
-        s.setValue("database/host", "localhost");
-        s.setValue("database/name", "data");
-        s.setValue("database/port", 3306);
-        s.setValue("database/user", "root");
-        s.setValue("database/pass", "NewRoot12Kz");
-        s.setValue("database/table", "stanza");
-        qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
-        this->compileValues();
+        ui.nEdit->setText(QString::number(3));
+        ui.minEdit->setValue(3);
+        ui.widthEdit->setText(QString::number(10));
+        ui.heightEdit->setText(QString::number(10));
+        ui.portEdit->setText(QString::number(27015));
+        ui.hostEdit->setText("localhost");
+        ui.dbEdit->setText("data");
+        ui.portEdit->setText(QString::number(3306));
+        ui.userEdit->setText("root");
+        ui.passEdit->setText("NewRoot12Kz");
+        ui.tableEdit->setText("stanza");
     } else {
         qDebug() << "Yes was *not* clicked";
         return;
@@ -292,42 +280,43 @@ void SettingDialog::defaultValues() {
 
 }
 
-void SettingDialog::resetDB() {
+bool SettingDialog::resetDB() {
     QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
     QSqlDatabase db{};
     db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName(s.value("database/host").toString());
-    db.setDatabaseName(s.value("database/name").toString());
-    db.setPort(s.value("database/port").toInt());
-    db.setUserName(s.value("database/user").toString());
-    db.setPassword(s.value("database/pass").toString());
-
+    db.setHostName(ui.hostEdit->text());
+    db.setDatabaseName(ui.dbEdit->text());
+    db.setPort(ui.portEdit->text().toInt());
+    db.setUserName(ui.userEdit->text());
+    db.setPassword(ui.passEdit->text());
     if (!db.open()) {
-        qDebug() << db.lastError();
-        return;
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
+        return false;
+    }
+    QSqlQuery query{db};
+    query.prepare(Query::DROP_TABLE_PACKET.arg(ui.tableEdit->text()));
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        return false;
+    }
+    query.prepare(Query::DROP_TABLE_BOARD.arg(ui.tableEdit->text()));
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        return false;
+    }
+    query.prepare(Query::CREATE_TABLE_PACKET.arg(ui.tableEdit->text()));
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        return false;
     }
 
-    QSqlQuery query{db};
-    query.prepare("DROP TABLE IF EXISTS " + s.value("database/table").toString() + ";");
+    query.prepare(Query::CREATE_TABLE_BOARD.arg(ui.tableEdit->text()));
     if (!query.exec()) {
-        qDebug() << query.lastError();
-    }
-    query.prepare("CREATE TABLE " + s.value("database/table").toString() +
-                  " ("
-                  "id_packet int auto_increment, "
-                  "hash_fcs varchar(8) NOT NULL, "
-                  "mac_addr varchar(17) NOT NULL, "
-                  "pos_x REAL(5,2) NOT NULL, "
-                  "pos_y REAL(5,2) NOT NULL, "
-                  "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
-                  "ssid varchar(64) NOT NULL, "
-                  "hidden int NOT NULL, "
-                  "PRIMARY KEY (id_packet) "
-                  ");");
-    if (!query.exec()) {
-        qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        return false;
     }
     db.close();
+    return true;
 }
 
 bool SettingDialog::isSettingValid() {
@@ -354,9 +343,6 @@ bool SettingDialog::isSettingValid() {
     /* MONITORAGGIO */
     int n = ui.nEdit->text().toInt();
     if (n <= 0 || n >= 4) err += "Costante di propagazione non valida.\n";
-
-    int a = ui.aEdit->text().toInt();
-    if (a >= 0) err += "Potenza in dB a un metro non valida.\n";
 
     /* DATABASE */
     QRegExpValidator host_v{host, nullptr};
@@ -393,8 +379,6 @@ bool SettingDialog::isSettingValid() {
 
 void SettingDialog::compileValues() {
     // Riempimento dei vari campi grafici
-    ui.aEdit->setText(s.value("monitor/A").toString());
-    ui.aEdit->setValidator(new QIntValidator());
     ui.nEdit->setText(s.value("monitor/n").toString());
     ui.nEdit->setValidator(new QIntValidator());
     ui.minEdit->setValue(s.value("monitor/min").toInt());
@@ -411,7 +395,24 @@ void SettingDialog::compileValues() {
     ui.userEdit->setText(s.value("database/user").toString());
     ui.passEdit->setText(s.value("database/pass").toString());
     ui.tableEdit->setText(s.value("database/table").toString());
-    boardList = s.value("room/boards").value<QList<QStringList>>();
-    initializeBoardList();
+    fillBoardList();
+}
 
+void
+SettingDialog::addBoardToDB(const QString &id_board, const QString &pos_x, const QString &pos_y, const QString &a) {
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
+
+    QSqlQuery query{db};
+    query.prepare(Query::INSERT_BOARD.arg(ui.tableEdit->text()));
+    query.bindValue(":id_board", id_board);
+    query.bindValue(":pos_x", pos_x);
+    query.bindValue(":pos_y", pos_y);
+    query.bindValue(":a", a);
+    if (!query.exec()) {
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+        return exit(-1);
+    }
+    db.close();
 }

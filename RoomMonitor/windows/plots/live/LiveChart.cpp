@@ -47,7 +47,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
     roomPerimeter->attachAxis(axisY);
     b->attachAxis(axisY);
     d->attachAxis(axisY);
-    QSettings s{"VALP", "RoomMonitoring"};
+    QSettings s{Utility::ORGANIZATION, Utility::APPLICATION};
     xMax = s.value("room/width").toReal();
     yMax = s.value("room/height").toReal();
 

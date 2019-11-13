@@ -37,7 +37,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     lineSeries->attachAxis(axisY);
     scatter->attachAxis(axisY);
     roomPerimeter->attachAxis(axisY);
-    QSettings s{"VALP", "RoomMonitoring"};
+    QSettings s{Utility::ORGANIZATION, Utility::APPLICATION};
     xMax = s.value("room/width").toReal();
     yMax = s.value("room/height").toReal();
 }

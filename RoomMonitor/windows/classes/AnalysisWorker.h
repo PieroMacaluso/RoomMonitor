@@ -40,7 +40,7 @@ public slots:
         QFont f = result->titleFont();
         f.setBold(true);
         result->setTitleFont(f);
-        QSettings su{"VALP", "RoomMonitoring"};
+        QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
         int granularity = 60 * 5;
         int bucket = 1;
         int freq = su.value("monitor/min").toInt();

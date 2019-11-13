@@ -22,6 +22,8 @@ public:
     static const QString ANA_RUNNING_MSG;
     static const QString ANA;
     static const QString MON;
+    static const QString SET_DEF;
+    static const QString SET_DEF_MSG;
 };
 
 

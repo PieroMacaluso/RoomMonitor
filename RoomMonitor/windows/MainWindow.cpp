@@ -12,7 +12,7 @@
 MainWindow::MainWindow() {
     ui.setupUi(this);
     setupConnect();
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     ui.actionMonitoring->triggered(true);
 }
 
@@ -242,14 +242,8 @@ void MainWindow::setupLivePlot() {
     ui.livePlot->setChart(liveChart);
 
     /** PLOT BOARDS **/
-    QSettings su{"VALP", "RoomMonitoring"};
-    auto boards = su.value("room/boards").value<QList<QStringList>>();
-    std::vector<Board> b_v;
-    for (auto i: boards) {
-        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble(), i[3].toInt()};
-        b_v.push_back(b);
-    }
-    liveChart->fillBoards(b_v);
+    std::vector<Board> boards = Utility::getBoards();
+    liveChart->fillBoards(boards);
     liveChart->fillDevices(lastMacs);
 
 }
@@ -259,14 +253,8 @@ void MainWindow::setupMapPlot() {
     ui.mapPlot->setChart(liveChart);
 
     /** PLOT BOARDS **/
-    QSettings su{"VALP", "RoomMonitoring"};
-    auto boards = su.value("room/boards").value<QList<QStringList>>();
-    std::vector<Board> b_v;
-    for (auto i: boards) {
-        Board b{i[0].toInt(), i[1].toDouble(), i[2].toDouble(), i[3].toInt()};
-        b_v.push_back(b);
-    }
-    liveChart->fillBoards(b_v);
+    std::vector<Board> boards = Utility::getBoards();
+    liveChart->fillBoards(boards);
     connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
         ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
         ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
@@ -381,7 +369,7 @@ void MainWindow::setMacPlot() {
 }
 
 void MainWindow::setupPositionPlot(QString mac) {
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     auto posPlot = new PositionPlot();// Plot Analysis Chart
     positionDialog.positionPlot->setChart(posPlot);
     QDateTime start_in = ui.startDate->dateTime();
@@ -455,7 +443,7 @@ void MainWindow::setupPositionPlot(QString mac) {
 }
 
 void MainWindow::addLiveData() {
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     qint64 startTimestamp = QDateTime::currentSecsSinceEpoch();
     startTimestamp = startTimestamp / (60 * 5);
     QDateTime start{};
@@ -551,7 +539,7 @@ void MainWindow::dataAnalysis() {
     auto chart = new MonitoringChart();
     auto macPlot = new MacChart();
     auto liveChart = new LiveChart();
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     QDateTime start_in = ui.startDate->dateTime();
     QDateTime end_in = ui.endDate->dateTime();
     QDateTime start{};
@@ -577,7 +565,7 @@ void MainWindow::dataAnalysis() {
 }
 
 void MainWindow::genLiveData() {
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) return;

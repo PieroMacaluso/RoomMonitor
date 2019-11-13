@@ -20,6 +20,11 @@ class MainWindow : public QMainWindow {
 
     int i_time = 0;
 
+    /**
+     * Worker thread utilizzato per analisi pesanti. Queste vengono eseguite in un thread separato per evitare di
+     * bloccare il thread principale mentre si occupa di renderizzare la parte grafica. Quest'ultimo comunica con il
+     * thread principale attraverso
+     */
     QThread workerThread;
     /**
      * UI Finestra Principale
@@ -171,6 +176,9 @@ public:
      */
     void setupLivePlot();
 
+    /**
+     * Funzione da chiamare per popolare il grafico delle posizioni con i dati presenti in monitoraggio
+     */
     void setupMapPlot();
 };
 
