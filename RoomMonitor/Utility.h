@@ -11,7 +11,6 @@
 #include <QDebug>
 #include <QThread>
 #include <QtCharts>
-#include <jmorecfg.h>
 #include "Strings.h"
 #include <vector>
 #include <monitoring/Board.h>

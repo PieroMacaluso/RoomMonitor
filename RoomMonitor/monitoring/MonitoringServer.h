@@ -44,6 +44,7 @@ Q_OBJECT
     std::map<int, Board> boards;
     bool running;
     std::map<std::string, std::pair<std::deque<Packet>, int>> packets;
+    int numErrEspNotFound = 0;
 //    std::deque<std::pair<Packet, int>> packets;
     QTimer timer{};
     QSettings settings{"VALP", "RoomMonitoring"};

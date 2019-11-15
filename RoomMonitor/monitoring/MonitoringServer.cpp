@@ -299,10 +299,12 @@ void MonitoringServer::aggregate() {
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
+    QSet<std::string> listOfId;             //usato per segnare quali id schedine sono state acquisite
 
     std::map<std::string, std::deque<Packet>> aggregate{};
     for (auto it = packets.begin(); it != packets.end(); it++) {
         std::string id = it->first;
+        listOfId.insert(id);
         if (it->second.first.size() == nSchedine) {
             aggregate.insert(std::make_pair(id, it->second.first));
             it->second.second = 2;
@@ -310,6 +312,15 @@ void MonitoringServer::aggregate() {
             it->second.second++;
         }
     }
+    if (listOfId.size() < nSchedine) {
+        //una delle schedine non è stata rilevata in questi pacchetti
+        qDebug("Schedina mancante.");       //todo possibilità di indicare quale manca
+        numErrEspNotFound++;
+    } else {
+        //tutte ricevute
+        numErrEspNotFound = 0;        //resetta il contatore degli errori
+    }
+
     // Stampa id pacchetti aggregati rilevati.
     for (auto fil : aggregate) {
         /*
@@ -354,6 +365,11 @@ void MonitoringServer::aggregate() {
         }
     }
     db.close();
+    //Effettua il controllo su quante volte consecutivamente non è stata rilevata una schedina
+    //Todo possibile miglioramento, effettuare il controllo sulla singola schedina
+    if (numErrEspNotFound > 3) {
+        emit stopped();
+    }
     this->aggregated();
 }
 
