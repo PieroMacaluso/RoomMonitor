@@ -299,12 +299,12 @@ void MonitoringServer::aggregate() {
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
-    QSet<std::string> listOfId;             //usato per segnare quali id schedine sono state acquisite
+    QSet<QString> listOfId;             //usato per segnare quali id schedine sono state acquisite
 
     std::map<std::string, std::deque<Packet>> aggregate{};
     for (auto it = packets.begin(); it != packets.end(); it++) {
         std::string id = it->first;
-        listOfId.insert(id);
+        listOfId.insert(QString::fromStdString(id));
         if (it->second.first.size() == nSchedine) {
             aggregate.insert(std::make_pair(id, it->second.first));
             it->second.second = 2;
