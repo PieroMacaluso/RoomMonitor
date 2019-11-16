@@ -19,6 +19,7 @@
 
 class Utility {
 public:
+    static void setupVariables();
     static const QString ORGANIZATION;
     static const QString APPLICATION;
     static QSqlDatabase getDB(bool &error);
@@ -34,7 +35,7 @@ public:
 
     static void dropBoards();
 
-    static const int RETRY_STEP_BOARD;
+    static int RETRY_STEP_BOARD;
 };
 
 

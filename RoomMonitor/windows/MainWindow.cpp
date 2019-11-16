@@ -179,19 +179,19 @@ void MainWindow::setupConnect() {
     // Azione Impostazioni
     QObject::connect(ui.actionSettings, &QAction::triggered, [&]() {
         SettingDialog sd{};
+        int ret = 0;
         if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
             sd.setModal(true);
-            sd.exec();
-            ui.actionMonitoring->triggered();
+            ret = sd.exec();
         } else if (!s.isRunning()) {
             sd.setModal(true);
-            sd.exec();
+            ret = sd.exec();
+        }
+        if (ret){
             ui.actionMonitoring->triggered();
-
-
         }
     });
 

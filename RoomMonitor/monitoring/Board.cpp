@@ -3,6 +3,7 @@
 //
 
 #include <QtCore/QSettings>
+#include <Utility.h>
 #include "Board.h"
 
 int Board::getId() const {
@@ -17,7 +18,7 @@ const Point2d &Board::getCoord() const {
  * @return
  */
 std::map<int, Board> Board::extract_from_setting() {
-    QSettings s{"VALP", "RoomMonitoring"};
+    QSettings s{Utility::ORGANIZATION, Utility::APPLICATION};
     std::map<int, Board> result;
     auto list = s.value("room/boards").value<QList<QStringList>>();
     for (auto b : list) {

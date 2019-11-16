@@ -2,13 +2,7 @@
 // Created by pieromack on 26/07/19.
 //
 
-#include <QtCore/QSettings>
-#include <QtSql/QSqlRecord>
-#include <bitset>
-#include <Utility.h>
 #include "MonitoringServer.h"
-#include "Circle.h"
-#include "../windows/SettingDialog.h"
 
 MonitoringServer::MonitoringServer() {
 }
@@ -205,6 +199,7 @@ void MonitoringServer::start() {
         boards.clear();
         std::for_each(b.begin(), b.end(), [&](Board bo) {
             boards.insert(std::make_pair(bo.getId(), bo));
+            board_fail.insert(std::make_pair(bo.getId(), 0));
         });
         QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
         qDebug() << "Server Started on port:" << server.serverPort();
@@ -316,48 +311,44 @@ void MonitoringServer::aggregate() {
         }
     }
     if (listOfId.size() < nSchedine) {
-        //una delle schedine non è stata rilevata in questi pacchetti
-        qDebug() << "Schedine Mancanti:";
+        // Se una schedina non viene rilevata incremento il contatore
+        // Ogni volta che viene rilevata nuovamente il contatore viene resettato
         std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
-            if (!listOfId.contains(QString::number(pair.first))) qDebug() << pair.first;
-        });
-        numErrEspNotFound++;
-        //Effettua il controllo su quante volte consecutivamente non è stata rilevata una schedina
-        //Todo possibile miglioramento, effettuare il controllo sulla singola schedina
-        if (numErrEspNotFound > Utility::RETRY_STEP_BOARD) {
-            qDebug() << "Rimozione schedine non funzionanti";
-            int ret = Utility::infoMessageTimer("Schedine Mancanti", "Rimozione schedine non funzionanti",
-                                                10000);
-            switch (ret) {
-                case QMessageBox::Ok:
-                    qDebug() << "PROCEDI ELIMINANDO SCHEDINE";
-                    std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
-                        if (!listOfId.contains(QString::number(pair.first))) boards.erase(pair.first);
-                    });
-                    if (boards.size() > 1) {
-
-                    } else {
-
-                    }
-                    break;
-                case QMessageBox::Abort:
-                    qDebug() << "ABORT";
-                    emit stopped();
-                    db.close();
-                    this->aggregated();
-                    return;
-                    break;
-                default:
-                    // should never be reached
-                    break;
+            if (!listOfId.contains(QString::number(pair.first))) {
+                board_fail.find(pair.first)->second++;
+            } else {
+                board_fail.find(pair.first)->second = 0;
             }
+        });
+        // Se una delle schedine non viene rilevata per una quantita eccessiva
+        QSet<QString> listBoardFailing{};
+        std::for_each(board_fail.begin(), board_fail.end(), [&](std::pair<int, int> pair) {
+            if (pair.second >= Utility::RETRY_STEP_BOARD) {
+                listBoardFailing.insert(QString::number(pair.first));
+            }
+        });
+        if (!listBoardFailing.empty()) {
+            qDebug() << "ID schedine mancanti" << listBoardFailing.toList();
+            QString stringOut{"Elenco ID schede offline: [ "};
+            int count = 0;
+            for (auto &a : listBoardFailing) {
+                count++;
+                stringOut += "\"" + a + "\"";
+                if (count != listBoardFailing.size()) {
+                    stringOut += ", ";
+                }
+            }
+            stringOut += " ]";
+
+            Utility::warningMessage("Schedine non funzionanti",
+                                    "Ti invitiamo a verificare il funzionamento delle schedine indicate nei dettagli e riavviare il monitoraggio",
+                                    stringOut);
+            emit stopped();
         }
         db.close();
         this->aggregated();
         return;
     }
-    //tutte ricevute
-    numErrEspNotFound = 0;        //resetta il contatore degli errori
 
     // Stampa id pacchetti aggregati rilevati.
     for (auto fil : aggregate) {

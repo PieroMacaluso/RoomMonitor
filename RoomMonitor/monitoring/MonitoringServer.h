@@ -36,18 +36,25 @@
 #include <QDebug>
 #include <QDateTime>
 #include <QSettings>
+#include <QtCore/QSettings>
+#include <QtSql/QSqlRecord>
+#include <bitset>
+#include "Utility.h"
+#include "Circle.h"
+#include "../windows/SettingDialog.h"
 
 
 class MonitoringServer : public QObject {
 Q_OBJECT
     QTcpServer server{};
+    std::map<int, int> board_fail;
     std::map<int, Board> boards;
     bool running;
     std::map<std::string, std::pair<std::deque<Packet>, int>> packets;
     int numErrEspNotFound = 0;
 //    std::deque<std::pair<Packet, int>> packets;
     QTimer timer{};
-    QSettings settings{"VALP", "RoomMonitoring"};
+    QSettings settings{Utility::ORGANIZATION, Utility::APPLICATION};
 
 public:
     MonitoringServer();

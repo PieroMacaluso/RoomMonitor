@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     int ret;
     // Check settings, otherwise set them to default values
     if (!SettingDialog::settingCheckUp()) {
-        QSettings su{"VALP","RoomMonitoring"};
+        QSettings su{Utility::ORGANIZATION,Utility::APPLICATION};
         su.remove("first_time");
         Utility::infoMessage("Primo Avvio", "Questo è il primo avvio dell'applicazione. Prima di continuare compila "
                                                "le impostazioni.");

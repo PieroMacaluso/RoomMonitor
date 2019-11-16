@@ -7,10 +7,10 @@
 
 const QString Utility::ORGANIZATION = "VALP";
 const QString Utility::APPLICATION = "RoomMonitoring";
-const int Utility::RETRY_STEP_BOARD = 3;
+int Utility::RETRY_STEP_BOARD = 3;
 
 QSqlDatabase Utility::getDB(bool &error) {
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     auto name = "my_db_" + QString::number((quint64) QThread::currentThread(), 16);
     if (QSqlDatabase::contains(name)) {
         return QSqlDatabase::database(name);
@@ -33,7 +33,7 @@ QSqlDatabase Utility::getDB(bool &error) {
 }
 
 bool Utility::testTable(QSqlDatabase &db) {
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     QSqlQuery query{db};
     query.prepare(Query::SELECT_ALL_PACKET.arg(su.value("database/table").toString()));
     if (!query.exec()) {
@@ -57,7 +57,7 @@ bool Utility::testTable(QSqlDatabase &db) {
 }
 
 QLineSeries *Utility::generateRoomSeries(QObject *parent) {
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     QLineSeries *series = new QLineSeries(parent);
     series->setColor(QColor("green"));
     series->append(0, 0);
@@ -93,7 +93,7 @@ bool Utility::yesNoMessage(QWidget *parent, const QString &title, const QString 
 
 std::vector<Board> Utility::getBoards() {
     std::vector<Board> res;
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
@@ -119,7 +119,7 @@ std::vector<Board> Utility::getBoards() {
 
 void Utility::dropBoards() {
     std::vector<Board> res;
-    QSettings su{"VALP", "RoomMonitoring"};
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
@@ -159,6 +159,11 @@ int Utility::infoMessageTimer(const QString &title, const QString &text, int mil
     QObject::connect(&t, &QTimer::timeout, m.button(QMessageBox::Ok), &QAbstractButton::click);
     t.start();
     return m.exec();
+}
+
+void Utility::setupVariables() {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    RETRY_STEP_BOARD = su.value("Utility/RETRY_STEP_BOARD").toInt();
 }
 
 

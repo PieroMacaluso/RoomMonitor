@@ -153,6 +153,29 @@
            </property>
           </widget>
          </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="retryLabel">
+           <property name="text">
+            <string>Limite fallimenti aggregazione</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QSpinBox" name="retryEdit">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>100</number>
+           </property>
+           <property name="value">
+            <number>3</number>
+           </property>
+           <property name="displayIntegerBase">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -262,6 +285,26 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>widthEdit</tabstop>
+  <tabstop>heightEdit</tabstop>
+  <tabstop>portServerEdit</tabstop>
+  <tabstop>addBoard</tabstop>
+  <tabstop>modBoard</tabstop>
+  <tabstop>removeBoard</tabstop>
+  <tabstop>boardTable</tabstop>
+  <tabstop>nEdit</tabstop>
+  <tabstop>minEdit</tabstop>
+  <tabstop>retryEdit</tabstop>
+  <tabstop>hostEdit</tabstop>
+  <tabstop>dbEdit</tabstop>
+  <tabstop>portEdit</tabstop>
+  <tabstop>userEdit</tabstop>
+  <tabstop>passEdit</tabstop>
+  <tabstop>tableEdit</tabstop>
+  <tabstop>resetCheck</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

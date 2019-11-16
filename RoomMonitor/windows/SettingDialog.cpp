@@ -189,12 +189,14 @@ void SettingDialog::apply() {
     s.setValue("database/user", ui.userEdit->text());
     s.setValue("database/pass", ui.passEdit->text());
     s.setValue("database/table", ui.tableEdit->text());
+    s.setValue("Utility/RETRY_STEP_BOARD", ui.retryEdit->text().toInt());
     s.setValue("first_time", true);
     Utility::dropBoards();
     for (int i = 0; i < ui.boardTable->rowCount(); i++) {
         addBoardToDB(ui.boardTable->item(i, 0)->text(), ui.boardTable->item(i, 1)->text(),
                      ui.boardTable->item(i, 2)->text(), ui.boardTable->item(i, 3)->text());
     }
+    Utility::setupVariables();
     this->accept();
 }
 
@@ -395,6 +397,8 @@ void SettingDialog::compileValues() {
     ui.userEdit->setText(s.value("database/user").toString());
     ui.passEdit->setText(s.value("database/pass").toString());
     ui.tableEdit->setText(s.value("database/table").toString());
+    ui.retryEdit->setValue(s.value("Utility/RETRY_STEP_BOARD").toInt());
+
     fillBoardList();
 }
 
