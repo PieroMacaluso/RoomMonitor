@@ -7,6 +7,7 @@
 
 
 #include <QtSql>
+#include <QObject>
 #include <QtCore/QSettings>
 #include <QDebug>
 #include <QThread>
@@ -24,6 +25,7 @@ public:
     static QLineSeries * generateRoomSeries(QObject *parent = nullptr);
     static void warningMessage(const QString &title, const QString &text, const QString &error);
     static void infoMessage(const QString &title, const QString &text);
+    static int infoMessageTimer(const QString &title, const QString &text, int millisec);
     static bool yesNoMessage(QWidget *parent, const QString &title, const QString &text);
 
     static bool testTable(QSqlDatabase &db);
@@ -31,6 +33,8 @@ public:
     static std::vector<Board> getBoards();
 
     static void dropBoards();
+
+    static const int RETRY_STEP_BOARD;
 };
 
 

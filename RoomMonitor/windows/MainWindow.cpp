@@ -167,17 +167,13 @@ void MainWindow::setupConnect() {
     // Click Stop Button
     QObject::connect(ui.stopButton, &QPushButton::clicked, [&]() {
         if (s.isRunning()) {
-            s.stopped();
-            ui.startButton->setDisabled(false);
-            ui.stopButton->setDisabled(true);
-            s.stop();
-            liveGraph.stop();
+            this->stopServer();
         }
     });
 
     // Conseguenze Click Stop Button
     QObject::connect(&s, &MonitoringServer::stopped, [&]() {
-        qDebug() << "Stopped";
+        this->stopServer();
     });
 
     // Azione Impostazioni
@@ -187,13 +183,16 @@ void MainWindow::setupConnect() {
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
+            sd.setModal(true);
+            sd.exec();
+            ui.actionMonitoring->triggered();
+        } else if (!s.isRunning()) {
+            sd.setModal(true);
+            sd.exec();
+            ui.actionMonitoring->triggered();
+
+
         }
-
-        sd.setModal(true);
-        sd.exec();
-        ui.actionMonitoring->triggered();
-
-
     });
 
     // Azione Localizza MAC
@@ -645,4 +644,11 @@ void MainWindow::finishedAnalysisThread() {
     ui.progressBar->setValue(100);
     ui.progressBar->setEnabled(false);
     ui.searchButton->setEnabled(true);
+}
+
+void MainWindow::stopServer() {
+    ui.startButton->setDisabled(false);
+    ui.stopButton->setDisabled(true);
+    s.stop();
+    liveGraph.stop();
 }

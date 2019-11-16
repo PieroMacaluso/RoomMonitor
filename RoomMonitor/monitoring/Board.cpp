@@ -12,7 +12,10 @@ int Board::getId() const {
 const Point2d &Board::getCoord() const {
     return coord;
 }
-
+/**
+ * Deprecated
+ * @return
+ */
 std::map<int, Board> Board::extract_from_setting() {
     QSettings s{"VALP", "RoomMonitoring"};
     std::map<int, Board> result;

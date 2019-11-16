@@ -2,19 +2,19 @@
 // Created by pieromack on 01/10/19.
 //
 
+#include <sys/socket.h>
 #include "Utility.h"
 
 const QString Utility::ORGANIZATION = "VALP";
 const QString Utility::APPLICATION = "RoomMonitoring";
+const int Utility::RETRY_STEP_BOARD = 3;
 
 QSqlDatabase Utility::getDB(bool &error) {
     QSettings su{"VALP", "RoomMonitoring"};
     auto name = "my_db_" + QString::number((quint64) QThread::currentThread(), 16);
     if (QSqlDatabase::contains(name)) {
-        qDebug() << "Not Contain";
         return QSqlDatabase::database(name);
     } else {
-        qDebug() << "Contain";
         QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL", name);
         db.setHostName(su.value("database/host").toString());
         db.setDatabaseName(su.value("database/name").toString());
@@ -145,6 +145,20 @@ void Utility::infoMessage(const QString &title, const QString &text) {
     m.setIcon(QMessageBox::Information);
     m.setText(text);
     m.exec();
+}
+
+int Utility::infoMessageTimer(const QString &title, const QString &text, int millisec) {
+    QMessageBox m{};
+    m.setWindowTitle(title);
+    m.setStandardButtons(QMessageBox::Ok | QMessageBox::Abort);
+    m.setText(text);
+    QTimer t{};
+    t.setInterval(millisec);
+    t.setSingleShot(true);
+    QObject::connect(&m, &QMessageBox::rejected, &t, &QTimer::stop);
+    QObject::connect(&t, &QTimer::timeout, m.button(QMessageBox::Ok), &QAbstractButton::click);
+    t.start();
+    return m.exec();
 }
 
 

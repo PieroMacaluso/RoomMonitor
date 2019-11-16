@@ -26,8 +26,8 @@ std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string
         split(s, values, ',');
         //todo alcuni pacchetti non vengono inviati del tutto, metà stringa
         //"2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxx" -> "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
-        if(values.size()!=7){
-            qDebug()<< "Interruzione Stringa: "<< QString::fromStdString(s);
+        if (values.size() != 7) {
+            qDebug() << "Interruzione Stringa: " << QString::fromStdString(s);
             continue;
         }
         if (values[5] == "~")        //alcuni pacchetti contengono l'ssid e altri no
@@ -59,7 +59,7 @@ void MonitoringServer::split(const std::string &str, Container &cont, char delim
  * @param deque
  * @return
  */
-PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet>& deque) {
+PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
     // Deque di cerchi
     std::deque<Circle> circles{};
     // Deque che ci serve per media pesata
@@ -200,12 +200,16 @@ void MonitoringServer::start() {
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
         qDebug() << "Server Did not start";
     } else {
+        std::vector<Board> b;
+        b = Utility::getBoards();
         boards.clear();
-        boards = Board::extract_from_setting();
+        std::for_each(b.begin(), b.end(), [&](Board bo) {
+            boards.insert(std::make_pair(bo.getId(), bo));
+        });
         QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
         qDebug() << "Server Started on port:" << server.serverPort();
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-        timer.start(60000);
+        timer.start(10000);
     }
 
 }
@@ -300,7 +304,6 @@ void MonitoringServer::aggregate() {
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
     QSet<QString> listOfId;             //usato per segnare quali id schedine sono state acquisite
-
     std::map<std::string, std::deque<Packet>> aggregate{};
     for (auto it = packets.begin(); it != packets.end(); it++) {
         std::string id = it->first;
@@ -314,12 +317,47 @@ void MonitoringServer::aggregate() {
     }
     if (listOfId.size() < nSchedine) {
         //una delle schedine non è stata rilevata in questi pacchetti
-        qDebug("Schedina mancante.");       //todo possibilità di indicare quale manca
+        qDebug() << "Schedine Mancanti:";
+        std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
+            if (!listOfId.contains(QString::number(pair.first))) qDebug() << pair.first;
+        });
         numErrEspNotFound++;
-    } else {
-        //tutte ricevute
-        numErrEspNotFound = 0;        //resetta il contatore degli errori
+        //Effettua il controllo su quante volte consecutivamente non è stata rilevata una schedina
+        //Todo possibile miglioramento, effettuare il controllo sulla singola schedina
+        if (numErrEspNotFound > Utility::RETRY_STEP_BOARD) {
+            qDebug() << "Rimozione schedine non funzionanti";
+            int ret = Utility::infoMessageTimer("Schedine Mancanti", "Rimozione schedine non funzionanti",
+                                                10000);
+            switch (ret) {
+                case QMessageBox::Ok:
+                    qDebug() << "PROCEDI ELIMINANDO SCHEDINE";
+                    std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
+                        if (!listOfId.contains(QString::number(pair.first))) boards.erase(pair.first);
+                    });
+                    if (boards.size() > 1) {
+
+                    } else {
+
+                    }
+                    break;
+                case QMessageBox::Abort:
+                    qDebug() << "ABORT";
+                    emit stopped();
+                    db.close();
+                    this->aggregated();
+                    return;
+                    break;
+                default:
+                    // should never be reached
+                    break;
+            }
+        }
+        db.close();
+        this->aggregated();
+        return;
     }
+    //tutte ricevute
+    numErrEspNotFound = 0;        //resetta il contatore degli errori
 
     // Stampa id pacchetti aggregati rilevati.
     for (auto fil : aggregate) {
@@ -332,7 +370,8 @@ void MonitoringServer::aggregate() {
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
-        DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer()<< " " << positionData.getX() << " " << positionData.getY());
+        DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() << " " << positionData.getX() << " "
+                           << positionData.getY());
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
@@ -365,11 +404,6 @@ void MonitoringServer::aggregate() {
         }
     }
     db.close();
-    //Effettua il controllo su quante volte consecutivamente non è stata rilevata una schedina
-    //Todo possibile miglioramento, effettuare il controllo sulla singola schedina
-    if (numErrEspNotFound > 3) {
-        emit stopped();
-    }
     this->aggregated();
 }
 
@@ -384,30 +418,33 @@ bool MonitoringServer::isRunning() {
  * @param endTime
  * @return
  */
-Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime){
+Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime) {
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
     QSqlQuery query{db};
-    QString table="stanza";         //todo vedere da impostazioni
+    QString table = "stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
     QDateTime timeEnd;
 
-    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeInit.setTime_t(
+            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     timeEnd.setTime_t(endTime);
 
-    query.prepare("SELECT * FROM "+table+" WHERE mac_addr='"+ mac+"' AND timestamp>='" + timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" + timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' ORDER BY TIMESTAMP desc;");
+    query.prepare("SELECT * FROM " + table + " WHERE mac_addr='" + mac + "' AND timestamp>='" +
+                  timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" +
+                  timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' ORDER BY TIMESTAMP desc;");
 
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
 
-    if (query.size() == 0){
+    if (query.size() == 0) {
         Packet p(-1, "null", -1, (std::string &) "null", -1, (std::string &) "null");
         return p;
     }
 
-    while(query.next()){
+    while (query.next()) {
         std::string fcs = query.value(1).toString().toStdString();
         std::string mac = query.value(2).toString().toStdString();
         uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
@@ -433,7 +470,8 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_
     QDateTime timeInit;
     QDateTime timeEnd;
 
-    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeInit.setTime_t(
+            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     timeEnd.setTime_t(endTime);
 
 
@@ -541,23 +579,25 @@ bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t 
     double perc;
     bool trovato = false;
 
-    std::deque<Packet> hiddenPackets=getHiddenPackets(initTime,endTime);                                //ottiene tutti i pacchetti dello stesso mac in quel determinato intervallo
-    if(hiddenPackets.empty())
+    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime,
+                                                        endTime);                                //ottiene tutti i pacchetti dello stesso mac in quel determinato intervallo
+    if (hiddenPackets.empty())
         return false;                                                                                    //nel lasso di tempo scelto non è stato trovato nessun pacchetto con il mac selezionato. Per effettuare la stima è necessario che ci sia almeno un pacchetto con  il mac scelto
 
-    std::list<Packet> allPacketsOfMac=getAllPacketsOfMac(mac,initTime,endTime);
-    if(allPacketsOfMac.empty())
+    std::list<Packet> allPacketsOfMac = getAllPacketsOfMac(mac, initTime, endTime);
+    if (allPacketsOfMac.empty())
         return false;
 
     for (int j = 0; j < hiddenPackets.size(); j++) {
         if (hiddenPackets.at(j).getMacPeer() != mac.toStdString()) {
 
-            double_t maxPerc=0;
+            double_t maxPerc = 0;
 
-            for(Packet source:allPacketsOfMac){                                                           //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
+            for (Packet source:allPacketsOfMac) {                                                           //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
                 double diff = (source.getTimestamp() < hiddenPackets.at(j).getTimestamp()) ? (
                         hiddenPackets.at(j).getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
-                                                                                       hiddenPackets.at(j).getTimestamp());
+                                                                                       hiddenPackets.at(
+                                                                                               j).getTimestamp());
                 if (diff <= tolleranzaTimestamp) {
                     //mac diverso ad intervallo inferiore di 1 minuto
                     double diffX = (source.getX() < hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX() -
@@ -572,8 +612,8 @@ bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t 
                         //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
                         perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
                                        (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
-                        if(perc>maxPerc)
-                            maxPerc=perc;
+                        if (perc > maxPerc)
+                            maxPerc = perc;
                     }
                 }
             }
@@ -640,30 +680,33 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
  * @param endTime
  * @return
  */
-std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString& mac, uint32_t initTime, uint32_t endTime) {
+std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString &mac, uint32_t initTime, uint32_t endTime) {
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
     QSqlQuery query{db};
-    QString table="stanza";         //todo vedere da impostazioni
+    QString table = "stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
     QDateTime timeEnd;
 
-    timeInit.setTime_t(initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    timeInit.setTime_t(
+            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     timeEnd.setTime_t(endTime);
 
-    query.prepare("SELECT * FROM "+table+" WHERE mac_addr='"+ mac+"' AND timestamp>='" + timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" + timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "';");
+    query.prepare("SELECT * FROM " + table + " WHERE mac_addr='" + mac + "' AND timestamp>='" +
+                  timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" +
+                  timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "';");
 
     if (!query.exec()) {
         qDebug() << query.lastError();
     }
 
-    if (query.size() == 0){
-       return std::list<Packet>();
+    if (query.size() == 0) {
+        return std::list<Packet>();
     }
 
     std::list<Packet> allPacketsOfMac;
-    while(query.next()){
+    while (query.next()) {
         std::string fcs = query.value(1).toString().toStdString();
         std::string mac_add = query.value(2).toString().toStdString();
         uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();

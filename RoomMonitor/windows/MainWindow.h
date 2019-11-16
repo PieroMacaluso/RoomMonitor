@@ -180,6 +180,8 @@ public:
      * Funzione da chiamare per popolare il grafico delle posizioni con i dati presenti in monitoraggio
      */
     void setupMapPlot();
+
+    void stopServer();
 };
 
 
