@@ -35,6 +35,7 @@ public:
               end_in(end_in), result(result), macPlot(macPlot), timeSlider(timeSlider) {}
 
 public slots:
+
     void doWork() {
         QString title = "Analisi di lungo periodo - ";
         QFont f = result->titleFont();
@@ -50,51 +51,36 @@ public slots:
         end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
         qint64 diff = end.toSecsSinceEpoch() - start.toSecsSinceEpoch();
         // TODO: Frequenza minima personalizzata per ogni granularità? Issue #23
-        if (diff >= 10 * 12 * 30 * 24 * 60 * 60) {
-            result->setTitle(title + "Modalità: DECENNIO - Granularità: 30d|1d");
-            granularity = 60 * 60 * 24 * 30;
-            bucket = 60 * 60 * 24;
-            freq = 1;
-        } else if (diff >= 12 * 30 * 24 * 60 * 60) {
-            result->setTitle(title + "Modalità: ANNO - Granularità: 1w|1d");
-            granularity = 60 * 60 * 24 * 7;
-            bucket = 60 * 60 * 24;
-            freq = 1;
-
-        } else if (diff > 31 * 24 * 60 * 60) {
-            result->setTitle(title + "Modalità: MESE - Granularità: 1d|1h");
-            granularity = 60 * 60 * 24;
-            bucket = 60 * 60;
-            freq = 1;
-
-        } else {
-            freq = su.value("monitor/min").toInt();
-            result->setTitle(
-                    title + "Modalità: GIORNO - Granularità: 5m|" + QString::fromStdString(std::to_string(freq)) + "m");
-            granularity = 60 * 5;
-            bucket = 60;
-        }
+//        if (diff >= 10 * 12 * 30 * 24 * 60 * 60) {
+//            result->setTitle(title + "Modalità: DECENNIO - Granularità: 30d|1d");
+//            granularity = 60 * 60 * 24 * 30;
+//            bucket = 60 * 60 * 24;
+//            freq = 1;
+//        } else if (diff >= 12 * 30 * 24 * 60 * 60) {
+//            result->setTitle(title + "Modalità: ANNO - Granularità: 1w|1d");
+//            granularity = 60 * 60 * 24 * 7;
+//            bucket = 60 * 60 * 24;
+//            freq = 1;
+//
+//        } else if (diff > 31 * 24 * 60 * 60) {
+//            result->setTitle(title + "Modalità: MESE - Granularità: 1d|1h");
+//            granularity = 60 * 60 * 24;
+//            bucket = 60 * 60;
+//            freq = 1;
+//
+//        } else {
+        freq = su.value("monitor/min").toInt();
+        result->setTitle(
+                title + "Modalità: GIORNO - Granularità: 5m|" + QString::fromStdString(std::to_string(freq)) + "m");
+        granularity = 60 * 5;
+        bucket = 60;
+//        }
         bool error = false;
         QSqlDatabase db = Utility::getDB(error);
         if (error) return;
         QSqlQuery q{db};
         /** QUERY_4 **/
-        q.prepare(
-                "SELECT timing, COUNT(*)\n"
-                "FROM (SELECT mac_addr,\n"
-                "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec)) AS timing,\n"
-                "             COUNT(DISTINCT timing)                                                  AS freq\n"
-                "      FROM (SELECT mac_addr,\n"
-                "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :bucket)) AS timing\n"
-                "            FROM " + su.value("database/table").toString() + "\n"
-                                                                              "            WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                              "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :bucket\n"
-                                                                              "            ORDER BY timing) as eL\n"
-                                                                              "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
-                                                                              "     ) AS mac_count\n"
-                                                                              "WHERE mac_count.freq >= :freq\n"
-                                                                              "GROUP BY timing\n"
-                                                                              "ORDER BY timing;");
+        q.prepare(Query::SELECT_TIMING_COUNT_BUCKET_FREQ.arg(su.value("database/table").toString()));
         q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sec", granularity);
@@ -103,39 +89,35 @@ public slots:
         if (!q.exec()) {
             qDebug() << q.lastError();
             db.close();
-            emit warning(Strings::ERR_DB,
-                         "Si è verificato un errore nel Database, ti invitiamo a modificare le Impostazioni e riprovare", q.lastError().text());
+            emit warning(Strings::ERR_DB, Strings::ERR_DB_MSG, q.lastError().text());
             emit finished();
             return;
         }
 
-
         QDateTime temp = start;
-        int current = 0;
-        int last = 0;
+        qint64 current = 0;
+        qint64 last = 0;
 
         while (q.next()) {
             QDateTime timing = q.value(0).toDateTime();
-            if (!temp.isNull()) {
-                int j = 1;
-                while (temp.addSecs(granularity * j) < timing) {
-                    result->addData(temp.addSecs(granularity * j), 0);
-                    j++;
-                    //qDebug() << temp.addSecs(60 * 5 * j);
-                    current = (temp.addSecs(granularity * j).toSecsSinceEpoch() - start.toSecsSinceEpoch() * 1.0) /
-                              (end.toSecsSinceEpoch() - start.toSecsSinceEpoch() * 1.0) * 100;
-                    if (last + 10 <= current) {
-                        emit updateProgress(current);
-                        last = current;
-                    }
-
+            int j = 1;
+            while (temp.addSecs(granularity * j) < timing) {
+                result->addData(temp.addSecs(granularity * j), 0);
+                j++;
+                //qDebug() << temp.addSecs(60 * 5 * j);
+                current = (temp.addSecs(granularity * j).toSecsSinceEpoch() - start.toSecsSinceEpoch()) /
+                          (end.toSecsSinceEpoch() - start.toSecsSinceEpoch()) * 100;
+                if (last + 10 <= current) {
+                    emit updateProgress(current);
+                    last = current;
                 }
+
             }
             int count_mac = q.value(1).toInt();
             result->addData(timing, count_mac);
             temp = timing;
-            current = (timing.toSecsSinceEpoch() - start.toSecsSinceEpoch() * 1.0) /
-                      (end.toSecsSinceEpoch() - start.toSecsSinceEpoch() * 1.0) * 100;
+            current = (timing.toSecsSinceEpoch() - start.toSecsSinceEpoch()) /
+                      (end.toSecsSinceEpoch() - start.toSecsSinceEpoch()) * 100;
             if (last + 10 <= current) {
                 emit updateProgress(current);
                 last = current;
@@ -145,8 +127,8 @@ public slots:
         while (temp.addSecs(granularity * j) <= end) {
             result->addData(temp.addSecs(granularity * j), 0);
             j++;
-            current = (temp.addSecs(granularity * j).toSecsSinceEpoch() - start.toSecsSinceEpoch() * 1.0) /
-                      (end.toSecsSinceEpoch() - start.toSecsSinceEpoch() * 1.0) * 100;
+            current = (temp.addSecs(granularity * j).toSecsSinceEpoch() - start.toSecsSinceEpoch()) /
+                      (end.toSecsSinceEpoch() - start.toSecsSinceEpoch()) * 100;
             if (last + 10 <= current) {
                 emit updateProgress(current);
                 last = current;
@@ -156,26 +138,7 @@ public slots:
 
         q.clear();
         /** QUERY_5B **/
-        q.prepare("SELECT mac_addr,\n"
-                  "       COUNT(*) AS freq,\n"
-                  "       hidden\n"
-                  "FROM (SELECT mac_addr,\n"
-                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec)) AS timing,\n"
-                  "             COUNT(DISTINCT timing)                                              AS freq,\n"
-                  "             hidden\n"
-                  "      FROM (SELECT mac_addr,\n"
-                  "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :freq)) AS timing,\n"
-                  "                   COUNT(DISTINCT timestamp),\n"
-                  "                   hidden\n"
-                  "            FROM " + su.value("database/table").toString() + "\n"
-                                                                                "            WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                                "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :bucket\n"
-                                                                                "            ORDER BY timing) as eL\n"
-                                                                                "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
-                                                                                "     ) AS mac_count\n"
-                                                                                "WHERE mac_count.freq >= :freq\n"
-                                                                                "GROUP BY mac_addr\n"
-                                                                                "ORDER BY freq DESC;");
+        q.prepare(Query::SELECT_MAC_COUNT_HIDDEN_ORDERBY_FREQ.arg(su.value("database/table").toString()));
         q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":bucket", bucket);
@@ -186,6 +149,7 @@ public slots:
         if (!q.exec()) {
             qDebug() << q.lastError();
             db.close();
+            emit warning(Strings::ERR_DB, Strings::ERR_DB_MSG, q.lastError().text());
             emit finished();
             return;
         }
@@ -204,27 +168,9 @@ public slots:
         }
         q.clear();
         emit initializeMacSituation();
+
         /** QUERY_6 **/
-        q.prepare("SELECT mac_addr,\n"
-                  "       COUNT(*) AS freq,\n"
-                  "       hidden\n"
-                  "FROM (SELECT mac_addr,\n"
-                  "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec)) AS timing,\n"
-                  "             COUNT(DISTINCT timing)                                              AS freq,\n"
-                  "             hidden\n"
-                  "      FROM (SELECT mac_addr,\n"
-                  "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :bucket)) AS timing,\n"
-                  "                   COALESCE(COUNT(DISTINCT timestamp)  ,0),\n"
-                  "                   hidden\n"
-                  "            FROM " + su.value("database/table").toString() + "\n"
-                                                                                "            WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                                "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :bucket\n"
-                                                                                "            ORDER BY timing) as eL\n"
-                                                                                "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
-                                                                                "     ) AS mac_count\n"
-                                                                                "WHERE mac_count.freq >= :freq\n"
-                                                                                "GROUP BY mac_addr\n"
-                                                                                "ORDER BY mac_addr;");
+        q.prepare(Query::SELECT_MAC_COUNT_HIDDEN_ORDERBY_MAC.arg(su.value("database/table").toString()));
         q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":bucket", bucket);
@@ -233,30 +179,23 @@ public slots:
         if (!q.exec()) {
             qDebug() << q.lastError();
             db.close();
+            emit warning(Strings::ERR_DB, Strings::ERR_DB_MSG, q.lastError().text());
             emit finished();
             return;
         }
 
         while (q.next()) {
-            QString mac = q.value(0).toString();
+            QString maco = q.value(0).toString();
             int frequency = q.value(1).toInt();
             bool hidden = q.value(2).toBool();
-            emit addMac(mac, frequency, hidden);
+            emit addMac(maco, frequency, hidden);
         }
         q.clear();
 
         /** QUERY_1**/
         /* Con questa query otteniamo una entry per ogni mac e per ogni granularità con la posizione mediata in base a
          * tutti i pacchetti trovati nel range selezionato */
-        q.prepare("SELECT mac_addr,\n"
-                  "       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), :sec)) AS timing,\n"
-                  "       avg(pos_x)                                                                    as pos_x,\n"
-                  "       avg(pos_y)                                                                    as pos_y\n"
-                  "FROM " + su.value("database/table").toString() + "\n"
-                                                                    "WHERE timestamp > :fd\n"
-                                                                    "  AND timestamp < :sd\n"
-                                                                    "GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV :sec\n"
-                                                                    "ORDER BY timing;");
+        q.prepare(Query::SELECT_MAC_TIMING_AVGPOS.arg(su.value("database/table").toString()));
         q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sec", granularity);
@@ -269,18 +208,19 @@ public slots:
 
         // Creo una mappa da Data a vettore di Mac e relative posizioni
         std::map<QDateTime, std::vector<LastMac>> map;
+        QDateTime first;
         while (q.next()) {
-            QString mac = q.value(0).toString();
+            QString maco = q.value(0).toString();
             QDateTime date = q.value(1).toDateTime();
             qreal posx = q.value(2).toReal();
             qreal posy = q.value(3).toReal();
             auto el = map.find(date);
             if (el != map.end()) {
-                LastMac p{mac, date, posx, posy};
+                LastMac p{maco, date, posx, posy};
                 el->second.push_back(p);
             } else {
                 std::vector<LastMac> v;
-                LastMac p{mac, date, posx, posy};
+                LastMac p{maco, date, posx, posy};
                 v.push_back(p);
                 map.insert(std::make_pair(date, v));
             }

@@ -115,6 +115,9 @@
         </item>
         <item>
          <widget class="QMapSlider" name="mapSlider">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="pageStep">
            <number>1</number>
           </property>
@@ -132,7 +135,7 @@
         <item>
          <widget class="QLabel" name="dateTimePlot">
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

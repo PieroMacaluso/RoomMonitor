@@ -19,10 +19,9 @@ MonitoringPlotView::MonitoringPlotView(QChart *chart, QWidget *parent) : QChartV
 
 void MonitoringPlotView::setChart(MonitoringChart *chart) {
 
+    QChartView::setChart(chart);
     delete m_tooltip;
     m_tooltip = nullptr;
-
-    QChartView::setChart(chart);
     this->chart = chart;
     connect(this->chart->getScatter(), &QScatterSeries::hovered, this, &MonitoringPlotView::tooltip);
 }

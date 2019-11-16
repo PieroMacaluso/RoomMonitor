@@ -74,7 +74,8 @@ void MainWindow::setupConnect() {
 
     // Click Search Button
     QObject::connect(ui.searchButton, &QPushButton::clicked, [&]() {
-        if (ui.startDate->dateTime().addSecs(60 * 5) > ui.endDate->dateTime()) {
+        if (ui.startDate->dateTime().addSecs(60 * 5) > ui.endDate->dateTime() ||
+            ui.startDate->dateTime().addDays(31) < ui.endDate->dateTime()) {
             QMessageBox m{};
             m.setStandardButtons(QMessageBox::Close);
             m.setWindowTitle(Strings::RANGE_ERROR);
@@ -89,7 +90,7 @@ void MainWindow::setupConnect() {
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
         if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
-            // TODO: provare a togliere e testare
+            // TODO: Lasciare o tenere
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
@@ -120,7 +121,6 @@ void MainWindow::setupConnect() {
         ui.title->setText(Styles::HEADER.arg(Strings::ANA));
         setupAnalysisPlot();
         initializeMacSituationList();
-
     });
 
     // Click Monitoring Button
@@ -151,7 +151,6 @@ void MainWindow::setupConnect() {
         setupMonitoringPlot();
         setupLivePlot();
         initializeLastMacList();
-
     });
 
     // Conseguenze Click Start Button
@@ -183,14 +182,13 @@ void MainWindow::setupConnect() {
             sd.setModal(true);
             ret = sd.exec();
         }
-        if (ret){
+        if (ret) {
             ui.actionMonitoring->triggered();
         }
     });
 
     // Azione Localizza MAC
     QObject::connect(ui.localizeButton, &QPushButton::clicked, [&]() {
-        // TODO: Implement Localize Dialog
         QString mac = ui.macSituation->selectedItems().at(0)->text();
         QDialog localize{};
         positionDialog.setupUi(&localize);
@@ -243,14 +241,19 @@ void MainWindow::setupLivePlot() {
 void MainWindow::setupMapPlot() {
     auto liveChart = new LiveChart();
     ui.mapPlot->setChart(liveChart);
+    ui.mapSlider->setSliderPosition(0);
+    ui.mapSlider->setDisabled(true);
 
     /** PLOT BOARDS **/
     std::vector<Board> boards = Utility::getBoards();
     liveChart->fillBoards(boards);
     connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
-        if (ui.mapSlider->getMap().empty()) return;
-        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
-        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
+        if (ui.mapSlider->isMapEmpty()) {
+            ui.dateTimePlot->setText("Nessun Dato");
+        } else {
+            ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
+            ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
+        }
     });
     connect(ui.mapSlider, &QSlider::valueChanged, [&](int value) {
         if (value > -1) {
@@ -349,15 +352,8 @@ void MainWindow::addLastMacPos(const QString &mac, const QDateTime &date, qreal 
 
 void MainWindow::setMacPlot() {
     auto macPlot = new MacChart();
-    // TODO: rimuovi dati fittizi alla fine
     QVector<MacOccurrence> macs;
-//    for (int i = 0; i < 20; i++) {
-//        QString st{"MAC %1"};
-//        MacOccurrence m{st.arg(i), i};
-//        macs.append(m);
-//    }
     macPlot->fillChart(macs);
-    // FINE
     ui.macPlot->setChart(macPlot);
 }
 
@@ -371,21 +367,10 @@ void MainWindow::setupPositionPlot(QString mac) {
     QSqlDatabase db = Utility::getDB(error);
     if (error) return;
     QSqlQuery query{db};
-    query.prepare(
-            "SELECT mac_addr,\n"
-            "       FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
-            "       avg(pos_x)                                                                    as pos_x,\n"
-            "       avg(pos_y)                                                                    as pos_y\n"
-            "FROM " + su.value("database/table").toString() + "\n"
-                                                              "WHERE timestamp >= :fd\n"
-                                                              "  AND timestamp < :sd\n"
-                                                              "  AND mac_addr = :mac\n"
-                                                              "GROUP BY UNIX_TIMESTAMP(timestamp) DIV 60\n"
-                                                              "ORDER BY timing;");
+    query.prepare(Query::SELECT_MAC_TIMING_AVGPOS_SINGLE.arg(su.value("database/table").toString()));
     query.bindValue(":fd", start_in.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end_in.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":mac", mac);
-
 
     if (!query.exec()) {
         qDebug() << query.lastError();
@@ -406,12 +391,11 @@ void MainWindow::setupPositionPlot(QString mac) {
     }
     posPlot->fillData(v);
     positionDialog.horizontalSlider->setData(v);
-    positionDialog.horizontalSlider->setRange(0, v.size() - 1);
+    positionDialog.horizontalSlider->setRange(0, static_cast<int>(v.size()) - 1);
     positionDialog.startDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
     positionDialog.startPos->setText("(" + QString::number(v[0].getX()) + ", " + QString::number(v[0].getY()) + ")");
     positionDialog.endDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
     positionDialog.endPos->setText("(" + QString::number(v[0].getX()) + ", " + QString::number(v[0].getY()) + ")");
-
 
     // FINE
     connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
@@ -452,23 +436,7 @@ void MainWindow::addLiveData() {
 
     QSqlQuery query{db};
 
-    query.prepare(
-            "SELECT COUNT(*)\n"
-            "FROM (SELECT mac_addr,\n"
-            "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,\n"
-            "             COUNT(DISTINCT timing)                                                   AS freq\n"
-            "      FROM (SELECT mac_addr,\n"
-            "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
-            "                   avg(pos_x)                                                                    AS pos_x,\n"
-            "                   avg(pos_y)                                                                    AS pos_y\n"
-            "            FROM " + su.value("database/table").toString() + "\n"
-                                                                          "            WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                          "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-                                                                          "            ORDER BY timing) as eL\n"
-                                                                          "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
-                                                                          "     ) AS mac_count\n"
-                                                                          "WHERE mac_count.freq >= :freq\n"
-                                                                          "GROUP BY timing;");
+    query.prepare(Query::SELECT_COUNT_LIVE.arg(su.value("database/table").toString()));
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
@@ -485,23 +453,7 @@ void MainWindow::addLiveData() {
 
     query.clear();
 
-    query.prepare(
-            "SELECT COUNT(*)\n"
-            "FROM (SELECT mac_addr,\n"
-            "             FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), 300)) AS timing,\n"
-            "             COUNT(DISTINCT timing)                                                   AS freq\n"
-            "      FROM (SELECT mac_addr,\n"
-            "                   FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) AS timing,\n"
-            "                   avg(pos_x)                                                                    AS pos_x,\n"
-            "                   avg(pos_y)                                                                    AS pos_y\n"
-            "            FROM " + su.value("database/table").toString() + "\n"
-                                                                          "            WHERE timestamp BETWEEN :fd AND :sd\n"
-                                                                          "            GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-                                                                          "            ORDER BY timing) as eL\n"
-                                                                          "      GROUP BY mac_addr, FROM_UNIXTIME(UNIX_TIMESTAMP(timing) - MOD(UNIX_TIMESTAMP(timing), :sec))\n"
-                                                                          "     ) AS mac_count\n"
-                                                                          "WHERE mac_count.freq >= :freq\n"
-                                                                          "GROUP BY timing;");
+    query.prepare(Query::SELECT_COUNT_LIVE.arg(su.value("database/table").toString()));
     query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
@@ -531,7 +483,6 @@ void MainWindow::dataAnalysis() {
     setupAnalysisPlot();
     auto chart = new MonitoringChart();
     auto macPlot = new MacChart();
-    auto liveChart = new LiveChart();
     QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     QDateTime start_in = ui.startDate->dateTime();
     QDateTime end_in = ui.endDate->dateTime();
@@ -540,7 +491,6 @@ void MainWindow::dataAnalysis() {
     QDateTime end{};
     end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
     auto worker = new AnalysisWorker(start, end, chart, macPlot, ui.mapSlider);
-    //qDebug() << workerThread.isRunning();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::started, worker, &AnalysisWorker::doWork);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
@@ -569,23 +519,7 @@ void MainWindow::genLiveData() {
     prev = start.addSecs(-60 * 5);
     QSqlQuery query{db};
     /** QUERY_3 **/
-    query.prepare(
-            "SELECT mac_addr, timing, pos_x, pos_y\n"
-            "FROM (SELECT hash_fcs,\n"
-            "             mac_addr,\n"
-            "             avg(pos_x) as pos_x,\n"
-            "             avg(pos_y) as pos_y,\n"
-            "             timestamp,\n"
-            "             ssid,\n"
-            "             hidden,\n"
-            "             MAX(FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)))\n"
-            "                 OVER (PARTITION BY mac_addr) AS timing\n"
-            "      FROM " + su.value("database/table").toString() + "\n"
-                                                                    "      WHERE timestamp > :fd AND timestamp < :sd\n"
-                                                                    "      GROUP BY mac_addr, UNIX_TIMESTAMP(timestamp) DIV 60\n"
-                                                                    "      ORDER BY timing) AS s2\n"
-                                                                    "     WHERE FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) = timing\n"
-                                                                    "ORDER BY mac_addr, timestamp DESC;");
+    query.prepare(Query::SELECT_MAC_TIMING_LASTPOS.arg(su.value("database/table").toString());
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     if (!query.exec())
@@ -638,6 +572,7 @@ void MainWindow::finishedAnalysisThread() {
     ui.progressBar->setValue(100);
     ui.progressBar->setEnabled(false);
     ui.searchButton->setEnabled(true);
+    ui.mapSlider->setDisabled(false);
 }
 
 void MainWindow::stopServer() {

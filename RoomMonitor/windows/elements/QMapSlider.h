@@ -23,7 +23,7 @@ Q_OBJECT
 public:
     explicit QMapSlider(QWidget *parent = nullptr);
 
-    const std::map<QDateTime, std::vector<LastMac>> &getMap() const;
+    bool isMapEmpty();
 
     void setMap(const std::map<QDateTime, std::vector<LastMac>> &mapOut);
 
