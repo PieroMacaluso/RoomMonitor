@@ -6,6 +6,7 @@
 #include <windows/classes/MacOccurrence.h>
 #include <windows/classes/PositionDataPlot.h>
 #include <windows/classes/AnalysisWorker.h>
+#include <Styles.h>
 #include "MainWindow.h"
 #include "SettingDialog.h"
 
@@ -36,23 +37,20 @@ void MainWindow::setupConnect() {
         QDateTime t;
         t.setSecsSinceEpoch(ts);
         ui.startDate->setDateTime(t);
-
     });
+
     // Arrotonda di 5 minuti i valori inseriti nella QDateTimeEdit
     connect(ui.endDate, &QDateTimeEdit::dateTimeChanged, [&](QDateTime dateTime) {
         qint64 ts = dateTime.toSecsSinceEpoch() / (60 * 5) * (60 * 5);
         QDateTime t;
         t.setSecsSinceEpoch(ts);
         ui.endDate->setDateTime(t);
-
     });
 
     // Click Start Button
     QObject::connect(ui.startButton, &QPushButton::clicked, [&]() {
         try {
-            // TODO: insert from settings
-            int n = 2;
-            if (n > 0) {
+            if (Utility::getBoards().size() > 1) {
                 bool error = false;
                 QSqlDatabase db = Utility::getDB(error);
                 if (error) return;
@@ -92,7 +90,6 @@ void MainWindow::setupConnect() {
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
         if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
             // TODO: provare a togliere e testare
-
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
@@ -120,9 +117,7 @@ void MainWindow::setupConnect() {
         ui.monitoringWidget->setVisible(false);
         ui.analysisWidget->setVisible(true);
 
-        ui.title->setText(
-                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">" + Strings::ANA +
-                "</span></p></body></html>");
+        ui.title->setText(Styles::HEADER.arg(Strings::ANA));
         setupAnalysisPlot();
         initializeMacSituationList();
 
@@ -148,9 +143,7 @@ void MainWindow::setupConnect() {
         ui.actionAnalysis->setVisible(true);
         ui.actionMonitoring->setVisible(false);
 
-        ui.title->setText(
-                "<html><head/><body><p><span style=\" font-size:22pt; font-weight:600;\">" + Strings::MON +
-                "</span></p></body></html>");
+        ui.title->setText(Styles::HEADER.arg(Strings::MON));
 
         // Cambia plot
         ui.monitoringWidget->setVisible(true);
@@ -255,6 +248,7 @@ void MainWindow::setupMapPlot() {
     std::vector<Board> boards = Utility::getBoards();
     liveChart->fillBoards(boards);
     connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
+        if (ui.mapSlider->getMap().empty()) return;
         ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
         ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));
     });
@@ -546,7 +540,7 @@ void MainWindow::dataAnalysis() {
     QDateTime end{};
     end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
     auto worker = new AnalysisWorker(start, end, chart, macPlot, ui.mapSlider);
-    qDebug() << workerThread.isRunning();
+    //qDebug() << workerThread.isRunning();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::started, worker, &AnalysisWorker::doWork);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
