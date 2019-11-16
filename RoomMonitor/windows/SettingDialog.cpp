@@ -38,7 +38,7 @@ void SettingDialog::setupConnect() {
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
     connect(ui.modBoard, &QPushButton::clicked, this, &SettingDialog::openDialogMod);
-    connect(ui.buttonBox->button(QDialogButtonBox::Reset), &QPushButton::clicked, this, &SettingDialog::defaultValues);
+    connect(ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QPushButton::clicked, this, &SettingDialog::defaultValues);
     connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&]() {
         if (ui.boardTable->selectedItems().empty()) {
             ui.modBoard->setDisabled(true);
