@@ -292,7 +292,6 @@ void MonitoringServer::aggregate() {
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
 
-    // TODO: Capire come aggregare bene
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
@@ -326,7 +325,7 @@ void MonitoringServer::aggregate() {
             }
         });
         if (!listBoardFailing.empty()) {
-            qCritical() << "ID schedine mancanti" << listBoardFailing.toList();
+            //qCritical() << "ID schedine mancanti" << listBoardFailing.toList();
             QString stringOut{"Elenco ID schede offline: [ "};
             int count = 0;
             for (auto &a : listBoardFailing) {
@@ -341,6 +340,7 @@ void MonitoringServer::aggregate() {
             Utility::warningMessage("Schedine non funzionanti",
                                     "Ti invitiamo a verificare il funzionamento delle schedine indicate nei dettagli e riavviare il monitoraggio",
                                     stringOut);
+            qInfo() << Strings::AGG_STOPPED;
             emit stopped();
         }
         db.close();
@@ -359,9 +359,9 @@ void MonitoringServer::aggregate() {
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
-        QString packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " "
-                << positionData.getStringPosition();
-        qDebug() << packet;
+        std::string packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " " +
+                             positionData.getStringPosition();
+        qDebug() << QString::fromStdString(packet);
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));

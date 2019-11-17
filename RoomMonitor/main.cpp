@@ -59,13 +59,13 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
         case QtDebugMsg:
             /*stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Debug:\t'"
                    << localMsg.constData() << "'" << endl;*/
-            fprintf(stderr, "Debug: %s\n", localMsg.constData());
+            fprintf(stdout, "Debug: %s\n", localMsg.constData());
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtInfoMsg:
             stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Info:\t\t"
                    << localMsg.constData() << endl;
-            fprintf(stderr, "Info: %s\n", localMsg.constData());
+            fprintf(stdout, "Info: %s\n", localMsg.constData());
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtWarningMsg:
