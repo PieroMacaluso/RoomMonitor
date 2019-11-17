@@ -31,6 +31,8 @@ public:
     static const QString RM_STARTED;
     static const QString RM_STOPPED;
     static const QString SRV_STOPPED;
+    static const QString AGG_STARTED;
+    static const QString AGG_STOPPED;
 };
 
 

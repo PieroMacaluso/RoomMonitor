@@ -240,7 +240,7 @@ bool MonitoringServer::is_inside_room(PositionData data) {
 }
 
 void MonitoringServer::newConnection() {
-    DEBUG("New Connection started");
+    qDebug() << "New Connection started";
     std::string startDelim("init");
     std::string stopDelim("end");
     QTcpSocket *socket = server.nextPendingConnection();
@@ -281,13 +281,13 @@ void MonitoringServer::newConnection() {
     //todo controllare se va bene un conteiner pacchetti per ogni newConnection (stesso anche in caso la schedina usi più pacchetti tcp per inviare l'intero elenco)
     socket->flush();
     socket->close();
-    DEBUG("Connection closed")
+    qDebug() << "Connection closed";
     delete socket;
 
 }
 
 void MonitoringServer::aggregate() {
-    DEBUG("Starting aggregation")
+    qInfo() << Strings::AGG_STARTED;
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
@@ -359,8 +359,9 @@ void MonitoringServer::aggregate() {
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = fromRssiToXY(fil.second);
-        DEBUG("ID packet:" << fil.first << " " << fil.second.begin()->getMacPeer() << " " << positionData.getX() << " "
-                           << positionData.getY());
+        QString packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " "
+                << positionData.getStringPosition();
+        qDebug() << packet;
         if (positionData.getX() == -1 || positionData.getY() == -1) continue;
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
@@ -384,7 +385,7 @@ void MonitoringServer::aggregate() {
             return;
         }
     }
-    DEBUG("Ending aggregation")
+    qInfo() << Strings::AGG_STOPPED;
 
     // Pulizia deque pacchetti attraverso meccanismo di second chance
     /* Un pacchetto viene eliminato dalla deque solo ed esclusivamente dopo due aggregate. In questo maniera

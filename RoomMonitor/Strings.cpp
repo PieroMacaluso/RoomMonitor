@@ -25,5 +25,7 @@ const QString Strings::RESTORE_BOARD = Strings::tr("Ripristino Schedine");
 const QString Strings::RESTORE_BOARD_MSG = Strings::tr("Sei sicuro di voler riottenere le schedine da database?");
 const QString Strings::RM_STARTED = Strings::tr("RoomMonitor avviato.");
 const QString Strings::RM_STOPPED = Strings::tr("RoomMonitor arrestato.");
+const QString Strings::AGG_STARTED = Strings::tr("Aggregazione avviata.");
+const QString Strings::AGG_STOPPED = Strings::tr("Aggregazione arrestata.");
 
 

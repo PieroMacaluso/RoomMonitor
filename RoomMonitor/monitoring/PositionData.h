@@ -7,6 +7,7 @@
 
 
 #include <iostream>
+#include <sstream>
 
 class PositionData {
     int n_packets;
@@ -35,6 +36,14 @@ public:
 
     double getY() const {
         return y;
+    }
+
+    std::string getStringPosition() {
+        std::ostringstream strX;
+        std::ostringstream strY;
+        strX << x;
+        strY << y;
+        return strX.str() + "," + strY.str();
     }
 };
 
