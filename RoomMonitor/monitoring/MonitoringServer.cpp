@@ -234,7 +234,7 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 }
 
 bool MonitoringServer::is_inside_room(PositionData data) {
-    // TODO: margine?
+    // TODO: margine vedere se inserire in Settings
     return true;
 //    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/width").toFloat() &&
 //           data.getY() <= settings.value("room/height").toFloat();

@@ -51,7 +51,7 @@
            <item row="1" column="0">
             <widget class="QLabel" name="heightLabel">
              <property name="text">
-              <string>Altezza Stanza (m)</string>
+              <string>Lunghezza Stanza (m)</string>
              </property>
             </widget>
            </item>
