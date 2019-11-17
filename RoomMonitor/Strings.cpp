@@ -18,5 +18,8 @@ const QString Strings::ANA = Strings::tr("Analisi dei Dati");
 const QString Strings::MON = Strings::tr("Monitoraggio dei Dati");
 const QString Strings::SET_DEF = Strings::tr("Impostazioni Default");
 const QString Strings::SET_DEF_MSG = Strings::tr("Compilare con le impostazioni di default?");
+const QString Strings::SET_DEF_LOG = Strings::tr("Compilazione Impostazioni con valori di Default");
+const QString Strings::RESTORE_BOARD = Strings::tr("Ripristino Schedine");
+const QString Strings::RESTORE_BOARD_MSG = Strings::tr("Sei sicuro di voler riottenere le schedine da database?");
 
 

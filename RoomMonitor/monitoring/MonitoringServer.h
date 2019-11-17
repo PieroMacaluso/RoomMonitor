@@ -78,7 +78,7 @@ public:
      * Si occupa di inizializzare il server (127.0.0.1:27015) e di impostare la callback di ogni nuova connessione
      * a this->newConnection
      */
-    void start();
+    bool start();
 
     /**
      * Chiude il server non appena viene premuto il pulsante di stop

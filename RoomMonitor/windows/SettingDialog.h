@@ -148,6 +148,10 @@ public slots:
     void addBoardToDB(const QString& id_board, const QString& pos_x, const QString& pos_y, const QString& a);
 
     void fillBoardList();
+
+    void fillBoardListDefault();
+
+    void restoreBoards();
 };
 
 

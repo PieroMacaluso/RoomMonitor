@@ -189,10 +189,11 @@ float MonitoringServer::calculateDistance(signed rssi, int A) {
 
 }
 
-void MonitoringServer::start() {
-
+bool MonitoringServer::start() {
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
-        qDebug() << "Server Did not start";
+        qDebug() << Strings::SRV_NOT_STARTED;
+        Utility::warningMessage(Strings::SRV_NOT_STARTED, Strings::SRV_NOT_STARTED, Strings::SRV_NOT_STARTED);
+        return false;
     } else {
         std::vector<Board> b;
         b = Utility::getBoards();
@@ -205,6 +206,7 @@ void MonitoringServer::start() {
         qDebug() << "Server Started on port:" << server.serverPort();
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
         timer.start(10000);
+        return true;
     }
 
 }
@@ -262,9 +264,6 @@ void MonitoringServer::newConnection() {
         MonitoringServer::split(allData, pacchetti, ';');
         // Conversione in oggetti Packet
         packetsConn = string2packet(pacchetti);
-
-        // TODO: Verificare reale necessità di thread-safeness, altrimenti liberare tutto
-        /** INIZIO ESECUZIONE THREAD-SAFE */
 
         for (auto &p: packetsConn) {
             DEBUG(p)

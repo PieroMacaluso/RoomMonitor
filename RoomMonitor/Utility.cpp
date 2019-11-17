@@ -1,11 +1,6 @@
 //
 // Created by pieromack on 01/10/19.
 //
-/*#ifdef __WIN32__
-# include <winsock2.h>
-#else
-# include <sys/socket.h>
-#endif*/
 
 #include "Utility.h"
 
@@ -85,7 +80,7 @@ void Utility::warningMessage(const QString &title, const QString &text, const QS
 
 bool Utility::yesNoMessage(QWidget *parent, const QString &title, const QString &text) {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(parent, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG,
+    reply = QMessageBox::question(parent, title, text,
                                   QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         qDebug() << "Yes was clicked";

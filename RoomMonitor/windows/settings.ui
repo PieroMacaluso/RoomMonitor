@@ -44,7 +44,7 @@
            <item row="0" column="1">
             <widget class="QLineEdit" name="widthEdit">
              <property name="text">
-              <string/>
+              <string>10</string>
              </property>
             </widget>
            </item>
@@ -56,7 +56,11 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLineEdit" name="heightEdit"/>
+            <widget class="QLineEdit" name="heightEdit">
+             <property name="text">
+              <string>10</string>
+             </property>
+            </widget>
            </item>
            <item row="3" column="0">
             <widget class="QLabel" name="boardLabel">
@@ -98,7 +102,11 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QLineEdit" name="portServerEdit"/>
+            <widget class="QLineEdit" name="portServerEdit">
+             <property name="text">
+              <string>27015</string>
+             </property>
+            </widget>
            </item>
            <item row="4" column="0">
             <widget class="QTableWidget" name="boardTable"/>
@@ -132,7 +140,7 @@
          <item row="0" column="1">
           <widget class="QLineEdit" name="nEdit">
            <property name="text">
-            <string/>
+            <string>3</string>
            </property>
           </widget>
          </item>
@@ -208,7 +216,11 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="hostEdit"/>
+          <widget class="QLineEdit" name="hostEdit">
+           <property name="text">
+            <string>localhost</string>
+           </property>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="dbLabel">
@@ -218,7 +230,11 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="dbEdit"/>
+          <widget class="QLineEdit" name="dbEdit">
+           <property name="text">
+            <string>data</string>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="portLabel">
@@ -228,7 +244,11 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="portEdit"/>
+          <widget class="QLineEdit" name="portEdit">
+           <property name="text">
+            <string>3306</string>
+           </property>
+          </widget>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="userLabel">
@@ -238,7 +258,11 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="userEdit"/>
+          <widget class="QLineEdit" name="userEdit">
+           <property name="text">
+            <string>root</string>
+           </property>
+          </widget>
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="passLabel">
@@ -248,7 +272,11 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="passEdit"/>
+          <widget class="QLineEdit" name="passEdit">
+           <property name="text">
+            <string>NewRoot12Kz</string>
+           </property>
+          </widget>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="tableLabel">
@@ -258,7 +286,22 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QLineEdit" name="tableEdit"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="tableEdit">
+             <property name="text">
+              <string>stanza</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="restoreBoardButton">
+             <property name="text">
+              <string>Ripristina Schede</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -305,7 +348,6 @@
   <tabstop>portEdit</tabstop>
   <tabstop>userEdit</tabstop>
   <tabstop>passEdit</tabstop>
-  <tabstop>tableEdit</tabstop>
   <tabstop>resetCheck</tabstop>
  </tabstops>
  <resources/>

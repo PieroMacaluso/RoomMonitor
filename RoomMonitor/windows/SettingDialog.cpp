@@ -38,7 +38,9 @@ void SettingDialog::setupConnect() {
     connect(ui.removeBoard, &QPushButton::clicked, this, &SettingDialog::removeSelected);
     connect(ui.addBoard, &QPushButton::clicked, this, &SettingDialog::openDialogAdd);
     connect(ui.modBoard, &QPushButton::clicked, this, &SettingDialog::openDialogMod);
-    connect(ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QPushButton::clicked, this, &SettingDialog::defaultValues);
+    connect(ui.restoreBoardButton, &QPushButton::clicked, this, &SettingDialog::restoreBoards);
+    connect(ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QPushButton::clicked, this,
+            &SettingDialog::defaultValues);
     connect(ui.boardTable, &QTableWidget::itemSelectionChanged, [&]() {
         if (ui.boardTable->selectedItems().empty()) {
             ui.modBoard->setDisabled(true);
@@ -69,7 +71,24 @@ void SettingDialog::initializeBoardList() {
 
 void SettingDialog::fillBoardList() {
     std::vector<Board> boardList = Utility::getBoards();
-    ui.boardTable->clear();
+    ui.boardTable->setRowCount(0);
+    for (auto board: boardList) {
+        int i = ui.boardTable->rowCount();
+        ui.boardTable->insertRow(ui.boardTable->rowCount());
+        ui.boardTable->setItem(i, 0, new QTableWidgetItem(QString::number(board.getId())));
+        ui.boardTable->setItem(i, 1, new QTableWidgetItem(QString::number(board.getCoord().x())));
+        ui.boardTable->setItem(i, 2, new QTableWidgetItem(QString::number(board.getCoord().y())));
+        ui.boardTable->setItem(i, 3, new QTableWidgetItem(QString::number(board.getA())));
+
+    }
+}
+
+void SettingDialog::fillBoardListDefault() {
+    Board one{0, 0, 0, -55};
+    Board two{1, 10, 10, -55};
+    std::vector<Board> boardList;
+    boardList.push_back(one);
+    boardList.push_back(two);
     ui.boardTable->setRowCount(0);
     for (auto board: boardList) {
         int i = ui.boardTable->rowCount();
@@ -86,6 +105,53 @@ void SettingDialog::removeSelected() {
     int rr = ui.boardTable->selectedItems().first()->row();
     ui.boardTable->removeRow(rr);
 }
+
+void SettingDialog::restoreBoards() {
+    if (Utility::yesNoMessage(this, Strings::RESTORE_BOARD, Strings::RESTORE_BOARD_MSG)) {
+        {
+            QSqlDatabase db{};
+            db = QSqlDatabase::addDatabase("QMYSQL", "restoreBoard");
+            db.setHostName(ui.hostEdit->text());
+            db.setDatabaseName(ui.dbEdit->text());
+            db.setPort(ui.portEdit->text().toInt());
+            db.setUserName(ui.userEdit->text());
+            db.setPassword(ui.passEdit->text());
+            if (!db.open()) {
+                Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
+                return;
+            }
+            QSqlQuery query{db};
+            query.prepare(Query::SELECT_ALL_BOARD.arg(ui.tableEdit->text()));
+            if (!query.exec()) {
+                Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
+                return;
+            }
+            std::vector<Board> res;
+            while (query.next()) {
+                int id = query.value(0).toInt();
+                qreal posx = query.value(1).toDouble();
+                qreal posy = query.value(2).toDouble();
+                int A = query.value(3).toInt();
+                Board b{id, posx, posy, A};
+                res.push_back(b);
+            }
+
+            ui.boardTable->setRowCount(0);
+            for (auto board: res) {
+                int i = ui.boardTable->rowCount();
+                ui.boardTable->insertRow(ui.boardTable->rowCount());
+                ui.boardTable->setItem(i, 0, new QTableWidgetItem(QString::number(board.getId())));
+                ui.boardTable->setItem(i, 1, new QTableWidgetItem(QString::number(board.getCoord().x())));
+                ui.boardTable->setItem(i, 2, new QTableWidgetItem(QString::number(board.getCoord().y())));
+                ui.boardTable->setItem(i, 3, new QTableWidgetItem(QString::number(board.getA())));
+            }
+            db.close();
+            Utility::infoMessage("Ripristino Schedine", "Schedine ripristinate correttamente da database.");
+        }
+        QSqlDatabase::removeDatabase("restoreBoard");
+    }
+}
+
 
 void SettingDialog::openDialogAdd() {
     QDialog add;
@@ -169,8 +235,6 @@ void SettingDialog::openDialogMod() {
             break;
         }
     }
-
-
 }
 
 void SettingDialog::apply() {
@@ -230,7 +294,8 @@ void SettingDialog::checkAddEdits() {
     addBoardDialog.xEdit->text().toDouble(&x);
     addBoardDialog.yEdit->text().toDouble(&y);
     addBoardDialog.aEdit->text().toInt(&a);
-    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y &&  addBoardDialog.aEdit->text().toInt(&a) < 0));
+    addBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(
+            !(id && x && y && addBoardDialog.aEdit->text().toInt(&a) < 0));
 }
 
 
@@ -256,16 +321,18 @@ void SettingDialog::checkModEdits() {
     modBoardDialog.xEdit->text().toDouble(&x);
     modBoardDialog.yEdit->text().toDouble(&y);
     modBoardDialog.aEdit->text().toInt(&a);
-    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(!(id && x && y && a && modBoardDialog.aEdit->text().toInt(&a) < 0));
+    modBoardDialog.buttonBox->button(QDialogButtonBox::Ok)->setDisabled(
+            !(id && x && y && a && modBoardDialog.aEdit->text().toInt(&a) < 0));
 }
 
 void SettingDialog::defaultValues() {
     QMessageBox::StandardButton reply;
     if (Utility::yesNoMessage(this, Strings::SET_DEF, Strings::SET_DEF_MSG)) {
-        qDebug() << "Yes was clicked";
+        qDebug() << Strings::SET_DEF_LOG;
         // Ripristino informazioni iniziali
+        ui.portServerEdit->setText(QString::number(27015));
         ui.nEdit->setText(QString::number(3));
-        ui.minEdit->setValue(3);
+        ui.minEdit->setValue(1);
         ui.widthEdit->setText(QString::number(10));
         ui.heightEdit->setText(QString::number(10));
         ui.portEdit->setText(QString::number(27015));
@@ -275,8 +342,8 @@ void SettingDialog::defaultValues() {
         ui.userEdit->setText("root");
         ui.passEdit->setText("NewRoot12Kz");
         ui.tableEdit->setText("stanza");
+        this->fillBoardListDefault();
     } else {
-        qDebug() << "Yes was *not* clicked";
         return;
     }
 

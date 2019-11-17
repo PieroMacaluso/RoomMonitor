@@ -55,7 +55,7 @@ void MainWindow::setupConnect() {
                 QSqlDatabase db = Utility::getDB(error);
                 if (error) return;
                 if (!Utility::testTable(db)) return;
-                s.started();
+                if (!s.start()) return;
                 ui.startButton->setDisabled(true);
                 ui.stopButton->setDisabled(false);
                 // Pulizia tabella Ultimi MAC
@@ -442,9 +442,10 @@ void MainWindow::addLiveData() {
     query.bindValue(":sec", 300);
     query.bindValue(":freq", su.value("monitor/min").toInt());
 
-    if (!query.exec())
+    if (!query.exec()) {
         qDebug() << query.lastError();
-
+        return;
+    }
     if (!query.first())
         ui.monitoringPlot->getChart()->updateData(prev, 0);
     else
@@ -459,8 +460,10 @@ void MainWindow::addLiveData() {
     query.bindValue(":sec", 300);
     query.bindValue(":freq", su.value("monitor/min").toInt());
 
-    if (!query.exec())
+    if (!query.exec()) {
         qDebug() << query.lastError();
+        return;
+    }
 
     if (!query.first())
         ui.monitoringPlot->getChart()->addData(start, 0);
@@ -522,8 +525,10 @@ void MainWindow::genLiveData() {
     query.prepare(Query::SELECT_MAC_TIMING_LASTPOS.arg(su.value("database/table").toString()));
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
-    if (!query.exec())
+    if (!query.exec()) {
         qDebug() << query.lastError();
+        return;
+    }
 
     lastMacs.clear();
     while (query.next()) {

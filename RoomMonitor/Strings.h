@@ -24,6 +24,9 @@ public:
     static const QString MON;
     static const QString SET_DEF;
     static const QString SET_DEF_MSG;
+    static const QString SET_DEF_LOG;
+    static const QString RESTORE_BOARD;
+    static const QString RESTORE_BOARD_MSG;
 };
 
 
