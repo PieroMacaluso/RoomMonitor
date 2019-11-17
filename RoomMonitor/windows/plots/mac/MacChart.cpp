@@ -48,7 +48,7 @@ QStringList MacChart::getMacs() {
 void MacChart::fillChart(QVector<MacOccurrence> macs) {
     int max = 0;
     this->removeAllSeries();
-    qSort(macs);
+    std::sort(macs.begin(), macs.end());
     QBarSet *set0 = new QBarSet("Presenze");
     QHorizontalBarSeries *bs = new QHorizontalBarSeries();
     bs->append(set0);
@@ -76,10 +76,10 @@ void MacChart::fillChart(QVector<MacOccurrence> macs) {
 
 }
 
-void MacChart::fillRandomChart(QList<Statistic> &macs) {
+void MacChart::fillRandomChart(QList<Statistic> macs) {
     int max = 0;
     this->removeAllSeries();
-    // qSort(macs);
+    std::sort(macs.begin(), macs.end());
     QBarSet *set0 = new QBarSet("Percentuale");
     QHorizontalBarSeries *bs = new QHorizontalBarSeries();
     bs->append(set0);

@@ -559,7 +559,7 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source, uint32_t initTime, uint
  * @param endTime
  * @return
  */
-QList<Statistic> & MonitoringServer::getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime) {
+QList<Statistic> MonitoringServer::getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime) {
     QMap<QString, QList<qreal>> map_mac_stat;
     QList<Statistic> list{};
     //entro 5 minuti, stessa posizione +-0.5, altro da vedere
@@ -610,18 +610,15 @@ QList<Statistic> & MonitoringServer::getHiddenMacFor(QString mac, QDateTime init
     }
     for (auto it = map_mac_stat.begin(); it != map_mac_stat.end(); it++) {
         qreal final_perc = 0;
-        for (auto& ot : it.value()) {
+        for (auto &ot : it.value()) {
             final_perc += ot;
         }
 
         final_perc = final_perc / it.value().size();
 
-        Statistic s{it.key(), final_perc};
+        Statistic s{it.key(), final_perc * 100};
         list.append(s);
     }
-
-//    qSort(res.begin(), res.end(), Statistic::lessThan);
-
     return list;
 }
 

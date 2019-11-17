@@ -31,7 +31,7 @@ public:
     qreal xMin;
     qreal xMax;
 
-    void fillRandomChart(QList<Statistic> &macs);
+    void fillRandomChart(QList<Statistic> macs);
 };
 
 

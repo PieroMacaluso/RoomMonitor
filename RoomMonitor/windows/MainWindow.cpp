@@ -206,9 +206,12 @@ void MainWindow::setupConnect() {
         // TODO: Implement Random Dialog
 //        s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime());
         QDialog random{};
-        randomDialog.macLabel->setText(mac);
-        randomDialog.macPlot->getChart()->fillRandomChart(s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime()));
         randomDialog.setupUi(&random);
+        auto macChart = new MacChart();
+        macChart->fillRandomChart(
+                s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime()));
+        randomDialog.macLabel->setText(mac);
+        randomDialog.macPlot->setChart(macChart);
         random.setModal(true);
         random.exec();
 

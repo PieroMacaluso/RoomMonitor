@@ -22,5 +22,12 @@ public:
 
 };
 
+inline bool operator<(const Statistic &e1, const Statistic &e2)
+{
+    if (e1.getPerc() != e2.getPerc())
+        return e1.getPerc() > e2.getPerc();
+    return e1.getMac() > e2.getMac();
+}
+
 
 #endif //ROOMMONITOR_STATISTIC_H
