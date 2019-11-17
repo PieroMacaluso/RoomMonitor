@@ -1,8 +1,12 @@
 //
 // Created by pieromack on 01/10/19.
 //
+/*#ifdef __WIN32__
+# include <winsock2.h>
+#else
+# include <sys/socket.h>
+#endif*/
 
-#include <sys/socket.h>
 #include "Utility.h"
 
 const QString Utility::ORGANIZATION = "VALP";

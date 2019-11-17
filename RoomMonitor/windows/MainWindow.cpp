@@ -519,7 +519,7 @@ void MainWindow::genLiveData() {
     prev = start.addSecs(-60 * 5);
     QSqlQuery query{db};
     /** QUERY_3 **/
-    query.prepare(Query::SELECT_MAC_TIMING_LASTPOS.arg(su.value("database/table").toString());
+    query.prepare(Query::SELECT_MAC_TIMING_LASTPOS.arg(su.value("database/table").toString()));
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     if (!query.exec())
