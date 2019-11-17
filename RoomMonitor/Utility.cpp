@@ -7,6 +7,8 @@
 const QString Utility::ORGANIZATION = "VALP";
 const QString Utility::APPLICATION = "RoomMonitoring";
 int Utility::RETRY_STEP_BOARD = 3;
+QString Utility::LOG_DIR = "log";
+QString Utility::LOG_FILE = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
 
 QSqlDatabase Utility::getDB(bool &error) {
     QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};

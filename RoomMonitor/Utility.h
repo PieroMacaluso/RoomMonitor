@@ -36,6 +36,8 @@ public:
     static void dropBoards();
 
     static int RETRY_STEP_BOARD;
+    static QString LOG_DIR;
+    static QString LOG_FILE;
 };
 
 

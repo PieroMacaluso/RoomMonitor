@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     QApplication a{argc, argv};
     int ret;
     // Check settings, otherwise set them to default values
+    qInfo() << "RoomMonitor avviato";
     if (!SettingDialog::settingCheckUp()) {
         QSettings su{Utility::ORGANIZATION,Utility::APPLICATION};
         su.remove("first_time");
@@ -35,8 +36,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     QString fileN;
     QString dirN;
 
-    fileN = "log_" + QDateTime::currentDateTime().toString("yyyyMMdd") + ".txt";
-    dirN = "../log";
+    fileN = "log_" + Utility::LOG_FILE + ".txt";
+    dirN = Utility::LOG_DIR;
 
     const QFileInfo outputDir(dirN);
     if ((!outputDir.exists()) || (!outputDir.isDir()) || (!outputDir.isWritable())) {
@@ -55,31 +56,31 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     QByteArray localMsg = msg.toLocal8Bit();
     switch (type) {
         case QtDebugMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("hh:mm") << "] " << "Debug: '"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Debug:\t'"
                    << localMsg.constData() << "'" << endl;
             fprintf(stderr, "Debug: %s\n", localMsg.constData());
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtInfoMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("hh:mm") << "] " << "Info: '" << localMsg.constData()
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Info:\t\t'" << localMsg.constData()
                    << "'" << endl;
             fprintf(stderr, "Info: %s\n", localMsg.constData());
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtWarningMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("hh:mm") << "] " << "Warning: '"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Warning:\t'"
                    << localMsg.constData() << "'" << endl;
             fprintf(stderr, "Warning: %s\n", localMsg.constData());
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtCriticalMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("hh:mm") << "] " << "Critical: '"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Critical:\t'"
                    << localMsg.constData() << "'" << endl;
             fprintf(stderr, "Critical: %s\n", localMsg.constData());
             fprintf(stderr, "(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtFatalMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("hh:mm") << "] " << "Fatal: '"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Fatal:\t'"
                    << localMsg.constData() << "'" << endl;
             fprintf(stderr, "Fatal: %s\n", localMsg.constData());
             fprintf(stderr, "(%s:%u, %s)\n", context.file, context.line, context.function);
