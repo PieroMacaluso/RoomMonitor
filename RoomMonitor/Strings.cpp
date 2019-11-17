@@ -7,7 +7,9 @@
 const QString Strings::ERR_DB = Strings::tr("Errore Database");
 const QString Strings::ERR_DB_MSG = Strings::tr(
         "Si è verificato un errore con il database, ti invitiamo a modificare le impostazioni e riprovare.");
-const QString Strings::SRV_NOT_STARTED = Strings::tr("Non è stato possibile avviare il server.");
+const QString Strings::SRV_NOT_STARTED = Strings::tr("Non e' stato possibile avviare il server.");
+const QString Strings::SRV_STARTED = Strings::tr("Server Started on port:");
+const QString Strings::SRV_STOPPED = Strings::tr("Server Disconnected.");
 const QString Strings::RANGE_ERROR = Strings::tr("Errore selezione range");
 const QString Strings::RANGE_ERROR_MSG = Strings::tr(
         "La data di inizio deve essere antecedente alla data di fine.\nLa loro differenza deve essere maggiore o uguale a 5 minuti.");
@@ -21,5 +23,7 @@ const QString Strings::SET_DEF_MSG = Strings::tr("Compilare con le impostazioni 
 const QString Strings::SET_DEF_LOG = Strings::tr("Compilazione Impostazioni con valori di Default");
 const QString Strings::RESTORE_BOARD = Strings::tr("Ripristino Schedine");
 const QString Strings::RESTORE_BOARD_MSG = Strings::tr("Sei sicuro di voler riottenere le schedine da database?");
+const QString Strings::RM_STARTED = Strings::tr("RoomMonitor avviato.");
+const QString Strings::RM_STOPPED = Strings::tr("RoomMonitor arrestato.");
 
 

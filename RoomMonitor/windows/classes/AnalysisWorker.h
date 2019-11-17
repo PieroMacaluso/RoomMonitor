@@ -87,7 +87,7 @@ public slots:
         q.bindValue(":bucket", bucket);
         q.bindValue(":freq", freq);
         if (!q.exec()) {
-            qDebug() << q.lastError();
+            qCritical() << q.lastError();
             db.close();
             emit warning(Strings::ERR_DB, Strings::ERR_DB_MSG, q.lastError().text());
             emit finished();
@@ -147,7 +147,7 @@ public slots:
 
 
         if (!q.exec()) {
-            qDebug() << q.lastError();
+            qCritical() << q.lastError();
             db.close();
             emit warning(Strings::ERR_DB, Strings::ERR_DB_MSG, q.lastError().text());
             emit finished();
@@ -177,7 +177,7 @@ public slots:
         q.bindValue(":sec", granularity);
         q.bindValue(":freq", freq);
         if (!q.exec()) {
-            qDebug() << q.lastError();
+            qCritical() << q.lastError();
             db.close();
             emit warning(Strings::ERR_DB, Strings::ERR_DB_MSG, q.lastError().text());
             emit finished();
@@ -200,7 +200,7 @@ public slots:
         q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
         q.bindValue(":sec", granularity);
         if (!q.exec()) {
-            qDebug() << q.lastError();
+            qCritical() << q.lastError();
             db.close();
             emit finished();
             return;

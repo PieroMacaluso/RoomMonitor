@@ -16,6 +16,7 @@
 #include <windows/plots/monitoring/MonitoringChart.h>
 #include <windows/plots/mac/MacChart.h>
 #include <windows/classes/LastMac.h>
+#include <QtGlobal>
 
 class MainWindow : public QMainWindow {
 

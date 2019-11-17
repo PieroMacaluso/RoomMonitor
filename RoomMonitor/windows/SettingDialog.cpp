@@ -328,7 +328,7 @@ void SettingDialog::checkModEdits() {
 void SettingDialog::defaultValues() {
     QMessageBox::StandardButton reply;
     if (Utility::yesNoMessage(this, Strings::SET_DEF, Strings::SET_DEF_MSG)) {
-        qDebug() << Strings::SET_DEF_LOG;
+        qInfo() << Strings::SET_DEF_LOG;
         // Ripristino informazioni iniziali
         ui.portServerEdit->setText(QString::number(27015));
         ui.nEdit->setText(QString::number(3));

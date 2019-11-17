@@ -27,6 +27,10 @@ public:
     static const QString SET_DEF_LOG;
     static const QString RESTORE_BOARD;
     static const QString RESTORE_BOARD_MSG;
+    static const QString SRV_STARTED;
+    static const QString RM_STARTED;
+    static const QString RM_STOPPED;
+    static const QString SRV_STOPPED;
 };
 
 

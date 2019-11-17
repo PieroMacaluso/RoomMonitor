@@ -21,7 +21,7 @@ std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string
         //todo alcuni pacchetti non vengono inviati del tutto, metà stringa
         //"2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxx" -> "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
         if (values.size() != 7) {
-            qDebug() << "Interruzione Stringa: " << QString::fromStdString(s);
+            qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
             continue;
         }
         if (values[5] == "~")        //alcuni pacchetti contengono l'ssid e altri no
@@ -191,7 +191,6 @@ float MonitoringServer::calculateDistance(signed rssi, int A) {
 
 bool MonitoringServer::start() {
     if (!server.listen(QHostAddress::Any, settings.value("room/port").toInt())) {
-        qDebug() << Strings::SRV_NOT_STARTED;
         Utility::warningMessage(Strings::SRV_NOT_STARTED, Strings::SRV_NOT_STARTED, Strings::SRV_NOT_STARTED);
         return false;
     } else {
@@ -203,7 +202,7 @@ bool MonitoringServer::start() {
             board_fail.insert(std::make_pair(bo.getId(), 0));
         });
         QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
-        qDebug() << "Server Started on port:" << server.serverPort();
+        qInfo() << Strings::SRV_STARTED << server.serverPort();
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
         timer.start(10000);
         return true;
@@ -214,7 +213,7 @@ bool MonitoringServer::start() {
 void MonitoringServer::stop() {
     QObject::disconnect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
     QObject::disconnect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-    qDebug() << "Server Disconnected:" << server.serverPort();
+    qInfo() << Strings::SRV_STOPPED;
 
     server.close();
     timer.stop();
@@ -327,7 +326,7 @@ void MonitoringServer::aggregate() {
             }
         });
         if (!listBoardFailing.empty()) {
-            qDebug() << "ID schedine mancanti" << listBoardFailing.toList();
+            qCritical() << "ID schedine mancanti" << listBoardFailing.toList();
             QString stringOut{"Elenco ID schede offline: [ "};
             int count = 0;
             for (auto &a : listBoardFailing) {
@@ -378,7 +377,11 @@ void MonitoringServer::aggregate() {
             query.bindValue(":hidden", 0);
         }
         if (!query.exec()) {
-            qDebug() << query.lastError();
+            //qDebug() << query.lastError();
+            Utility::warningMessage(Strings::ERR_DB,
+                                    Strings::ERR_DB_MSG,
+                                    query.lastError().text());
+            return;
         }
     }
     DEBUG("Ending aggregation")
@@ -408,7 +411,7 @@ bool MonitoringServer::isRunning() {
  * @param endTime
  * @return
  */
-Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime) {
+/*Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime) {
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
@@ -427,6 +430,7 @@ Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, ui
 
     if (!query.exec()) {
         qDebug() << query.lastError();
+        return;
     }
 
     if (query.size() == 0) {
@@ -453,7 +457,7 @@ Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, ui
     db.close();
 
 
-}
+}*/
 
 std::deque<Packet> MonitoringServer::getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac) {
     QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
@@ -471,9 +475,13 @@ std::deque<Packet> MonitoringServer::getHiddenPackets(QDateTime initTime, QDateT
     query.bindValue(":fd", initTime.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", endTime.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":mac", mac);
-    qDebug() << query.executedQuery();
+
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
+        return std::deque<Packet>{};        //todo eccezione?
     }
     QSqlRecord record = query.record();
     if (query.size() == 0)
@@ -755,7 +763,11 @@ std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString &mac, QDate
     query.bindValue(":mac", mac);
 
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
+        return std::list<Packet>{}; //todo eccezione?
     }
 
     if (query.size() == 0) {

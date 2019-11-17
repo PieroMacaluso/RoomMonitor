@@ -67,7 +67,7 @@ void MainWindow::setupConnect() {
             }
         } catch (std::exception &e) {
             // Does not started signal
-            qDebug() << Strings::SRV_NOT_STARTED;
+            Utility::warningMessage(Strings::SRV_NOT_STARTED, Strings::SRV_NOT_STARTED, Strings::SRV_NOT_STARTED);
             return;
         }
     });
@@ -380,7 +380,6 @@ void MainWindow::setupPositionPlot(QString mac) {
     query.bindValue(":mac", mac);
 
     if (!query.exec()) {
-        qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB,
                                 Strings::ERR_DB_MSG,
                                 db.lastError().text());
@@ -450,7 +449,10 @@ void MainWindow::addLiveData() {
     query.bindValue(":freq", su.value("monitor/min").toInt());
 
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                db.lastError().text());
         return;
     }
     if (!query.first())
@@ -468,7 +470,10 @@ void MainWindow::addLiveData() {
     query.bindValue(":freq", su.value("monitor/min").toInt());
 
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
         return;
     }
 
@@ -533,7 +538,11 @@ void MainWindow::genLiveData() {
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
+
         return;
     }
 

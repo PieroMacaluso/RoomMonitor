@@ -23,7 +23,7 @@ QSqlDatabase Utility::getDB(bool &error) {
         db.setUserName(su.value("database/user").toString());
         db.setPassword(su.value("database/pass").toString());
         if (!db.open()) {
-            qDebug() << db.lastError();
+            //qDebug() << db.lastError();
             Utility::warningMessage(Strings::ERR_DB,
                                     Strings::ERR_DB_MSG,
                                     db.lastError().text());
@@ -38,7 +38,7 @@ bool Utility::testTable(QSqlDatabase &db) {
     QSqlQuery query{db};
     query.prepare(Query::SELECT_ALL_PACKET.arg(su.value("database/table").toString()));
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB,
                                 Strings::ERR_DB_MSG,
                                 query.lastError().text());
@@ -47,7 +47,7 @@ bool Utility::testTable(QSqlDatabase &db) {
     }
     query.prepare(Query::SELECT_ALL_BOARD.arg(su.value("database/table").toString()));
     if (!query.exec()) {
-        qDebug() << query.lastError();
+        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB,
                                 Strings::ERR_DB_MSG,
                                 query.lastError().text());
@@ -78,6 +78,13 @@ void Utility::warningMessage(const QString &title, const QString &text, const QS
     m.setText(text);
     m.setDetailedText(error);
     m.exec();
+
+    if (text == error) {
+        qCritical() << text;
+    } else {
+        qCritical() << text << "," << error;
+    }
+
 }
 
 bool Utility::yesNoMessage(QWidget *parent, const QString &title, const QString &text) {
@@ -146,6 +153,8 @@ void Utility::infoMessage(const QString &title, const QString &text) {
     m.setIcon(QMessageBox::Information);
     m.setText(text);
     m.exec();
+
+    qInfo() << text;
 }
 
 int Utility::infoMessageTimer(const QString &title, const QString &text, int millisec) {
