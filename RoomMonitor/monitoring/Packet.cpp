@@ -59,6 +59,10 @@ PositionData Packet::getPositionData() {
     return positionData;
 }
 
+Point2d Packet::getPoint() {
+    return Point2d(this->getX(), this->getY());
+}
+
 
 
 

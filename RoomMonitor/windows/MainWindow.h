@@ -8,6 +8,7 @@
 
 #include "ui_main.h"
 #include "ui_about.h"
+#include "ui_random.h"
 #include "ui_localize.h"
 #include "../monitoring/MonitoringServer.h"
 #include "windows/common/callout.h"
@@ -35,6 +36,11 @@ class MainWindow : public QMainWindow {
      * UI Dialogo Posizione MAC
      */
     Ui::PositionDialog positionDialog{};
+
+    /**
+     * UI Dialogo Random MAC
+     */
+    Ui::RandomDialog randomDialog{};
 
     /**
      * Struttura di monitoraggio. Parte centrale delle procedure di monitoraggio

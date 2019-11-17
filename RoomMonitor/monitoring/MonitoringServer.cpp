@@ -455,23 +455,22 @@ Packet MonitoringServer::getLastPacketWithMac(QString mac, uint32_t initTime, ui
 
 }
 
-std::deque<Packet> MonitoringServer::getHiddenPackets(uint32_t initTime, uint32_t endTime) {
+std::deque<Packet> MonitoringServer::getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac) {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     //query per ottenere i pacchetti con mac hidden nel periodo specificato
     QDateTime timeInit;
     QDateTime timeEnd;
-
-    timeInit.setTime_t(
-            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
-    timeEnd.setTime_t(endTime);
-
-
+    //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     std::deque<Packet> hiddenPackets;
-    QString table = "stanza";         //todo vedere da impostazioni
-    // TODO: Aggiustare query e DB management
-    QSqlQuery query{};
-    query.prepare("SELECT * FROM " + table + " WHERE hidden='1' AND timestamp>='" +
-                  timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" +
-                  timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "';");
+    QString table = su.value("database/table").toString();
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) return std::deque<Packet>{};
+    QSqlQuery query{db};
+    query.prepare(Query::SELECT_HIDDEN_NOT_MAC.arg(table));
+    query.bindValue(":fd", initTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", endTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":mac", mac);
     qDebug() << query.executedQuery();
     if (!query.exec()) {
         qDebug() << query.lastError();
@@ -560,61 +559,133 @@ bool MonitoringServer::getHiddenDeviceFor(Packet source, uint32_t initTime, uint
  * @param endTime
  * @return
  */
-bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t endTime) {
+QList<Statistic> & MonitoringServer::getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime) {
+    QMap<QString, QList<qreal>> map_mac_stat;
+    QList<Statistic> list{};
     //entro 5 minuti, stessa posizione +-0.5, altro da vedere
     uint32_t tolleranzaTimestamp = 240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
-    double tolleranzaX = 0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
-    double tolleranzaY = 0.5;
+    double tolleranzaDist = 0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
 
-    double perc;
+    qreal perc;
     bool trovato = false;
-
-    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime,
-                                                        endTime);                                //ottiene tutti i pacchetti dello stesso mac in quel determinato intervallo
+    // TODO: non ritornare pacchetti con il MAC selezionato
+    // Ottiene tutti i pacchetti nascosti in quel determinato intervallo
+    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime, endTime, mac);
+    // Nel lasso di tempo scelto non è stato trovato nessun pacchetto.
+    // Per effettuare la stima è necessario che ci sia almeno un pacchetto.
     if (hiddenPackets.empty())
-        return false;                                                                                    //nel lasso di tempo scelto non è stato trovato nessun pacchetto con il mac selezionato. Per effettuare la stima è necessario che ci sia almeno un pacchetto con  il mac scelto
+        return list;
 
+    // Ottiene tutti i pacchetti nascosti in quel determinato intervallo per MAC specificato
     std::list<Packet> allPacketsOfMac = getAllPacketsOfMac(mac, initTime, endTime);
+    // Nel lasso di tempo scelto non è stato trovato nessun pacchetto con il MAC specificato.
+    // Per effettuare la stima è necessario che ci sia almeno un pacchetto.
     if (allPacketsOfMac.empty())
-        return false;
+        return list;
 
-    for (int j = 0; j < hiddenPackets.size(); j++) {
-        if (hiddenPackets.at(j).getMacPeer() != mac.toStdString()) {
-
-            double_t maxPerc = 0;
-
-            for (Packet source:allPacketsOfMac) {                                                           //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
-                double diff = (source.getTimestamp() < hiddenPackets.at(j).getTimestamp()) ? (
-                        hiddenPackets.at(j).getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
-                                                                                       hiddenPackets.at(
-                                                                                               j).getTimestamp());
-                if (diff <= tolleranzaTimestamp) {
-                    //mac diverso ad intervallo inferiore di 1 minuto
-                    double diffX = (source.getX() < hiddenPackets.at(j).getX()) ? (hiddenPackets.at(j).getX() -
-                                                                                   source.getX()) : (source.getX() -
-                                                                                                     hiddenPackets.at(
-                                                                                                             j).getX());
-                    double diffY = (source.getY() < hiddenPackets.at(j).getY()) ? (hiddenPackets.at(j).getY() -
-                                                                                   source.getY()) : (source.getY() -
-                                                                                                     hiddenPackets.at(
-                                                                                                             j).getY());
-                    if (diffX <= tolleranzaX && diffY <= tolleranzaY) {
-                        //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
-                        perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
-                                       (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
-                        if (perc > maxPerc)
-                            maxPerc = perc;
-                    }
-                }
-            }
-            std::cout << mac.toStdString() << " simile ad " << hiddenPackets.at(j).getMacPeer()
-                      << " con probabilita' del " << maxPerc << "%" << std::endl;
-
+    for (auto &packet : hiddenPackets) {
+        int common_ssid = 0;
+        perc = 0;
+        //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
+        for (auto &source:allPacketsOfMac) {
+            double diff = (source.getTimestamp() < packet.getTimestamp()) ? (
+                    packet.getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
+                                                                      packet.getTimestamp());
+            double diffDist = packet.getPoint().distance(source.getPoint());
+            //mac diverso ad intervallo inferiore di 1 minuto
+            double percDist = (tolleranzaDist - diffDist < 0) ? 0 : (tolleranzaDist - diffDist) / tolleranzaDist;
+            double percTime = (tolleranzaTimestamp - diff < 0) ? 0 : (tolleranzaTimestamp - diff) /
+                                                                     tolleranzaTimestamp;
+            double ssid = (source.getSsid() != "Nan" && source.getSsid() == packet.getSsid()) ? 1 : 0;
+            perc += percDist * 0.5 + percTime * 0.25 + ssid * 0.25;
+        }
+        perc = perc / allPacketsOfMac.size();
+        QString mac_hidden = QString::fromStdString(packet.getMacPeer());
+        if (map_mac_stat.contains(mac_hidden)) {
+            map_mac_stat.find(mac_hidden).value().push_back(perc);
+        } else {
+            QList<qreal> new_list{perc};
+            map_mac_stat.insert(mac_hidden, new_list);
         }
     }
+    for (auto it = map_mac_stat.begin(); it != map_mac_stat.end(); it++) {
+        qreal final_perc = 0;
+        for (auto& ot : it.value()) {
+            final_perc += ot;
+        }
 
-    return trovato;
+        final_perc = final_perc / it.value().size();
+
+        Statistic s{it.key(), final_perc};
+        list.append(s);
+    }
+
+//    qSort(res.begin(), res.end(), Statistic::lessThan);
+
+    return list;
 }
+
+///**
+// * Stessa cosa della funzione getHiddenDeviceFor ma questa volta partendo solo dalla stringa del mac e non da un intero pacchetto
+// * @param mac
+// * @param initTime
+// * @param endTime
+// * @return
+// */
+//bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t endTime) {
+//    //entro 5 minuti, stessa posizione +-0.5, altro da vedere
+//    uint32_t tolleranzaTimestamp = 240;//usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
+//    double tolleranzaX = 0.5;     //todo valutare se ha senso impostare le tolleranze da impostazioni grafiche
+//    double tolleranzaY = 0.5;
+//
+//    double perc;
+//    bool trovato = false;
+//    // TODO: non ritornare pacchetti con il MAC selezionato
+//    // Ottiene tutti i pacchetti nascosti in quel determinato intervallo
+//    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime, endTime, mac);
+//    // Nel lasso di tempo scelto non è stato trovato nessun pacchetto.
+//    // Per effettuare la stima è necessario che ci sia almeno un pacchetto.
+//    if (hiddenPackets.empty())
+//        return false;
+//
+//    // Ottiene tutti i pacchetti nascosti in quel determinato intervallo per MAC specificato
+//    std::list<Packet> allPacketsOfMac = getAllPacketsOfMac(mac, initTime, endTime);
+//    // Nel lasso di tempo scelto non è stato trovato nessun pacchetto con il MAC specificato.
+//    // Per effettuare la stima è necessario che ci sia almeno un pacchetto.
+//    if (allPacketsOfMac.empty())
+//        return false;
+//
+//    for (auto &packet : hiddenPackets) {
+//        double_t maxPerc = 0;
+//        //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
+//        for (auto &source:allPacketsOfMac) {
+//            double diff = (source.getTimestamp() < packet.getTimestamp()) ? (
+//                    packet.getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
+//                                                                      packet.getTimestamp());
+//            if (diff <= tolleranzaTimestamp) {
+//                //mac diverso ad intervallo inferiore di 1 minuto
+//                double diffX = (source.getX() < packet.getX()) ? (packet.getX() -
+//                                                                  source.getX()) : (source.getX() -
+//                                                                                    packet.getX());
+//                double diffY = (source.getY() < packet.getY()) ? (packet.getY() -
+//                                                                  source.getY()) : (source.getY() -
+//                                                                                    packet.getY());
+//                if (diffX <= tolleranzaX && diffY <= tolleranzaY) {
+//                    //mac diverso con posizione simile in 4 minuto=> possibile dire che sia lo stesso dispositivo
+//                    perc = (100 - ((diffX * 100 / tolleranzaX) + (diffY * 100 / tolleranzaY) +
+//                                   (diff * 100 / tolleranzaTimestamp)) * 100 / (300));
+//                    if (perc > maxPerc)
+//                        maxPerc = perc;
+//                }
+//            }
+//        }
+//        std::cout << mac.toStdString() << " simile ad " << packet.getMacPeer()
+//                  << " con probabilita' del " << maxPerc << "%" << std::endl;
+//
+//    }
+//
+//    return trovato;
+//}
 
 
 
@@ -631,25 +702,25 @@ bool MonitoringServer::getHiddenMacFor(QString mac, uint32_t initTime, uint32_t 
 * @return
 */
 //getHiddenDevice(1569088800,1569091920);
-int MonitoringServer::getHiddenDevice(uint32_t initTime, uint32_t endTime) {
-    bool trovato;
-    int numHiddenDevice = 0;
-
-
-    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime, endTime);
-    if (hiddenPackets.empty())
-        return 0;
-
-    for (int i = 0; i < hiddenPackets.size(); i++) {
-        trovato = getHiddenDeviceFor(hiddenPackets.at(i), initTime, endTime, hiddenPackets);
-        if (trovato)
-            numHiddenDevice++;
-    }
-
-    qDebug() << "Numero di dispositivi differenti con mac nascosto: " << numHiddenDevice;
-    return numHiddenDevice;
-    //todo decidere cosa fare con tale numero
-}
+//int MonitoringServer::getHiddenDevice(uint32_t initTime, uint32_t endTime) {
+//    bool trovato;
+//    int numHiddenDevice = 0;
+//
+//    // TODO: check QString()
+//    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime, endTime, QString());
+//    if (hiddenPackets.empty())
+//        return 0;
+//
+//    for (int i = 0; i < hiddenPackets.size(); i++) {
+//        trovato = getHiddenDeviceFor(hiddenPackets.at(i), initTime, endTime, hiddenPackets);
+//        if (trovato)
+//            numHiddenDevice++;
+//    }
+//
+//    qDebug() << "Numero di dispositivi differenti con mac nascosto: " << numHiddenDevice;
+//    return numHiddenDevice;
+//    //todo decidere cosa fare con tale numero
+//}
 
 bool MonitoringServer::isRandomMac(const std::string &basicString) {
     QString s = QString("0x%1").arg(basicString.at(1));
@@ -670,22 +741,21 @@ bool MonitoringServer::isRandomMac(const std::string &basicString) {
  * @param endTime
  * @return
  */
-std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString &mac, uint32_t initTime, uint32_t endTime) {
+std::list<Packet> MonitoringServer::getAllPacketsOfMac(const QString &mac, QDateTime initTime, QDateTime endTime) {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     bool error = false;
+    QString table = su.value("database/table").toString();
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
     QSqlQuery query{db};
-    QString table = "stanza";         //todo vedere da impostazioni
     QDateTime timeInit;
     QDateTime timeEnd;
+    //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
 
-    timeInit.setTime_t(
-            initTime);   //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
-    timeEnd.setTime_t(endTime);
-
-    query.prepare("SELECT * FROM " + table + " WHERE mac_addr='" + mac + "' AND timestamp>='" +
-                  timeInit.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "' AND timestamp<='" +
-                  timeEnd.toUTC().toString("yyyy-MM-dd hh:mm:ss") + "';");
+    query.prepare(Query::SELECT_HIDDEN_MAC.arg(table));
+    query.bindValue(":fd", initTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", endTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":mac", mac);
 
     if (!query.exec()) {
         qDebug() << query.lastError();

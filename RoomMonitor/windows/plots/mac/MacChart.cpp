@@ -75,3 +75,34 @@ void MacChart::fillChart(QVector<MacOccurrence> macs) {
     aX->setRange(0, max+5);
 
 }
+
+void MacChart::fillRandomChart(QList<Statistic> &macs) {
+    int max = 0;
+    this->removeAllSeries();
+    // qSort(macs);
+    QBarSet *set0 = new QBarSet("Percentuale");
+    QHorizontalBarSeries *bs = new QHorizontalBarSeries();
+    bs->append(set0);
+    listMac.clear();
+    for (auto &it : macs) {
+        *set0 << it.getPerc();
+        if(max < it.getPerc())
+            max = it.getPerc();
+        listMac << it.getMac();
+    }
+    this->addSeries(bs);
+
+    this->setTitle("Percentuale somiglianza");
+    aY = new QBarCategoryAxis();
+    aY->append(listMac);
+    this->addAxis(aY, Qt::AlignLeft);
+    barSeries->attachAxis(aY);
+
+    aX = new QValueAxis();
+    this->addAxis(aX, Qt::AlignBottom);
+    barSeries->attachAxis(aX);
+    this->legend()->setVisible(false);
+    this->resetView(7);
+    aX->setRange(0, max+5);
+
+}

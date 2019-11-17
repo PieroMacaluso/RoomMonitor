@@ -202,8 +202,13 @@ void MainWindow::setupConnect() {
 
     // Azione Analisi MAC randomico
     QObject::connect(ui.randomButton, &QPushButton::clicked, [&]() {
+        QString mac = ui.macSituation->selectedItems().at(0)->text();
         // TODO: Implement Random Dialog
+//        s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime());
         QDialog random{};
+        randomDialog.macLabel->setText(mac);
+        randomDialog.macPlot->getChart()->fillRandomChart(s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime()));
+        randomDialog.setupUi(&random);
         random.setModal(true);
         random.exec();
 

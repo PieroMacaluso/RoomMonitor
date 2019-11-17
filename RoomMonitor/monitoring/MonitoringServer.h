@@ -42,6 +42,8 @@
 #include "Utility.h"
 #include "Circle.h"
 #include "../windows/SettingDialog.h"
+#include <monitoring/classes/Statistic.h>
+
 
 
 class MonitoringServer : public QObject {
@@ -103,7 +105,7 @@ public:
     bool is_inside_room(PositionData data);
 
     bool getHiddenDeviceFor(Packet source, uint32_t initTime, uint32_t endTime, std::deque<Packet> &hiddenPackets);
-    bool getHiddenMacFor(QString mac, uint32_t initTime, uint32_t endTime);
+    QList<Statistic> & getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime);
 
 /**
  * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
@@ -125,7 +127,7 @@ public:
  * @param endTime
  * @return
  */
-    std::deque<Packet> getHiddenPackets(uint32_t initTime, uint32_t endTime);
+    static std::deque<Packet> getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac);
 
     /**
  * Funzione utilizzata per ottenere il pacchetto con il maggior timestamp di un determinato mac
@@ -159,7 +161,7 @@ public slots:
     static bool isRandomMac(const std::string &basicString);
 
 
-    static std::list<Packet> getAllPacketsOfMac(const QString& mac, uint32_t time, uint32_t endTime);
+    static std::list<Packet> getAllPacketsOfMac(const QString& mac, QDateTime initTime, QDateTime endTime);
 
 signals:
 

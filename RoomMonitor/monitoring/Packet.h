@@ -10,6 +10,7 @@
 #include <deque>
 #include <vector>
 #include "PositionData.h"
+#include "Point2d.h"
 
 class Packet {
     std::string macPeer;
@@ -41,6 +42,7 @@ public:
 
     double getX();
     double getY();
+    Point2d getPoint();
     friend bool operator< (const Packet& lhs, const Packet& rhs);
     PositionData getPositionData();
 };

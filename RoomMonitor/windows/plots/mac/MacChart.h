@@ -9,7 +9,7 @@
 #include <map>
 #include <algorithm>
 #include <windows/classes/MacOccurrence.h>
-
+#include <monitoring/classes/Statistic.h>
 
 
 class MacChart : public QChart {
@@ -31,6 +31,7 @@ public:
     qreal xMin;
     qreal xMax;
 
+    void fillRandomChart(QList<Statistic> &macs);
 };
 
 

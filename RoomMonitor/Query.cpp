@@ -136,4 +136,7 @@ const QString Query::SELECT_MAC_TIMING_LASTPOS = "SELECT mac_addr, timing, pos_x
                                                  "     WHERE FROM_UNIXTIME(UNIX_TIMESTAMP(timestamp) - MOD(UNIX_TIMESTAMP(timestamp), 60)) = timing\n"
                                                  "ORDER BY mac_addr, timestamp DESC;";
 
+const QString Query::SELECT_HIDDEN_NOT_MAC = "SELECT * FROM %1 WHERE hidden='1' AND timestamp >= :fd AND timestamp <= :sd AND mac_addr != :mac;";
+const QString Query::SELECT_HIDDEN_MAC = "SELECT * FROM %1 WHERE mac_addr = :mac AND timestamp >= :fd AND timestamp <= :sd;";
+
 
