@@ -314,6 +314,122 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>MAC Nascosti</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>&lt;p&gt;In questa sezione è possibile andare a configurare le tolleranze per quanto riguarda l'analisi del MAC nascosto. Il meccanismo si basa calcolando le differenze tra i vari pacchetti stimando una probabilità di somiglianza.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Tolleranza&lt;/b&gt;: Valore della differenza che equivale a percentuale pari a 0. La percentuale massima si ha nell caso di differenza pari a 0.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Peso&lt;/b&gt;: Numero intero che rappresenta il peso che viene dato ad ogni parametro.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Abilitazione&lt;/b&gt;: Checkbox per abilitazione del parametro.&lt;/li&gt;
+&lt;/ul&gt;</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_4">
+         <item row="0" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLineEdit" name="posTolEdit">
+             <property name="placeholderText">
+              <string>Tolleranza (m)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="posPesoEdit">
+             <property name="placeholderText">
+              <string>Peso</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="posCheck">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Tempo</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLineEdit" name="timeTolEdit">
+             <property name="placeholderText">
+              <string>Tolleranza (s)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="timePesoEdit">
+             <property name="placeholderText">
+              <string>Peso</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="timeCheck">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>SSID</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLineEdit" name="ssidPesoEdit">
+             <property name="placeholderText">
+              <string>Peso</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="ssidCheck">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Posizione</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>

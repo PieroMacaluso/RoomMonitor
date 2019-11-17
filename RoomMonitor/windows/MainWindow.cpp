@@ -209,9 +209,10 @@ void MainWindow::setupConnect() {
         randomDialog.setupUi(&random);
         auto macChart = new MacChart();
         macChart->fillRandomChart(
-                s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime()));
+                this->getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime()));
         randomDialog.macLabel->setText(mac);
         randomDialog.macPlot->setChart(macChart);
+        randomDialog.macPlot->setCalloutText("%1\n%2%");
         random.setModal(true);
         random.exec();
 
@@ -228,6 +229,185 @@ void MainWindow::setupConnect() {
     });
 
 
+}
+
+
+/**
+ * Stessa cosa della funzione getHiddenDeviceFor ma questa volta partendo solo dalla stringa del mac e non da un intero pacchetto
+ * @param mac
+ * @param initTime
+ * @param endTime
+ * @return
+ */
+QList<Statistic> MainWindow::getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime) {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    QMap<QString, QList<qreal>> map_mac_stat;
+    QList<Statistic> list{};
+    // entro 5 minuti, stessa posizione +-0.5, altro da vedere
+    // usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
+    uint32_t tolleranzaTimestamp = su.value("mac/time/tol").toInt();
+    double tolleranzaDist = su.value("mac/pos/tol").toInt();
+    bool checkTime =  su.value("mac/time/check").toBool();
+    bool checkDist =  su.value("mac/pos/check").toBool();
+    bool checkSsid =  su.value("mac/ssid/check").toBool();
+    int pesoTime =  su.value("mac/time/peso").toInt();
+    int pesoDist =  su.value("mac/pos/peso").toInt();
+    int pesoSsid =  su.value("mac/ssid/peso").toInt();
+
+    qreal perc;
+    // Ottiene tutti i pacchetti nascosti in quel determinato intervallo
+    std::deque<Packet> hiddenPackets = getHiddenPackets(initTime, endTime, mac);
+    // Nel lasso di tempo scelto non è stato trovato nessun pacchetto.
+    // Per effettuare la stima è necessario che ci sia almeno un pacchetto.
+    if (hiddenPackets.empty())
+        return list;
+
+    // Ottiene tutti i pacchetti nascosti in quel determinato intervallo per MAC specificato
+    std::list<Packet> allPacketsOfMac = getAllPacketsOfMac(mac, initTime, endTime);
+    // Nel lasso di tempo scelto non è stato trovato nessun pacchetto con il MAC specificato.
+    // Per effettuare la stima è necessario che ci sia almeno un pacchetto.
+    if (allPacketsOfMac.empty())
+        return list;
+
+    for (auto &packet : hiddenPackets) {
+        int common_ssid = 0;
+        perc = 0;
+        //controlla tutti i mac nascosti con tutte le posizioni del mac scelto nell'intervallo selezionato
+        for (auto &source:allPacketsOfMac) {
+            double diff = (source.getTimestamp() < packet.getTimestamp()) ? (
+                    packet.getTimestamp() - source.getTimestamp()) : (source.getTimestamp() -
+                                                                      packet.getTimestamp());
+            double diffDist = packet.getPoint().distance(source.getPoint());
+            //mac diverso ad intervallo inferiore di 1 minuto
+            double percDist = (tolleranzaDist - diffDist < 0) ? 0 : (tolleranzaDist - diffDist) / tolleranzaDist;
+            double percTime = (tolleranzaTimestamp - diff < 0) ? 0 : (tolleranzaTimestamp - diff) /
+                                                                     tolleranzaTimestamp;
+            double ssid = (source.getSsid() != "Nan" && source.getSsid() == packet.getSsid()) ? 1 : 0;
+
+            // Calcolo Pesi
+            int totalePesi = pesoDist * checkDist + pesoTime * checkTime + pesoSsid * checkSsid;
+            perc += (percDist * pesoDist + percTime * pesoTime + ssid * pesoSsid) / totalePesi;
+        }
+        perc = perc / allPacketsOfMac.size();
+        QString mac_hidden = QString::fromStdString(packet.getMacPeer());
+        if (map_mac_stat.contains(mac_hidden)) {
+            map_mac_stat.find(mac_hidden).value().push_back(perc);
+        } else {
+            QList<qreal> new_list{perc};
+            map_mac_stat.insert(mac_hidden, new_list);
+        }
+    }
+    for (auto it = map_mac_stat.begin(); it != map_mac_stat.end(); it++) {
+        qreal final_perc = 0;
+        for (auto &ot : it.value()) {
+            final_perc += ot;
+        }
+
+        final_perc = final_perc / it.value().size();
+        if (final_perc != 0.0) {
+            Statistic s{it.key(), final_perc * 100};
+            list.append(s);
+        }
+    }
+    return list;
+}
+
+std::list<Packet> MainWindow::getAllPacketsOfMac(const QString &mac, QDateTime initTime, QDateTime endTime) {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    bool error = false;
+    QString table = su.value("database/table").toString();
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) exit(-1);
+    QSqlQuery query{db};
+    QDateTime timeInit;
+    QDateTime timeEnd;
+    //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+
+    query.prepare(Query::SELECT_HIDDEN_MAC.arg(table));
+    query.bindValue(":fd", initTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", endTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":mac", mac);
+
+    if (!query.exec()) {
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
+        return std::list<Packet>{}; //todo eccezione?
+    }
+
+    if (query.size() == 0) {
+        return std::list<Packet>();
+    }
+
+    std::list<Packet> allPacketsOfMac;
+    while (query.next()) {
+        std::string fcs = query.value(1).toString().toStdString();
+        std::string mac_add = query.value(2).toString().toStdString();
+        uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
+        std::string ssid = query.value(6).toString().toStdString();
+
+        Packet p(-1, fcs, -1, mac_add, timestamp, ssid);
+
+        double_t posX = query.value(3).toDouble();
+        double_t posY = query.value(4).toDouble();
+        PositionData positionData(posX, posY);
+        p.setPosition(positionData);
+
+        allPacketsOfMac.push_back(p);
+    }
+
+    db.close();
+
+    return allPacketsOfMac;
+
+}
+
+
+std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac) {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    //query per ottenere i pacchetti con mac hidden nel periodo specificato
+    QDateTime timeInit;
+    QDateTime timeEnd;
+    //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
+    std::deque<Packet> hiddenPackets;
+    QString table = su.value("database/table").toString();
+    bool error = false;
+    QSqlDatabase db = Utility::getDB(error);
+    if (error) return std::deque<Packet>{};
+    QSqlQuery query{db};
+    query.prepare(Query::SELECT_HIDDEN_NOT_MAC.arg(table));
+    query.bindValue(":fd", initTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":sd", endTime.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":mac", mac);
+    if (!query.exec()) {
+        //qDebug() << query.lastError();
+        Utility::warningMessage(Strings::ERR_DB,
+                                Strings::ERR_DB_MSG,
+                                query.lastError().text());
+        return std::deque<Packet>{};        //todo eccezione?
+    }
+    QSqlRecord record = query.record();
+    if (query.size() == 0)
+        qDebug() << "Nessun risultato";
+
+    while (query.next()) {                                //ciclo su ogni entry selezionata del db
+        std::string fcs = query.value(1).toString().toStdString();
+        std::string mac = query.value(2).toString().toStdString();
+        uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
+        std::string ssid = query.value(6).toString().toStdString();
+
+        Packet p(-1, fcs, -1, mac, timestamp, ssid);
+
+        double_t posX = query.value(3).toDouble();
+        double_t posY = query.value(4).toDouble();
+        PositionData positionData(posX, posY);
+        p.setPosition(positionData);
+        hiddenPackets.push_back(p);
+
+    }
+    //todo ordinare per timestamp, utile per getHiddenMacFor
+    return hiddenPackets;
 }
 
 void MainWindow::setupMonitoringPlot() {

@@ -55,7 +55,7 @@ void MacChart::fillChart(QVector<MacOccurrence> macs) {
     listMac.clear();
     for (int i = 0; i < macs.size(); i++) {
         *set0 << macs[i].getNumberOfOccurrences();
-        if(max < macs[i].getNumberOfOccurrences())
+        if (max < macs[i].getNumberOfOccurrences())
             max = macs[i].getNumberOfOccurrences();
         listMac << macs[i].getMac();
     }
@@ -72,7 +72,7 @@ void MacChart::fillChart(QVector<MacOccurrence> macs) {
     barSeries->attachAxis(aX);
     this->legend()->setVisible(false);
     this->resetView(7);
-    aX->setRange(0, max+5);
+    aX->setRange(0, max + 5);
 
 }
 
@@ -86,10 +86,9 @@ void MacChart::fillRandomChart(QList<Statistic> macs) {
     listMac.clear();
     for (auto &it : macs) {
         *set0 << it.getPerc();
-        if(max < it.getPerc())
-            max = it.getPerc();
         listMac << it.getMac();
     }
+    max = 100;
     this->addSeries(bs);
 
     this->setTitle("Percentuale somiglianza");
@@ -103,6 +102,6 @@ void MacChart::fillRandomChart(QList<Statistic> macs) {
     barSeries->attachAxis(aX);
     this->legend()->setVisible(false);
     this->resetView(7);
-    aX->setRange(0, max+5);
+    aX->setRange(0, max + 5);
 
 }

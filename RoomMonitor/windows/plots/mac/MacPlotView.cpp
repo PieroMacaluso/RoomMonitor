@@ -52,7 +52,7 @@ void MacPlotView::tooltip(bool state, int index, QBarSet *barset) {
     if (state) {
         QDateTime s{};
         barset->at(index);
-        m_tooltip->setText(QString("%1\nPresenze: %2").arg(this->chart->getMacs()[index]).arg(barset->at(index)));
+        m_tooltip->setText(QString(MacPlotView::calloutText).arg(this->chart->getMacs()[index]).arg(barset->at(index)));
         m_tooltip->setAnchor(QPointF(barset->at(index), index));
         m_tooltip->setZValue(11);
         m_tooltip->updateGeometry();
@@ -72,4 +72,8 @@ void MacPlotView::resizeEvent(QResizeEvent *event) {
 
 MacChart *MacPlotView::getChart() const {
     return chart;
+}
+
+void MacPlotView::setCalloutText(const QString &calloutText) {
+    MacPlotView::calloutText = calloutText;
 }

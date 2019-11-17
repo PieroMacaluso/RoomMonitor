@@ -254,6 +254,14 @@ void SettingDialog::apply() {
     s.setValue("database/pass", ui.passEdit->text());
     s.setValue("database/table", ui.tableEdit->text());
     s.setValue("Utility/RETRY_STEP_BOARD", ui.retryEdit->text().toInt());
+    s.setValue("mac/pos/tol", ui.posTolEdit->text().toInt());
+    s.setValue("mac/pos/peso", ui.posPesoEdit->text().toInt());
+    s.setValue("mac/pos/check", ui.posCheck->isChecked());
+    s.setValue("mac/time/tol", ui.timeTolEdit->text().toInt());
+    s.setValue("mac/time/peso", ui.timePesoEdit->text().toInt());
+    s.setValue("mac/time/check", ui.timeCheck->isChecked());
+    s.setValue("mac/ssid/peso", ui.ssidPesoEdit->text().toInt());
+    s.setValue("mac/ssid/check", ui.ssidCheck->isChecked());
     s.setValue("first_time", true);
     Utility::dropBoards();
     for (int i = 0; i < ui.boardTable->rowCount(); i++) {
@@ -342,6 +350,14 @@ void SettingDialog::defaultValues() {
         ui.userEdit->setText("root");
         ui.passEdit->setText("NewRoot12Kz");
         ui.tableEdit->setText("stanza");
+        ui.posTolEdit->setText(QString::number(0.5));
+        ui.posPesoEdit->setText(QString::number(1));
+        ui.posCheck->setChecked(true);
+        ui.timeTolEdit->setText(QString::number(3600));
+        ui.timePesoEdit->setText(QString::number(1));
+        ui.timeCheck->setChecked(true);
+        ui.ssidPesoEdit->setText(QString::number(1));
+        ui.ssidCheck->setChecked(true);
         this->fillBoardListDefault();
     } else {
         return;
@@ -465,6 +481,14 @@ void SettingDialog::compileValues() {
     ui.passEdit->setText(s.value("database/pass").toString());
     ui.tableEdit->setText(s.value("database/table").toString());
     ui.retryEdit->setValue(s.value("Utility/RETRY_STEP_BOARD").toInt());
+    ui.posTolEdit->setText(s.value("mac/pos/tol").toString());
+    ui.posPesoEdit->setText(s.value("mac/pos/peso").toString());
+    ui.posCheck->setChecked(s.value("mac/pos/check").toBool());
+    ui.timeTolEdit->setText(s.value("mac/time/tol").toString());
+    ui.timePesoEdit->setText(s.value("mac/time/peso").toString());
+    ui.timeCheck->setChecked(s.value("mac/time/check").toBool());
+    ui.ssidPesoEdit->setText(s.value("mac/ssid/peso").toString());
+    ui.ssidCheck->setChecked(s.value("mac/ssid/check").toBool());
 
     fillBoardList();
 }

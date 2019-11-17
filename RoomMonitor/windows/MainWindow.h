@@ -189,6 +189,12 @@ public:
     void setupMapPlot();
 
     void stopServer();
+
+    QList<Statistic> getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime);
+
+    static std::deque<Packet> getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac);
+
+    std::list<Packet> getAllPacketsOfMac(const QString &mac, QDateTime initTime, QDateTime endTime);
 };
 
 

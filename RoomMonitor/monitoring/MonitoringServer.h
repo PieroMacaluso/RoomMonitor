@@ -160,9 +160,6 @@ public slots:
 
     static bool isRandomMac(const std::string &basicString);
 
-
-    static std::list<Packet> getAllPacketsOfMac(const QString& mac, QDateTime initTime, QDateTime endTime);
-
 signals:
 
     /**

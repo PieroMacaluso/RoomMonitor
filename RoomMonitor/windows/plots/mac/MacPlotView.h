@@ -13,6 +13,7 @@
 class MacPlotView : public QChartView {
     MacChart * chart = nullptr;
     Callout *m_tooltip = nullptr;
+    QString calloutText = "%1\nPresenze: %2";
 public:
     explicit MacPlotView(QWidget *parent = nullptr);
 
@@ -29,6 +30,8 @@ public:
     void resizeEvent(QResizeEvent *event);
 
     MacChart *getChart() const;
+
+    void setCalloutText(const QString &calloutText);
 
 };
 
