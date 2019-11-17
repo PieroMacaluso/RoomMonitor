@@ -256,10 +256,9 @@ void MainWindow::setupMapPlot() {
         }
     });
     connect(ui.mapSlider, &QSlider::valueChanged, [&](int value) {
-        if (value > -1) {
-            ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
-            ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
-        }
+        if (value < 0 || ui.mapSlider->isMapEmpty()) return;
+        ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
+        ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
     });
 
 }
