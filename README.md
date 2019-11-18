@@ -1,12 +1,16 @@
-# Progetto Programmazione di Sistema
+# Room Monitor
+<div style="text-align:center;"><img src="RoomMonitor/resources/logo.svg" alt="RoomMonitor"></div>
+ <div style="text-align:center;">
 
 ![Languages](https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange)
 ![Framework](https://img.shields.io/badge/Framework-Qt-green)
 ![Status](https://img.shields.io/badge/Status-WIP-yellow)
 
+</div>
+
 ## Indice
 
-- [Progetto Programmazione di Sistema](#progetto-programmazione-di-sistema)
+- [Room Monitor](#room-monitor)
   - [Indice](#indice)
   - [Introduzione](#introduzione)
   - [Team di sviluppo](#team-di-sviluppo)
