@@ -16,6 +16,9 @@
 #include <vector>
 #include <monitoring/Board.h>
 #include "Query.h"
+#include <deque>
+#include <monitoring/Packet.h>
+
 
 class Utility {
 public:
@@ -38,6 +41,16 @@ public:
     static int RETRY_STEP_BOARD;
     static QString LOG_DIR;
     static QString LOG_FILE;
+
+    /**
+     * Funzione utilizzata per convertire il vettore di stringhe ricevute dalla esp in oggetti packet
+     * @param packets
+     * @return
+     */
+    static std::deque<Packet> string2packet(const std::vector<std::string> &p);
+
+    template<class Container>
+    static void split(const std::string &str, Container &cont, char delim);
 };
 
 

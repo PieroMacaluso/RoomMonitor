@@ -45,7 +45,15 @@ public:
         strY << y;
         return strX.str() + "," + strY.str();
     }
+
+    static PositionData positionDataNull();
 };
+
+
+inline bool operator==(const PositionData &e1, const PositionData &e2)
+{
+    return e1.getX() == e2.getX() && e1.getY() == e2.getY();
+}
 
 
 #endif //ROOMMONITOR_POSITIONDATA_H

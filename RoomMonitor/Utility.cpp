@@ -177,3 +177,39 @@ void Utility::setupVariables() {
 }
 
 
+std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p) {
+    std::deque<Packet> deque;
+    std::string ssid;
+
+    for (const std::string &s:p) {
+        std::vector<std::string> values;
+        Utility::split(s, values, ',');
+        // TODO: alcuni pacchetti non vengono inviati del tutto, metà stringa
+        // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
+        //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
+        if (values.size() != 7) {
+            qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
+            continue;
+        }
+        // Alcuni pacchetti contengono SSID, altri no
+        if (values[5] == "~")
+            ssid = "Nan";
+        else
+            ssid = values[5];
+
+        Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3],
+                      std::stoi(values[4]), ssid);
+        deque.push_back(packet);
+    }
+
+    return deque;
+}
+
+template<class Container>
+void Utility::split(const std::string &str, Container &cont, char delim) {
+    std::stringstream ss(str);
+    std::string token;
+    while (std::getline(ss, token, delim)) {
+        cont.push_back(token);
+    }
+}

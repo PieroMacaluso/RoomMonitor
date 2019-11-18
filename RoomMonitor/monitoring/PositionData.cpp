@@ -39,3 +39,7 @@ std::ostream &operator<<(std::ostream &os, const PositionData &a) {
     os << "Position( " << a.x << ", " << a.y << " )";
     return os;
 }
+
+PositionData PositionData::positionDataNull() {
+    return PositionData(-100, -100);
+}

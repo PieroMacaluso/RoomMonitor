@@ -66,16 +66,6 @@ public:
     bool isRunning();
 
     /**
-     * Funzione utilizzata per convertire il vettore di stringhe ricevute dalla esp in oggetti packet
-     * @param packets
-     * @return
-     */
-    std::deque<Packet> string2packet(const std::vector<std::string> &packets);
-
-    template<class Container>
-    void split(const std::string &str, Container &cont, char delim);
-
-    /**
      * Funzione che viene avviata non appena viene premuto il pulsante Start
      * Si occupa di inizializzare il server (127.0.0.1:27015) e di impostare la callback di ogni nuova connessione
      * a this->newConnection

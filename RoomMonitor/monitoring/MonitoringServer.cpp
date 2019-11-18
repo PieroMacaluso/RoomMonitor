@@ -10,43 +10,6 @@ MonitoringServer::MonitoringServer() {
 MonitoringServer::~MonitoringServer() {
 }
 
-
-std::deque<Packet> MonitoringServer::string2packet(const std::vector<std::string> &p) {
-    std::deque<Packet> deque;
-    std::string ssid;
-
-    for (const std::string &s:p) {
-        std::vector<std::string> values;
-        split(s, values, ',');
-        //todo alcuni pacchetti non vengono inviati del tutto, metà stringa
-        //"2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxx" -> "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
-        if (values.size() != 7) {
-            qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
-            continue;
-        }
-        if (values[5] == "~")        //alcuni pacchetti contengono l'ssid e altri no
-            //no ssid
-            ssid = "Nan";
-        else
-            ssid = values[5];
-
-        Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3], std::stoi(values[4]), ssid);
-        //std::cout<<"pacchetto "<<stoi(values[0]) <<" "<<values[3]<<" "<<std::stoi(values[4])<<" "<<values[5]<<" "<<std::stoi(values[6])<<" "<< ssid;
-        deque.push_back(packet);
-    }
-
-    return deque;
-}
-
-template<class Container>
-void MonitoringServer::split(const std::string &str, Container &cont, char delim) {
-    std::stringstream ss(str);
-    std::string token;
-    while (std::getline(ss, token, delim)) {
-        cont.push_back(token);
-    }
-}
-
 /**
  * Questa funzione prende in ingresso una coda di pacchetti con lo stesso FCS(hash) e provenienti da schede differenti.
  * L'obiettivo è restituire la posizione stimata. Restituisce PositionData(-1,-1) se dato non va bene.
@@ -54,7 +17,6 @@ void MonitoringServer::split(const std::string &str, Container &cont, char delim
  * @return
  */
 PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
-    // Deque di cerchi
     std::deque<Circle> circles{};
     // Deque che ci serve per media pesata
     std::deque<std::pair<PositionData, double>> pointW;
@@ -62,14 +24,12 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
     bool error = true;
     int delta = 0;
 
-    /**
-     * Se i cerchi non si intersecano si va ad aumentare il modulo dell'RSSI per poter raggiungere una migliore stima
-     * della posizione fino ad un massimo di 1000 volte
-     */
+    // Se i cerchi non si intersecano si va ad aumentare il modulo dell'RSSI per poter raggiungere una migliore stima
+    // della posizione fino ad un massimo di 1000 volte
     while (retry < 1000 && error) {
         // Pulizia deque cerchi
         circles.clear();
-        // Da pacchetti a Cerchi di centro schedina e raggio RSSI->metri meno il numero di retry finora
+        // Da pacchetti a Cerchi di centro schedina e raggio RSSI -> metri meno il numero di retry finora
         for (auto &packet: deque) {
             auto b = boards.find(packet.getIdSchedina());
             if (b == boards.end()) return PositionData(-1, -1);
@@ -80,58 +40,61 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
         // Ipotesi no errori
         error = false;
         // Combinazioni  e controllo, se anche una non è soddisfatta allora ingrandisco tutte le circonferenze dello spazio che manca.
-        for (int i = 0; i < circles.size() - 1; i++) {
-            for (int j = i + 1; j < circles.size(); j++) {
+        for (auto circle_i = circles.begin(); circle_i != circles.end() - 1; circle_i++) {
+            for (auto circle_j = circle_i + 1; circle_j != circles.end(); circle_j++) {
                 // Punti di intersezione
                 Point2d intPoint1, intPoint2;
-
                 // Calcolare intersezione
-                int i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
+                int i_points = circle_i->intersect(*circle_j, intPoint1, intPoint2);
 
-                // TODO: Controllare funzionalità
-                // Se cerchi coincidenti(-1) scarta tutto, qualcosa non quadra
-                if (i_points == -1) return PositionData{-1, -1};
-                //  Se cerchi non coincidenti econtenuti uno nell'altro (-2) riduco il raggio modificando RSSI
+                if (i_points == -1) {
+                    // Cerchi coincidenti (-1) scarta tutto, qualcosa non quadra
+
+                    return PositionData::positionDataNull();
+                }
                 if (i_points == -2) {
+                    //  Cerchi non coincidenti e contenuti uno nell'altro (-2) riduco il raggio aumentando RSSI
                     error = true;
                     delta += 1;
                     break;
                 }
-                // Se cerchi non si toccano aumento il raggio modificando RSSI
                 if (i_points == 0) {
+                    // Cerchi non si toccano (0) aumento il raggio diminuendo RSSI
                     error = true;
                     delta += -1;
                     break;
                 }
             }
+            // Se trovo un errore interrompo il for
             if (error) break;
         }
+        // Rieseguo il while aumentando il numero di retry.
         if (error) retry++;
     }
-    if (error) return PositionData{-1, -1};
+    // Se dopotutto l'errore persiste restituisco PositionData nullo.
+    if (error) return PositionData::positionDataNull();
 
     // Doppio ciclo per combinazioni e calcolo
-    for (int i = 0; i < circles.size() - 1; i++) {
-        for (int j = i + 1; j < circles.size(); j++) {
+    for (auto circle_i = circles.begin(); circle_i != circles.end() - 1; circle_i++) {
+        for (auto circle_j = circle_i + 1; circle_j != circles.end(); circle_j++) {
             // Punti di intersezione
             Point2d intPoint1, intPoint2;
             // Calcolare intersezione
-            // TODO: rivedere bene funzione intersect
-            size_t i_points = circles[i].intersect(circles[j], intPoint1, intPoint2);
-            if (i_points < 1) return PositionData{-1, -1};
+            size_t i_points = circle_i->intersect(*circle_j, intPoint1, intPoint2);
+            if (i_points < 1) return PositionData::positionDataNull();
             // Controllo se questi punti sono contenuti nelle altre circonferenze.
             // Ipotesi verificata a meno che non si trovi una condizione falsa.
             bool ok1 = true;
             bool ok2 = i_points > 1;
-            for (int k = 0; k < circles.size(); k++) {
+            for (auto circle_k = circles.begin(); circle_k != circles.end(); circle_k++) {
                 // Non controllare su circonferenze oggetto di intersezione
-                if (k == i || k == j) continue;
+                if (circle_k == circle_i || circle_k == circle_j) continue;
 
-                if (!circles[k].containsPoint(intPoint1)) {
+                if (!circle_k->containsPoint(intPoint1)) {
                     ok1 = false;
                 }
                 if (i_points > 1) {
-                    if (!circles[k].containsPoint(intPoint2)) {
+                    if (!circle_k->containsPoint(intPoint2)) {
                         ok2 = false;
                     }
                 }
@@ -141,13 +104,13 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
                 // CALCOLO CON MEDIA PESATA
                 PositionData mean_res{};
                 mean_res.addPacket(intPoint1.x(), intPoint1.y());
-                pointW.emplace_back(mean_res, circles[i].getR() + circles[j].getR());
+                pointW.emplace_back(mean_res, circle_i->getR() + circle_j->getR());
             }
             if (ok2) {
                 // CALCOLO CON MEDIA PESATA
                 PositionData mean_res{};
                 mean_res.addPacket(intPoint2.x(), intPoint2.y());
-                pointW.emplace_back(mean_res, circles[i].getR() + circles[j].getR());
+                pointW.emplace_back(mean_res, circle_i->getR() + circle_j->getR());
             }
         }
     }
@@ -166,8 +129,7 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
     PositionData result{};
     result.addPacket(num_x / den, num_y / den);
 
-    // TODO: (forse fatto, ma da controllare)valido se x e y risultanti sono nella stanza, altrimenti no!
-    if (!is_inside_room(result)) return PositionData{-1, -1};
+    if (!is_inside_room(result)) return PositionData::positionDataNull();
     return result;
 }
 
@@ -233,10 +195,11 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 }
 
 bool MonitoringServer::is_inside_room(PositionData data) {
-    // TODO: margine vedere se inserire in Settings
-    return true;
-//    return data.getX() >= 0 && data.getY() >= 0 && data.getX() <= settings.value("room/width").toFloat() &&
-//           data.getY() <= settings.value("room/height").toFloat();
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    int margin = su.value("room/margin").toInt();
+    return data.getX() >= 0 - margin && data.getY() >= 0 - margin &&
+           data.getX() <= settings.value("room/width").toFloat() + margin &&
+           data.getY() <= settings.value("room/height").toFloat() + margin;
 }
 
 void MonitoringServer::newConnection() {
@@ -260,9 +223,9 @@ void MonitoringServer::newConnection() {
     // Creazione pacchettini
     if (!allData.empty()) {
         // Divisione singoli pacchetti
-        MonitoringServer::split(allData, pacchetti, ';');
+        Utility::split(allData, pacchetti, ';');
         // Conversione in oggetti Packet
-        packetsConn = string2packet(pacchetti);
+        packetsConn = Utility::string2packet(pacchetti);
 
         for (auto &p: packetsConn) {
             DEBUG(p)
@@ -362,7 +325,7 @@ void MonitoringServer::aggregate() {
         std::string packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " " +
                              positionData.getStringPosition();
         qDebug() << QString::fromStdString(packet);
-        if (positionData.getX() == -1 || positionData.getY() == -1) continue;
+        if (positionData == PositionData::positionDataNull()) continue;
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
         query.bindValue(":posx", positionData.getX());
