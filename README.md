@@ -17,11 +17,10 @@
 
 ## Indice
 
-- [Progetto Programmazione di Sistema](#progetto-programmazione-di-sistema)
-  - [Indice](#indice)
-  - [Introduzione](#introduzione)
-  - [Team di sviluppo](#team-di-sviluppo)
-  - [Componenti del progetto](#componenti-del-progetto)
+- [Indice](#indice)
+- [Introduzione](#introduzione)
+- [Team di sviluppo](#team-di-sviluppo)
+- [Componenti del progetto](#componenti-del-progetto)
 
 ## Introduzione
 
