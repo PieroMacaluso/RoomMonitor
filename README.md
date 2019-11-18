@@ -1,4 +1,4 @@
-# Progetto Programmazione di Sistema
+# RoomMonitor
 
 ![Languages](https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange)
 ![Framework](https://img.shields.io/badge/Framework-Qt-green)
