@@ -53,37 +53,44 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     }
 
     QTextStream stream(&file);
+    QTextStream stdOut(stdout);
+    QTextStream stdErr(stderr);
+
 
     QByteArray localMsg = msg.toLocal8Bit();
     switch (type) {
         case QtDebugMsg:
-            /*stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Debug:\t'"
+            /*stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[DEBUG]\t'"
                    << localMsg.constData() << "'" << endl;*/
             fprintf(stdout, "Debug: %s\n", localMsg.constData());
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtInfoMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Info:\t\t"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[INFO]\t\t"
                    << localMsg.constData() << endl;
-            fprintf(stdout, "Info: %s\n", localMsg.constData());
+            stdOut << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[INFO]\t\t"
+                   << localMsg.constData() << endl;
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtWarningMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Warning:\t"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[WARNING]\t\t"
                    << localMsg.constData() << endl;
-            fprintf(stderr, "Warning: %s\n", localMsg.constData());
+            stdErr << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[WARNING]\t\t"
+                   << localMsg.constData() << endl;
             //fprintf(stderr,"(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtCriticalMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Critical:\t"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[CRITICAL]\t"
                    << localMsg.constData() << endl;
-            fprintf(stderr, "Critical: %s\n", localMsg.constData());
+            stdErr << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[CRITICAL]\t"
+                   << localMsg.constData() << endl;
             fprintf(stderr, "(%s:%u, %s)\n", context.file, context.line, context.function);
             break;
         case QtFatalMsg:
-            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "Fatal:\t"
+            stream << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[FATAL]\t\t"
                    << localMsg.constData() << endl;
-            fprintf(stderr, "Fatal: %s\n", localMsg.constData());
+            stdErr << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") << "] " << "[FATAL]\t"
+                   << localMsg.constData() << endl;
             fprintf(stderr, "(%s:%u, %s)\n", context.file, context.line, context.function);
             abort();
     }
