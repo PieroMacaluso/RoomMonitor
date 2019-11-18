@@ -1,5 +1,3 @@
-<script src="https://kit.fontawesome.com/83fd96657c.js" crossorigin="anonymous"></script>
-
 # Progetto Programmazione di Sistema
 
 ![Languages](https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange)
@@ -13,7 +11,6 @@
   - [Introduzione](#introduzione)
   - [Team di sviluppo](#team-di-sviluppo)
   - [Componenti del progetto](#componenti-del-progetto)
-  - [Link Utili](#link-utili)
 
 ## Introduzione
 
@@ -24,16 +21,11 @@ Da questi valori è possibile passare ad un valore della distanza del singolo di
 
 ## Team di sviluppo
 
-
-- **Piero Macaluso**: [<i class="fab fa-github"></i>](https://github.com/pimack) - 
-- **Lorenzo Manicone** - [GITHUB](https://github.com/lorenzomanicone)
-- **Angelo Turco** - [GITHUB](https://github.com/angeloturco)
+- **Piero Macaluso** - [pimack](https://github.com/pimack)
+- **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
+- **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
 
 ## Componenti del progetto
 
-- [**Firmware ESP**](https://github.com/pimack/PDSproject/tree/master/ESP32firmwareCLion)
-- [**Server App**](https://github.com/pimack/PDSproject/tree/master/RoomMonitor)
-
-
-## Link Utili
-
+- [**Firmware ESP Board**](ESP32firmwareCLion)
+- [**Server App**](RoomMonitor)
