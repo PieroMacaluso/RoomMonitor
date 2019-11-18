@@ -1,8 +1,19 @@
-# RoomMonitor
+<h1 align="center">
+  <a href="https://github.com/pieromacaluso/RoomMonitor" title="RoomMonitor Documentation">
+    <img alt="RoomMonitor" src="RoomMonitor/resources/logo.svg" width="200px" height="200px" />
+  </a>
+  <br/>
+</h1>
 
-![Languages](https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange)
-![Framework](https://img.shields.io/badge/Framework-Qt-green)
-![Status](https://img.shields.io/badge/Status-WIP-yellow)
+<p align="center">
+  Counting people using Wi-Fi devices.
+</p>
+
+<p align="center">
+ <img alt="Languages" src="https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange"/>
+ <img alt="Framework" src="https://img.shields.io/badge/Framework-Qt-green"/>
+ <img alt="Status" src="https://img.shields.io/badge/Status-WIP-yellow"/>
+</p>
 
 ## Indice
 
