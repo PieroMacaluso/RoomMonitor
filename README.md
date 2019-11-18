@@ -1,18 +1,39 @@
+<script src="https://kit.fontawesome.com/83fd96657c.js" crossorigin="anonymous"></script>
+
 # Progetto Programmazione di Sistema
 
-## Progetti
-* [**Firmware ESP**](https://github.com/pimack/PDSproject/tree/master/ESP32firmwareCLion)
-* [**Server App**](https://github.com/pimack/PDSproject/tree/master/RoomMonitor)
+![Languages](https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange)
+![Framework](https://img.shields.io/badge/Framework-Qt-green)
+![Status](https://img.shields.io/badge/Status-WIP-yellow)
+
+## Indice
+
+- [Progetto Programmazione di Sistema](#progetto-programmazione-di-sistema)
+  - [Indice](#indice)
+  - [Introduzione](#introduzione)
+  - [Team di sviluppo](#team-di-sviluppo)
+  - [Componenti del progetto](#componenti-del-progetto)
+  - [Link Utili](#link-utili)
+
+## Introduzione
+
+Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018. 
+
+L'obiettivo principale del software implementato è quello di fornire un sistema capace di monitorare numero e posizione di studenti all'interno di un'aula. Questo è possibile sfruttando i pacchetti PROBE REQUEST utilizzati dai dispositivi che normalmente utilizziamo: questi vengono catturati da una serie di schedine ESP32 (2 o più) per poi essere trasmessi ad un server che si occupa di filtrare e aggregare i pacchetti ricevuti da tutte le schedine in azione per ottenere l'informazione sulla posizione partendo dai valori dell'RSSI.
+Da questi valori è possibile passare ad un valore della distanza del singolo dispositivo (identificato dal suo MAC) da ogni schedina, utile per procedere con una triangolazione della posizione.
+
+## Team di sviluppo
 
 
-## Team
+- **Piero Macaluso**: [<i class="fab fa-github"></i>](https://github.com/pimack) - 
+- **Lorenzo Manicone** - [GITHUB](https://github.com/lorenzomanicone)
+- **Angelo Turco** - [GITHUB](https://github.com/angeloturco)
 
-* **Piero Macaluso** - [pimack](https://github.com/pimack)
-* **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
-* **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
-* **Valentino** - [vale95](https://github.com/vale95)
+## Componenti del progetto
+
+- [**Firmware ESP**](https://github.com/pimack/PDSproject/tree/master/ESP32firmwareCLion)
+- [**Server App**](https://github.com/pimack/PDSproject/tree/master/RoomMonitor)
+
 
 ## Link Utili
 
-- https://stackoverflow.com/questions/22287335/connecting-mysql-with-c-c-sharp-in-visual-studio
-- http://www.lucadentella.it/category/esp32/
