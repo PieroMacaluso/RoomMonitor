@@ -1,16 +1,23 @@
-# Room Monitor
-<div style="text-align:center;"><img src="RoomMonitor/resources/logo.svg" alt="RoomMonitor"></div>
- <div style="text-align:center;">
+<h1 align="center">
+  <a href="https://github.com/pieromacaluso/RoomMonitor" title="RoomMonitor Documentation">
+    <img alt="RoomMonitor" src="RoomMonitor/resources/logo.svg" width="200px" height="200px" />
+  </a>
+  <br/>
+</h1>
 
-![Languages](https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange)
-![Framework](https://img.shields.io/badge/Framework-Qt-green)
-![Status](https://img.shields.io/badge/Status-WIP-yellow)
+<p align="center">
+  Counting people using Wi-Fi devices.
+</p>
 
-</div>
+<p align="center">
+ <img alt="Languages" src="https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange"/>
+ <img alt="Framework" src="https://img.shields.io/badge/Framework-Qt-green"/>
+ <img alt="Status" src="https://img.shields.io/badge/Status-WIP-yellow"/>
+</p>
 
 ## Indice
 
-- [Room Monitor](#room-monitor)
+- [Progetto Programmazione di Sistema](#progetto-programmazione-di-sistema)
   - [Indice](#indice)
   - [Introduzione](#introduzione)
   - [Team di sviluppo](#team-di-sviluppo)
