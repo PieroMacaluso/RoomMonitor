@@ -31,9 +31,9 @@ Da questi valori è possibile passare ad un valore della distanza del singolo di
 
 ## Team di sviluppo
 
-- **Piero Macaluso** - [pimack](https://github.com/pimack)
-- **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
-- **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
+- <img alt="avatar" src="https://github.com/pieromacaluso.png" width="20px" height="20px"> **Piero Macaluso** - [pieromacaluso](https://github.com/pieromacaluso)
+- <img alt="avatar" src="https://github.com/lorenzomanicone.png" width="20px" height="20px"> **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
+- <img alt="avatar" src="https://github.com/angeloturco.png" width="20px" height="20px"> **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
 
 ## Componenti del progetto
 
