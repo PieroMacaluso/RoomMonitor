@@ -269,6 +269,7 @@ void SettingDialog::apply() {
                      ui.boardTable->item(i, 2)->text(), ui.boardTable->item(i, 3)->text());
     }
     Utility::setupVariables();
+    qInfo() << Strings::SET_CONF;
     this->accept();
 }
 
@@ -279,6 +280,7 @@ void SettingDialog::addBoard(const QString &id, const QString &x, const QString 
     ui.boardTable->setItem(i, 1, new QTableWidgetItem(x));
     ui.boardTable->setItem(i, 2, new QTableWidgetItem(y));
     ui.boardTable->setItem(i, 3, new QTableWidgetItem(a));
+    qInfo() << "Inserimento nuova board. Id:" << id << " Posizione:" << x << "." << y << " Potenza: " << a;
 }
 
 void SettingDialog::setupAddBoard() {
@@ -336,7 +338,7 @@ void SettingDialog::checkModEdits() {
 void SettingDialog::defaultValues() {
     QMessageBox::StandardButton reply;
     if (Utility::yesNoMessage(this, Strings::SET_DEF, Strings::SET_DEF_MSG)) {
-        qInfo() << Strings::SET_DEF_LOG;
+
         // Ripristino informazioni iniziali
         ui.portServerEdit->setText(QString::number(27015));
         ui.nEdit->setText(QString::number(3));
@@ -362,7 +364,7 @@ void SettingDialog::defaultValues() {
     } else {
         return;
     }
-
+    qInfo() << Strings::SET_DEF_LOG;
 }
 
 bool SettingDialog::resetDB() {
@@ -401,6 +403,7 @@ bool SettingDialog::resetDB() {
         return false;
     }
     db.close();
+    qInfo() << Strings::DB_RESET;
     return true;
 }
 

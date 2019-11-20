@@ -27,5 +27,7 @@ const QString Strings::RM_STARTED = Strings::tr("RoomMonitor avviato.");
 const QString Strings::RM_STOPPED = Strings::tr("RoomMonitor arrestato.");
 const QString Strings::AGG_STARTED = Strings::tr("Aggregazione avviata.");
 const QString Strings::AGG_STOPPED = Strings::tr("Aggregazione arrestata.");
+const QString Strings::DB_RESET = Strings::tr("Db inizializzato");
+const QString Strings::SET_CONF = Strings::tr("Impostazioni salvate.");
 
 

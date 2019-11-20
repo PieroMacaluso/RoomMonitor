@@ -33,6 +33,8 @@ public:
     static const QString SRV_STOPPED;
     static const QString AGG_STARTED;
     static const QString AGG_STOPPED;
+    static const QString DB_RESET;
+    static const QString SET_CONF;
 };
 
 
