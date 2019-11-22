@@ -1,0 +1,4 @@
+INSERT INTO data.stanza3_22112019 (id_packet, hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (1, '94e7aa92', 'da:a1:19:da:56:f2', 4.78, 3.98, '2019-11-22 12:27:21', 'Nan', 1);
+INSERT INTO data.stanza3_22112019 (id_packet, hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (2, '9a738dcf', 'da:a1:19:43:fa:6b', 6.52, 3.48, '2019-11-22 12:27:31', 'Nan', 1);
+INSERT INTO data.stanza3_22112019 (id_packet, hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (3, 'b7239dbd', 'b8:94:36:4e:07:bc', 0, 3.8, '2019-11-22 12:27:24', 'Nan', 0);
+INSERT INTO data.stanza3_22112019 (id_packet, hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (4, 'e92d6512', 'da:a1:19:7f:6f:6d', 5.6, 0.04, '2019-11-22 12:27:30', 'Nan', 1);
