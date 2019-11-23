@@ -1,6 +1,9 @@
 #ifndef PACKET_H
 #define PACKET_H
 
+#include <utils/common.h>
+#include <crypto/sha256.h>
+#include <mbedtls/md.h>
 #include "packet.h"
 
 static const char *TAGP = "tcp_client";
@@ -75,7 +78,7 @@ node_t init_packet_list(char baseMacChr[18]) {
     head = malloc(sizeof(struct node));
     head->packet = NULL;
     head->next = NULL;
-    head->prev=NULL;
+    head->prev = NULL;
 
     strcpy(macESP, baseMacChr);
 
@@ -125,7 +128,7 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     if (current->packet == NULL) {
         h->packet = setPacket(ppkt);
         h->next = NULL;
-        h->prev=NULL;
+        h->prev = NULL;
         return h;
     }
 
@@ -134,7 +137,7 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     current->next = malloc(sizeof(struct node));
     current->next->packet = setPacket(ppkt);
     current->next->next = NULL;
-    current->next->prev=current;
+    current->next->prev = current;
 //	printf("Inserito correttamente");
     return h;
 }
@@ -210,16 +213,18 @@ void free_node2(node_t n) {
     while (current->next != NULL)                   //arrivo alla fine della lista
         current = current->next;
 
-    while(current->prev!=NULL){                     //while che elimina l'ultimo pacchetto e risale di uno tornando verso la testa (Testa = pacchetto con prev==NULL)
-        if(current->packet->SSID!=NULL)
+    while (current->prev !=
+           NULL) {                     //while che elimina l'ultimo pacchetto e risale di uno tornando verso la testa (Testa = pacchetto con prev==NULL)
+        if (current->packet->SSID != NULL)
             free(current->packet->SSID);
         free(current->packet);                          //non necessita di free su next perchè è già null
-        prev=current->prev;
+        prev = current->prev;
         free(current);
         current = prev;
     }
 
 }
+
 void free_packet_list(node_t h) {
     free_node2(h);
 }
@@ -245,7 +250,7 @@ void reset_packet_list(node_t h) {
 
     h->packet = NULL;
     h->next = NULL;
-    h->prev=NULL;
+    h->prev = NULL;
 }
 
 #endif

@@ -26,6 +26,7 @@
 #include "esp_err.h"
 #include "query_resolver.h"
 #include "validation.h"
+#include <mbedtls/sha512.h>
 //#include "re.h"
 
 // set AP CONFIG values
