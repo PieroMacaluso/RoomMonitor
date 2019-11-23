@@ -182,24 +182,39 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p) {
     std::string ssid;
 
     for (const std::string &s:p) {
+        std::vector<std::string> packet_hmac;
         std::vector<std::string> values;
-        Utility::split(s, values, ',');
-        // TODO: alcuni pacchetti non vengono inviati del tutto, metà stringa
-        // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
-        //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
-        if (values.size() != 7) {
-            qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
-            continue;
-        }
-        // Alcuni pacchetti contengono SSID, altri no
-        if (values[5] == "~")
-            ssid = "Nan";
-        else
-            ssid = values[5];
+        Utility::split(s, packet_hmac, '|');
+        Utility::split(packet_hmac[0], values, ',');
+        QMessageAuthenticationCode code(QCryptographicHash::Sha256);
+        // TODO: controllare bene se questa sia una chiave da 256-bit
+        code.setKey("eThVmYq3t6w9z$C&F)J@NcRfUjXn2r4u");
+        packet_hmac[0] = packet_hmac[0] + '|';
 
-        Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3],
-                      std::stoi(values[4]), ssid);
-        deque.push_back(packet);
+        QByteArray byteArray(packet_hmac[0].c_str(), packet_hmac[0].length());
+        code.addData(byteArray);
+        if (code.result().toHex() == QString::fromStdString(packet_hmac[1])) {
+            // TODO: alcuni pacchetti non vengono inviati del tutto, metà stringa
+            // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
+            //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
+            if (values.size() != 7) {
+                qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
+                continue;
+            }
+            // Alcuni pacchetti contengono SSID, altri no
+            if (values[5] == "~")
+                ssid = "Nan";
+            else
+                ssid = values[5];
+
+            Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3],
+                          std::stoi(values[4]), ssid);
+            deque.push_back(packet);
+        } else {
+            // TODO: cosa fare se non coincide?
+            qWarning() << "Pacchetto con Hash non coincidente " << QString::fromStdString(s);
+
+        }
     }
 
     return deque;
