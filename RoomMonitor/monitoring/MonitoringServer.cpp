@@ -166,7 +166,7 @@ bool MonitoringServer::start() {
         QObject::connect(&server, &QTcpServer::newConnection, this, &MonitoringServer::newConnection);
         qInfo() << Strings::SRV_STARTED << server.serverPort();
         QObject::connect(&timer, &QTimer::timeout, this, &MonitoringServer::aggregate);
-        timer.start(10000);
+        timer.start(60000);
         return true;
     }
 
