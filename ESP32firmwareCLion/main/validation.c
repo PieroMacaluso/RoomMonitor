@@ -19,8 +19,7 @@
 
 
 int idValidation(char *id) {
-    int i;
-
+    unsigned i;
     if (strlen(id) > 5 || strlen(id) == 0) {
         return 1;
     }
@@ -33,14 +32,14 @@ int idValidation(char *id) {
 }
 
 int ssidApValidation(char *ssid_ap) {
-    int i;
+    unsigned i;
 
     if (strlen(ssid_ap) == 0 || strlen(ssid_ap) > 50)
         return 2;
 
     for (i = 0; i < strlen(ssid_ap); i++) {
-
-        if (!isalnum((unsigned char) ssid_ap[i])) {          //non possibili caratteri speciali e < >
+        // Non possibili caratteri speciali e < >
+        if (!isalnum((unsigned char) ssid_ap[i])) {
             return 2;
         }
     }
@@ -102,7 +101,7 @@ int ipValidation(char *ip_server) {
     int numDot = 0;
     int num;
     char *numC;
-    char* tempIp = calloc(strlen(ip_server)+1, sizeof(char));
+    char *tempIp = calloc(strlen(ip_server) + 1, sizeof(char));
     strcpy(tempIp, ip_server);
 
     //0.0.0.0 -> 255.255.255.255

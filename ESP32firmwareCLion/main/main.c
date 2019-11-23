@@ -12,22 +12,16 @@
 #include <math.h>
 #include <cJSON.h>
 #include "soc/timer_group_struct.h"
-#include "driver/periph_ctrl.h"
 #include "driver/timer.h"
 #include "mdns.h"
 #include "lwip/sockets.h"
 #include "lwip/err.h"
 #include "lwip/api.h"
-#include "lwip/netdb.h"
-#include "driver/gpio.h"
 #include "packet.h"
 #include "time.h"
 #include "esp_spiffs.h"
 #include "esp_err.h"
-#include "query_resolver.h"
 #include "validation.h"
-#include <mbedtls/sha512.h>
-//#include "re.h"
 
 // set AP CONFIG values
 #ifdef CONFIG_AP_HIDE_SSID
@@ -64,31 +58,15 @@
 /**
  * SUBTYPE [0 MASK 0xF0]
  */
-#define SUBTYPE_PROBE_REQUEST    0b0100
+#define SUBTYPE_PROBE_REQUEST     0b0100
 #define SUBTYPE_PROBE_RESPONSE    0b0101
 #define SUBTYPE_BEACON            0b1000
 
 #define    WIFI_CHANNEL_MAX        (13)
 #define    WIFI_CHANNEL_SWITCH_INTERVAL    (500)
 
-/**
- * DIMENSIONI BUFFER
- */
-#define SIZEBUF            120
-//#define SECOND_SCAN_MODE	20
 
 /**
- *  TIMER
- */
-
-//#define TIMER_INTR_SEL TIMER_INTR_LEVEL  /*!< Timer level interrupt */
-//#define TIMER_GROUP    TIMER_GROUP_0     /*!< Test on timer group 0 */
-//#define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
-//#define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
-//#define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
-//#define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
-
-/*
  * Parametri connessione server da configurare tramite make menuconfig impostati nel file kconfig.projbuild
  */
 #define SSID CONFIG_WIFI_SSID
@@ -96,52 +74,39 @@
 #define TCPServerIP CONFIG_IP_SERVER
 #define TCPServerPORT CONFIG_PORT_SERVER
 #define SCANChannel CONFIG_SCAN_CHANNEL
-#define MESSAGE "HelloTCPServer\0"
-#define id_regex "^[1-9][0-9]*$"
-#define ssid_regex "^[A-Za-z0-9]{1,32}$"
-#define channel_regex "^[0-9]$|^1[0-4]$"
-#define ip_regex "^(?=.*[^.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).?){4}$"
-#define password_regex "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,63}$"
 const int STA_CONNECTED_BIT = BIT0;
-#define BLINK_GPIO 2                //pin led
+// Pin LED
+#define BLINK_GPIO 2
 
 static wifi_country_t wifi_country = {.cc = "CN", .schan = 1, .nchan = 13,
         .policy = WIFI_COUNTRY_POLICY_AUTO};
 
-/* Prototipi Funzioni */
-/*static esp_err_t event_handler1(void *ctx, system_event_t *event);*/
+/** Prototipi Funzioni */
 void initialize_spiffs(void);
 
 void wifi_init(void);
 
 static void wifi_sniffer_init(void);
 
-void wifi_sniffer_update(void);
-
 static void wifi_sniffer_set_channel(uint8_t channel);
 
-/*static const char * type2str(wifi_promiscuous_pkt_type_t type);*/
 const char *subtype2str(uint8_t type);
 
-static void wifi_sniffer_packet_handler(void *buff,
-                                        wifi_promiscuous_pkt_type_t type);
+static void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type);
 
 static void getMAC(char *addr, const uint8_t *data, uint16_t offset);
 
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data);
 
 float calculateDistance(signed rssi);
-/*int list_packet_init(int size);
- int list_packet_update(int size);
- void list_packet_free();*/
-//static void timer0_init();
+
 void wifi_connect();
 
 static esp_err_t event_handler(void *ctx, system_event_t *event);
 
 int tcpClient();
 
-void getMacAddress(char *baseMacChr);
+void getMacAddress(char *macChr);
 
 static void http_server(void *pvParameters);
 
@@ -153,16 +118,16 @@ int spiffs_save(char *resource, struct netconn *conn);
 
 char *my_nvs_get_str(char *key);
 
-// Static Headers for HTTP response
+/** Static Headers for HTTP response */
 const static char http_html_hdr[] = "HTTP/1.1 200 OK\n\n";
 const static char http_404_hdr[] = "HTTP/1.1 404 NOT FOUND\n\n";
 
-/* Variabili */
+/** Variabili */
 node_t head;
 static int mod = 0;                            //0=> scan 1=>send server
 char baseMacChr[18] = {0};
 
-/*Variabili per comunicazione verso server*/
+/** Variabili per comunicazione verso server */
 static EventGroupHandle_t wifi_event_group;
 const int CONNECTED_BIT = BIT0;
 static const char *TAG = "tcp_client";
@@ -188,27 +153,20 @@ typedef struct {
     crc_t payload; /* network data ended with 4 bytes csum (CRC32) */
 } wifi_ieee80211_packet_t;
 
-
 /**
- * @brief      Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
+ * Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
  */
 void app_main(void) {
 
-    int nallarm = 0;                //nallarm usato per contare quante volte scade il timer da 1 min, ogni 5 allarm bisogna settare l'orario
-    bool orario= false;
-    /*uint8_t level = 0;*/
-
-    /*if (list_packet_init(size_list_packet) == -1) {
-     printf("Error list_packet_init()\n");
-     return;
-     }*/
+    // Conteggio quante volte scade il timer da 1 min, ogni 5 bisogna settare l'orario
+    int nallarm = 0;
+    //bool orario = false;
 
     //GetMac_ESP32
-    //char baseMacChr[18] = {0};
     getMacAddress(baseMacChr);
     esp_err_t err = nvs_flash_init();
     // TODO: Check if is useful
-    if (nvs_flash_init() != ESP_OK) {
+    if (err != ESP_OK) {
         printf("Initialization of NVS went wrong. Let's format!\n");
         const esp_partition_t *nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA,
                                                                         ESP_PARTITION_SUBTYPE_DATA_NVS, NULL);
@@ -216,10 +174,7 @@ void app_main(void) {
         err = (esp_partition_erase_range(nvs_partition, 0, nvs_partition->size));
         if (err != ESP_OK) printf("FATAL ERROR: Unable to erase the partition\n");
     }
-    /*for(i=0;i<18;i++){
-            printf("%c",baseMacChr[i]);
-        }
-        printf("\n");*/
+
     if ((head = init_packet_list(baseMacChr)) == NULL) {
         printf("Error init_packet_list()\n");
         return;
@@ -230,11 +185,12 @@ void app_main(void) {
     initialize_spiffs();
     wifi_init();
 
-    while(my_nvs_get_str("saved")==NULL){               //Evita che la schedina tenti di partire fin se prima non viene inizializzata tramite captive portal
+    //Evita che la schedina tenti di partire fin se prima non viene inizializzata tramite captive portal
+    while (my_nvs_get_str("saved") == NULL) {
         sleep(30);
     }
 
-    if(!initialize_sntp()){
+    if (!initialize_sntp()) {
         printf("ESP32 Restarting...\n");
         esp_restart();
     }
@@ -243,63 +199,54 @@ void app_main(void) {
 
     vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
 
-
-    //vTaskDelay(20 / portTICK_PERIOD_MS);
-
-    timer0_init();                                            //init timer gestione modalità scan e comunicazione server
+    // INIT timer gestione modalità scan e comunicazione server
+    timer0_init();
 
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
-    /* loop */
+    /** Main Loop */
     while (true) {
 
         mod = 0;
-
         printf("Inizio raccolta dati...\n");
-        timer_start(TIMER_GROUP_0, TIMER_0);
+        ESP_ERROR_CHECK(timer_start(TIMER_GROUP_0, TIMER_0));
         while (mod == 0) {
-            vTaskDelay(60 / portTICK_PERIOD_MS);                //attesa alarm
+            // Attesa alarm
+            vTaskDelay(60 / portTICK_PERIOD_MS);
         }
 
         esp_wifi_set_promiscuous(false);
         printf("Fine periodo cattura.\n");
-        timer_pause(TIMER_GROUP_0, TIMER_0);
+        ESP_ERROR_CHECK(timer_start(TIMER_GROUP_0, TIMER_0));
 
-        vTaskDelay(200 / portTICK_PERIOD_MS);//sostituire con l'invio del buffer
+        // Sostituire con l'invio del buffer
+        vTaskDelay(200 / portTICK_PERIOD_MS);
 
-
-        tcpClient();
+        if (tcpClient() != 0) {
+            printf("TCP Client Error\n");
+            break;
+        }
 
         checkTime(&nallarm);
 
-        esp_wifi_set_promiscuous(true);
+        ESP_ERROR_CHECK(esp_wifi_set_promiscuous(true));
     }
-    //todo rendere le funzioni nel while con un valore di ritorno per individuare errori e far ripulire tutto e riavviare magari
     free_packet_list(head);
-}
-
-
-void getMacAddress(char *baseMacChr) {
-    uint8_t baseMac[6];
-    // Get MAC address for WiFi station
-    esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
-    sprintf(baseMacChr, "%02X:%02X:%02X:%02X:%02X:%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4],
-            baseMac[5]);
+    printf("ESP32 Restarting...\n");
+    esp_restart();
 }
 
 /**
- * @brief      Un semplice event_handler che ritorna semore ESP_OK. Non molto utile.
- *
- * @param      ctx    The context
- * @param      event  The event
- *
- * @return     ESP_OK
+ * Ottiene il MAC della board e lo restituisce tramite il parametro passato per riferimento
+ * @param macChr puntatore alla memoria allocata che conterà il MAC della schedina
  */
-/*
- esp_err_t event_handler1(void *ctx, system_event_t *event) {
- return ESP_OK;
- }
- */
+void getMacAddress(char *macChr) {
+    uint8_t baseMac[6];
+    esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
+    sprintf(macChr, "%02X:%02X:%02X:%02X:%02X:%02X", baseMac[0], baseMac[1], baseMac[2], baseMac[3], baseMac[4],
+            baseMac[5]);
+}
+
 
 /**
  * Impostazione dei parametri di rete sia per il captive portal sia per la comunicazione in rete
@@ -348,28 +295,25 @@ void wifi_init() {
                     .max_connection = CONFIG_AP_MAX_CONNECTIONS,
             },
     };
+    // Settaggio dati da NVS se presenti
     char *ssid = my_nvs_get_str("ssid_ap");
     char *pass = my_nvs_get_str("password_ap");
     if (ssid != NULL) {
         memcpy(ap_config.ap.ssid, ssid, strlen(ssid));
         strcpy((char *) ap_config.ap.ssid, ssid);
-//        ap_config.ap.ssid[strlen(ssid)] = '\0';
         free(ssid);
     }
     if (pass != NULL) {
         strcpy((char *) ap_config.ap.password, pass);
-//        ap_config.ap.password[strlen(pass)] = '\0';
-
         free(pass);
     }
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &ap_config));
     ESP_ERROR_CHECK(esp_wifi_start());
-
 }
 
-/**
- * @brief      Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
- */
+ /**
+  * Wifi sniffer init. Contiene tutte le procedure per configurare correttamente il dispositivo per lo sniffing
+  */
 void wifi_sniffer_init(void) {
     esp_wifi_set_promiscuous(true);
     esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
@@ -383,11 +327,11 @@ void wifi_sniffer_init(void) {
     }
 }
 
-/**
- *
- * @param key
- * @return
- */
+ /**
+  * Funzione che permette di ottenere il valore salvato nella memoria NVS come vettore di char
+  * @param key: chiave del valore salvato nella memoria NVS
+  * @return valore contenuto nella memoria NVS se questo è presente, altrimenti viene ritornato NULL
+  */
 char *my_nvs_get_str(char *key) {
     // TODO: doc
     esp_err_t err;
@@ -405,7 +349,9 @@ char *my_nvs_get_str(char *key) {
     return value;
 }
 
-
+/**
+ * Inizializzazione partizione SPIFFS che viene utilizzata per il CAPTIVE PORTAL
+ */
 void initialize_spiffs(void) {
     // initialize SPIFFS
     ESP_LOGI(TAG, "Initializing SPIFFS");
@@ -413,7 +359,7 @@ void initialize_spiffs(void) {
     esp_vfs_spiffs_conf_t conf = {
             .base_path = "/spiffs",
             .partition_label = NULL,
-            .max_files = 10,
+            .max_files = 100,
             .format_if_mount_failed = false};
 
     // Use settings defined above to initialize and mount SPIFFS filesystem.
@@ -442,29 +388,11 @@ void initialize_spiffs(void) {
 }
 
 /**
- * @brief      Wifi sniffer update. Contiene tutte le procedure per ripristinare correttamente il dispositivo per lo sniffing
+ * Restituisce il MAC address.
  *
- * EDIT non necessaria, basta risettare true la promiscuous. Fatto nel ciclo while del main
- */
-/*void wifi_sniffer_update(void){
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT()
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
-    ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
-    ESP_ERROR_CHECK(esp_wifi_start());
-    esp_wifi_set_promiscuous(true);
-    esp_wifi_set_promiscuous_rx_cb(&wifi_sniffer_packet_handler);
-    vTaskDelay(WIFI_CHANNEL_SWITCH_INTERVAL / portTICK_PERIOD_MS);
-    wifi_sniffer_set_channel(atoi(SCANChannel));
-}*/
-
-/**
- * @brief      Restituisce il MAC address.
- *
- * @param      addr    Puntatore all'array in cui sar� scritto il MAC in formato leggibile
- * @param[in]  data    Puntatore alla porzione payload del pacchetto
- * @param[in]  offset  Punto del payload in cui si trova l'indirizzo MAC richiesto
+ * @param      addr    Puntatore all'array in cui sarà scritto il MAC in formato leggibile
+ * @param  data    Puntatore alla porzione payload del pacchetto
+ * @param  offset  Punto del payload in cui si trova l'indirizzo MAC richiesto
  */
 
 static void getMAC(char *addr, const uint8_t *data, uint16_t offset) {
@@ -473,20 +401,13 @@ static void getMAC(char *addr, const uint8_t *data, uint16_t offset) {
             data[offset + 4], data[offset + 5]);
 }
 
-void setMAC(unsigned *addr, const uint8_t *data, uint16_t offset) {
-    int i;
-    for (i = 0; i < 6; i++) {
-        addr[i] = data[offset + i];
-    }
-}
-
-/**
- * @brief      Stampa i dati contenuti nel pacchetto partendo da start, fino a start+size
- *
- * @param[in]  start  The start
- * @param[in]  size   The size
- * @param[in]  data   Puntatore alla porzione payload del pacchetto
- */
+ /**
+  * Stampa i dati contenuti nel pacchetto partendo da start, fino a start+size
+  *
+  * @param start    posizione iniziale
+  * @param size     la dimensione
+  * @param data     puntatore alla porzione payload del pacchetto
+  */
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data) {
     for (uint16_t i = start; i < start + size; i++) {
         printf("%c", data[i]);
@@ -494,19 +415,17 @@ static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data) {
 }
 
 /**
- * @brief      Funzione Handler invocata quando viene ricevuto un pacchetto.
+ * Funzione Handler invocata quando viene ricevuto un pacchetto.
  *
- * @param      buff  Il buffer, o meglio il pacchetto
- * @param[in]  type  Il tipo di pacchetto
+ * @param buff  Il buffer, o meglio il pacchetto
+ * @param type  Il tipo di pacchetto
  */
 void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     // Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
     const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
-    const wifi_ieee80211_packet_t *ipkt = (wifi_ieee80211_packet_t *) ppkt->payload;
-    const crc_t *crc = &ipkt->payload;
     time_t now;
     uint8_t frameControl = (unsigned int) ppkt->payload[0];
-    /*uint8_t version = (frameControl & 0x03) >> 0;*/
+    // uint8_t version = (frameControl & 0x03) >> 0;
     uint8_t frameType = (frameControl & 0x0C) >> 2;
     uint8_t frameSubType = (frameControl & 0xF0) >> 4;
 
@@ -516,8 +435,10 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     }
 
     // Set Packet
-    //for(int i=0;i<100;i++)                    //prova aumento pacchetti
-        addto_packet_list(ppkt, head);
+
+    // Test aumento pacchetti
+    //for(int i=0;i<100;i++)
+    addto_packet_list(ppkt, head);
 
     // Stampa dei dati a video
     uint32_t plen = 0;
@@ -526,12 +447,9 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     //printf("%2d %2d %2d ", get_id(), get_posx(), get_posy());
     printf("%2d ", get_id());
     printf("%u\t", ppkt->rx_ctrl.sig_len);
-//	for(i=0; i<4; i++) {
     printf("%08x\t", plen);
-//	}
     printf(" TYPE= %s", subtype2str(frameSubType));
     printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
-    printf(" Distance: %3.2fm\t", calculateDistance(ppkt->rx_ctrl.rssi));
     printf(" T: %ld", (long) time(&now));
 
     char addr[] = "00:00:00:00:00:00";
@@ -543,47 +461,24 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
         printf(" SSID: ");
         printDataSpan(26, SSID_length, ppkt->payload);
     }
-
-
     printf("\n");
 }
 
 /**
- * @brief      Imposta il canale WiFi desiderato nel dispositivo
+ * Imposta il canale WiFi desiderato nel dispositivo
  *
- * @param[in]  channel  The channel
+ * @param  channel  The channel
  */
 void wifi_sniffer_set_channel(uint8_t channel) {
     esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
 }
 
 /**
- * @brief      Permette di convertire il numero del tipo in stringa personalizzabile
+ * Permette di convertire il numero del sottotipo in stringa personalizzabile
  *
- * @param[in]  type  The type
+ * @param type  Il sottotipo
  *
- * @return     Stringa del tipo richiesto
- */
-/*
- const char *type2str(wifi_promiscuous_pkt_type_t type) {
- switch (type) {
- case WIFI_PKT_MGMT:
- return "MGMT";
- case WIFI_PKT_DATA:
- return "DATA";
- default:
- case WIFI_PKT_MISC:
- return "MISC";
- }
- }
- */
-
-/**
- * @brief      Permette di convertire il numero del sottotipo in stringa personalizzabile
- *
- * @param[in]  type  Il sottotipo
- *
- * @return     Stringa del sottotipo richiesto
+ * @return      Stringa del sottotipo richiesto
  */
 const char *subtype2str(uint8_t type) {
     switch (type) {
@@ -599,81 +494,26 @@ const char *subtype2str(uint8_t type) {
 }
 
 /**
- * @brief      Conversione molto grossolana da RSSI a Metri
- *
- * @param[in]  rssi  RSSI
- *
- * @return     float in metri
+ * Gestisce l'interrupt generato allo scadere del timer
+ * @param para = 0 indice timer0
  */
-float calculateDistance(signed rssi) {
-
-    signed txPower = -59; //hard coded power value. Usually ranges between -59 to -65
-
-    if (rssi == 0) {
-        return -1.0;
-    }
-
-    float ratio = (float) rssi * 1.0 / txPower;
-    if (ratio < 1.0) {
-        return pow(ratio, 10);
-    } else {
-        float distance = (0.89976) * pow(ratio, 7.7095) + 0.111;
-        return distance;
-    }
-}
-
-/*
- *@brief  Gestisce l'interrupt generato allo scadere del timer
- *
- *@param para=0 indice timer0
- */
-void IRAM_ATTR timer_group0_isr(void *para) { // timer group 0, ISR
+void IRAM_ATTR timer_group0_isr(void *para) {
+    // Timer group 0, ISR
     int timer_idx = (int) para;
     uint32_t intr_status = TIMERG0.int_st_timers.val;
     if ((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) {
         TIMERG0.hw_timer[timer_idx].update = 1;
-        TIMERG0.int_clr_timers.t0 = 1;                //clear the interupt called
+        // Clear the interrupt called
+        TIMERG0.int_clr_timers.t0 = 1;
         TIMERG0.hw_timer[timer_idx].config.alarm_en = 1;
-
-        //gestione allarme
+        // Gestione allarme
         mod = 1;
     }
 }
-/*
- * @brief Init timer usato per periodo "scan paccheti"
- */
-/*static void timer0_init() {
-	int timer_group = TIMER_GROUP_0;
-	int timer_idx = TIMER_0;
-	timer_config_t config;
-	config.alarm_en = 1;	//per abilitare l'allarme ogni TIMER_INTERVAL0_SEC
-	config.auto_reload = 1;
-	config.counter_dir = TIMER_COUNT_UP;	//abilita conteggio da 0 in avanti
-	config.divider = TIMER_DIVIDER;
-	config.intr_type = TIMER_INTR_SEL;
-	config.counter_en = TIMER_PAUSE;
-	//Configure timer
-	timer_init(timer_group, timer_idx, &config);
-	//Stop timer counter
-	timer_pause(timer_group, timer_idx);
-	//Load counter value
-	timer_set_counter_value(timer_group, timer_idx, 0x00000000ULL);
-	//Set alarm value
-	timer_set_alarm_value(timer_group, timer_idx,
-			(TIMER_INTERVAL0_SEC * TIMER_SCALE) - TIMER_FINE_ADJ);
-	//Enable timer interrupt
-	timer_enable_intr(timer_group, timer_idx);
-	//Set ISR handler
-	timer_isr_register(timer_group, timer_idx, timer_group0_isr,
-			(void*) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
-	//Start timer counter
-	timer_start(timer_group, timer_idx);
-}*/
 
-/*
- * @brief Funzione per effettuare la connessione con la rete per raggiungere il server
+/**
+ * Funzione per effettuare la connessione con la rete per raggiungere il server
  */
-
 void wifi_connect() {
     wifi_config_t cfg = {.sta = {.ssid = SSID, .password = PASSPHARSE,},};
     char *ssid = my_nvs_get_str("ssid_server");
@@ -714,23 +554,17 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
             xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
             break;
         case SYSTEM_EVENT_AP_START:
-
             printf("- Wifi adapter started\n\n");
-
             // create and configure the mDNS service
             ESP_ERROR_CHECK(mdns_init());
             ESP_ERROR_CHECK(mdns_hostname_set("esp32web"));
             ESP_ERROR_CHECK(mdns_instance_name_set("ESP32 webserver"));
             printf("- mDNS service started\n");
-
             // start the HTTP server task
             xTaskCreate(&http_server, "http_server", 20480, NULL, 5, NULL);
             printf("- HTTP server started\n");
-
             break;
-
         case SYSTEM_EVENT_AP_STACONNECTED:
-
             xEventGroupSetBits(wifi_event_group, STA_CONNECTED_BIT);
             break;
         default:
@@ -739,7 +573,10 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
     return ESP_OK;
 }
 
-// HTTP server task
+/**
+ * HTTP server task
+ * @param pvParameters  Parametri
+ */
 static void http_server(void *pvParameters) {
 
     struct netconn *conn, *newconn;
@@ -762,6 +599,10 @@ static void http_server(void *pvParameters) {
     printf("\n");
 }
 
+/**
+ * Funzione che permette di gestire le richieste fatte all'HTTP Server
+ * @param conn  Connessione
+ */
 static void http_server_netconn_serve(struct netconn *conn) {
 
     struct netbuf *inbuf;
@@ -793,9 +634,9 @@ static void http_server_netconn_serve(struct netconn *conn) {
                 char *data = strstr(body, "{");
                 printf("A\n");
                 //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-                int err=spiffs_save(data, conn);
-                if (err!=0){
-                    printf("Errore salvataggio %d\n",err);
+                err = spiffs_save(data, conn);
+                if (err != 0) {
+                    printf("Errore salvataggio %d\n", err);
                     spiffs_serve("/error.html", conn);
                 } else {
                     spiffs_serve("/success.html", conn);
@@ -804,35 +645,30 @@ static void http_server_netconn_serve(struct netconn *conn) {
                     printf("ESP32 Restarting...\n");
                     esp_restart();
                 }
-                //printf("SAVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-//                spiffs_serve("/index.html", conn);
-
             } else {
-                printf("C\n");
                 char *method = strtok(first_line, " ");
                 char *resource = strtok(NULL, " ");
                 printf("%s\n", resource);
-                //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
                 spiffs_serve(resource, conn);
-                //printf("SERVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
             }
         } else printf("Unknown request\n");
     }
-
     netbuf_delete(inbuf);
     netconn_close(conn);
     printf("CA\n");
 }
 
-// serve static content from SPIFFS
+/**
+ * Serve contenuto statico da partizione SPIFFS
+ * @param resource  Path della risorsa richiesta
+ * @param conn      Struttura connessione
+ */
 void spiffs_serve(char *resource, struct netconn *conn) {
     if (resource == NULL) {
         return;
     }
     // check if it exists on SPIFFS
     char full_path[100];
-    int rv;
-    char buff[100];
     int len = 100;
 
     sprintf(full_path, "/spiffs%s", resource);
@@ -841,38 +677,22 @@ void spiffs_serve(char *resource, struct netconn *conn) {
     if (stat(full_path, &st) == 0) {
         netconn_write(conn, http_html_hdr, sizeof(http_html_hdr) - 1, NETCONN_COPY);
 
-        // int filedesc = open(full_path, O_RDWR);
-        // if (filedesc == -1)
-        // {
-        // 	// print which type of error have in a code
-        // 	printf("Error Number % d\n", errno);
-
-        // 	// print program detail "Success or failure"
-        // 	perror("Program");
-        // 	return;
-        // }
-
         // open the file for reading
         FILE *f = fopen(full_path, "r");
-        //FILE *f = fdopen(filedesc, "r");
-
         if (f == NULL) {
             printf("Unable to open the file %s\n", full_path);
             return;
         }
-
         // send the file content to the client
         char buffer[500];
         len = 500;
         int size = 0;
         size_t char_read = 0;; /* there was data to read */
-        // char_read = read(filedesc, buffer, len); /* there was data to read */
         while ((char_read = fread(buffer, sizeof(char), len, f)) != 0) {
             size += char_read / sizeof(char);
             netconn_write(conn, buffer, char_read, NETCONN_COPY);
         }
         fclose(f);
-        // close(filedesc);
         fflush(stdout);
         printf("+ served %d bytes\n", size);
     } else {
@@ -881,7 +701,12 @@ void spiffs_serve(char *resource, struct netconn *conn) {
     }
 }
 
-// serve static content from SPIFFS
+/**
+ * Richiesta per salvataggio dei dati all'interno della schedina tramite richiesta HTTP
+ * @param resource      Risorsa Da Salvare
+ * @param conn          Connessione
+ * @return              Esito positivo ritorno 0, esito negativo diverso da 0
+ */
 int spiffs_save(char *resource, struct netconn *conn) {
     cJSON *json = cJSON_Parse(resource);
     if (json == NULL) {
@@ -895,45 +720,39 @@ int spiffs_save(char *resource, struct netconn *conn) {
     // Validazione input
     int res;
 
-      char *id = cJSON_GetObjectItem(json, "id")->valuestring;
-        res=idValidation(id);
-        if(res!=0)
-            return res;
-//    if (!re_match(id, id_regex)) return 1;
+    char *id = cJSON_GetObjectItem(json, "id")->valuestring;
+    res = idValidation(id);
+    if (res != 0)
+        return res;
 
-       char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
-        res=ssidApValidation(ssid_ap);
-        if(res!=0)
-            return res;
-//    if (!re_match(ssid_ap, ssid_regex)) return 1;
+    char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
+    res = ssidApValidation(ssid_ap);
+    if (res != 0)
+        return res;
 
-      char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
-        res=passwordApValidation(password_ap);
-        if(res!=0)
-            return res;
-//    if (!re_match(password_ap, password_ap)) return 1;
+    char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
+    res = passwordApValidation(password_ap);
+    if (res != 0)
+        return res;
 
-      char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
-        res=channelValidation(channel);
-        if(res!=0)
-            return res;
-//    if (!re_match(channel, channel_regex)) return 1;
+    char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
+    res = channelValidation(channel);
+    if (res != 0)
+        return res;
 
-      char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
-        res=ssidServerValidation(ssid_server);
-        if(res!=0)
-         return res;
-//    if (!re_match(ssid_server, ssid_regex)) return 1;
+    char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
+    res = ssidServerValidation(ssid_server);
+    if (res != 0)
+        return res;
 
-      char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
-        res=passServerValidation(password_server);
-        if(res!=0)
-            return res;
-      char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
-        res=ipValidation(ip_server);
-        if(res!=0)
-            return res;
-//    if (!re_match(ip_server, ip_regex)) return 1;
+    char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
+    res = passServerValidation(password_server);
+    if (res != 0)
+        return res;
+    char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
+    res = ipValidation(ip_server);
+    if (res != 0)
+        return res;
 
     printf("Validazione input eseguita.");
     int err;
@@ -985,14 +804,10 @@ int spiffs_save(char *resource, struct netconn *conn) {
     return 0;
 }
 
-/**
- * @brief      funzione per connessione tcp con server per scambio pacchetti acquisiti
- *
- * @param      *sbuf cosa inviare al server
-
- *
- * @return    0=ok, -2=error
- */
+ /**
+  * Funzione per connessione tcp con server per scambio pacchetti acquisiti
+  * @return  0=ok, -2=error
+  */
 int tcpClient() {
     int s;
     int result;

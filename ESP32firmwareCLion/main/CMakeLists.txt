@@ -7,8 +7,6 @@ file(GLOB COMPONENT_SRCS
         "main.c"
         "packet.c"
         "packet.h"
-        "query_resolver.c"
-        "query_resolver.h"
         "time.c"
         "time.h"
         "validation.h"

@@ -23,7 +23,6 @@
 #include "lwip/sockets.h"
 #include "driver/gpio.h"
 #include "esp_sntp.h"
-// #include "apps/sntp/sntp.h"
 
 #define TIMER_INTR_SEL TIMER_INTR_LEVEL  /*!< Timer level interrupt */
 #define TIMER_GROUP    TIMER_GROUP_0     /*!< Test on timer group 0 */

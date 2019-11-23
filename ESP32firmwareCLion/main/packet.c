@@ -7,22 +7,13 @@
 #include "packet.h"
 
 static const char *TAGP = "tcp_client";
-char macESP[18];                    //dopo l'init conterr� il mac della esp
+// Dopo l'init conterrà il mac della esp
+char macESP[18];
 uint8_t id;
-//uint8_t posx;
-//uint8_t posy;
 
 int get_id() {
     return id;
 }
-
-/*int get_posx() {
-    return posx;
-}
-
-int get_posy() {
-    return posy;
-}*/
 
 typedef struct packet {
     uint32_t fcs;
@@ -39,9 +30,6 @@ struct node {
     struct node *prev;
 };
 
-/**
-
- **/
 /**
  * Preleva dalla memoria chiave-valore un intero data la chiave stringa.
  * In caso non fosse presente ritorna 0 come valore di default.
@@ -68,10 +56,13 @@ int my_nvs_get_str_to_int(char *key) {
     return ret;
 }
 
+/**
+ * Inizializzazione della lista dei pacchetti
+ * @param baseMacChr    MAC della schedina
+ * @return              Puntatore alla lista linkata
+ */
 node_t init_packet_list(char baseMacChr[18]) {
     id = my_nvs_get_str_to_int("id");
-    //posx = my_nvs_get_str_to_int("posx");
-    //posy = my_nvs_get_str_to_int("posy");
 
     node_t head;
     head = NULL;
@@ -79,12 +70,17 @@ node_t init_packet_list(char baseMacChr[18]) {
     head->packet = NULL;
     head->next = NULL;
     head->prev = NULL;
-
     strcpy(macESP, baseMacChr);
-
     return head;
 }
 
+/**
+ * Ottiene SSID Da punto di inizio e dimensione, partendo da data
+ * @param start     Intero di inizio
+ * @param size      Dimensione SSID
+ * @param data      Payload
+ * @return          Vettore di caratteri contenente l'SSID o, se non presente, una tilde (~)
+ */
 char *getSSID(uint16_t start, uint16_t size, const uint8_t *data) {
     char *string;
     if (size == 0) {
@@ -101,6 +97,11 @@ char *getSSID(uint16_t start, uint16_t size, const uint8_t *data) {
     return string;
 }
 
+/**
+ * Partendo dalla struttura dati wifi_promiscuous_pkt_t va a riempire i dati del pacchetto
+ * @param ppkt      wifi_promiscuous_pkt_t
+ * @return          Pacchetto compilato
+ */
 Packet *setPacket(const wifi_promiscuous_pkt_t *ppkt) {
     time_t now;
     time(&now);
@@ -122,6 +123,12 @@ Packet *setPacket(const wifi_promiscuous_pkt_t *ppkt) {
     return p;
 }
 
+/**
+ * Aggiunta pacchetto in struttura wifi_promiscuous_pkt_t alla head indicata
+ * @param ppkt      wifi_promiscuous_pkt_t pacchetto
+ * @param h         Testa lista linkata
+ * @return          Ritorno testa lista linkata
+ */
 node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     node_t current = h;
 
@@ -142,6 +149,12 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     return h;
 }
 
+/**
+ * Procedura di invio pacchetti
+ * @param s         TCP Socket
+ * @param h         Testa lista linkata pacchetti
+ * @return          LENPACKET se successo, valori negativi altrimenti
+ */
 int send_packets(int s, node_t h) {
     char buf[256];
     int result;
@@ -194,39 +207,38 @@ int send_packets(int s, node_t h) {
     return LENPACKET;
 }
 
-/*void free_node(node_t n) {                    //non va bene per ricorsione su tanti pacchetti
-    if (n->next != NULL){
-        free_node(n->next);
-    }
-    if(n->packet->SSID!=NULL)
-        free(n->packet->SSID);
-    free(n->packet);
-    free(n);
-    n = NULL;
-}*/
-
-void free_node2(node_t n) {
+/**
+ * Liberazione della struttura dati di un nodo
+ * @param n     struttura nodo
+ */
+void freeNode(node_t n) {
 
     node_t current = n;
     node_t prev;
 
-    while (current->next != NULL)                   //arrivo alla fine della lista
+    // Arrivo alla fine della lista
+    while (current->next != NULL)
         current = current->next;
 
-    while (current->prev !=
-           NULL) {                     //while che elimina l'ultimo pacchetto e risale di uno tornando verso la testa (Testa = pacchetto con prev==NULL)
+    // While che elimina l'ultimo pacchetto e risale di uno tornando verso la testa (Testa = pacchetto con prev==NULL)
+    while (current->prev != NULL) {
         if (current->packet->SSID != NULL)
             free(current->packet->SSID);
-        free(current->packet);                          //non necessita di free su next perchè è già null
+        // No free su next perchè è già null
+        free(current->packet);
         prev = current->prev;
         free(current);
         current = prev;
     }
-
 }
 
+// TODO: Controllare queste due funzione ed eliminare l'intrusa rifattorizzando
+/**
+ * Funzione di liberazione di tutta la lista
+ * @param h     testa lista linkata
+ */
 void free_packet_list(node_t h) {
-    free_node2(h);
+    freeNode(h);
 }
 
 /**
@@ -240,7 +252,7 @@ void reset_packet_list(node_t h) {
 
     if (h->next != NULL) {
         // Next is not NULL, so Recursive Free on nodes!
-        free_node2(h->next);
+        freeNode(h->next);
     }
 
     /*if(h->packet->SSID!=NULL){          //todo controllare perchè in free_node chiama già free di SSID e altro
