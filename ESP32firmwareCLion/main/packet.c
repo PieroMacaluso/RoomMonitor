@@ -140,21 +140,48 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
 }
 
 int send_packets(int s, node_t h) {
-    char buf[128];
+    char buf[256];
     int result;
     node_t i;
+
+    int j;
+    /**
+     * Costruisco il contesto per calcolo HMAC con SHA256
+     */
+    // TODO: controllare bene se questa sia una chiave da 256-bit
+    char *key = "eThVmYq3t6w9z$C&F)J@NcRfUjXn2r4u";
+    mbedtls_md_context_t ctx;
+    mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
+    const size_t keyLength = strlen(key);
+    size_t payloadLength = 0;
+    // Risultato HMAC
+    unsigned char hmacResult[32];
 
     if (h->next == NULL)
         return LENPACKET;
 
     for (i = h; i != NULL; i = i->next) {
-        sprintf(buf, "%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s;", id, i->packet->fcs,
+        sprintf(buf, "%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s|", id, i->packet->fcs,
                 i->packet->rssi,
                 i->packet->mac[0], i->packet->mac[1], i->packet->mac[2],
                 i->packet->mac[3], i->packet->mac[4], i->packet->mac[5],
                 i->packet->timestamp, i->packet->SSID, i->packet->board);
+        payloadLength = strlen(buf);
+        // Calcolo HMAC
+        mbedtls_md_init(&ctx);
+        mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 1);
+        mbedtls_md_hmac_starts(&ctx, (const unsigned char *) key, keyLength);
+        mbedtls_md_hmac_update(&ctx, (const unsigned char *) buf, payloadLength);
+        mbedtls_md_hmac_finish(&ctx, (unsigned char *) hmacResult);
+        mbedtls_md_free(&ctx);
 
-        buf[strlen(buf)] = '\0';
+        // Concateniamo HMAC ottenuto
+        for (j = 0; j < 32; j++) {
+            sprintf(buf + strlen(buf), "%02x", hmacResult[j]);
+        }
+        // Terminatore di stringa.
+        sprintf(buf + strlen(buf), ";");
+        fprintf(stdout, "%s\n", buf);
         result = send(s, buf, strlen(buf), 0);
         if (result <= 0) {
             ESP_LOGI(TAGP, "Error send RSSI\n");
