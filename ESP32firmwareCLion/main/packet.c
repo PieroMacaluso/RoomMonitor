@@ -27,7 +27,6 @@ typedef struct packet {
 struct node {
     Packet *packet;
     struct node *next;
-    struct node *prev;
 };
 
 /**
@@ -69,7 +68,6 @@ node_t init_packet_list(char baseMacChr[18]) {
     head = malloc(sizeof(struct node));
     head->packet = NULL;
     head->next = NULL;
-    head->prev = NULL;
     strcpy(macESP, baseMacChr);
     return head;
 }
@@ -132,10 +130,10 @@ Packet *setPacket(const wifi_promiscuous_pkt_t *ppkt) {
 node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     node_t current = h;
 
-    if (current->packet == NULL) {
+    if (h->packet == NULL) {
+        printf("head");
         h->packet = setPacket(ppkt);
         h->next = NULL;
-        h->prev = NULL;
         return h;
     }
 
@@ -144,7 +142,6 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     current->next = malloc(sizeof(struct node));
     current->next->packet = setPacket(ppkt);
     current->next->next = NULL;
-    current->next->prev = current;
 //	printf("Inserito correttamente");
     return h;
 }
@@ -175,7 +172,7 @@ int send_packets(int s, node_t h) {
 
     if (h->next == NULL)
         return LENPACKET;
-
+    printf("HERE");
     for (i = h; i != NULL; i = i->next) {
         sprintf(buf, "%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s|", id, i->packet->fcs,
                 i->packet->rssi,
@@ -211,25 +208,16 @@ int send_packets(int s, node_t h) {
  * Liberazione della struttura dati di un nodo
  * @param n     struttura nodo
  */
-void freeNode(node_t n) {
+void freeNode(node_t curr) {
 
-    node_t current = n;
-    node_t prev;
-
-    // Arrivo alla fine della lista
-    while (current->next != NULL)
-        current = current->next;
-
-    // While che elimina l'ultimo pacchetto e risale di uno tornando verso la testa (Testa = pacchetto con prev==NULL)
-    while (current->prev != NULL) {
-        if (current->packet->SSID != NULL)
-            free(current->packet->SSID);
-        // No free su next perchè è già null
-        free(current->packet);
-        prev = current->prev;
-        free(current);
-        current = prev;
+    if (curr->packet->SSID != NULL) {
+        free(curr->packet->SSID);
+        curr->packet->SSID = NULL;
     }
+    // No free su next perchè è già null
+    free(curr->packet);
+    curr->packet = NULL;
+    curr->next = NULL;
 }
 
 // TODO: Controllare queste due funzione ed eliminare l'intrusa rifattorizzando
@@ -237,32 +225,50 @@ void freeNode(node_t n) {
  * Funzione di liberazione di tutta la lista
  * @param h     testa lista linkata
  */
-void free_packet_list(node_t h) {
-    freeNode(h);
+void reset_packet_list(node_t h) {
+
+    node_t curr;
+    node_t iterator = h;
+    iterator = iterator->next;
+
+    // Set curr to head, stop if list empty.
+    while ((curr = iterator) != NULL) {
+        // advance head to next element.
+        iterator = iterator->next;
+        printf("free %08x", curr->packet->fcs);
+        // delete saved pointer
+        freeNode(curr);
+        free(curr);
+        curr = NULL;
+    }
+    printf("free head %08x", h->packet->fcs);
+    free(h->packet->SSID);
+    h->packet->SSID = NULL;
+    free(h->packet);
+    h->packet = NULL;
+    h->next = NULL;
+    //return h;
+
 }
 
 /**
- * Recursive function to free the list of packets.
- * @param h Head of the packet linked list
+ * Stampa di tutta la lista, usata per debug
+ * @param n testa della lista
  */
-void reset_packet_list(node_t h) {
-    // If the HEAD is NULL or the head is not null but there aren't packets , simply returns
-    if (h == NULL) return;
+void print_all_list(node_t h) {
+
     if (h->packet == NULL) return;
 
-    if (h->next != NULL) {
-        // Next is not NULL, so Recursive Free on nodes!
-        freeNode(h->next);
+    node_t cur;
+    printf("STAMPO LISTA\n");
+    for (cur = h; cur != NULL; cur = cur->next) {
+        printf("%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s\n", id, cur->packet->fcs,
+               cur->packet->rssi,
+               cur->packet->mac[0], cur->packet->mac[1], cur->packet->mac[2],
+               cur->packet->mac[3], cur->packet->mac[4], cur->packet->mac[5],
+               cur->packet->timestamp, cur->packet->SSID, cur->packet->board);
     }
 
-    /*if(h->packet->SSID!=NULL){          //todo controllare perchè in free_node chiama già free di SSID e altro
-        free(h->packet->SSID);
-        free(h->packet);
-    }*/
-
-    h->packet = NULL;
-    h->next = NULL;
-    h->prev = NULL;
 }
 
 #endif

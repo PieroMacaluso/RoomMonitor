@@ -10,8 +10,46 @@
     <link rel="stylesheet" href="css/floating.css">
 </head>
 <body>
+<div class="modal" tabindex="-1" role="dialog" id="success">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" id="unsuccess">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<form id="formesp" class="form-signin" method="post" action="save.html">
+<form id="formesp" class="form-signin" method="post" action="echo">
 
     <div class="text-center mb-4">
         <img class="mb-4" src="img/wifi.svg" alt="" width="72" height="72">
@@ -42,7 +80,8 @@
     </div>
 
     <div class="form-label-group">
-        <input type="text" name="password_ap" id="password_ap" class="form-control" placeholder="Pass" required autofocus>
+        <input type="password" name="password_ap" id="password_ap" class="form-control" placeholder="Pass" required
+               autofocus>
         <label for="password_ap">AP Password</label>
     </div>
 
@@ -53,21 +92,24 @@
     <hr>
     <h2 class="h3 mb-3 font-weight-normal">Server Setup</h2>
     <div class="form-label-group">
-        <input type="text" name="ssid_server" id="ssid_server" class="form-control" placeholder="SSID" required autofocus>
+        <input type="text" name="ssid_server" id="ssid_server" class="form-control" placeholder="SSID" required
+               autofocus>
         <label for="ssid_server">SSID</label>
     </div>
 
     <div class="form-label-group">
-        <input type="text" name="password_server" id="password_server" class="form-control" placeholder="Pass" required autofocus>
+        <input type="password" name="password_server" id="password_server" class="form-control" placeholder="Pass"
+               required autofocus>
         <label for="password_server">Password</label>
     </div>
 
     <div class="form-label-group">
-        <input type="text" name="ip_server" id="ip_server" class="form-control" placeholder="Server IP address" required autofocus>
+        <input type="text" name="ip_server" id="ip_server" class="form-control" placeholder="Server IP address" required
+               autofocus>
         <label for="ip_server">IP address</label>
     </div>
     <div id="errors"></div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit" >Start Setup and Reset</button>
+    <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Start Setup and Reset</button>
 </form>
 
 

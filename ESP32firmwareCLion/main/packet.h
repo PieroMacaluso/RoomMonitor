@@ -30,7 +30,8 @@ int get_id();
 node_t init_packet_list(char baseMacChr[18]);
 node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h);
 int send_packets(int s, node_t h);
-void free_packet_list(node_t h);
 void reset_packet_list(node_t h);
+void print_all_list(node_t h);
+
 
 #endif //APP_TEMPLATE_PACKET_H

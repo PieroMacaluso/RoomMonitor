@@ -63,6 +63,7 @@ const handleFormSubmit = event => {
     event.preventDefault();
 
     if (!validateForm(form)) return;
+    document.getElementById("submit").textContent = "Loading...";
     const data = formToJSON(form.elements);
     const jj = JSON.stringify(data, null, "  ");
     console.log(jj);
@@ -83,15 +84,27 @@ const handleFormSubmit = event => {
     var xhr = new XMLHttpRequest();
     xhr.open(form.method, form.action, true);
     xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
+    xhr.addEventListener("load", transferComplete);
+    xhr.addEventListener("error", transferFailed);
     // send the collected data as JSON
     xhr.send(JSON.stringify(data));
-
-    xhr.onloadend = function () {
-        // done
-        console.log("done");
-    };
 };
+
+function transferComplete(evt) {
+    // $('#success').modal(options);
+    document.getElementById("submit").textContent = "Setup Completed!";
+    document.getElementById("submit").style.backgroundColor = "#0d881b";
+    document.getElementById("submit").style.borderColor = "#0d881b";
+}
+
+function transferFailed(evt) {
+    // $('#unsuccess').modal(options);
+    document.getElementById("submit").textContent = "Setup Failed";
+    document.getElementById("submit").style.backgroundColor = "#880d0d";
+    document.getElementById("submit").style.borderColor = "#880d0d";
+
+    // Do something
+}
 
 const form = document.getElementById('formesp');
 form.addEventListener('submit', handleFormSubmit);
