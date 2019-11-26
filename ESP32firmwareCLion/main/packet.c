@@ -30,32 +30,6 @@ struct node {
 };
 
 /**
- * Preleva dalla memoria chiave-valore un intero data la chiave stringa.
- * In caso non fosse presente ritorna 0 come valore di default.
- *
- * @param key chiave del valore da ricercare nella memoria
- * @return Intero presente nella chiave valore, altrimenti 0 come default
- */
-int my_nvs_get_str_to_int(char *key) {
-    esp_err_t err;
-    char *value = NULL;
-    nvs_handle my_handle;
-    err = nvs_open("storage", NVS_READWRITE, &my_handle);
-    size_t required_size;
-    err = nvs_get_str(my_handle, key, NULL, &required_size);
-    int ret = 0;
-    if (err == ESP_OK) {
-        value = malloc(required_size);
-        nvs_get_str(my_handle, key, value, &required_size);
-        printf("- NVS: %s, %s\n", key, value);
-        ret = atoi(value);
-        free(value);
-    }
-    nvs_close(my_handle);
-    return ret;
-}
-
-/**
  * Inizializzazione della lista dei pacchetti
  * @param baseMacChr    MAC della schedina
  * @return              Puntatore alla lista linkata
@@ -162,7 +136,11 @@ int send_packets(int s, node_t h) {
      * Costruisco il contesto per calcolo HMAC con SHA256
      */
     // TODO: controllare bene se questa sia una chiave da 256-bit
-    char *key = "eThVmYq3t6w9z$C&F)J@NcRfUjXn2r4u";
+    char * key = my_nvs_get_str("secret");
+    if (key == NULL) {
+        key = "root";
+
+    }
     mbedtls_md_context_t ctx;
     mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
     const size_t keyLength = strlen(key);
@@ -200,6 +178,7 @@ int send_packets(int s, node_t h) {
             return -2;
         }
     }
+    free(key);
     return LENPACKET;
 }
 

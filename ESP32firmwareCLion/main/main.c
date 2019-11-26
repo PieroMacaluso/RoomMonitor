@@ -21,6 +21,7 @@
 #include "validation.h"
 #include <esp_vfs.h>
 #include "https_server_esp.h"
+#include "nvs_getter.h"
 
 // set AP CONFIG values
 #ifdef CONFIG_AP_HIDE_SSID
@@ -107,8 +108,6 @@ int tcpClient();
 void getMacAddress(char *macChr);
 
 int spiffs_save(char *resource);
-
-char *my_nvs_get_str(char *key);
 
 /** Variabili */
 node_t head;
@@ -289,26 +288,6 @@ void wifi_sniffer_init(void) {
     }
 }
 
-/**
- * Funzione che permette di ottenere il valore salvato nella memoria NVS come vettore di char
- * @param key: chiave del valore salvato nella memoria NVS
- * @return valore contenuto nella memoria NVS se questo è presente, altrimenti viene ritornato NULL
- */
-char *my_nvs_get_str(char *key) {
-    esp_err_t err;
-    char *value = NULL;
-    nvs_handle my_handle;
-    ESP_ERROR_CHECK(nvs_open("storage", NVS_READWRITE, &my_handle));
-    size_t required_size;
-    err = nvs_get_str(my_handle, key, NULL, &required_size);
-    if (err == ESP_OK) {
-        value = malloc(required_size);
-        nvs_get_str(my_handle, key, value, &required_size);
-        printf("- NVS: %s, %s\n", key, value);
-    }
-    nvs_close(my_handle);
-    return value;
-}
 
 /**
  * Inizializzazione partizione SPIFFS che viene utilizzata per il CAPTIVE PORTAL

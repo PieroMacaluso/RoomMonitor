@@ -19,6 +19,7 @@
 #include "lwip/sockets.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
+#include "nvs_getter.h"
 
 #define STARTSIZE 	20
 #define LENPACKET 	11

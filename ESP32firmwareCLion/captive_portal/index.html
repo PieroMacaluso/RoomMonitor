@@ -13,11 +13,9 @@
 <form id="formesp" class="form-signin" method="post" action="data">
 
     <div class="text-center mb-4">
-        <img class="mb-4" src="img/wifi.svg" alt="" width="72" height="72">
+        <img class="mb-4" src="img/wifi.svg" alt="Room Monitor" width="72" height="72">
         <h1 class="h3 mb-3 font-weight-normal">ESP32 Setup</h1>
         <p>Let's setup your ESP32 board for the project.</p>
-        <p id="json"></p>
-
     </div>
     <h2 class="h3 mb-3 font-weight-normal">Board Setup</h2>
     <div class="form-label-group">
@@ -63,11 +61,14 @@
                autofocus>
         <label for="port_server">Server Port</label>
     </div>
+    <div class="form-label-group">
+        <input type="text" name="secret" id="secret" class="form-control" placeholder="Shared Secret" required
+               autofocus>
+        <label for="secret">Shared Secret</label>
+    </div>
     <div id="errors"></div>
     <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Start Setup and Reset</button>
 </form>
-
-
 <script src="js/jquery-3.3.1.slim.min.js"></script>
 <script src="js/jsonget.js"></script>
 <script>

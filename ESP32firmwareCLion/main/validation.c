@@ -49,7 +49,7 @@ int passwordApValidation(char *pass) {
     int i;
     int min = 0, Maius = 0, num = 0;
 
-    if (strlen(pass) < 3 || strlen(pass) > 30)
+    if (strlen(pass) < 8 || strlen(pass) > 63)
         return 3;
 
     for (i = 0; i < strlen(pass); i++) {

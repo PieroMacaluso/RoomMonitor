@@ -51,6 +51,10 @@ function validateForm(form) {
         document.getElementById("errors").innerHTML += "<li>Inserire un indirizzo IP valido</li>";
         status = false;
     }
+    if (!password_regex.test(form["secret"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Il segreto deve contenere almeno una lettera maiuscola, una lettera minuscola e un numero</li>";
+        status = false;
+    }
     return status;
 }
 

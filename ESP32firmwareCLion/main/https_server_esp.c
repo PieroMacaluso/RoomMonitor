@@ -265,6 +265,11 @@ int spiffs_save(char *resource) {
     if (res != 0)
         return res;
 
+    char *secret = cJSON_GetObjectItem(json, "secret")->valuestring;
+    res = passwordApValidation(secret);
+    if (res != 0)
+        return res;
+
     printf("Validazione input eseguita.");
     int err;
 
