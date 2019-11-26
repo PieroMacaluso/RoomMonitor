@@ -51,6 +51,7 @@ Q_OBJECT
     QTcpServer server{};
     std::map<int, int> board_fail;
     std::map<int, Board> boards;
+    QList<int> check_id;
     bool running;
     std::map<std::string, std::pair<std::deque<Packet>, int>> packets;
     int numErrEspNotFound = 0;

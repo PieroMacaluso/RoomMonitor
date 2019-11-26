@@ -177,7 +177,7 @@ void Utility::setupVariables() {
 }
 
 
-std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p) {
+std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, const QList<int>& l) {
     std::deque<Packet> deque;
     std::string ssid;
 
@@ -187,25 +187,28 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p) {
         Utility::split(s, packet_hmac, '|');
         Utility::split(packet_hmac[0], values, ',');
         QMessageAuthenticationCode code(QCryptographicHash::Sha256);
-        // TODO: controllare bene se questa sia una chiave da 256-bit
-        code.setKey("eThVmYq3t6w9z$C&F)J@NcRfUjXn2r4u");
+        QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+        code.setKey(su.value("secret").toByteArray());
         packet_hmac[0] = packet_hmac[0] + '|';
 
         QByteArray byteArray(packet_hmac[0].c_str(), packet_hmac[0].length());
         code.addData(byteArray);
+        if (values.size() != 7) {
+            qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
+            continue;
+        }
         if (code.result().toHex() == QString::fromStdString(packet_hmac[1])) {
             // TODO: alcuni pacchetti non vengono inviati del tutto, metà stringa
             // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
             //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
-            if (values.size() != 7) {
-                qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
-                continue;
-            }
+
             // Alcuni pacchetti contengono SSID, altri no
             if (values[5] == "~")
                 ssid = "Nan";
             else
                 ssid = values[5];
+            if (!l.contains(std::stoi(values[0]))) throw std::invalid_argument{"Board non configurata"};
+
 
             Packet packet(std::stoi(values[0]), values[1], std::stoi(values[2]), values[3],
                           std::stoi(values[4]), ssid);
@@ -213,10 +216,9 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p) {
         } else {
             // TODO: cosa fare se non coincide?
             qWarning() << "Pacchetto con Hash non coincidente " << QString::fromStdString(s);
-
+            throw std::invalid_argument{"Board non autorizzata"};
         }
     }
-
     return deque;
 }
 

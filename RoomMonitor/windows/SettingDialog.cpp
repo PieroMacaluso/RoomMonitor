@@ -263,6 +263,8 @@ void SettingDialog::apply() {
     s.setValue("mac/ssid/peso", ui.ssidPesoEdit->text().toInt());
     s.setValue("mac/ssid/check", ui.ssidCheck->isChecked());
     s.setValue("first_time", true);
+    s.setValue("secret", ui.secretEdit->text());
+
     Utility::dropBoards();
     for (int i = 0; i < ui.boardTable->rowCount(); i++) {
         addBoardToDB(ui.boardTable->item(i, 0)->text(), ui.boardTable->item(i, 1)->text(),
@@ -432,6 +434,8 @@ bool SettingDialog::isSettingValid() {
     int n = ui.nEdit->text().toInt();
     if (n <= 0 || n >= 4) err += "Costante di propagazione non valida.\n";
 
+    if (ui.secretEdit->text() == "") err += "Devi inserire un segreto.\n";
+
     /* DATABASE */
     QRegExpValidator host_v{host, nullptr};
     QString host_s{ui.hostEdit->text()};
@@ -492,6 +496,8 @@ void SettingDialog::compileValues() {
     ui.timeCheck->setChecked(s.value("mac/time/check").toBool());
     ui.ssidPesoEdit->setText(s.value("mac/ssid/peso").toString());
     ui.ssidCheck->setChecked(s.value("mac/ssid/check").toBool());
+    ui.secretEdit->setText(s.value("secret").toString());
+
 
     fillBoardList();
 }

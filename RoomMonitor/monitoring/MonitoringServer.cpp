@@ -159,7 +159,9 @@ bool MonitoringServer::start() {
         std::vector<Board> b;
         b = Utility::getBoards();
         boards.clear();
+        check_id.clear();
         std::for_each(b.begin(), b.end(), [&](Board bo) {
+            check_id.push_back(bo.getId());
             boards.insert(std::make_pair(bo.getId(), bo));
             board_fail.insert(std::make_pair(bo.getId(), 0));
         });
@@ -225,7 +227,16 @@ void MonitoringServer::newConnection() {
         // Divisione singoli pacchetti
         Utility::split(allData, pacchetti, ';');
         // Conversione in oggetti Packet
-        packetsConn = Utility::string2packet(pacchetti);
+        try {
+            packetsConn = Utility::string2packet(pacchetti, check_id);
+        } catch (const std::invalid_argument &e) {
+            qWarning() << e.what();
+            socket->flush();
+            socket->close();
+            qDebug() << "Connection closed";
+            delete socket;
+            return;
+        }
 
         for (auto &p: packetsConn) {
             DEBUG(p)
@@ -237,7 +248,6 @@ void MonitoringServer::newConnection() {
                 l.push_back(p);
                 packets.insert(std::make_pair(p.getFcs(), std::make_pair(l, 0)));
             }
-
         }
     }
 
@@ -258,23 +268,24 @@ void MonitoringServer::aggregate() {
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
-    QSet<QString> listOfId;             //usato per segnare quali id schedine sono state acquisite
+    QSet<int> listOfId;             //usato per segnare quali id schedine sono state acquisite
     std::map<std::string, std::deque<Packet>> aggregate{};
-    for (auto it = packets.begin(); it != packets.end(); it++) {
-        std::string id = it->first;
-        listOfId.insert(QString::fromStdString(id));
-        if (it->second.first.size() == nSchedine) {
-            aggregate.insert(std::make_pair(id, it->second.first));
-            it->second.second = 2;
+    for (auto & packet : packets) {
+        int id = packet.second.first.at(0).getIdSchedina();
+        listOfId.insert(id);
+        if (packet.second.first.size() == nSchedine) {
+            aggregate.insert(std::make_pair(packet.first, packet.second.first));
+            packet.second.second = 2;
         } else {
-            it->second.second++;
+            packet.second.second++;
         }
     }
     if (listOfId.size() < nSchedine) {
+        qWarning() << "Sospetto malfunzionamento schedine";
         // Se una schedina non viene rilevata incremento il contatore
         // Ogni volta che viene rilevata nuovamente il contatore viene resettato
         std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
-            if (!listOfId.contains(QString::number(pair.first))) {
+            if (!listOfId.contains(pair.first)) {
                 board_fail.find(pair.first)->second++;
             } else {
                 board_fail.find(pair.first)->second = 0;
@@ -310,6 +321,7 @@ void MonitoringServer::aggregate() {
         this->aggregated();
         return;
     }
+    board_fail.clear();
 
     // Stampa id pacchetti aggregati rilevati.
     for (auto fil : aggregate) {

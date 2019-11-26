@@ -184,6 +184,20 @@
            </property>
           </widget>
          </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="secretLabel">
+           <property name="text">
+            <string>Segreto Condiviso</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="secretEdit">
+           <property name="text">
+            <string>segreto</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

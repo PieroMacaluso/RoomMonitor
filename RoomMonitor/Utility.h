@@ -18,6 +18,7 @@
 #include "Query.h"
 #include <deque>
 #include <monitoring/Packet.h>
+#include <stdexcept>
 
 
 class Utility {
@@ -47,7 +48,7 @@ public:
      * @param packets
      * @return
      */
-    static std::deque<Packet> string2packet(const std::vector<std::string> &p);
+    static std::deque<Packet> string2packet(const std::vector<std::string> &p, const QList<int>& l);
 
     template<class Container>
     static void split(const std::string &str, Container &cont, char delim);
