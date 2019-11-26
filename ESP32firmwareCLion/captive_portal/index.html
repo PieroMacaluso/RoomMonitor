@@ -10,46 +10,7 @@
     <link rel="stylesheet" href="css/floating.css">
 </head>
 <body>
-<div class="modal" tabindex="-1" role="dialog" id="success">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal" tabindex="-1" role="dialog" id="unsuccess">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<form id="formesp" class="form-signin" method="post" action="echo">
+<form id="formesp" class="form-signin" method="post" action="data">
 
     <div class="text-center mb-4">
         <img class="mb-4" src="img/wifi.svg" alt="" width="72" height="72">
@@ -63,17 +24,6 @@
         <input type="text" name="id" id="id" class="form-control" placeholder="ID" required autofocus>
         <label for="id">ID</label>
     </div>
-
-    <!--<div class="form-label-group">
-        <input type="text" name="posx" id="posx" class="form-control" placeholder="Position X" required autofocus>
-        <label for="posx">Position X</label>
-    </div>
-
-    <div class="form-label-group">
-        <input type="text" name="posy" id="posy" class="form-control" placeholder="Position Y" required autofocus>
-        <label for="posy">Position Y</label>
-    </div>-->
-
     <div class="form-label-group">
         <input type="text" name="ssid_ap" id="ssid_ap" class="form-control" placeholder="SSID" required autofocus>
         <label for="ssid_ap">AP SSID</label>
@@ -108,6 +58,11 @@
                autofocus>
         <label for="ip_server">IP address</label>
     </div>
+    <div class="form-label-group">
+        <input type="text" name="port_server" id="port_server" class="form-control" placeholder="Server Port" required
+               autofocus>
+        <label for="port_server">Server Port</label>
+    </div>
     <div id="errors"></div>
     <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Start Setup and Reset</button>
 </form>
@@ -115,11 +70,7 @@
 
 <script src="js/jquery-3.3.1.slim.min.js"></script>
 <script src="js/jsonget.js"></script>
-
-<!--<script src="js/popper.min.js"></script>-->
-<!--<script src="js/bootstrap.min.js"></script>-->
 <script>
-
 </script>
 </body>
 </html>

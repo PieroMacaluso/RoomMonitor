@@ -131,7 +131,7 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
     node_t current = h;
 
     if (h->packet == NULL) {
-        printf("head");
+//        printf("head");
         h->packet = setPacket(ppkt);
         h->next = NULL;
         return h;
@@ -172,7 +172,6 @@ int send_packets(int s, node_t h) {
 
     if (h->next == NULL)
         return LENPACKET;
-    printf("HERE");
     for (i = h; i != NULL; i = i->next) {
         sprintf(buf, "%d,%08x,%d,%02x:%02x:%02x:%02x:%02x:%02x,%u,%s,%s|", id, i->packet->fcs,
                 i->packet->rssi,
@@ -194,7 +193,7 @@ int send_packets(int s, node_t h) {
         }
         // Terminatore di stringa.
         sprintf(buf + strlen(buf), ";");
-        fprintf(stdout, "%s\n", buf);
+//        fprintf(stdout, "%s\n", buf);
         result = send(s, buf, strlen(buf), 0);
         if (result <= 0) {
             ESP_LOGI(TAGP, "Error send RSSI\n");
@@ -235,13 +234,13 @@ void reset_packet_list(node_t h) {
     while ((curr = iterator) != NULL) {
         // advance head to next element.
         iterator = iterator->next;
-        printf("free %08x", curr->packet->fcs);
+//        printf("free %08x", curr->packet->fcs);
         // delete saved pointer
         freeNode(curr);
         free(curr);
         curr = NULL;
     }
-    printf("free head %08x", h->packet->fcs);
+//    printf("free head %08x", h->packet->fcs);
     free(h->packet->SSID);
     h->packet->SSID = NULL;
     free(h->packet);

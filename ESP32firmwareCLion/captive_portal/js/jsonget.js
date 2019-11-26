@@ -19,6 +19,7 @@ function validateForm(form) {
     const channel_regex = new RegExp(/^[0-9]$|^1[0-4]$/);
     const ip_regex = new RegExp(/^(?=.*[^\.]$)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.?){4}$/);
     const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,63}$/);
+    const port_regex = new RegExp(/^()([1-9]|[1-5]?[0-9]{2,4}|6[1-4][0-9]{3}|65[1-4][0-9]{2}|655[1-2][0-9]|6553[1-5])$/);
     // TODO: Controllare validazione e esportare nel Server (Schedina)
     document.getElementById("errors").innerHTML = "";
     // Codice di prova
@@ -38,17 +39,18 @@ function validateForm(form) {
         document.getElementById("errors").innerHTML += "<li>La password deve contenere almeno una lettera maiuscola, una lettera minuscola e un numero</li>";
         status = false;
     }
-
-    // Decommentato controllo password server poichè non la complessità non deve essere imposta dal client
-    // if (!password_regex.test(form["password_server"].value)) {
-    //     document.getElementById("errors").innerHTML += "<li>La password deve contenere almeno una lettera maiuscola, una lettera minuscola e un numero</li>";
-    //     status = false;
-    // }
+    if (!channel_regex.test(form["channel"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Canale selezionato non valido</li>";
+        status = false;
+    }
+    if (!port_regex.test(form["port_server"].value)) {
+        document.getElementById("errors").innerHTML += "<li>Porta non valida</li>";
+        status = false;
+    }
     if (!ip_regex.test(form["ip_server"].value)) {
         document.getElementById("errors").innerHTML += "<li>Inserire un indirizzo IP valido</li>";
         status = false;
     }
-
     return status;
 }
 
@@ -67,19 +69,6 @@ const handleFormSubmit = event => {
     const data = formToJSON(form.elements);
     const jj = JSON.stringify(data, null, "  ");
     console.log(jj);
-
-
-    // // TODO: Call our function to get the form data.
-    // const data = {};
-    //
-    // // Demo only: print the form data onscreen as a formatted JSON object.
-    // const dataContainer = document.getElementsByClassName('results__display')[0];
-    //
-    // // Use `JSON.stringify()` to make the output valid, human-readable JSON.
-    // dataContainer.textContent = JSON.stringify(data, null, "  ");
-    //
-    // // ...this is where we’d actually do something with the form data...
-
     console.log("handle");
     var xhr = new XMLHttpRequest();
     xhr.open(form.method, form.action, true);
@@ -102,8 +91,6 @@ function transferFailed(evt) {
     document.getElementById("submit").textContent = "Setup Failed";
     document.getElementById("submit").style.backgroundColor = "#880d0d";
     document.getElementById("submit").style.borderColor = "#880d0d";
-
-    // Do something
 }
 
 const form = document.getElementById('formesp');
@@ -118,4 +105,5 @@ $.get("/data.json", function (data) {
     document.getElementById("ssid_server").value = data.ssid_server ? data.ssid_server : "";
     document.getElementById("password_server").value = data.password_server ? data.password_server : "";
     document.getElementById("ip_server").value = data.ip_server ? data.ip_server : "";
+    document.getElementById("port_server").value = data.port_server ? data.port_server : "";
 }, "json");

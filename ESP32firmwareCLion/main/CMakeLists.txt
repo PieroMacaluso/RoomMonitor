@@ -10,7 +10,9 @@ file(GLOB COMPONENT_SRCS
         "time.c"
         "time.h"
         "validation.h"
-        "validation.c"        )
+        "validation.c"
+        "https_server_esp.h"
+        "https_server_esp.c")
 set(COMPONENT_ADD_INCLUDEDIRS "")
 set(COMPONENT_EMBED_TXTFILES certs/cacert.pem certs/prvtkey.pem)
 register_component()

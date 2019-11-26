@@ -19,6 +19,9 @@
 
 - [Indice](#indice)
 - [Introduction](#introduction)
+  - [Scansione Attiva](#scansione-attiva)
+  - [Dispositivo ESP32](#dispositivo-esp32)
+  - [Obiettivo del progetto](#obiettivo-del-progetto)
 - [ESP32 Firmware](#esp32-firmware)
   - [Sniffing Pacchetti](#sniffing-pacchetti)
   - [Configurazione Schedina](#configurazione-schedina)
@@ -35,34 +38,25 @@
 - [Team di sviluppo](#team-di-sviluppo)
 - [Componenti del progetto](#componenti-del-progetto)
 
-Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018. 
+Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018.
 
 ## Introduction
 
-Ogni dispositivo WiFi, in particolare gli smartphone, possiedono la capacità di riconnettersi rapidamente ad una rete WiFi precedentemente associata non appena si vengono a trovare all'interno dell'area di copertura. Questo dispositi
-Una delle caratteristiche	degli smartphone	è	la	loro	 capacità	di	 riconnettersi	rapidamente	a
-una	 rete	 WiFi	 cui	 sono	 stati	 precedentemente	 associati,	 non	 appena	 si	 vengono	 a	 trovare	
-all’interno	della	sua	area	di	copertura.	Tale	comportamento	è	reso	possibile	dalla	cosiddetta	
-modalità	di	scansione	attiva,	per	la	quale,	invece	di	attendere	passivamente	la	ricezione	di	un	
-pacchetto	 di	tipo	 **BEACON**	proveniente	dall’access	 point,	 essi	 inviano,	 ad	 intervalli	 regolari,
-pacchetti	broadcast	di	tipo	**PROBE	REQUEST**,	eventualmente	indicando	il	nome	della	rete	a	cui	
-essi	provano	a	connettersi.
-Tale	 comportamento	 può	 essere	 utilizzato	 per	 realizzare	 un	 rilevatore	 di	 presenza,	 che	
-determini,	in	una	data	area,	una	stima	del	numero	di	smartphone	presenti.
+### Scansione Attiva
 
-Il	dispositivo	ESP32	possiede un’implementazione	firmware	dello	stack	WiFi	che	permette	di	
-registrare	una	callback		che	viene	invocata	ogniqualvolta	venga	ricevuto	un	pacchetto	di	tipo	
-**CONTROL**,	 offrendo così	 la	 possibilità	 di	 rilevare	 sia	 la	 presenza	 di	 BEACON	 che	 di	 **PROBE	
-REQUEST**.
-Tale	callback	riceve	come	parametro	una	struttura	dati	che	fornisce,	oltre	al	pacchetto	stesso	
-ricevuto,	anche	altri metadati,	tra	cui	la	potenza	del	segnale	ricevuto	(RSSI	– Received	Signal	
-Strenght	 Indicator).	 In	 condizioni	 ideali,	 tale	 valore	 decresce	 esponenzialmente	 al	 crescere	
-della	distanza	ed è pertanto	espresso	in	forma	logaritmica (dB).	Valori	tipici	variano	tra	-35/-
-40	(molto vicino)	fino	a	-95/-105	(molto lontano,	ai	limiti	della	possibilità	di	ricezione).	Nella	
-realtà,	vari fattori	possono	condizionare	tale	valore,	tra	cui	la	presenza	di	riflessioni	multiple	
-dovute	 al	 terreno,	 ai	 muri	 e agli	 altri	 ostacoli	 alla	 propagazione	 o	 le	 interferenze	 con	 altri	
-segnali	 presenti	 nell’ambiente.	 In	 ogni	 caso,	 esso	 fornisce	 una	 stima	 approssimata	 della	
-distanza.
+Ogni dispositivo WiFi, in particolare gli smartphone, possiedono la capacità di riconnettersi rapidamente ad una rete WiFi precedentemente associata non appena si vengono a trovare all'interno dell'area di copertura. Questa funzionalità è possibile grazie allo sfruttamento della *scansione attiva* dei nostri dispositivi: questi inviano, ad intervalli regolari, pacchetti broadcast di tipo **PROBE REQUEST** indicando in maniera facoltativa l'SSID per cui si richiede il collegamento.
+
+### Dispositivo ESP32
+
+Il dispositivo ESP32 utilizzato in questo progetto possiede un'implementazione dello stack WiFi, il quale permette allo stesso di registrare una callback da invocare ogni volta che viene ricevuto un pacchetto di tipo **CONTROL**, rilevando sia **BEACON**, sia **PROBE REQUEST**.
+
+All'interno di questo pacchetto è possibile trovare la potenza del segnale ricevuto *RSSI (Received Signal Strenght Indicator)*. In condizioni ideali questo valore decresce esponenzialmente al crescere della distanza ed viene espresso in *dB*. I valori tipici variano tra -35/-40dB (molto vicino), fino a -95/-105dB (molto lontano).
+
+Nella realtà sono presenti numerosi fattori che possono condizionare tale valore come ad esempio la presenza di riflessioni multiple dovute al terreno, ai muri e agli altri ostacoli, alla propagazione o alle interferenze con altri segnali presenti nell'ambiente.
+
+In ogni caso rimane uno strumento utile per poter misurare la distanza del dispositivo.
+
+### Obiettivo del progetto
 
 L'obiettivo principale del software implementato è quello di fornire un sistema capace di monitorare numero e posizione di studenti all'interno di un'aula. Questo è possibile sfruttando i pacchetti PROBE REQUEST utilizzati dai dispositivi che normalmente utilizziamo: questi vengono catturati da una serie di schedine ESP32 (2 o più) per poi essere trasmessi ad un server che si occupa di filtrare e aggregare i pacchetti ricevuti da tutte le schedine in azione per ottenere l'informazione sulla posizione partendo dai valori dell'RSSI.
 Da questi valori è possibile passare ad un valore della distanza del singolo dispositivo (identificato dal suo MAC) da ogni schedina, utile per procedere con una triangolazione della posizione.

@@ -7,9 +7,8 @@
  * Valore di ritorno: 1 in caso di errore, 0 in caso di successo
  * */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "validation.h"
+#include <limits.h>
 
 //id solo numero
 //ssid no simboli, solo alfanumerico min 1
@@ -79,6 +78,15 @@ int channelValidation(char *channel) {
         return 0;
     else
         return 4;
+}
+
+int portValidation(char *port){
+    long p;
+
+    p = strtol(port, NULL, 10);
+    if (p == 0 || p == LONG_MAX || p == LONG_MIN)
+        return 8;
+    return 0;
 }
 
 int ssidServerValidation(char *ssid_server) {

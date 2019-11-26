@@ -2,18 +2,15 @@
 #include <freertos/event_groups.h>
 #include <esp_wifi.h>
 #include <esp_system.h>
-#include <esp_event.h>
 #include <esp_event_loop.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
 #include <driver/gpio.h>
 #include <esp32/rom/crc.h>
 #include <string.h>
-#include <math.h>
 #include <cJSON.h>
 #include <soc/timer_group_struct.h>
 #include <driver/timer.h>
-#include <mdns.h>
 #include <lwip/sockets.h>
 #include <lwip/err.h>
 #include <lwip/api.h>
@@ -22,17 +19,8 @@
 #include <esp_spiffs.h>
 #include <esp_err.h>
 #include "validation.h"
-#include <esp_http_server.h>
-#include <esp_https_server.h>
-#include <lwip/err.h>
-#include <lwip/sockets.h>
-#include <lwip/sys.h>
-#include <lwip/netdb.h>
-
-#include <sys/param.h>
 #include <esp_vfs.h>
-
-
+#include "https_server_esp.h"
 
 // set AP CONFIG values
 #ifdef CONFIG_AP_HIDE_SSID
@@ -63,8 +51,8 @@
  * TYPE [0 MASK 0x0C]
  */
 #define TYPE_MANAGEMENT       0x00
-#define TYPE_CONTROL          0x01
-#define TYPE_DATA             0x02
+// #define TYPE_CONTROL          0x01
+// #define TYPE_DATA             0x02
 
 /**
  * SUBTYPE [0 MASK 0xF0]
@@ -73,7 +61,7 @@
 #define SUBTYPE_PROBE_RESPONSE    0b0101
 #define SUBTYPE_BEACON            0b1000
 
-#define    WIFI_CHANNEL_MAX        (13)
+// #define    WIFI_CHANNEL_MAX        (13)
 #define    WIFI_CHANNEL_SWITCH_INTERVAL    (500)
 
 
@@ -88,30 +76,12 @@
 const int STA_CONNECTED_BIT = BIT0;
 // Pin LED
 #define BLINK_GPIO 2
-/** SERVER VAR **/
-#define CHECK_FILE_EXTENSION(filename, ext) (strcasecmp(&filename[strlen(filename) - strlen(ext)], ext) == 0)
-#define FILE_PATH_MAX (ESP_VFS_PATH_MAX + 128)
-#define SCRATCH_BUFSIZE (10240)
-#define REST_CHECK(a, str, goto_tag, ...)                                              \
-    do                                                                                 \
-    {                                                                                  \
-        if (!(a))                                                                      \
-        {                                                                              \
-            ESP_LOGE(TAG, "%s(%d): " str, __FUNCTION__, __LINE__, ##__VA_ARGS__); \
-            goto goto_tag;                                                             \
-        }                                                                              \
-    } while (0)
-
-typedef struct rest_server_context {
-    char base_path[ESP_VFS_PATH_MAX + 1];
-    char scratch[SCRATCH_BUFSIZE];
-} rest_server_context_t;
-
 
 static wifi_country_t wifi_country = {.cc = "CN", .schan = 1, .nchan = 13,
         .policy = WIFI_COUNTRY_POLICY_AUTO};
 
 /** Prototipi Funzioni */
+
 void initialize_spiffs(void);
 
 void wifi_init(void);
@@ -128,8 +98,6 @@ static void getMAC(char *addr, const uint8_t *data, uint16_t offset);
 
 static void printDataSpan(uint16_t start, uint16_t size, const uint8_t *data);
 
-float calculateDistance(signed rssi);
-
 void wifi_connect();
 
 static esp_err_t event_handler(void *ctx, system_event_t *event);
@@ -137,12 +105,6 @@ static esp_err_t event_handler(void *ctx, system_event_t *event);
 int tcpClient();
 
 void getMacAddress(char *macChr);
-
-static void http_server(void *pvParameters);
-
-static void http_server_netconn_serve(struct netconn *conn);
-
-void spiffs_serve(char *resource, struct netconn *conn);
 
 int spiffs_save(char *resource);
 
@@ -156,259 +118,7 @@ char baseMacChr[18] = {0};
 /** Variabili per comunicazione verso server */
 static EventGroupHandle_t wifi_event_group;
 const int CONNECTED_BIT = BIT0;
-static const char *TAG = "tcp_client";
-
-/** STRUCT FOR CRC **/
-typedef struct {
-    unsigned frame_ctrl : 16;
-    unsigned duration_id : 16;
-    uint8_t addr1[6]; /* receiver address */
-    uint8_t addr2[6]; /* sender address */
-    uint8_t addr3[6]; /* filtering address */
-    unsigned sequence_ctrl : 16;
-    uint8_t addr4[6]; /* optional */
-} wifi_ieee80211_mac_hdr_t;
-
-typedef struct {
-    uint8_t point[0];
-    uint32_t crc;
-} crc_t;
-
-typedef struct {
-    wifi_ieee80211_mac_hdr_t hdr;
-    crc_t payload; /* network data ended with 4 bytes csum (CRC32) */
-} wifi_ieee80211_packet_t;
-
-
-/* SERVER */
-
-/* Set HTTP response content type according to file extension */
-static esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filepath) {
-    const char *type = "text/plain";
-    if (CHECK_FILE_EXTENSION(filepath, ".html")) {
-        type = "text/html";
-    } else if (CHECK_FILE_EXTENSION(filepath, ".js")) {
-        type = "application/javascript";
-    } else if (CHECK_FILE_EXTENSION(filepath, ".css")) {
-        type = "text/css";
-    } else if (CHECK_FILE_EXTENSION(filepath, ".png")) {
-        type = "image/png";
-    } else if (CHECK_FILE_EXTENSION(filepath, ".ico")) {
-        type = "image/x-icon";
-    } else if (CHECK_FILE_EXTENSION(filepath, ".svg")) {
-        type = "text/xml";
-    }
-    return httpd_resp_set_type(req, type);
-}
-
-/* Send HTTP response with the contents of the requested file */
-static esp_err_t rest_common_get_handler(httpd_req_t *req) {
-    char filepath[FILE_PATH_MAX];
-
-    rest_server_context_t *rest_context = (rest_server_context_t *) req->user_ctx;
-    strlcpy(filepath, rest_context->base_path, sizeof(filepath));
-    if (req->uri[strlen(req->uri) - 1] == '/') {
-        strlcat(filepath, "/index.html", sizeof(filepath));
-    } else {
-        strlcat(filepath, req->uri, sizeof(filepath));
-    }
-    int fd = open(filepath, O_RDONLY, 0);
-    if (fd == -1) {
-        ESP_LOGE(TAG, "Failed to open file : %s", filepath);
-        /* Respond with 500 Internal Server Error */
-        httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to read existing file");
-        return ESP_FAIL;
-    }
-
-    set_content_type_from_file(req, filepath);
-
-    char *chunk = rest_context->scratch;
-    ssize_t read_bytes;
-    do {
-        /* Read file in chunks into the scratch buffer */
-        read_bytes = read(fd, chunk, SCRATCH_BUFSIZE);
-        if (read_bytes == -1) {
-            ESP_LOGE(TAG, "Failed to read file : %s", filepath);
-        } else if (read_bytes > 0) {
-            /* Send the buffer contents as HTTP response chunk */
-            if (httpd_resp_send_chunk(req, chunk, read_bytes) != ESP_OK) {
-                close(fd);
-                ESP_LOGE(TAG, "File sending failed!");
-                /* Abort sending file */
-                httpd_resp_sendstr_chunk(req, NULL);
-                /* Respond with 500 Internal Server Error */
-                httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to send file");
-                return ESP_FAIL;
-            }
-        }
-    } while (read_bytes > 0);
-    /* Close file after sending complete */
-    close(fd);
-    ESP_LOGI(TAG, "File sending complete");
-    /* Respond with an empty chunk to signal HTTP response completion */
-    httpd_resp_send_chunk(req, NULL, 0);
-    return ESP_OK;
-}
-
-
-/* An HTTP POST handler */
-static esp_err_t echo_post_handler(httpd_req_t *req) {
-    char result[2048];
-    result[0] = '\0';
-    char buf[1024];
-    buf[0] = '\0';
-    int ret, remaining = req->content_len;
-
-
-    while (remaining > 0) {
-        /* Read the data for the request */
-        if ((ret = httpd_req_recv(req, buf,
-                                  MIN(remaining, sizeof(buf)))) <= 0) {
-            if (ret == HTTPD_SOCK_ERR_TIMEOUT) {
-                /* Retry receiving if timeout occurred */
-                continue;
-            }
-            return ESP_FAIL;
-        }
-
-        /* Send back the same data */
-        // 200
-//        httpd_resp_send(req, buf, 0);
-//        httpd_resp_send_chunk(req, buf, ret);
-        if (remaining == req->content_len){
-            strncpy(result, buf, strlen(buf));
-        } else {
-            strcat(result, buf);
-        }
-        remaining -= ret;
-
-        /* Log data received */
-        ESP_LOGI(TAG, "=========== RECEIVED DATA ==========");
-        ESP_LOGI(TAG, "%.*s", ret, buf);
-        ESP_LOGI(TAG, "====================================");
-    }
-    result[req->content_len] = '\0';
-    if (spiffs_save(result) != 0){
-        printf("Salvataggio dati non andato a buon fine\n");
-        httpd_resp_send_500(req);
-    } else {
-        printf("Salvataggio dati andato a buon fine\n");
-        httpd_resp_send(req, NULL, 0);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
-        printf("ESP32 Restarting...\n");
-        esp_restart();
-    }
-
-
-    // End response
-    httpd_resp_send_chunk(req, NULL, 0);
-    return ESP_OK;
-}
-
-
-/* This handler allows the custom error handling functionality to be
- * tested from client side. For that, when a PUT request 0 is sent to
- * URI /ctrl, the /hello and /echo URIs are unregistered and following
- * custom error handler http_404_error_handler() is registered.
- * Afterwards, when /hello or /echo is requested, this custom error
- * handler is invoked which, after sending an error message to client,
- * either closes the underlying socket (when requested URI is /echo)
- * or keeps it open (when requested URI is /hello). This allows the
- * client to infer if the custom error handler is functioning as expected
- * by observing the socket state.
- */
-esp_err_t http_404_error_handler(httpd_req_t *req, httpd_err_code_t err) {
-    if (strcmp("/hello", req->uri) == 0) {
-        httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, "/hello URI is not available");
-        /* Return ESP_OK to keep underlying socket open */
-        return ESP_OK;
-    } else if (strcmp("/echo", req->uri) == 0) {
-        httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, "/echo URI is not available");
-        /* Return ESP_FAIL to close underlying socket */
-        return ESP_FAIL;
-    }
-    /* For any other URI send 404 and close socket */
-    httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, "Some 404 error message");
-    return ESP_FAIL;
-}
-
-static esp_err_t start_webserver(void) {
-    char *base_path = "/spiffs";
-    REST_CHECK(base_path, "wrong base path", err);
-    rest_server_context_t *rest_context = calloc(1, sizeof(rest_server_context_t));
-    REST_CHECK(rest_context, "No memory for rest context", err);
-    strlcpy(rest_context->base_path, base_path, sizeof(rest_context->base_path));
-
-
-    httpd_handle_t server = NULL;
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-
-    httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
-    conf.httpd.uri_match_fn = &httpd_uri_match_wildcard;
-
-
-    extern const unsigned char cacert_pem_start[] asm("_binary_cacert_pem_start");
-    extern const unsigned char cacert_pem_end[]   asm("_binary_cacert_pem_end");
-    conf.cacert_pem = cacert_pem_start;
-    conf.cacert_len = cacert_pem_end - cacert_pem_start;
-
-    extern const unsigned char prvtkey_pem_start[] asm("_binary_prvtkey_pem_start");
-    extern const unsigned char prvtkey_pem_end[]   asm("_binary_prvtkey_pem_end");
-    conf.prvtkey_pem = prvtkey_pem_start;
-    conf.prvtkey_len = prvtkey_pem_end - prvtkey_pem_start;
-
-    REST_CHECK(httpd_ssl_start(&server, &conf) == ESP_OK, "Start server failed", err_start);
-
-    ESP_LOGI(TAG, "Starting HTTP Server");
-
-    httpd_uri_t echo = {
-            .uri       = "/echo",
-            .method    = HTTP_POST,
-            .handler   = echo_post_handler,
-            .user_ctx  = rest_context
-    };
-
-    httpd_uri_t common_get_uri = {
-            .uri = "/*",
-            .method = HTTP_GET,
-            .handler = rest_common_get_handler,
-            .user_ctx = rest_context
-    };
-    ESP_LOGI(TAG, "Registering URI handlers");
-    httpd_register_uri_handler(server, &echo);
-    httpd_register_uri_handler(server, &common_get_uri);
-
-    ESP_LOGI(TAG, "Error starting server!");
-    return NULL;
-    err_start:
-    free(rest_context);
-    err:
-    return ESP_FAIL;
-}
-
-static void stop_webserver(httpd_handle_t server) {
-    // Stop the httpd server
-    httpd_stop(server);
-}
-
-static void disconnect_handler(void *arg, esp_event_base_t event_base,
-                               int32_t event_id, void *event_data) {
-    httpd_handle_t *server = (httpd_handle_t *) arg;
-    if (*server) {
-        ESP_LOGI(TAG, "Stopping webserver");
-        stop_webserver(*server);
-        *server = NULL;
-    }
-}
-
-static void connect_handler(void *arg, esp_event_base_t event_base,
-                            int32_t event_id, void *event_data) {
-    httpd_handle_t *server = (httpd_handle_t *) arg;
-    if (*server == NULL) {
-        ESP_LOGI(TAG, "Starting webserver");
-        *server = start_webserver();
-    }
-}
+static const char *TAG = "room_monitor";
 
 
 /**
@@ -418,12 +128,10 @@ void app_main(void) {
 
     // Conteggio quante volte scade il timer da 1 min, ogni 5 bisogna settare l'orario
     int nallarm = 0;
-    //bool orario = false;
 
     //GetMac_ESP32
     getMacAddress(baseMacChr);
     esp_err_t err = nvs_flash_init();
-    // TODO: Check if is useful
     if (err != ESP_OK) {
         printf("Initialization of NVS went wrong. Let's format!\n");
         const esp_partition_t *nvs_partition = esp_partition_find_first(ESP_PARTITION_TYPE_DATA,
@@ -502,32 +210,6 @@ void getMacAddress(char *macChr) {
             baseMac[5]);
 }
 
-static void initialise_mdns(void)
-{
-    char * hostname = "roommonitor";
-    ESP_ERROR_CHECK( mdns_init() );
-    //set mDNS hostname (required if you want to advertise services)
-    ESP_ERROR_CHECK( mdns_hostname_set(hostname) );
-    ESP_LOGI(TAG, "mdns hostname set to: [%s]", hostname);
-    //set default mDNS instance name
-    ESP_ERROR_CHECK( mdns_instance_name_set("ESP32 with mDNS") );
-
-    //structure with TXT records
-    mdns_txt_item_t serviceTxtData[3] = {
-            {"board","esp32"},
-            {"u","user"},
-            {"p","password"}
-    };
-
-    //initialize service
-    ESP_ERROR_CHECK( mdns_service_add("ESP32-WebServer", "_http", "_tcp", 80, serviceTxtData, 3) );
-    //add another TXT item
-    ESP_ERROR_CHECK( mdns_service_txt_item_set("_http", "_tcp", "path", "/foobar") );
-    //change TXT item value
-    ESP_ERROR_CHECK( mdns_service_txt_item_set("_http", "_tcp", "u", "admin") );
-    free(hostname);
-}
-
 /**
  * Impostazione dei parametri di rete sia per il captive portal sia per la comunicazione in rete
  */
@@ -543,9 +225,9 @@ void wifi_init() {
     // assign a static IP to the network interface
     tcpip_adapter_ip_info_t info;
     memset(&info, 0, sizeof(info));
-    IP4_ADDR(&info.ip, 192, 168, 1, 1);
-    IP4_ADDR(&info.gw, 192, 168, 1, 1);
-    IP4_ADDR(&info.netmask, 255, 255, 255, 0);
+    IP4_ADDR(&info.ip, 192, 168, 1, 1); // NOLINT(hicpp-signed-bitwise)
+    IP4_ADDR(&info.gw, 192, 168, 1, 1); // NOLINT(hicpp-signed-bitwise)
+    IP4_ADDR(&info.netmask, 255, 255, 255, 0); // NOLINT(hicpp-signed-bitwise)
     ESP_ERROR_CHECK(tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_AP, &info));
     printf("- TCP adapter configured with IP 192.168.1.1/24\n");
 
@@ -558,7 +240,7 @@ void wifi_init() {
     printf("- Event loop initialized\n");
 
     //ESP_ERROR_CHECK(esp_event_loop_init(event_handler, NULL));
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT(); // NOLINT
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
     ESP_ERROR_CHECK(esp_wifi_set_country(&wifi_country));
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
@@ -600,10 +282,10 @@ void wifi_sniffer_init(void) {
 
     char *channel = my_nvs_get_str("channel");
     if (channel != NULL) {
-        wifi_sniffer_set_channel(atoi(channel));
+        wifi_sniffer_set_channel(strtol(channel, NULL, 10));
         free(channel);
     } else {
-        wifi_sniffer_set_channel(atoi(SCANChannel));
+        wifi_sniffer_set_channel(strtol(SCANChannel, NULL, 10));
     }
 }
 
@@ -613,11 +295,10 @@ void wifi_sniffer_init(void) {
  * @return valore contenuto nella memoria NVS se questo è presente, altrimenti viene ritornato NULL
  */
 char *my_nvs_get_str(char *key) {
-    // TODO: doc
     esp_err_t err;
     char *value = NULL;
     nvs_handle my_handle;
-    err = nvs_open("storage", NVS_READWRITE, &my_handle);
+    ESP_ERROR_CHECK(nvs_open("storage", NVS_READWRITE, &my_handle));
     size_t required_size;
     err = nvs_get_str(my_handle, key, NULL, &required_size);
     if (err == ESP_OK) {
@@ -706,16 +387,13 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     time_t now;
     uint8_t frameControl = (unsigned int) ppkt->payload[0];
     // uint8_t version = (frameControl & 0x03) >> 0;
-    uint8_t frameType = (frameControl & 0x0C) >> 2;
-    uint8_t frameSubType = (frameControl & 0xF0) >> 4;
-
+    uint8_t frameType = (frameControl & 0x0C) >> 2; // NOLINT(hicpp-signed-bitwise)
+    uint8_t frameSubType = (frameControl & 0xF0) >> 4; // NOLINT(hicpp-signed-bitwise)
     // Filtraggio dei pacchetti non desiderati
     if (frameType != TYPE_MANAGEMENT || frameSubType != SUBTYPE_PROBE_REQUEST) {
         return;
     }
-
     // Set Packet
-
     // Test aumento pacchetti
 //    for(int i=0;i<100;i++)
     addto_packet_list(ppkt, head);
@@ -726,7 +404,7 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     plen = crc32_le(0, ppkt->payload, size);
     //printf("%2d %2d %2d ", get_id(), get_posx(), get_posy());
     printf("%2d ", get_id());
-    printf("%u\t", ppkt->rx_ctrl.sig_len);
+    printf("%u\t", (unsigned) ppkt->rx_ctrl.sig_len);
     printf("%08x\t", plen);
     printf(" TYPE= %s", subtype2str(frameSubType));
     printf(" RSSI: %02d", ppkt->rx_ctrl.rssi);
@@ -781,7 +459,7 @@ void IRAM_ATTR timer_group0_isr(void *para) {
     // Timer group 0, ISR
     int timer_idx = (int) para;
     uint32_t intr_status = TIMERG0.int_st_timers.val;
-    if ((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) {
+    if ((intr_status & BIT(timer_idx)) && timer_idx == TIMER_0) { // NOLINT(hicpp-signed-bitwise)
         TIMERG0.hw_timer[timer_idx].update = 1;
         // Clear the interrupt called
         TIMERG0.int_clr_timers.t0 = 1;
@@ -822,6 +500,7 @@ void wifi_connect() {
  * @return     ESP_OK
  */
 static esp_err_t event_handler(void *ctx, system_event_t *event) {
+    (void) (ctx); // Just to avoid warning
     switch (event->event_id) {
         case SYSTEM_EVENT_STA_START:
             wifi_connect();
@@ -835,16 +514,8 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
             break;
         case SYSTEM_EVENT_AP_START:
             printf("- Wifi adapter started\n\n");
-            static httpd_handle_t server = NULL;
-            server = start_webserver();
-//            // create and configure the mDNS service
-//            ESP_ERROR_CHECK(mdns_init());
-//            ESP_ERROR_CHECK(mdns_hostname_set("esp32web"));
-//            ESP_ERROR_CHECK(mdns_instance_name_set("ESP32 webserver"));
-//            printf("- mDNS service started\n");
-//            // start the HTTP server task
-//            xTaskCreate(&http_server, "http_server", 20480, NULL, 5, NULL);
-//            printf("- HTTP server started\n");
+            ESP_ERROR_CHECK(start_webserver());
+            printf("- HTTPS server started\n");
             break;
         case SYSTEM_EVENT_AP_STACONNECTED:
             xEventGroupSetBits(wifi_event_group, STA_CONNECTED_BIT);
@@ -855,235 +526,6 @@ static esp_err_t event_handler(void *ctx, system_event_t *event) {
     return ESP_OK;
 }
 
-/**
- * HTTP server task
- * @param pvParameters  Parametri
- */
-//static void http_server(void *pvParameters) {
-//
-//    struct netconn *conn, *newconn;
-//    err_t err;
-//    conn = netconn_new(NETCONN_TCP);
-//    netconn_bind(conn, NULL, 80);
-//    netconn_listen(conn);
-//    printf("* HTTP Server listening\n");
-//    do {
-//        err = netconn_accept(conn, &newconn);
-//        printf("New client connected\n");
-//        if (err == ERR_OK) {
-//            http_server_netconn_serve(newconn);
-//            netconn_delete(newconn);
-//        }
-//        vTaskDelay(10);
-//    } while (err == ERR_OK);
-//    netconn_close(conn);
-//    netconn_delete(conn);
-//    printf("\n");
-//}
-
-/**
- * Funzione che permette di gestire le richieste fatte all'HTTP Server
- * @param conn  Connessione
- */
-//static void http_server_netconn_serve(struct netconn *conn) {
-//
-//    struct netbuf *inbuf;
-//    char *buf;
-//    u16_t buflen;
-//    err_t err;
-//
-//    err = netconn_recv(conn, &inbuf);
-//
-//    if (err == ERR_OK) {
-//
-//        // get the request and terminate the string
-//        netbuf_data(inbuf, (void **) &buf, &buflen);
-//        buf[buflen] = '\0';
-//
-//        // get the request body and the first line
-//        char *body = strstr(buf, "\r\n\r\n");
-//        char *first_line = strtok(buf, "\n");
-//
-//
-//        if (first_line) {
-//            // static content, get it from SPIFFS
-//            if (strstr(first_line, "GET / ")) {
-//                printf("B\n");
-//                //printf("SERVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-//                spiffs_serve("/index.html", conn);
-//                //printf("SERVE END: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-//            } else if (strstr(first_line, "POST /save.html")) {
-//                char *data = strstr(body, "{");
-//                printf("A\n");
-//                //printf("SAVE START: %d\n", heap_caps_get_free_size(MALLOC_CAP_DEFAULT));
-//                err = spiffs_save(data, conn);
-//                if (err != 0) {
-//                    printf("Errore salvataggio %d\n", err);
-//                    spiffs_serve("/error.html", conn);
-//                } else {
-//                    spiffs_serve("/success.html", conn);
-//                    netbuf_delete(inbuf);
-//                    netconn_close(conn);
-//                    printf("ESP32 Restarting...\n");
-//                    esp_restart();
-//                }
-//            } else {
-//                char *method = strtok(first_line, " ");
-//                char *resource = strtok(NULL, " ");
-//                printf("%s\n", resource);
-//                spiffs_serve(resource, conn);
-//            }
-//        } else printf("Unknown request\n");
-//    }
-//    netbuf_delete(inbuf);
-//    netconn_close(conn);
-//    printf("CA\n");
-//}
-
-/**
- * Serve contenuto statico da partizione SPIFFS
- * @param resource  Path della risorsa richiesta
- * @param conn      Struttura connessione
- */
-//void spiffs_serve(char *resource, struct netconn *conn) {
-//    if (resource == NULL) {
-//        return;
-//    }
-//    // check if it exists on SPIFFS
-//    char full_path[100];
-//    int len = 100;
-//
-//    sprintf(full_path, "/spiffs%s", resource);
-//    printf("+ Serving static resource: %s\n", full_path);
-//    struct stat st;
-//    if (stat(full_path, &st) == 0) {
-//        netconn_write(conn, http_html_hdr, sizeof(http_html_hdr) - 1, NETCONN_COPY);
-//
-//        // open the file for reading
-//        FILE *f = fopen(full_path, "r");
-//        if (f == NULL) {
-//            printf("Unable to open the file %s\n", full_path);
-//            return;
-//        }
-//        // send the file content to the client
-//        char buffer[500];
-//        len = 500;
-//        int size = 0;
-//        size_t char_read = 0;; /* there was data to read */
-//        while ((char_read = fread(buffer, sizeof(char), len, f)) != 0) {
-//            size += char_read / sizeof(char);
-//            netconn_write(conn, buffer, char_read, NETCONN_COPY);
-//        }
-//        fclose(f);
-//        fflush(stdout);
-//        printf("+ served %d bytes\n", size);
-//    } else {
-//        printf("Error 404\n");
-//        netconn_write(conn, http_404_hdr, sizeof(http_404_hdr) - 1, NETCONN_COPY);
-//    }
-//}
-
-/**
- * Richiesta per salvataggio dei dati all'interno della schedina tramite richiesta HTTP
- * @param resource      Risorsa Da Salvare
- * @param conn          Connessione
- * @return              Esito positivo ritorno 0, esito negativo diverso da 0
- */
-int spiffs_save(char *resource) {
-    cJSON *json = cJSON_Parse(resource);
-    if (json == NULL) {
-        const char *error_ptr = cJSON_GetErrorPtr();
-        if (error_ptr != NULL) {
-            fprintf(stderr, "Error before: %s\n", error_ptr);
-        }
-        return 1;
-    }
-    // Validazione input
-    int res;
-
-    char *id = cJSON_GetObjectItem(json, "id")->valuestring;
-    res = idValidation(id);
-    if (res != 0)
-        return res;
-
-    char *ssid_ap = cJSON_GetObjectItem(json, "ssid_ap")->valuestring;
-    res = ssidApValidation(ssid_ap);
-    if (res != 0)
-        return res;
-
-    char *password_ap = cJSON_GetObjectItem(json, "password_ap")->valuestring;
-    res = passwordApValidation(password_ap);
-    if (res != 0)
-        return res;
-
-    char *channel = cJSON_GetObjectItem(json, "channel")->valuestring;
-    res = channelValidation(channel);
-    if (res != 0)
-        return res;
-
-    char *ssid_server = cJSON_GetObjectItem(json, "ssid_server")->valuestring;
-    res = ssidServerValidation(ssid_server);
-    if (res != 0)
-        return res;
-
-    char *password_server = cJSON_GetObjectItem(json, "password_server")->valuestring;
-    res = passServerValidation(password_server);
-    if (res != 0)
-        return res;
-    char *ip_server = cJSON_GetObjectItem(json, "ip_server")->valuestring;
-    res = ipValidation(ip_server);
-    if (res != 0)
-        return res;
-
-    printf("Validazione input eseguita.");
-    int err;
-
-    FILE *f = fopen("/spiffs/data.json", "w");
-    fprintf(f, "%s", cJSON_Print(json));
-    fclose(f);
-    nvs_handle my_handle;
-    err = nvs_open("storage", NVS_READWRITE, &my_handle);
-    if (err != ESP_OK) {
-        printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
-    } else {
-        cJSON *current_element = NULL;
-        char *current_key = NULL;
-        cJSON_ArrayForEach(current_element, json) {
-            current_key = current_element->string;
-            if (current_key != NULL) {
-                printf("%s %s\n", current_key, current_element->valuestring);
-                err = nvs_set_str(my_handle, current_key, current_element->valuestring);
-            }
-        }
-        printf("Committing updates in NVS ... ");
-        switch (err) {
-            case ESP_OK:
-                printf("Saved\n");
-                // indica che i dati ricevuti sono stati salvati, solo in tale situazione il funzionamento della schedina viene sbloccato
-                err = nvs_set_str(my_handle, "saved", "saved");
-                switch (err) {
-                    case ESP_OK:
-                        break;
-                    case ESP_ERR_NVS_NOT_FOUND:
-                        printf("The value is not initialized yet!\n");
-                        break;
-                    default:
-                        printf("Error (%s) reading!\n", esp_err_to_name(err));
-                }
-                break;
-            case ESP_ERR_NVS_NOT_FOUND:
-                printf("The value is not initialized yet!\n");
-                break;
-            default:
-                printf("Error (%s) reading!\n", esp_err_to_name(err));
-        }
-        err = nvs_commit(my_handle);
-        printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
-        // Close
-        nvs_close(my_handle);
-    }
-    return 0;
-}
 
 /**
  * Funzione per connessione tcp con server per scambio pacchetti acquisiti
@@ -1105,9 +547,10 @@ int tcpClient() {
         ESP_LOGE(TAG, "Error socket. \n");
         return -2;
     }
-    // TODO: Porta da NVS
     char *server = my_nvs_get_str("ip_server");
-    if (server != NULL) {
+    char *port = my_nvs_get_str("port_server");
+
+    if (server != NULL && port != NULL) {
         result = inet_aton(server, &addr);
         if (!result) {
             ESP_LOGE(TAG, "Error ip address.\n");
@@ -1116,10 +559,10 @@ int tcpClient() {
             return -2;
         }
         saddr.sin_family = AF_INET;
-        saddr.sin_port = htons(atoi(TCPServerPORT));
+        saddr.sin_port = htons(strtol(port, NULL, 10));
         saddr.sin_addr = addr;
-
-        ESP_LOGI(TAG, "Connecting with %s:%s ...\n", server, TCPServerPORT);
+        ESP_LOGI(TAG, "Connecting with %s:%s ...\n", server, port);
+        free(port);
         free(server);
     } else {
         result = inet_aton(TCPServerIP, &addr);
@@ -1129,7 +572,7 @@ int tcpClient() {
             return -2;
         }
         saddr.sin_family = AF_INET;
-        saddr.sin_port = htons(atoi(TCPServerPORT));
+        saddr.sin_port = htons(strtol(TCPServerPORT, NULL, 10));
         saddr.sin_addr = addr;
 
         ESP_LOGI(TAG, "Connecting with %s:%s ...\n", TCPServerIP, TCPServerPORT);
@@ -1153,9 +596,9 @@ int tcpClient() {
         ESP_LOGI(TAG, "Message sent.\n");
     }
     // Messaggi inviati, svuoto comunque la lista
-    print_all_list(head);
+//    print_all_list(head);
     reset_packet_list(head);
-    print_all_list(head);
+//    print_all_list(head);
     close(s);
     gpio_set_level(BLINK_GPIO, 0);
     return retValue;
