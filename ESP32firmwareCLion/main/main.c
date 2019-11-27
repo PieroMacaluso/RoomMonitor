@@ -125,7 +125,7 @@ static const char *TAG = "room_monitor";
  */
 void app_main(void) {
 
-    // Conteggio quante volte scade il timer da 1 min, ogni 5 bisogna settare l'orario
+    // Conteggio quante volte scade il timer da 1 min, ogni 60 bisogna settare l'orario
     int nallarm = 0;
 
     //GetMac_ESP32
@@ -173,7 +173,6 @@ void app_main(void) {
         ESP_ERROR_CHECK(timer_start(TIMER_GROUP_0, TIMER_0));
         while (mod == 0) {
             // Attesa alarm
-            // TODO: check correctness
             vTaskDelay(60 / portTICK_PERIOD_MS);
         }
 

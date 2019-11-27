@@ -87,15 +87,14 @@ bool obtain_time(void) {
 }
 
 /**
- * Ogni 5 volte che scatta il timer da un minuto (-> ogni 5 minuti) controlla e aggiorna l'orario
+ * Ogni 60 volte che scatta il timer da un minuto (-> ogni 60 minuti) controlla e aggiorna l'orario
  * @param n
  */
 void checkTime(int *n) {
 
     (*n)++;
     printf("CheckTime:%d\n", *n);
-    // TODO: va bene 5 minuti check time?
-    if ((*n) == 5 || (*n) == -1) {
+    if ((*n) >= 60 || (*n) == -1) {
         printf("CheckTime: obtain_time...\n");
         obtain_time();
         (*n) = 0;
