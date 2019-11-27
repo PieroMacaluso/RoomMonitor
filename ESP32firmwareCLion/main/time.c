@@ -94,11 +94,12 @@ void checkTime(int *n) {
 
     (*n)++;
     printf("CheckTime:%d\n", *n);
-    // SECOND_CHECK_TIME/SECOND_SCAN_MODE =numero di volte che il timer deve scadere per rappresentare il periodo di settaggio orario
-    if ((*n) ==/*SECOND_CHECK_TIME/SECOND_SCAN_MODE*/ 5 || (*n) == -1) {
+    // TODO: va bene 5 minuti check time?
+    if ((*n) == 5 || (*n) == -1) {
         printf("CheckTime: obtain_time...\n");
         obtain_time();
         (*n) = 0;
     }
 }
+
 #endif

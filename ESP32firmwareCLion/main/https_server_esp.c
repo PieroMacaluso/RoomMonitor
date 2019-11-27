@@ -147,8 +147,8 @@ static esp_err_t echo_post_handler(httpd_req_t *req) {
     } else {
         printf("Salvataggio dati andato a buon fine\n");
         httpd_resp_send(req, NULL, 0);
-        vTaskDelay(500 / portTICK_PERIOD_MS);
         printf("ESP32 Restarting...\n");
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
         esp_restart();
     }
     // End response
