@@ -20,13 +20,10 @@ PositionPlotView::PositionPlotView(QChart *chart, QWidget *parent) : QChartView(
 void PositionPlotView::setChart(PositionPlot *chart) {
     delete m_tooltip;
     m_tooltip = nullptr;
-    // TODO: liberazione oldPlot crea SIGSEV, che fare?
-//    PositionPlot *oldPlot = this->positionPlot;
     QChartView::setChart(chart);
     this->positionPlot = chart;
     connect(this->positionPlot->getScatter(), &QScatterSeries::hovered, this, &PositionPlotView::tooltip);
     this->positionPlot->resetView();
-//    delete oldPlot;
 }
 
 void PositionPlotView::mouseDoubleClickEvent(QMouseEvent *event) {

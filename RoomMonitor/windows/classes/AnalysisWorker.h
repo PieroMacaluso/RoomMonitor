@@ -50,25 +50,6 @@ public slots:
         QDateTime end{};
         end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
         qint64 diff = end.toSecsSinceEpoch() - start.toSecsSinceEpoch();
-        // TODO: Frequenza minima personalizzata per ogni granularità? Issue #23
-//        if (diff >= 10 * 12 * 30 * 24 * 60 * 60) {
-//            result->setTitle(title + "Modalità: DECENNIO - Granularità: 30d|1d");
-//            granularity = 60 * 60 * 24 * 30;
-//            bucket = 60 * 60 * 24;
-//            freq = 1;
-//        } else if (diff >= 12 * 30 * 24 * 60 * 60) {
-//            result->setTitle(title + "Modalità: ANNO - Granularità: 1w|1d");
-//            granularity = 60 * 60 * 24 * 7;
-//            bucket = 60 * 60 * 24;
-//            freq = 1;
-//
-//        } else if (diff > 31 * 24 * 60 * 60) {
-//            result->setTitle(title + "Modalità: MESE - Granularità: 1d|1h");
-//            granularity = 60 * 60 * 24;
-//            bucket = 60 * 60;
-//            freq = 1;
-//
-//        } else {
         freq = su.value("monitor/min").toInt();
         result->setTitle(
                 title + "Modalità: GIORNO - Granularità: 5m|" + QString::fromStdString(std::to_string(freq)) + "m");

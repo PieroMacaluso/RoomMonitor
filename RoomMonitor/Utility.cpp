@@ -198,7 +198,6 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
             continue;
         }
         if (code.result().toHex() == QString::fromStdString(packet_hmac[1])) {
-            // TODO: alcuni pacchetti non vengono inviati del tutto, metà stringa
             // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
             //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
 
@@ -214,7 +213,6 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
                           std::stoi(values[4]), ssid);
             deque.push_back(packet);
         } else {
-            // TODO: cosa fare se non coincide?
             qWarning() << "Pacchetto con Hash non coincidente " << QString::fromStdString(s);
             throw std::invalid_argument{"Board non autorizzata"};
         }

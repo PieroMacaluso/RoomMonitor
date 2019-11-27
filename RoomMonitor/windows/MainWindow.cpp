@@ -90,7 +90,6 @@ void MainWindow::setupConnect() {
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
         if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
-            // TODO: Lasciare o tenere
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
@@ -203,8 +202,6 @@ void MainWindow::setupConnect() {
     // Azione Analisi MAC randomico
     QObject::connect(ui.randomButton, &QPushButton::clicked, [&]() {
         QString mac = ui.macSituation->selectedItems().at(0)->text();
-        // TODO: Implement Random Dialog
-//        s.getHiddenMacFor(mac, ui.startDate->dateTime(), ui.endDate->dateTime());
         QDialog random{};
         randomDialog.setupUi(&random);
         auto macChart = new MacChart();
@@ -321,7 +318,6 @@ std::list<Packet> MainWindow::getAllPacketsOfMac(const QString &mac, QDateTime i
     QSqlQuery query{db};
     QDateTime timeInit;
     QDateTime timeEnd;
-    //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
 
     query.prepare(Query::SELECT_HIDDEN_MAC.arg(table));
     query.bindValue(":fd", initTime.toString("yyyy-MM-dd hh:mm:ss"));
@@ -333,7 +329,7 @@ std::list<Packet> MainWindow::getAllPacketsOfMac(const QString &mac, QDateTime i
         Utility::warningMessage(Strings::ERR_DB,
                                 Strings::ERR_DB_MSG,
                                 query.lastError().text());
-        return std::list<Packet>{}; //todo eccezione?
+        return std::list<Packet>{};
     }
 
     if (query.size() == 0) {
@@ -369,7 +365,6 @@ std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime en
     //query per ottenere i pacchetti con mac hidden nel periodo specificato
     QDateTime timeInit;
     QDateTime timeEnd;
-    //todo verificare problema fusi, inserisco il timestamp delle 18.00 ma lo trasforma in 20.00. Potrebbe essere un problema per la query
     std::deque<Packet> hiddenPackets;
     QString table = su.value("database/table").toString();
     bool error = false;
@@ -385,7 +380,7 @@ std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime en
         Utility::warningMessage(Strings::ERR_DB,
                                 Strings::ERR_DB_MSG,
                                 query.lastError().text());
-        return std::deque<Packet>{};        //todo eccezione?
+        return std::deque<Packet>{};
     }
     QSqlRecord record = query.record();
     if (query.size() == 0)
@@ -406,7 +401,6 @@ std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime en
         hiddenPackets.push_back(p);
 
     }
-    //todo ordinare per timestamp, utile per getHiddenMacFor
     return hiddenPackets;
 }
 

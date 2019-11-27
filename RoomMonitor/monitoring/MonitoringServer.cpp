@@ -142,11 +142,8 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
  */
 float MonitoringServer::calculateDistance(signed rssi, int A) {
     // n: Costante di propagazione del segnale. Costante 2 in ambiente aperto.
-    // TODO: vedere se applicabile a stanza
     // A: potenza del segnale ricevuto in dBm ad un metro
-    // TODO: da ricercare sperimentalmente
     const float cost = settings.value("monitor/n").toFloat();
-
     return pow(10, (A - rssi) / (10.0 * cost));
 
 }
@@ -212,7 +209,6 @@ void MonitoringServer::newConnection() {
     std::vector<std::string> pacchetti;
     std::deque<Packet> packetsConn;
     std::string allData{};
-    // TODO: finetuning di questo parametro, più è piccolo, meglio è!
     while (socket->waitForReadyRead(500)) {
         // Concatenazione stringhe ricevute in un'unica stringa
         QByteArray a = socket->readAll();
@@ -251,7 +247,6 @@ void MonitoringServer::newConnection() {
         }
     }
 
-    //todo controllare se va bene un conteiner pacchetti per ogni newConnection (stesso anche in caso la schedina usi più pacchetti tcp per inviare l'intero elenco)
     socket->flush();
     socket->close();
     qDebug() << "Connection closed";
@@ -270,10 +265,22 @@ void MonitoringServer::aggregate() {
     int nSchedine = boards.size();
     QSet<int> listOfId;             //usato per segnare quali id schedine sono state acquisite
     std::map<std::string, std::deque<Packet>> aggregate{};
-    for (auto & packet : packets) {
+    for (auto &packet : packets) {
         int id = packet.second.first.at(0).getIdSchedina();
         listOfId.insert(id);
-        if (packet.second.first.size() == nSchedine) {
+        QSet<int> id_board_packet;
+        bool to_be_discarded = false;
+        std::for_each(packet.second.first.begin(), packet.second.first.end(), [&](Packet &p) {
+            if (id_board_packet.contains(p.getIdSchedina()))
+                to_be_discarded = true;
+            else id_board_packet.insert(p.getIdSchedina());
+        });
+        if (to_be_discarded) {
+            qWarning() << "Pacchetto scartato per duplicazione HASH";
+            packet.second.second = 2;
+            continue;
+        }
+        if (id_board_packet.size() == nSchedine) {
             aggregate.insert(std::make_pair(packet.first, packet.second.first));
             packet.second.second = 2;
         } else {
@@ -325,9 +332,6 @@ void MonitoringServer::aggregate() {
 
     // Stampa id pacchetti aggregati rilevati.
     for (auto fil : aggregate) {
-        /*
-         * TODO: Verificare query al database, capire cosa e quanto salvare
-         */
         QSqlQuery query{db};
         query.prepare(
                 "INSERT INTO " + settings.value("database/table").toString() +
@@ -344,7 +348,6 @@ void MonitoringServer::aggregate() {
         query.bindValue(":posy", positionData.getY());
         query.bindValue(":timestamp", QDateTime::fromSecsSinceEpoch(fil.second.begin()->getTimestamp()));
         query.bindValue(":ssid", QString::fromStdString(fil.second.begin()->getSsid()));
-        // TODO: controllare bene
         // Controllo se pacchetto con mac hidden
         if (isRandomMac(fil.second.begin()->getMacPeer())) {
             //mac hidden

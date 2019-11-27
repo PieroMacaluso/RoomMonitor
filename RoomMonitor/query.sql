@@ -193,7 +193,6 @@ FROM (SELECT mac_addr,
 GROUP BY mac_addr
 ORDER BY frequency DESC;
 
--- TODO: sliding window
 -- Conta quanti Mac ci sono nel range di tempo selezionato
 SELECT timing, COUNT(DISTINCT mac_addr)
 FROM (SELECT mac_addr,
