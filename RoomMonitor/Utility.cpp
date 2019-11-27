@@ -184,8 +184,18 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
     for (const std::string &s:p) {
         std::vector<std::string> packet_hmac;
         std::vector<std::string> values;
-        Utility::split(s, packet_hmac, '|');
+        // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
+            //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
+            Utility::split(s, packet_hmac, '|');
+        if (packet_hmac.size() != 2) {
+            qCritical() << "Stringa non ricevuta correttemente: " << QString::fromStdString(s);
+            continue;
+        }
         Utility::split(packet_hmac[0], values, ',');
+        if (values.size() != 7) {
+            qCritical() << "Stringa non ricevuta correttemente: " << QString::fromStdString(s);
+            continue;
+        }
         QMessageAuthenticationCode code(QCryptographicHash::Sha256);
         QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
         code.setKey(su.value("secret").toByteArray());
@@ -193,14 +203,7 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
 
         QByteArray byteArray(packet_hmac[0].c_str(), packet_hmac[0].length());
         code.addData(byteArray);
-        if (values.size() != 7) {
-            qCritical() << "Interruzione Stringa: " << QString::fromStdString(s);
-            continue;
-        }
         if (code.result().toHex() == QString::fromStdString(packet_hmac[1])) {
-            // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
-            //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
-
             // Alcuni pacchetti contengono SSID, altri no
             if (values[5] == "~")
                 ssid = "Nan";
@@ -214,7 +217,7 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
             deque.push_back(packet);
         } else {
             qWarning() << "Pacchetto con Hash non coincidente " << QString::fromStdString(s);
-            throw std::invalid_argument{"Board non autorizzata"};
+            throw std::invalid_argument{"Pacchetto corrotto o board non autorizzata"};
         }
     }
     return deque;

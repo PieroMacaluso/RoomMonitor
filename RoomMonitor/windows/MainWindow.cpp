@@ -60,7 +60,7 @@ void MainWindow::setupConnect() {
                 ui.stopButton->setDisabled(false);
                 // Pulizia tabella Ultimi MAC
                 lastMacs.clear();
-                liveGraph.start(1000 * 60 * 5);
+                liveGraph.start(1000 * 60 * 1);
                 i_time = 0;
                 setupMonitoringPlot();
                 setupLivePlot();

@@ -195,10 +195,9 @@ MonitoringServer::splitString(const std::string &str, Container &cont, std::stri
 
 bool MonitoringServer::is_inside_room(PositionData data) {
     QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
-    int margin = su.value("room/margin").toInt();
-    return data.getX() >= 0 - margin && data.getY() >= 0 - margin &&
-           data.getX() <= settings.value("room/width").toFloat() + margin &&
-           data.getY() <= settings.value("room/height").toFloat() + margin;
+    return data.getX() >= 0 && data.getY() >= 0 &&
+           data.getX() <= settings.value("room/width").toFloat() &&
+           data.getY() <= settings.value("room/height").toFloat();
 }
 
 void MonitoringServer::newConnection() {
@@ -275,11 +274,11 @@ void MonitoringServer::aggregate() {
                 to_be_discarded = true;
             else id_board_packet.insert(p.getIdSchedina());
         });
-        if (to_be_discarded) {
-            qWarning() << "Pacchetto scartato per duplicazione HASH";
-            packet.second.second = 2;
-            continue;
-        }
+//        if (to_be_discarded) {
+//            qWarning() << "Pacchetto scartato per duplicazione HASH";
+//            packet.second.second = 2;
+//            continue;
+//        }
         if (id_board_packet.size() == nSchedine) {
             aggregate.insert(std::make_pair(packet.first, packet.second.first));
             packet.second.second = 2;
