@@ -32,8 +32,8 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
         // Da pacchetti a Cerchi di centro schedina e raggio RSSI -> metri meno il numero di retry finora
         for (auto &packet: deque) {
             auto b = boards.find(packet.getIdSchedina());
-            if (b == boards.end()) return PositionData(-1, -1);
-            double dist = calculateDistance(packet.getRssi() + delta * 0.25, b->second.getA());
+            if (b == boards.end()) return PositionData::positionDataNull();
+            double dist = calculateDistance(packet.getRssi() + delta, b->second.getA());
             Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
             circles.push_back(res);
         }
@@ -157,6 +157,7 @@ bool MonitoringServer::start() {
         b = Utility::getBoards();
         boards.clear();
         check_id.clear();
+        board_fail.clear();
         std::for_each(b.begin(), b.end(), [&](Board bo) {
             check_id.push_back(bo.getId());
             boards.insert(std::make_pair(bo.getId(), bo));
@@ -255,10 +256,10 @@ void MonitoringServer::newConnection() {
 
 void MonitoringServer::aggregate() {
     qInfo() << Strings::AGG_STARTED;
+    // Apro connessione con il database
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) exit(-1);
-
 
     // Estrapola numero schedine da vettore
     int nSchedine = boards.size();
@@ -276,11 +277,6 @@ void MonitoringServer::aggregate() {
                 no_dup_queue.push_back(p);
             }
         });
-//        if (to_be_discarded) {
-//            qWarning() << "Pacchetto scartato per duplicazione HASH";
-//            packet.second.second = 2;
-//            continue;
-//        }
         if (id_board_packet.size() == nSchedine) {
             aggregate.insert(std::make_pair(packet.first, no_dup_queue));
             packet.second.second = 2;
