@@ -26,7 +26,7 @@ void MainWindow::setupConnect() {
     ui.endDate->setDateTime(QDateTime::currentDateTime().addSecs(60 * 5));
 
     // Connetti timeout liveGraph a addLiveData
-    connect(&liveGraph, &QTimer::timeout, this, &MainWindow::addLiveData);
+    connect(&s, &MonitoringServer::aggregated, this, &MainWindow::addLiveData);
 
     // Connect Aggregated per aggiornare grafico live e MAC
     connect(&s, &MonitoringServer::aggregated, this, &MainWindow::genLiveData);
@@ -60,7 +60,6 @@ void MainWindow::setupConnect() {
                 ui.stopButton->setDisabled(false);
                 // Pulizia tabella Ultimi MAC
                 lastMacs.clear();
-                liveGraph.start(1000 * 60 * 1);
                 i_time = 0;
                 setupMonitoringPlot();
                 setupLivePlot();
@@ -244,12 +243,12 @@ QList<Statistic> MainWindow::getHiddenMacFor(QString mac, QDateTime initTime, QD
     // usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
     uint32_t tolleranzaTimestamp = su.value("mac/time/tol").toInt();
     double tolleranzaDist = su.value("mac/pos/tol").toInt();
-    bool checkTime =  su.value("mac/time/check").toBool();
-    bool checkDist =  su.value("mac/pos/check").toBool();
-    bool checkSsid =  su.value("mac/ssid/check").toBool();
-    int pesoTime =  su.value("mac/time/peso").toInt();
-    int pesoDist =  su.value("mac/pos/peso").toInt();
-    int pesoSsid =  su.value("mac/ssid/peso").toInt();
+    bool checkTime = su.value("mac/time/check").toBool();
+    bool checkDist = su.value("mac/pos/check").toBool();
+    bool checkSsid = su.value("mac/ssid/check").toBool();
+    int pesoTime = su.value("mac/time/peso").toInt();
+    int pesoDist = su.value("mac/pos/peso").toInt();
+    int pesoSsid = su.value("mac/ssid/peso").toInt();
 
     qreal perc;
     // Ottiene tutti i pacchetti nascosti in quel determinato intervallo
@@ -774,5 +773,4 @@ void MainWindow::stopServer() {
     ui.startButton->setDisabled(false);
     ui.stopButton->setDisabled(true);
     s.stop();
-    liveGraph.stop();
 }
