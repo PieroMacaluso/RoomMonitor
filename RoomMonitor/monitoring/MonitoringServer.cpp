@@ -33,7 +33,7 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
         for (auto &packet: deque) {
             auto b = boards.find(packet.getIdSchedina());
             if (b == boards.end()) return PositionData(-1, -1);
-            double dist = calculateDistance(packet.getRssi() + delta, b->second.getA());
+            double dist = calculateDistance(packet.getRssi() + delta * 0.25, b->second.getA());
             Circle res{dist, b->second.getCoord().x(), b->second.getCoord().y()};
             circles.push_back(res);
         }
@@ -265,14 +265,16 @@ void MonitoringServer::aggregate() {
     QSet<int> listOfId;             //usato per segnare quali id schedine sono state acquisite
     std::map<std::string, std::deque<Packet>> aggregate{};
     for (auto &packet : packets) {
+        std::deque<Packet> no_dup_queue{};
         int id = packet.second.first.at(0).getIdSchedina();
         listOfId.insert(id);
         QSet<int> id_board_packet;
         bool to_be_discarded = false;
         std::for_each(packet.second.first.begin(), packet.second.first.end(), [&](Packet &p) {
-            if (id_board_packet.contains(p.getIdSchedina()))
-                to_be_discarded = true;
-            else id_board_packet.insert(p.getIdSchedina());
+            if (!id_board_packet.contains(p.getIdSchedina())) {
+                id_board_packet.insert(p.getIdSchedina());
+                no_dup_queue.push_back(p);
+            }
         });
 //        if (to_be_discarded) {
 //            qWarning() << "Pacchetto scartato per duplicazione HASH";
@@ -280,7 +282,7 @@ void MonitoringServer::aggregate() {
 //            continue;
 //        }
         if (id_board_packet.size() == nSchedine) {
-            aggregate.insert(std::make_pair(packet.first, packet.second.first));
+            aggregate.insert(std::make_pair(packet.first, no_dup_queue));
             packet.second.second = 2;
         } else {
             packet.second.second++;

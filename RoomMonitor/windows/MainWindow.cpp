@@ -88,37 +88,38 @@ void MainWindow::setupConnect() {
 
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
-        if (s.isRunning() && Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) {
+        if (s.isRunning()) {
+        if ( !Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) return;
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
         }
 
-        // Chiusura monitoraggio
-        // Chiudi Dock Monitoraggio
-        ui.monitoringManagerDock->setVisible(false);
-        ui.lastMacDock->setVisible(false);
-        ui.actionMonitoringDock->setEnabled(false);
-        ui.actionlastMacDock->setEnabled(false);
-        // Disabilita azione Analisi
-        ui.actionAnalysis->setVisible(false);
+            // Chiusura monitoraggio
+            // Chiudi Dock Monitoraggio
+            ui.monitoringManagerDock->setVisible(false);
+            ui.lastMacDock->setVisible(false);
+            ui.actionMonitoringDock->setEnabled(false);
+            ui.actionlastMacDock->setEnabled(false);
+            // Disabilita azione Analisi
+            ui.actionAnalysis->setVisible(false);
 
-        // Apertura Analisi
-        // Apri Dock Analisi
-        ui.macDetectedDock->setVisible(true);
-        ui.rangeSelectorDock->setVisible(true);
-        ui.actionMacSituationDock->setEnabled(true);
-        ui.actionRangeDock->setEnabled(true);
+            // Apertura Analisi
+            // Apri Dock Analisi
+            ui.macDetectedDock->setVisible(true);
+            ui.rangeSelectorDock->setVisible(true);
+            ui.actionMacSituationDock->setEnabled(true);
+            ui.actionRangeDock->setEnabled(true);
 
-        ui.actionMonitoring->setVisible(true);
+            ui.actionMonitoring->setVisible(true);
 
-        // Cambia plot
-        ui.monitoringWidget->setVisible(false);
-        ui.analysisWidget->setVisible(true);
+            // Cambia plot
+            ui.monitoringWidget->setVisible(false);
+            ui.analysisWidget->setVisible(true);
 
-        ui.title->setText(Styles::HEADER.arg(Strings::ANA));
-        setupAnalysisPlot();
-        initializeMacSituationList();
+            ui.title->setText(Styles::HEADER.arg(Strings::ANA));
+            setupAnalysisPlot();
+            initializeMacSituationList();
     });
 
     // Click Monitoring Button
@@ -651,9 +652,9 @@ void MainWindow::addLiveData() {
     }
 
     if (!query.first())
-        ui.monitoringPlot->getChart()->addData(start, 0);
+        ui.monitoringPlot->getChart()->updateData(start, 0);
     else
-        ui.monitoringPlot->getChart()->addData(start, query.value(0).toInt());
+        ui.monitoringPlot->getChart()->updateData(start, query.value(0).toInt());
 
     query.clear();
 
@@ -704,7 +705,7 @@ void MainWindow::genLiveData() {
     QDateTime start{};
     QDateTime prev{};
     start.setSecsSinceEpoch(startTimestamp);
-    prev = start.addSecs(-60 * 5);
+    prev = start.addSecs(-60 * 10);
     QSqlQuery query{db};
     /** QUERY_3 **/
     query.prepare(Query::SELECT_MAC_TIMING_LASTPOS.arg(su.value("database/table").toString()));

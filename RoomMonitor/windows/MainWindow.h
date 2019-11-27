@@ -48,11 +48,6 @@ class MainWindow : public QMainWindow {
      */
     MonitoringServer s{};
 
-    /**
-     * Timer utilizzato per poter triggerare la query che permette di riempire il grafico con
-     * le presenze negli ultimi 5 minuti
-     */
-    QTimer liveGraph{};
 
     /**
      * Mappa che viene pulita e riempita ogni volta che è vengono fatte le query corrispondenti alle

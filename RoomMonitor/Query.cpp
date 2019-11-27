@@ -12,7 +12,7 @@ const QString Query::CREATE_TABLE_PACKET = "CREATE TABLE %1 ("
                                            "pos_x REAL(5,2) NOT NULL, "
                                            "pos_y REAL(5,2) NOT NULL, "
                                            "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
-                                           "ssid varchar(64) NOT NULL, "
+                                           "ssid varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL, "
                                            "hidden int NOT NULL, "
                                            "PRIMARY KEY (id_packet) "
                                            ");";
