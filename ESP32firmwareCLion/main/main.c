@@ -121,7 +121,7 @@ static const char *TAG = "room_monitor";
 
 
 /**
- * Funzione Main che contiene la chiamata alle configurazioni iniziali e il loop principale
+ * Funzione Main che contiene la chiamata alle configurazioni iniziali, la configurazione del timer e il loop principale
  */
 void app_main(void) {
 

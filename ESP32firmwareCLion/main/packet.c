@@ -127,7 +127,7 @@ node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h) {
  * @return          LENPACKET se successo, valori negativi altrimenti
  */
 int send_packets(int s, node_t h) {
-    char buf[256];
+    char buf[1024];
     int result;
     node_t i;
 
@@ -135,11 +135,9 @@ int send_packets(int s, node_t h) {
     /**
      * Costruisco il contesto per calcolo HMAC con SHA256
      */
-    // TODO: controllare bene se questa sia una chiave da 256-bit
     char * key = my_nvs_get_str("secret");
     if (key == NULL) {
         key = "root";
-
     }
     mbedtls_md_context_t ctx;
     mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
@@ -198,7 +196,6 @@ void freeNode(node_t curr) {
     curr->next = NULL;
 }
 
-// TODO: Controllare queste due funzione ed eliminare l'intrusa rifattorizzando
 /**
  * Funzione di liberazione di tutta la lista
  * @param h     testa lista linkata

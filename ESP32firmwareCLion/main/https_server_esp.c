@@ -35,6 +35,13 @@ int spiffs_save(char *resource);
 
 /** SERVER */
 /* Set HTTP response content type according to file extension */
+
+/**
+ * Scegli il content/type della risposta HTTP a seconda dell'estensione del file
+ * @param req       richiesta HTTP
+ * @param filepath  file richiesto
+ * @return          esp_err_t
+ */
 static esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filepath) {
     const char *type = "text/plain";
     if (CHECK_FILE_EXTENSION(filepath, ".html")) {
