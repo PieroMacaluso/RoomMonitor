@@ -22,8 +22,11 @@ void MainWindow::setupConnect() {
     ui.stopButton->setDisabled(true);
 
     // Imposta range di 5 minuti
-    ui.startDate->setDateTime(QDateTime::currentDateTime());
-    ui.endDate->setDateTime(QDateTime::currentDateTime().addSecs(60 * 5));
+    qint64 ts = QDateTime::currentDateTime().toSecsSinceEpoch() / (60 * 5) * (60 * 5);
+    QDateTime t;
+    t.setSecsSinceEpoch(ts);
+    ui.startDate->setDateTime(t);
+    ui.endDate->setDateTime(ui.startDate->dateTime().addSecs(60 * 5));
 
     // Connetti timeout liveGraph a addLiveData
     connect(&s, &MonitoringServer::aggregated, this, &MainWindow::addLiveData);
@@ -84,43 +87,44 @@ void MainWindow::setupConnect() {
             m.exec();
             return;
         }
+        initializeMacSituationList();
         dataAnalysis();
     });
 
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
         if (s.isRunning()) {
-        if ( !Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) return;
+            if (!Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) return;
             s.stop();
             ui.startButton->setDisabled(false);
             ui.stopButton->setDisabled(true);
         }
 
-            // Chiusura monitoraggio
-            // Chiudi Dock Monitoraggio
-            ui.monitoringManagerDock->setVisible(false);
-            ui.lastMacDock->setVisible(false);
-            ui.actionMonitoringDock->setEnabled(false);
-            ui.actionlastMacDock->setEnabled(false);
-            // Disabilita azione Analisi
-            ui.actionAnalysis->setVisible(false);
+        // Chiusura monitoraggio
+        // Chiudi Dock Monitoraggio
+        ui.monitoringManagerDock->setVisible(false);
+        ui.lastMacDock->setVisible(false);
+        ui.actionMonitoringDock->setEnabled(false);
+        ui.actionlastMacDock->setEnabled(false);
+        // Disabilita azione Analisi
+        ui.actionAnalysis->setVisible(false);
 
-            // Apertura Analisi
-            // Apri Dock Analisi
-            ui.macDetectedDock->setVisible(true);
-            ui.rangeSelectorDock->setVisible(true);
-            ui.actionMacSituationDock->setEnabled(true);
-            ui.actionRangeDock->setEnabled(true);
+        // Apertura Analisi
+        // Apri Dock Analisi
+        ui.macDetectedDock->setVisible(true);
+        ui.rangeSelectorDock->setVisible(true);
+        ui.actionMacSituationDock->setEnabled(true);
+        ui.actionRangeDock->setEnabled(true);
 
-            ui.actionMonitoring->setVisible(true);
+        ui.actionMonitoring->setVisible(true);
 
-            // Cambia plot
-            ui.monitoringWidget->setVisible(false);
-            ui.analysisWidget->setVisible(true);
+        // Cambia plot
+        ui.monitoringWidget->setVisible(false);
+        ui.analysisWidget->setVisible(true);
 
-            ui.title->setText(Styles::HEADER.arg(Strings::ANA));
-            setupAnalysisPlot();
-            initializeMacSituationList();
+        ui.title->setText(Styles::HEADER.arg(Strings::ANA));
+//        setupAnalysisPlot();
+//        initializeMacSituationList();
     });
 
     // Click Monitoring Button
@@ -148,9 +152,9 @@ void MainWindow::setupConnect() {
         // Cambia plot
         ui.monitoringWidget->setVisible(true);
         ui.analysisWidget->setVisible(false);
-        setupMonitoringPlot();
-        setupLivePlot();
-        initializeLastMacList();
+//        setupMonitoringPlot();
+//        setupLivePlot();
+//        initializeLastMacList();
     });
 
     // Conseguenze Click Start Button

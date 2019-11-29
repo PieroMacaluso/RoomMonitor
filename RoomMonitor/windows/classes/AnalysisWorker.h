@@ -78,38 +78,25 @@ public slots:
         QDateTime temp = start;
         qint64 current = 0;
         qint64 last = 0;
-
-        while (q.next()) {
-            QDateTime timing = q.value(0).toDateTime();
-            int j = 1;
-            while (temp.addSecs(granularity * j) < timing) {
-                result->addData(temp.addSecs(granularity * j), 0);
-                j++;
-                //qDebug() << temp.addSecs(60 * 5 * j);
-                current = (temp.addSecs(granularity * j).toSecsSinceEpoch() - start.toSecsSinceEpoch()) /
-                          (end.toSecsSinceEpoch() - start.toSecsSinceEpoch()) * 100;
-                if (last + 10 <= current) {
-                    emit updateProgress(current);
-                    last = current;
-                }
-
-            }
-            int count_mac = q.value(1).toInt();
-            result->addData(timing, count_mac);
-            temp = timing;
-            current = (timing.toSecsSinceEpoch() - start.toSecsSinceEpoch()) /
-                      (end.toSecsSinceEpoch() - start.toSecsSinceEpoch()) * 100;
-            if (last + 10 <= current) {
-                emit updateProgress(current);
-                last = current;
-            }
+        bool before_data = false;
+        QMap<QDateTime, int> timeline;
+        for (int j = 0; temp.addSecs(granularity * j) < end; j++){
+            timeline.insert(temp.addSecs(granularity * j), 0);
         }
-        int j = 1;
-        while (temp.addSecs(granularity * j) <= end) {
-            result->addData(temp.addSecs(granularity * j), 0);
-            j++;
-            current = (temp.addSecs(granularity * j).toSecsSinceEpoch() - start.toSecsSinceEpoch()) /
-                      (end.toSecsSinceEpoch() - start.toSecsSinceEpoch()) * 100;
+        while (q.next()){
+            QDateTime timing = q.value(0).toDateTime();
+            int count_mac = q.value(1).toInt();
+            timeline.insert(timing, count_mac);
+        }
+
+        QMapIterator<QDateTime, int> itt(timeline);
+        int total = timeline.size();
+        int curr = 0;
+        while (itt.hasNext()) {
+            curr++;
+            itt.next();
+            result->addData(itt.key(), itt.value());
+            current = curr / total * 100;
             if (last + 10 <= current) {
                 emit updateProgress(current);
                 last = current;
