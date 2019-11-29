@@ -1,9 +1,5 @@
-//
-// Created by pieromack on 22/05/19.
-//
-
-#ifndef APP_TEMPLATE_TIME_H
-#define APP_TEMPLATE_TIME_H
+#ifndef ROOMMONITOR_FIRMWARE_TIME_H
+#define ROOMMONITOR_FIRMWARE_TIME_H
 
 
 #include "freertos/FreeRTOS.h"
@@ -29,18 +25,21 @@
 #define TIMER_DIVIDER   80               /*!< Hardware timer clock divider, 80 to get 1MHz clock to timer */
 #define TIMER_SCALE    (TIMER_BASE_CLK / TIMER_DIVIDER)  /*!< used to calculate counter value */
 #define TIMER_FINE_ADJ   (0*(TIMER_BASE_CLK / TIMER_DIVIDER)/1000000) /*!< used to compensate alarm value */
-#define SECOND_SCAN_MODE	60
-#define SECOND_CHECK_TIME   300			//ogni 300 sec=5 min
+#define SECOND_SCAN_MODE    60
+#define SECOND_CHECK_TIME   300            //ogni 300 sec=5 min
 #define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
 #define BLINK_GPIO 2
 
 //static int mod; 	//0=> scan 1=>send server
 
 void timer0_init();
-void timer0_start();
+
 void IRAM_ATTR timer_group0_isr(void *para);
+
 bool initialize_sntp(void);
+
 bool obtain_time(void);
+
 void checkTime(int *n);
 
-#endif //APP_TEMPLATE_TIME_H
+#endif //ROOMMONITOR_FIRMWARE_TIME_H

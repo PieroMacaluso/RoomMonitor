@@ -1,5 +1,5 @@
-#ifndef APP_TEMPLATE_PACKET_H
-#define APP_TEMPLATE_PACKET_H
+#ifndef ROOMMONITOR_FIRMWARE_PACKET_H
+#define ROOMMONITOR_FIRMWARE_PACKET_H
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -20,19 +20,27 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "nvs_getter.h"
+#include <utils/common.h>
+#include <crypto/sha256.h>
+#include <mbedtls/md.h>
 
-#define STARTSIZE 	20
-#define LENPACKET 	11
-#define OFFMAC 		10
+#define STARTSIZE    20
+#define LENPACKET    11
+#define OFFMAC        10
 
 typedef struct node *node_t;
 
 int get_id();
+
 node_t init_packet_list(char baseMacChr[18]);
+
 node_t addto_packet_list(const wifi_promiscuous_pkt_t *ppkt, node_t h);
+
 int send_packets(int s, node_t h);
+
 void reset_packet_list(node_t h);
+
 void print_all_list(node_t h);
 
 
-#endif //APP_TEMPLATE_PACKET_H
+#endif //ROOMMONITOR_FIRMWARE_PACKET_H

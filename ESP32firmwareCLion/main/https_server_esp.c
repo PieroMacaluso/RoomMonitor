@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 26/11/19.
-//
-
 #include "https_server_esp.h"
 
 static const char *TAG = "room_monitor";
@@ -32,9 +28,6 @@ static esp_err_t rest_common_get_handler(httpd_req_t *req);
 static esp_err_t echo_post_handler(httpd_req_t *req);
 
 int spiffs_save(char *resource);
-
-/** SERVER */
-/* Set HTTP response content type according to file extension */
 
 /**
  * Scegli il content/type della risposta HTTP a seconda dell'estensione del file
@@ -113,7 +106,11 @@ static esp_err_t rest_common_get_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
-/* An HTTP POST handler */
+/**
+ * POST handler useful to save data coming from captive protal
+ * @param req   POST request
+ * @return      esp_err_t
+ */
 static esp_err_t echo_post_handler(httpd_req_t *req) {
     char result[2048];
     result[0] = '\0';
@@ -131,8 +128,6 @@ static esp_err_t echo_post_handler(httpd_req_t *req) {
             }
             return ESP_FAIL;
         }
-
-        /* Send back the same data */
         // 200
         if (remaining == req->content_len) {
             strncpy(result, buf, strlen(buf));
@@ -206,7 +201,7 @@ esp_err_t start_webserver(void) {
     httpd_register_uri_handler(server, &common_get_uri);
 
     return ESP_OK;
-err_start:
+    err_start:
     ESP_LOGI(TAG, "Error starting server!");
     free(rest_context);
     err:

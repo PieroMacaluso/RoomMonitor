@@ -5,5 +5,6 @@ set(EXTRA_COMPONENT_DIRS $ENV{IDF_PATH}/examples/common_components/protocol_exam
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(roommonitor-firmware)
 
+# Comment this line to not flash the SPIFFS partition
 spiffs_create_partition_image(storage captive_portal FLASH_IN_PROJECT)
 #execute_process(COMMAND python $ENV{IDF_PATH}/components/spiffs/spiffsgen.py 0x100000 captive_portal new_captives_portal.img)

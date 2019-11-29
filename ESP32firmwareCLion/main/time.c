@@ -1,7 +1,3 @@
-
-#ifndef TIME_H
-#define TIME_H
-
 #include "time.h"
 
 /**
@@ -33,10 +29,10 @@ void timer0_init() {
     timer_isr_register(timer_group, timer_idx, timer_group0_isr, (void *) timer_idx, ESP_INTR_FLAG_IRAM, NULL);
 }
 
-
-/**
- * Protocollo sntp utilizzato per impostare l'orario della schedina
- */
+ /**
+  * Protocollo SNTP utilizzato per impostare l'orario della schedina
+  * @return bool    true if configuration successfully completed, false otherwise
+  */
 bool initialize_sntp(void) {
     printf("Initializing SNTP\n");
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
@@ -53,7 +49,7 @@ bool initialize_sntp(void) {
 
 /**
  * Funzione per ottenere il tempo dal server SNTP. Repeat 100.
- * @return
+ * @return bool    true if configuration successfully completed, false otherwise
  */
 bool obtain_time(void) {
     time_t now = 0;
@@ -104,5 +100,3 @@ void checkTime(int *n) {
         (*n) = 0;
     }
 }
-
-#endif

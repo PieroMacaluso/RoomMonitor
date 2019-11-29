@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 26/11/19.
-//
-
 #ifndef ROOMMONITOR_FIRMWARE_HTTPS_SERVER_ESP_H
 #define ROOMMONITOR_FIRMWARE_HTTPS_SERVER_ESP_H
 

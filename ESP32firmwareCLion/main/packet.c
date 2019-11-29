@@ -1,9 +1,3 @@
-#ifndef PACKET_H
-#define PACKET_H
-
-#include <utils/common.h>
-#include <crypto/sha256.h>
-#include <mbedtls/md.h>
 #include "packet.h"
 
 static const char *TAGP = "tcp_client";
@@ -11,10 +5,14 @@ static const char *TAGP = "tcp_client";
 char macESP[18];
 uint8_t id;
 
+/**
+ * Getter Board ID
+ * @return int  Board ID
+ */
 int get_id() {
     return id;
 }
-
+/** DATA STRUCTURE **/
 typedef struct packet {
     uint32_t fcs;
     signed rssi;
@@ -210,20 +208,16 @@ void reset_packet_list(node_t h) {
     while ((curr = iterator) != NULL) {
         // advance head to next element.
         iterator = iterator->next;
-//        printf("free %08x", curr->packet->fcs);
         // delete saved pointer
         freeNode(curr);
         free(curr);
         curr = NULL;
     }
-//    printf("free head %08x", h->packet->fcs);
     free(h->packet->SSID);
     h->packet->SSID = NULL;
     free(h->packet);
     h->packet = NULL;
     h->next = NULL;
-    //return h;
-
 }
 
 /**
@@ -245,5 +239,3 @@ void print_all_list(node_t h) {
     }
 
 }
-
-#endif

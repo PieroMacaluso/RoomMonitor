@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 26/11/19.
-//
-
 #ifndef ROOMMONITOR_FIRMWARE_NVS_GETTER_H
 #define ROOMMONITOR_FIRMWARE_NVS_GETTER_H
 

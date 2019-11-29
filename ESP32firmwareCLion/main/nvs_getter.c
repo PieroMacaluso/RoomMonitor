@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 26/11/19.
-//
-
 #include "nvs_getter.h"
 
 /**

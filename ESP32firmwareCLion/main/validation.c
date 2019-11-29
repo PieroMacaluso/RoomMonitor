@@ -1,7 +1,3 @@
-//
-// Created by root on 9/27/19.
-//
-
 /**
  * File creato per contenere le varie funzioni di validazioni degli input.
  * Valore di ritorno: 1 in caso di errore, 0 in caso di successo
@@ -10,13 +6,11 @@
 #include "validation.h"
 #include <limits.h>
 
-//id solo numero
-//ssid no simboli, solo alfanumerico min 1
-// ps 1 min 1 Maiusc e 1 num min  max
-//ip
-
-
-
+/**
+ * ID string validation. It must be a number
+ * @param id    ID schedina
+ * @return int  0 if validated, 1 otherwise
+ */
 int idValidation(char *id) {
     unsigned i;
     if (strlen(id) > 5 || strlen(id) == 0) {
@@ -30,10 +24,15 @@ int idValidation(char *id) {
     return 0;
 }
 
+/**
+ * SSID AP validation. In our case we decided to be strict and allows only alfanumerical SSID
+ * @param ssid_ap   SSID string
+ * @return int  0 if validated, 2 otherwise
+ */
 int ssidApValidation(char *ssid_ap) {
     unsigned i;
 
-    if (strlen(ssid_ap) == 0 || strlen(ssid_ap) > 50)
+    if (strlen(ssid_ap) == 0 || strlen(ssid_ap) > 31)
         return 2;
 
     for (i = 0; i < strlen(ssid_ap); i++) {
@@ -45,6 +44,12 @@ int ssidApValidation(char *ssid_ap) {
     return 0;
 }
 
+/**
+ * Password validation. It must contain at least one lowercase letter, one uppercase letter and a number. Its length
+ * must be between 8 and 63
+ * @param pass  Password string
+ * @return int  0 if validated, 3 otherwise
+ */
 int passwordApValidation(char *pass) {
     int i;
     int min = 0, Maius = 0, num = 0;
@@ -67,10 +72,16 @@ int passwordApValidation(char *pass) {
         return 3;
 }
 
+/**
+ * Channel validation. It must be an integer between 0 and 13
+ * must be between 8 and 63
+ * @param channel   Channel string
+ * @return int  0 if validated, 4 otherwise
+ */
 int channelValidation(char *channel) {
     int ch;
 
-    ch = atoi(channel);
+    ch = strtol(channel, NULL, 10);
     if (ch == 0)
         return 4;
 
@@ -80,32 +91,52 @@ int channelValidation(char *channel) {
         return 4;
 }
 
-int portValidation(char *port){
+/**
+ * Port validation. It must be an integer between 1024 and 65535.
+ * @param channel   Channel string
+ * @return int  0 if validated, 8 otherwise
+ */
+int portValidation(char *port) {
     long p;
 
     p = strtol(port, NULL, 10);
-    if (p == 0 || p == LONG_MAX || p == LONG_MIN)
+    if (p < 1024 || p > 65535)
         return 8;
     return 0;
 }
 
+/**
+ * SSID Server validation. In this case the only limit is given by the length of the string.
+ * @param ssid_ap   SSID string
+ * @return int  0 if validated, 5 otherwise
+ */
 int ssidServerValidation(char *ssid_server) {
-    if (strlen(ssid_server) == 0 || strlen(ssid_server) > 50)
+    if (strlen(ssid_server) == 0 || strlen(ssid_server) > 31)
         return 5;
     else
         return 0;
 }
 
+/**
+ * Password Server validation. In this case the only limit is given by the length of the string.
+ * @param pass   pass string
+ * @return int  0 if validated, 6 otherwise
+ */
 int passServerValidation(char *password_server) {
 
-    if (strlen(password_server) < 3 || strlen(password_server) > 50)
+    if (strlen(password_server) < 8 || strlen(password_server) > 63)
         return 6;
     else
         return 0;
 }
 
+/**
+ * IP Validation. This is the most complex one.
+ * @param ip_server     IP string
+ * @return int      0 if validated, 6 otherwise
+ */
 int ipValidation(char *ip_server) {
-    int i;
+    unsigned i;
     int numDot = 0;
     int num;
     char *numC;
@@ -115,31 +146,26 @@ int ipValidation(char *ip_server) {
     //0.0.0.0 -> 255.255.255.255
 
     if (strlen(tempIp) < 7 || strlen(tempIp) > 15)
-        return 7;
+        return 9;
 
     for (i = 0; i < strlen(tempIp); i++) {
-
-        if (!((tempIp[i] >= '0' && tempIp[i] <= '9') || tempIp[i] == '.'))           //isdigit non piace
-            return 8;
-
+        if (!((tempIp[i] >= '0' && tempIp[i] <= '9') || tempIp[i] == '.'))
+            return 9;
         //Conteggio numero punti
         if (tempIp[i] == '.') {
             numDot++;
             if (numDot > 3)
                 return 9;
         }
-
     }
-
     //Verifica 4 numeri tra 0 e 255
     for (i = 0; i < 4; i++) {
         numC = strtok(tempIp, ".");
         num = atoi(numC);
         if (num < 0 || num > 255)
-            return 10;
+            return 9;
     }
     free(tempIp);
-
     return 0;
 }
 

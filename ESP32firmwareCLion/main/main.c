@@ -131,6 +131,8 @@ void app_main(void) {
 
     //GetMac_ESP32
     getMacAddress(baseMacChr);
+
+    // Inizializzazione NVS se necessaria.
     esp_err_t err = nvs_flash_init();
     if (err != ESP_OK) {
         printf("Initialization of NVS went wrong. Let's format!\n");
@@ -140,18 +142,22 @@ void app_main(void) {
         err = (esp_partition_erase_range(nvs_partition, 0, nvs_partition->size));
         if (err != ESP_OK) printf("FATAL ERROR: Unable to erase the partition\n");
     }
+    // Initialize Packet List
     head = init_packet_list(baseMacChr);
 
     wifi_event_group = xEventGroupCreate();
 
+    // Inizializzazione SPIFFS
     initialize_spiffs();
+    // Inizializzazione WiFi
     wifi_init();
 
-    //Evita che la schedina tenti di partire fin se prima non viene inizializzata tramite captive portal
+    // The board does not start until the first setup via captive portal
     while (my_nvs_get_str("saved") == NULL) {
         sleep(30);
     }
 
+    // Initialize SNTP and restart if it fails...
     if (!initialize_sntp()) {
         printf("ESP32 Restarting...\n");
         esp_restart();
@@ -164,10 +170,8 @@ void app_main(void) {
     // INIT timer gestione modalità scan e comunicazione server
     timer0_init();
 
-
     /** Main Loop */
     while (true) {
-
         mod = 0;
         printf("Inizio raccolta dati...\n");
         ESP_ERROR_CHECK(timer_start(TIMER_GROUP_0, TIMER_0));
@@ -191,6 +195,7 @@ void app_main(void) {
 
         ESP_ERROR_CHECK(esp_wifi_set_promiscuous(true));
     }
+    // Hopefully never reached
     reset_packet_list(head);
     free(head);
     printf("ESP32 Restarting...\n");
@@ -380,7 +385,6 @@ void wifi_sniffer_packet_handler(void *buff, wifi_promiscuous_pkt_type_t type) {
     uint32_t plen = 0;
     uint32_t size = ppkt->rx_ctrl.sig_len;
     plen = crc32_le(0, ppkt->payload, size);
-    //printf("%2d %2d %2d ", get_id(), get_posx(), get_posy());
     printf("%2d ", get_id());
     printf("%u\t", (unsigned) ppkt->rx_ctrl.sig_len);
     printf("%08x\t", plen);
