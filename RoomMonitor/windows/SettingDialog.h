@@ -9,7 +9,6 @@
 #include <QtWidgets/QDialog>
 #include "ui_settings.h"
 #include "ui_addboard.h"
-#include "ui_modboard.h"
 #include <QtWidgets/QTableWidgetItem>
 #include "../monitoring/Board.h"
 #include <QtCore/QSettings>
@@ -36,14 +35,9 @@ public:
     Ui::ConfigDialog ui{};
 
     /**
-     * UI Dialog di aggiunta schedina
+     * UI Dialog di aggiunta/modifica schedina
      */
     Ui::AddBoardDialog addBoardDialog{};
-
-    /**
-     * UI Dialog di modifica schedina
-     */
-    Ui::ModBoardDialog modBoardDialog{};
 
     /**
      * Impostazioni
@@ -104,28 +98,6 @@ public slots:
      * Viene triggerato dal click sul relativo pulsante.
      */
     void openDialogMod();
-
-    /**
-     * Controlla che i valori inseriti nelle caselle di testo della finestra di dialogo con cui si aggiungono
-     * le schedine siano valori accettabili. La funzione è connessa alla `textChanged` delle LineEdit
-     */
-    void checkAddEdits();
-
-    /**
-     * Controlla che i valori inseriti nelle caselle di testo della finestra di dialogo con cui si modificano
-     * le schedine siano valori accettabili. La funzione è connessa alla `textChanged` delle LineEdit
-     */
-    void checkModEdits();
-
-    /**
-     * Setup della finestra di dialogo di aggiunta schedine.
-     */
-    void setupAddBoard();
-
-    /**
-     * Setup della finestra di dialogo di modifica schedine.
-     */
-    void setupModBoard();
 
     /**
      * Routine di reset del sistema che viene chiamata premendo il pulsante applica dopo aver attivato la relativa

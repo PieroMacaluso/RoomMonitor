@@ -19,6 +19,15 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="usesScrollButtons">
+      <bool>false</bool>
+     </property>
+     <property name="documentMode">
+      <bool>true</bool>
+     </property>
+     <property name="tabsClosable">
+      <bool>false</bool>
+     </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
        <string>Stanza</string>
@@ -28,7 +37,7 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <layout class="QFormLayout" name="formLayout_2">
-           <item row="0" column="0">
+           <item row="1" column="0">
             <widget class="QLabel" name="widthLabel">
              <property name="lineWidth">
               <number>1</number>
@@ -37,39 +46,64 @@
               <number>0</number>
              </property>
              <property name="text">
-              <string>Larghezza Stanza (m)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="widthEdit">
-             <property name="text">
-              <string>10</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="heightLabel">
-             <property name="text">
-              <string>Lunghezza Stanza (m)</string>
+              <string>Larghezza Stanza</string>
              </property>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QLineEdit" name="heightEdit">
+            <widget class="QDoubleSpinBox" name="widthEdit">
+             <property name="suffix">
+              <string> m</string>
+             </property>
+             <property name="minimum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>99.989999999999995</double>
+             </property>
+             <property name="value">
+              <double>10.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="heightLabel">
              <property name="text">
-              <string>10</string>
+              <string>Lunghezza Stanza</string>
              </property>
             </widget>
            </item>
            <item row="3" column="0">
+            <widget class="QLabel" name="portServerLabel">
+             <property name="text">
+              <string>Porta Server</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QSpinBox" name="portServerEdit">
+             <property name="minimum">
+              <number>1024</number>
+             </property>
+             <property name="maximum">
+              <number>65535</number>
+             </property>
+             <property name="value">
+              <number>27015</number>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
             <widget class="QLabel" name="boardLabel">
              <property name="text">
               <string>Schedine</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
+           <item row="5" column="0">
+            <widget class="QTableWidget" name="boardTable"/>
+           </item>
+           <item row="5" column="1">
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
               <widget class="QPushButton" name="addBoard">
@@ -94,22 +128,21 @@
              </item>
             </layout>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="portServerLabel">
-             <property name="text">
-              <string>Porta Server</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="1">
-            <widget class="QLineEdit" name="portServerEdit">
-             <property name="text">
-              <string>27015</string>
+            <widget class="QDoubleSpinBox" name="heightEdit">
+             <property name="suffix">
+              <string> m</string>
+             </property>
+             <property name="minimum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>99.989999999999995</double>
+             </property>
+             <property name="value">
+              <double>10.000000000000000</double>
              </property>
             </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QTableWidget" name="boardTable"/>
            </item>
           </layout>
          </item>
@@ -124,7 +157,7 @@
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="nLabel">
            <property name="lineWidth">
             <number>1</number>
@@ -137,21 +170,14 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="nEdit">
-           <property name="text">
-            <string>3</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="minLabel">
            <property name="text">
             <string>Minimo minuti per conteggio presenza</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QSpinBox" name="minEdit">
            <property name="minimum">
             <number>1</number>
@@ -161,14 +187,14 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="retryLabel">
            <property name="text">
             <string>Limite fallimenti aggregazione</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QSpinBox" name="retryEdit">
            <property name="minimum">
             <number>1</number>
@@ -184,14 +210,14 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="secretLabel">
            <property name="text">
             <string>Segreto Condiviso</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QLineEdit" name="secretEdit">
@@ -216,6 +242,16 @@
            </item>
           </layout>
          </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="nEdit">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>3</number>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -224,7 +260,7 @@
       <attribute name="title">
        <string>Database</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
@@ -240,70 +276,63 @@
        </item>
        <item>
         <layout class="QFormLayout" name="formLayout_3">
-         <item row="0" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="hostLabel">
            <property name="text">
             <string>Host</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="hostEdit">
            <property name="text">
             <string>localhost</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="dbLabel">
            <property name="text">
             <string>Nome Database</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="dbEdit">
            <property name="text">
             <string>data</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QLabel" name="portLabel">
            <property name="text">
             <string>Porta</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="portEdit">
-           <property name="text">
-            <string>3306</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="userLabel">
            <property name="text">
             <string>Username</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QLineEdit" name="userEdit">
            <property name="text">
             <string>root</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="passLabel">
            <property name="text">
             <string>Password</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
             <widget class="QLineEdit" name="passEdit">
@@ -328,14 +357,14 @@
            </item>
           </layout>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="QLabel" name="tableLabel">
            <property name="text">
             <string>Nome Tabella</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="6" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
             <widget class="QLineEdit" name="tableEdit">
@@ -353,6 +382,19 @@
            </item>
           </layout>
          </item>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="portEdit">
+           <property name="minimum">
+            <number>1024</number>
+           </property>
+           <property name="maximum">
+            <number>65535</number>
+           </property>
+           <property name="value">
+            <number>3306</number>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -368,16 +410,15 @@
       <attribute name="title">
        <string>MAC Nascosti</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0">
        <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>&lt;p&gt;In questa sezione è possibile andare a configurare le tolleranze per quanto riguarda l'analisi del MAC nascosto. Il meccanismo si basa calcolando le differenze tra i vari pacchetti stimando una probabilità di somiglianza.&lt;/p&gt;
+          <string>&lt;p&gt;Configurazione parametri e tolleranze per Analisi MAC nascosti.&lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;&lt;b&gt;Tolleranza&lt;/b&gt;: Valore della differenza che equivale a percentuale pari a 0. La percentuale massima si ha nell caso di differenza pari a 0.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Tolleranza&lt;/b&gt;: Valore della differenza per cui la percentuale di somiglianza è pari a 0. &lt;/li&gt;
 &lt;li&gt;&lt;b&gt;Peso&lt;/b&gt;: Numero intero che rappresenta il peso che viene dato ad ogni parametro.&lt;/li&gt;
-&lt;li&gt;&lt;b&gt;Abilitazione&lt;/b&gt;: Checkbox per abilitazione del parametro.&lt;/li&gt;
 &lt;/ul&gt;</string>
          </property>
          <property name="wordWrap">
@@ -387,94 +428,115 @@
        </item>
        <item>
         <layout class="QFormLayout" name="formLayout_4">
-         <item row="0" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLineEdit" name="posTolEdit">
-             <property name="placeholderText">
-              <string>Tolleranza (m)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="posPesoEdit">
-             <property name="placeholderText">
-              <string>Peso</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="posCheck">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Tempo</string>
+            <string>&lt;b&gt;Posizione&lt;/b&gt;</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,2">
            <item>
-            <widget class="QLineEdit" name="timeTolEdit">
-             <property name="placeholderText">
-              <string>Tolleranza (s)</string>
+            <widget class="QDoubleSpinBox" name="posTolEdit">
+             <property name="suffix">
+              <string> m</string>
+             </property>
+             <property name="minimum">
+              <double>0.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="timePesoEdit">
-             <property name="placeholderText">
-              <string>Peso</string>
+            <widget class="QSpinBox" name="posPesoEdit">
+             <property name="minimum">
+              <number>0</number>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="timeCheck">
-             <property name="text">
-              <string/>
+             <property name="value">
+              <number>1</number>
              </property>
             </widget>
            </item>
           </layout>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>SSID</string>
+            <string>&lt;b&gt;Tempo&lt;/b&gt;</string>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="1,1">
            <item>
-            <widget class="QLineEdit" name="ssidPesoEdit">
-             <property name="placeholderText">
-              <string>Peso</string>
+            <widget class="QSpinBox" name="timeTolEdit">
+             <property name="suffix">
+              <string> s</string>
+             </property>
+             <property name="maximum">
+              <number>86400</number>
+             </property>
+             <property name="value">
+              <number>3600</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="ssidCheck">
-             <property name="text">
-              <string/>
+            <widget class="QSpinBox" name="timePesoEdit">
+             <property name="value">
+              <number>1</number>
              </property>
             </widget>
            </item>
           </layout>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Posizione</string>
+            <string>&lt;b&gt;SSID&lt;/b&gt;</string>
            </property>
           </widget>
+         </item>
+         <item row="3" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,1">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="ssidPesoEdit"/>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,2">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>&lt;b&gt;Tolleranza&lt;/b</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>&lt;b&gt;Peso&lt;/b&gt;</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -499,19 +561,14 @@
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>widthEdit</tabstop>
-  <tabstop>heightEdit</tabstop>
-  <tabstop>portServerEdit</tabstop>
   <tabstop>addBoard</tabstop>
   <tabstop>modBoard</tabstop>
   <tabstop>removeBoard</tabstop>
   <tabstop>boardTable</tabstop>
-  <tabstop>nEdit</tabstop>
   <tabstop>minEdit</tabstop>
   <tabstop>retryEdit</tabstop>
   <tabstop>hostEdit</tabstop>
   <tabstop>dbEdit</tabstop>
-  <tabstop>portEdit</tabstop>
   <tabstop>userEdit</tabstop>
   <tabstop>passEdit</tabstop>
   <tabstop>resetCheck</tabstop>

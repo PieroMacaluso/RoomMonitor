@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>169</height>
+    <height>173</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,15 +37,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="idEdit"/>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="xEdit"/>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="yEdit"/>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="aLabel">
        <property name="text">
@@ -53,8 +44,38 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="1">
+      <widget class="QSpinBox" name="idEdit"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="xEdit">
+       <property name="suffix">
+        <string> m</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="yEdit">
+       <property name="suffix">
+        <string> m</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="1">
-      <widget class="QLineEdit" name="aEdit"/>
+      <widget class="QSpinBox" name="aEdit">
+       <property name="suffix">
+        <string> dBm</string>
+       </property>
+       <property name="minimum">
+        <number>-90</number>
+       </property>
+       <property name="maximum">
+        <number>-30</number>
+       </property>
+       <property name="value">
+        <number>-55</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
