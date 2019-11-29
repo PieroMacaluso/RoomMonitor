@@ -18,6 +18,8 @@
 ## Indice
 
 - [Indice](#indice)
+- [Team di sviluppo](#team-di-sviluppo)
+- [Codice sorgente progetti](#codice-sorgente-progetti)
 - [Introduction](#introduction)
   - [Scansione Attiva](#scansione-attiva)
   - [Dispositivo ESP32](#dispositivo-esp32)
@@ -36,10 +38,20 @@
   - [Monitoraggio](#monitoraggio)
   - [Analisi](#analisi)
 - [Sviluppi Futuri](#sviluppi-futuri)
-- [Team di sviluppo](#team-di-sviluppo)
-- [Componenti del progetto](#componenti-del-progetto)
 
 Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018.
+
+
+## Team di sviluppo
+
+- <img alt="avatar" src="https://github.com/pieromacaluso.png" width="20px" height="20px"> **Piero Macaluso** - [pieromacaluso](https://github.com/pieromacaluso)
+- <img alt="avatar" src="https://github.com/lorenzomanicone.png" width="20px" height="20px"> **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
+- <img alt="avatar" src="https://github.com/angeloturco.png" width="20px" height="20px"> **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
+
+## Codice sorgente progetti
+
+- [**RoomMonitor ESP32 Firmware**](ESP32firmwareCLion)
+- [**RoomMonitor Server App**](RoomMonitor)
 
 ## Introduction
 
@@ -130,15 +142,4 @@ In tale fase la board intercetta i vari pacchetti dei vari dispositivi. Per far 
 
 ## Sviluppi Futuri
 
-
-
-## Team di sviluppo
-
-- <img alt="avatar" src="https://github.com/pieromacaluso.png" width="20px" height="20px"> **Piero Macaluso** - [pieromacaluso](https://github.com/pieromacaluso)
-- <img alt="avatar" src="https://github.com/lorenzomanicone.png" width="20px" height="20px"> **Lorenzo Manicone** - [lorenzomanicone](https://github.com/lorenzomanicone)
-- <img alt="avatar" src="https://github.com/angeloturco.png" width="20px" height="20px"> **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
-
-## Componenti del progetto
-
-- [**Firmware ESP Board**](ESP32firmwareCLion)
-- [**Server App**](RoomMonitor)
+*Work in Progress...*
