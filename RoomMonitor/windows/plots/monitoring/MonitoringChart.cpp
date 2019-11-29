@@ -148,7 +148,10 @@ MonitoringChart::MonitoringChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) 
     this->addY(axisY);
     lineSeries->attachAxis(axisY);
     scatter->attachAxis(axisY);
-
+    this->setTitle("Conteggio presenze in tempo reale");
+    QFont f = this->titleFont();
+    f.setBold(true);
+    this->setTitleFont(f);
 }
 
 QLineSeries *MonitoringChart::getLineSeries() {

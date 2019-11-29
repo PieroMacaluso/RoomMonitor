@@ -460,6 +460,8 @@ void MainWindow::setupAnalysisPlot() {
 
 void MainWindow::initializeMacSituationList() {
     ui.macSituation->reset();
+    ui.localizeButton->setEnabled(false);
+    ui.randomButton->setEnabled(false);
     ui.macSituation->setRowCount(0);
     /* SETUP TABLE */
     ui.macSituation->setColumnCount(3);

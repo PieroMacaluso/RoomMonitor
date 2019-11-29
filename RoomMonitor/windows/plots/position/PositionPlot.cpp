@@ -24,7 +24,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
 
     QValueAxis *axisX = new QValueAxis;
     axisX->setLabelFormat("%i");
-    axisX->setTitleText("Date");
+    axisX->setTitleText("X");
     this->addX(axisX);
     lineSeries->attachAxis(axisX);
     scatter->attachAxis(axisX);
@@ -32,7 +32,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
 
     QValueAxis *axisY = new QValueAxis;
     axisY->setLabelFormat("%i");
-    axisY->setTitleText("Numero dispositivi rilevati");
+    axisY->setTitleText("Y");
     this->addY(axisY);
     lineSeries->attachAxis(axisY);
     scatter->attachAxis(axisY);

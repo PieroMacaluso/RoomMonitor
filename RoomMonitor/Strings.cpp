@@ -12,7 +12,7 @@ const QString Strings::SRV_STARTED = Strings::tr("Server Started on port:");
 const QString Strings::SRV_STOPPED = Strings::tr("Server Disconnected.");
 const QString Strings::RANGE_ERROR = Strings::tr("Errore selezione range");
 const QString Strings::RANGE_ERROR_MSG = Strings::tr(
-        "La data di inizio deve essere antecedente alla data di fine.\nLa loro differenza deve essere maggiore o uguale a 5 minuti.");
+        "La data di inizio deve essere antecedente alla data di fine.\nLa loro differenza deve essere maggiore o uguale a 5 minuti, ma minore di 31 giorni.");
 const QString Strings::ANA_RUNNING = Strings::tr("Analisi in corso");
 const QString Strings::ANA_RUNNING_MSG = Strings::tr(
         "L'analisi in corso verrà interrotta. Continuare?");

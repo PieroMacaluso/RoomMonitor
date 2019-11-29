@@ -33,7 +33,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
 
     QValueAxis *axisX = new QValueAxis();
     axisX->setLabelFormat("%i");
-    axisX->setTitleText("x");
+    axisX->setTitleText("X");
     this->addX(axisX);
     roomPerimeter->attachAxis(axisX);
     b->attachAxis(axisX);
@@ -42,7 +42,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
 
     QValueAxis *axisY = new QValueAxis();
     axisY->setLabelFormat("%i");
-    axisY->setTitleText("y");
+    axisY->setTitleText("Y");
     this->addY(axisY);
     roomPerimeter->attachAxis(axisY);
     b->attachAxis(axisY);
@@ -53,9 +53,10 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
 
     this->legend()->setMarkerShape(QLegend::MarkerShapeFromSeries);
     this->legend()->setVisible(true);
-    this->setTitle("Plot Dispositivi in tempo reale");
-
-
+    this->setTitle("Mappa dispositivi in tempo reale");
+    QFont f = this->titleFont();
+    f.setBold(true);
+    this->setTitleFont(f);
 }
 
 void LiveChart::addBoardsSeries(QScatterSeries *series) {
@@ -109,19 +110,11 @@ qreal LiveChart::getYMax() const {
 }
 
 void LiveChart::fillBoards(std::vector<Board> newData) {
-    xMax = 0;
-    yMax = 0;
     this->boards_v.clear();
     this->boards_v = std::move(newData);
     this->currentPos = 0;
     for (auto i : this->boards_v) {
         this->boards->append(i.getCoord().x(), i.getCoord().y());
-        if (i.getCoord().x() > xMax) {
-            xMax = i.getCoord().x();
-        }
-        if (i.getCoord().y() > yMax) {
-            yMax = i.getCoord().y();
-        }
     }
 }
 

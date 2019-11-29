@@ -10,6 +10,9 @@ MacChart::MacChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(paren
     bs->append(set0);
     this->addSeries(bs);
     this->setTitle("Numero di rilevazioni dei MAC presenti");
+    QFont f = this->titleFont();
+    f.setBold(true);
+    this->setTitleFont(f);
     listMac.clear();
     aY = new QBarCategoryAxis();
     aY->append(listMac);

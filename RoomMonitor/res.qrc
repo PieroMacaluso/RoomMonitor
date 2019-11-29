@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="resources">
+    <file>resources/see_pass.svg</file>
     <file>resources/board.svg</file>
     <file>resources/wifi.svg</file>
     <file>resources/time.svg</file>

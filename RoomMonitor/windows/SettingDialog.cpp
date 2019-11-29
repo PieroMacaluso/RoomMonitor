@@ -50,6 +50,23 @@ void SettingDialog::setupConnect() {
             ui.removeBoard->setDisabled(false);
         }
     });
+
+    connect(ui.secretEcho, &QToolButton::pressed, [&](){
+        ui.secretEdit->setEchoMode(QLineEdit::Normal);
+    });
+
+    connect(ui.secretEcho, &QToolButton::released, [&](){
+        ui.secretEdit->setEchoMode(QLineEdit::Password);
+    });
+
+
+    connect(ui.passEcho, &QToolButton::pressed, [&](){
+        ui.passEdit->setEchoMode(QLineEdit::Normal);
+    });
+
+    connect(ui.passEcho, &QToolButton::released, [&](){
+        ui.passEdit->setEchoMode(QLineEdit::Password);
+    });
 }
 
 void SettingDialog::initializeBoardList() {

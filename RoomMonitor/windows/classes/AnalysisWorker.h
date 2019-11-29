@@ -37,7 +37,7 @@ public:
 public slots:
 
     void doWork() {
-        QString title = "Analisi di lungo periodo - ";
+        QString title = "Conteggio presenze lungo periodo";
         QFont f = result->titleFont();
         f.setBold(true);
         result->setTitleFont(f);
@@ -51,11 +51,9 @@ public slots:
         end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
         qint64 diff = end.toSecsSinceEpoch() - start.toSecsSinceEpoch();
         freq = su.value("monitor/min").toInt();
-        result->setTitle(
-                title + "Modalità: GIORNO - Granularità: 5m|" + QString::fromStdString(std::to_string(freq)) + "m");
+        result->setTitle(title);
         granularity = 60 * 5;
         bucket = 60;
-//        }
         bool error = false;
         QSqlDatabase db = Utility::getDB(error);
         if (error) return;
@@ -80,10 +78,10 @@ public slots:
         qint64 last = 0;
         bool before_data = false;
         QMap<QDateTime, int> timeline;
-        for (int j = 0; temp.addSecs(granularity * j) < end; j++){
+        for (int j = 0; temp.addSecs(granularity * j) < end; j++) {
             timeline.insert(temp.addSecs(granularity * j), 0);
         }
-        while (q.next()){
+        while (q.next()) {
             QDateTime timing = q.value(0).toDateTime();
             int count_mac = q.value(1).toInt();
             timeline.insert(timing, count_mac);
