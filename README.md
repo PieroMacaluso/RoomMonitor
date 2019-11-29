@@ -23,12 +23,13 @@
   - [Dispositivo ESP32](#dispositivo-esp32)
   - [Obiettivo del progetto](#obiettivo-del-progetto)
 - [ESP32 Firmware](#esp32-firmware)
-  - [Sniffing Pacchetti](#sniffing-pacchetti)
-  - [Configurazione Schedina](#configurazione-schedina)
+  - [Scopo](#scopo)
+  - [Configurazione](#configurazione)
+  - [Funzionamento](#funzionamento)
+  - [Spiegazione tecnica](#spiegazione-tecnica)
     - [Captive Portal](#captive-portal)
-      - [NVS (Non Volatile Storage)](#nvs-non-volatile-storage)
-      - [SPIFFS (Serial Peripheral Interface Flash File System)](#spiffs-serial-peripheral-interface-flash-file-system)
-    - [](#)
+    - [Sniffing](#sniffing)
+    - [Validazione e Inoltro](#validazione-e-inoltro)
 - [RoomMonitor Server](#roommonitor-server)
   - [Generale](#generale)
   - [Impostazioni](#impostazioni)
@@ -63,46 +64,49 @@ Da questi valori è possibile passare ad un valore della distanza del singolo di
 
 ## ESP32 Firmware
 
-### Sniffing Pacchetti
+### Scopo
 
-```c
-// Conversione del buffer in pacchetto e estrazione di tipo e sottotipo
-    const wifi_promiscuous_pkt_t *ppkt = (wifi_promiscuous_pkt_t *) buff;
-    const wifi_ieee80211_packet_t *ipkt = (wifi_ieee80211_packet_t *) ppkt->payload;
-    const crc_t *crc = &ipkt->payload;
-    time_t now;
-    uint8_t frameControl = (unsigned int) ppkt->payload[0];
-    uint8_t frameType = (frameControl & 0x0C) >> 2;
-    uint8_t frameSubType = (frameControl & 0xF0) >> 4;
+Lo scopo della board ESP32 è quello di sniffare i vari pacchetti **PROBE REQUEST** generati dai dispositivi vicini ed inoltrarli al server il quale si occuperà di gestirli.
 
-    // Filtraggio dei pacchetti non desiderati
-    if (frameType != TYPE_MANAGEMENT || frameSubType != SUBTYPE_PROBE_REQUEST) {
-        return;
-    }
-```
+### Configurazione
 
-`2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C`
-### Configurazione Schedina
+In fase di montaggio del sistema, occorre un addetto per inizializzare i corretti valori necessari per il funzionamento.
+Per garantire una facile configurazione è stato implementato un *captive portal* dove poter introdurre i valori necessari senza dover modificare il firmware.
+Per collegarsi a tale portale occorre connettersi alla rete Wi-Fi della board che si vuole configurare (default SSID: `esp32-ap`, Password: `progettopds`), dopodichè, tramite un browser (nota Chrome può avere problemi), collegarsi all'indirizzo `https://192.168.1.1`. (Nota, attenzione a non usare http ma **https**).
+A questo punto verrà mostrata la pagina di configurazione della scheda dove poter inizializzare tutti i parametri necessari.
+<div align="center">
+
+![Captive Portal](stuff/img/captive.jpg)
+
+</div>
+
+Come si vede è possibile cambiare le impostazioni della rete WiFi della scheda, assegnarle un ID (importante per configurazione server), e il canale su cui si vuole effettuare la scansione. Nella parte sottostante è possibile impostare tutti i parametri per la comunicazione con il server.
+L’invio di questi parametri è reso sicuro tramite il protocollo **HTTPS**, garantendo confidenzialità, integrità ed autenticazione, invece per l’inoltro dei pacchetti sniffati verso il server attraverso canale TCP sono garantite le proprietà di autenticazione e integrità tramite l'utilizzo di HMAC-SHA256 con chiave a 256 bit per ogni pacchetto inoltrato.
+
+### Funzionamento
+
+Una volta configurata, la board si collegherà alla rete wifi del server. È importante che tale rete abbia una connessione ad internet in quanto la scheda userà tale connessione per ricevere l’orario corretto tramite un server SNTP.
+Solo dopo aver acquisito l’orario, verrà avviata la procedura di sniffing e di inoltro.
+Durante la fase di sniffing, verranno catturati tutti i vari PROBE REQUEST trasmessi sul canale indicato in fase di configurazione. Da tali pacchetti verranno estratte le informazioni necessarie e solo quando la fase di sniffing sarà terminata, tutti i dati acquisiti saranno inviati al server per poi riprendere con la prima fase.
+Grazie all’utilizzo di un timer ogni minuto si provvede ad alternare la fase di sniffing e di inoltro. Per garantire il corretto sincronismo tra le varie schede e il server, lo stesso timer indica anche quando aggiornare l’orario eseguendo un’ulteriore richiesta al server SNTP.
+
+### Spiegazione tecnica
 
 #### Captive Portal
 
-##### NVS (Non Volatile Storage)
+Per realizzare il meccanismo del captive portal è stato implementato un web server basato su HTTPS. Tale server risulta raggiungibile tramite l’indirizzo ip `192.168.1.1` sulla porta `443`. Sono stati definiti file HTML, CSS e Javascript che permettono l’inserimento dei vari parametri di configurazione.
+È stato necessario anche l’uso di un certificato e di un file contenente la chiave privata per HTTPS.
 
-Dati chiave valore.
+L’utilizzo di apposite partizione di memorie ha permesso di memorizzare i valori impostati e i vari file utilizzati per implementare il server, in particolare si è deciso di usare una partizione **NVM**, tipo chiave-valore, per memorizzare i vari valori di inizializzazione. Tale partizione è basata su memoria non volatile che permette il salvataggio dei parametri anche in assenza di tensione.
+Per gestire la partizione dedicata al captive portal è stato usato un apposito file system chiamato **SPIFFS** (Serial Peripheral Interface Flash File System).
+ 
+#### Sniffing
 
-##### SPIFFS (Serial Peripheral Interface Flash File System)
+In tale fase la board intercetta i vari pacchetti dei vari dispositivi. Per far ciò si utilizza la modalità promiscua, attraverso la quale, è possibile ricevere ed elaborare pacchetti non destinati al proprio dispositivo.
 
-Storage HTML, CSS e JS della pagina di Captive Portal.
+#### Validazione e Inoltro
 
-####  
-
-- SPIFFS
-- NTP
-- TCP Socket
-- Captive Portal
-- Acquisizione Pacchetti
-- Invio Pacchetti
-- Validazione Input (Sviluppo Futuro)
+*Work In Progress...*
 
 ## RoomMonitor Server
 
