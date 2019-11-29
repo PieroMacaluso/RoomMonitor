@@ -32,7 +32,7 @@
 #define SECOND_SCAN_MODE	60
 #define SECOND_CHECK_TIME   300			//ogni 300 sec=5 min
 #define TIMER_INTERVAL0_SEC   (SECOND_SCAN_MODE)   /*!< test interval for timer 0 */
-
+#define BLINK_GPIO 2
 
 //static int mod; 	//0=> scan 1=>send server
 

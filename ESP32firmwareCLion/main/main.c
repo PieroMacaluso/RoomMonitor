@@ -127,6 +127,7 @@ void app_main(void) {
 
     // Conteggio quante volte scade il timer da 1 min, ogni 60 bisogna settare l'orario
     int nallarm = 0;
+    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
     //GetMac_ESP32
     getMacAddress(baseMacChr);
@@ -163,7 +164,6 @@ void app_main(void) {
     // INIT timer gestione modalità scan e comunicazione server
     timer0_init();
 
-    gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
     /** Main Loop */
     while (true) {

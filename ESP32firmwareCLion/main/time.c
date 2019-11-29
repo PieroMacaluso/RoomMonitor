@@ -62,10 +62,13 @@ bool obtain_time(void) {
     localtime_r(&now, &timeinfo);
     // Is time set? If not, tm_year will be (1970 - 1900).
     ESP_LOGI("sntp client", "Time resetting.");
+
     // wait for time to be set
     int retry = 0;
     const int retry_count = 100;
+    int led=0;
     while (timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
+        gpio_set_level(BLINK_GPIO,(led++)%2);
         printf("Waiting for system time to be set... (%d/%d)\n", retry, retry_count);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         time(&now);
@@ -82,6 +85,7 @@ bool obtain_time(void) {
         localtime_r(&now, &timeinfo);
         strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
         printf("The current date/time in Italy is: %s\n", strftime_buf);
+        gpio_set_level(BLINK_GPIO,0);
         return true;
     }
 }
