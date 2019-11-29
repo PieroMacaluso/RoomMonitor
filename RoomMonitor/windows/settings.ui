@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="usesScrollButtons">
       <bool>false</bool>
@@ -561,17 +561,32 @@
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
+  <tabstop>widthEdit</tabstop>
+  <tabstop>heightEdit</tabstop>
+  <tabstop>portServerEdit</tabstop>
+  <tabstop>boardTable</tabstop>
   <tabstop>addBoard</tabstop>
   <tabstop>modBoard</tabstop>
   <tabstop>removeBoard</tabstop>
-  <tabstop>boardTable</tabstop>
+  <tabstop>nEdit</tabstop>
   <tabstop>minEdit</tabstop>
   <tabstop>retryEdit</tabstop>
+  <tabstop>secretEdit</tabstop>
+  <tabstop>secretEcho</tabstop>
   <tabstop>hostEdit</tabstop>
   <tabstop>dbEdit</tabstop>
+  <tabstop>portEdit</tabstop>
   <tabstop>userEdit</tabstop>
   <tabstop>passEdit</tabstop>
+  <tabstop>passEcho</tabstop>
+  <tabstop>tableEdit</tabstop>
+  <tabstop>restoreBoardButton</tabstop>
   <tabstop>resetCheck</tabstop>
+  <tabstop>posTolEdit</tabstop>
+  <tabstop>posPesoEdit</tabstop>
+  <tabstop>timeTolEdit</tabstop>
+  <tabstop>timePesoEdit</tabstop>
+  <tabstop>ssidPesoEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../res.qrc"/>
