@@ -63,6 +63,7 @@ void MainWindow::setupConnect() {
                 i_time = 0;
                 setupMonitoringPlot();
                 setupLivePlot();
+                initializeLastMacList();
             }
         } catch (std::exception &e) {
             // Does not started signal

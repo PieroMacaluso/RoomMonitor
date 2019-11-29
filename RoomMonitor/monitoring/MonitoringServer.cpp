@@ -268,7 +268,13 @@ void MonitoringServer::aggregate() {
     for (auto &packet : packets) {
         std::deque<Packet> no_dup_queue{};
         int id = packet.second.first.at(0).getIdSchedina();
-        listOfId.insert(id);
+        /*
+         * Conteggio per schedine non funzionanti, vado a vedere solo i pacchetti appena inseriti, in questo modo
+         * riesco a rilevare immediatamente schedine non funzionanti
+         */
+        if (packet.second.second == 0) {
+            listOfId.insert(id);
+        }
         QSet<int> id_board_packet;
         bool to_be_discarded = false;
         std::for_each(packet.second.first.begin(), packet.second.first.end(), [&](Packet &p) {
@@ -284,48 +290,42 @@ void MonitoringServer::aggregate() {
             packet.second.second++;
         }
     }
-    if (listOfId.size() < nSchedine) {
-        qWarning() << "Sospetto malfunzionamento schedine";
-        // Se una schedina non viene rilevata incremento il contatore
-        // Ogni volta che viene rilevata nuovamente il contatore viene resettato
-        std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
-            if (!listOfId.contains(pair.first)) {
-                board_fail.find(pair.first)->second++;
-            } else {
-                board_fail.find(pair.first)->second = 0;
-            }
-        });
-        // Se una delle schedine non viene rilevata per una quantita eccessiva
-        QSet<QString> listBoardFailing{};
-        std::for_each(board_fail.begin(), board_fail.end(), [&](std::pair<int, int> pair) {
-            if (pair.second >= Utility::RETRY_STEP_BOARD) {
-                listBoardFailing.insert(QString::number(pair.first));
-            }
-        });
-        if (!listBoardFailing.empty()) {
-            //qCritical() << "ID schedine mancanti" << listBoardFailing.toList();
-            QString stringOut{"Elenco ID schede offline: [ "};
-            int count = 0;
-            for (auto &a : listBoardFailing) {
-                count++;
-                stringOut += "\"" + a + "\"";
-                if (count != listBoardFailing.size()) {
-                    stringOut += ", ";
-                }
-            }
-            stringOut += " ]";
 
-            Utility::warningMessage("Schedine non funzionanti",
-                                    "Ti invitiamo a verificare il funzionamento delle schedine indicate nei dettagli e riavviare il monitoraggio",
-                                    stringOut);
-            qInfo() << Strings::AGG_STOPPED;
-            emit stopped();
+    // Se una schedina non viene rilevata incremento il contatore
+    // Ogni volta che viene rilevata nuovamente il contatore viene resettato
+    std::for_each(boards.begin(), boards.end(), [&](std::pair<int, Board> pair) {
+        if (!listOfId.contains(pair.first)) {
+            board_fail.find(pair.first)->second++;
+        } else {
+            board_fail.find(pair.first)->second = 0;
         }
-        db.close();
-        this->aggregated();
-        return;
+    });
+    // Se una delle schedine non viene rilevata per una quantita eccessiva
+    QSet<QString> listBoardFailing{};
+    std::for_each(board_fail.begin(), board_fail.end(), [&](std::pair<int, int> pair) {
+        DEBUG("Board " + std::to_string(pair.first) + " fail counter: " + std::to_string(pair.second));
+        if (pair.second >= Utility::RETRY_STEP_BOARD) {
+            listBoardFailing.insert(QString::number(pair.first));
+        }
+    });
+    if (!listBoardFailing.empty()) {
+        QString stringOut{"Elenco ID schede offline: [ "};
+        int count = 0;
+        for (auto &a : listBoardFailing) {
+            count++;
+            stringOut += "\"" + a + "\"";
+            if (count != listBoardFailing.size()) {
+                stringOut += ", ";
+            }
+        }
+        stringOut += " ]";
+
+        emit stopped();
+        Utility::warningMessage("Schedine non funzionanti",
+                                "Ti invitiamo a verificare il funzionamento delle schedine indicate nei dettagli e riavviare il monitoraggio",
+                                stringOut);
+        qInfo() << Strings::AGG_STOPPED;
     }
-    board_fail.clear();
 
     // Stampa id pacchetti aggregati rilevati.
     for (auto fil : aggregate) {
