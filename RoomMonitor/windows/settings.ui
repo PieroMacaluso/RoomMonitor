@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="usesScrollButtons">
       <bool>false</bool>
@@ -373,13 +373,6 @@
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QToolButton" name="restoreBoardButton">
-             <property name="text">
-              <string>Ripristina Schede</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
          <item row="3" column="1">
@@ -398,11 +391,37 @@
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="resetCheck">
-         <property name="text">
-          <string>Inizializza Database quando applico le impostazioni</string>
+        <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0">
+         <property name="spacing">
+          <number>6</number>
          </property>
-        </widget>
+         <item>
+          <widget class="QPushButton" name="initializeButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Inizializza Database</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="restoreBoardButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Recupera Setup Schedine</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -580,8 +599,6 @@
   <tabstop>passEdit</tabstop>
   <tabstop>passEcho</tabstop>
   <tabstop>tableEdit</tabstop>
-  <tabstop>restoreBoardButton</tabstop>
-  <tabstop>resetCheck</tabstop>
   <tabstop>posTolEdit</tabstop>
   <tabstop>posPesoEdit</tabstop>
   <tabstop>timeTolEdit</tabstop>

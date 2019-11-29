@@ -5,18 +5,12 @@
 #include "SettingDialog.h"
 
 SettingDialog::SettingDialog() {
-    // Linea che serve per poter salvare nelle impostazioni una QList<QStringList>
-    qRegisterMetaTypeStreamOperators<QList<QStringList>>("Stuff");
     // Inizializzazione SettingDialog con impostazioni da QSettings.
     settingCheckUp();
     ui.setupUi(this);
     setupConnect();
     initializeBoardList();
     if (SettingDialog::settingCheckUp()) this->compileValues();
-    else {
-        ui.resetCheck->setChecked(true);
-        ui.resetCheck->setDisabled(true);
-    }
 }
 
 bool SettingDialog::settingCheckUp() {
@@ -63,6 +57,12 @@ void SettingDialog::setupConnect() {
 
     connect(ui.passEcho, &QToolButton::released, [&]() {
         ui.passEdit->setEchoMode(QLineEdit::Password);
+    });
+
+    connect(ui.initializeButton, &QPushButton::clicked, [&](){
+        if (this->isSettingValid() && Utility::yesNoMessage(this, "Creazione DB", "Sei sicuro di voler creare/sovrascrivere la tabella indicata?")){
+            this->resetDB();
+        }
     });
 }
 
@@ -254,9 +254,6 @@ void SettingDialog::openDialogMod() {
 
 void SettingDialog::apply() {
     if (!isSettingValid()) return;
-    if (ui.resetCheck->isChecked()) {
-        if (!resetDB()) return;
-    }
     s.setValue("monitor/n", ui.nEdit->value());
     s.setValue("monitor/min", ui.minEdit->value());
     s.setValue("room/width", ui.widthEdit->value());
@@ -364,6 +361,8 @@ bool SettingDialog::resetDB() {
     }
     db.close();
     qInfo() << Strings::DB_RESET;
+    Utility::infoMessage("Database Inizializzato", "Database Inizializzato correttamente");
+
     return true;
 }
 

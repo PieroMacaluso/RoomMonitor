@@ -4,8 +4,8 @@
 
 #include "Utility.h"
 
-const QString Utility::ORGANIZATION = "VALP";
-const QString Utility::APPLICATION = "RoomMonitoring";
+const QString Utility::ORGANIZATION = "ALP";
+const QString Utility::APPLICATION = "RoomMonitor";
 int Utility::RETRY_STEP_BOARD = 3;
 QString Utility::LOG_DIR = "log";
 QString Utility::LOG_FILE = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
