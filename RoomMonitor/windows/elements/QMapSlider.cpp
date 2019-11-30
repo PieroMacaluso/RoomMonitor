@@ -17,6 +17,7 @@ QMapSlider::QMapSlider(QWidget *parent) : QSlider(parent) {
 void QMapSlider::setMap(const std::map<QDateTime, std::vector<LastMac>> &mapOut) {
     QMapSlider::map.clear();
     QMapSlider::map = mapOut;
+    keyMap.clear();
     int max = static_cast<int>(mapOut.size()) - 1;
     for (auto &it: mapOut) {
         keyMap.push_back(it.first);
