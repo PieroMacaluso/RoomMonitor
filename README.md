@@ -32,6 +32,7 @@
     - [Captive Portal](#captive-portal)
     - [Sniffing](#sniffing)
     - [Validazione e Inoltro](#validazione-e-inoltro)
+  - [Indicazione stato tramite led](#indicazione-stato-tramite-led)
 - [RoomMonitor Server](#roommonitor-server)
   - [Generale](#generale)
   - [Impostazioni](#impostazioni)
