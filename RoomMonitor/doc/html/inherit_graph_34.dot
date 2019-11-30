@@ -1,9 +1,0 @@
-digraph "Graphical Class Hierarchy"
-{
-  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
-  node [fontname="Helvetica",fontsize="10",shape=record];
-  rankdir="LR";
-  Node0 [label="QCPSelectionDecorator",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_q_c_p_selection_decorator.html",tooltip="Controls how a plottable&#39;s data selection is drawn. "];
-  Node0 -> Node1 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
-  Node1 [label="QCPSelectionDecoratorBracket",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_q_c_p_selection_decorator_bracket.html",tooltip="A selection decorator which draws brackets around each selected data segment. "];
-}

@@ -1,8 +1,0 @@
-digraph "monitoring" {
-  compound=true
-  node [ fontsize="10", fontname="Helvetica"];
-  edge [ labelfontsize="10", labelfontname="Helvetica"];
-  dir_62029a7095150ca557d10310a8fae4d0 [shape=box, label="monitoring", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_62029a7095150ca557d10310a8fae4d0.html"];
-  dir_fe549de2418b81853b5f194edb4a7f34 [shape=box label="windows" fillcolor="white" style="filled" color="red" URL="dir_fe549de2418b81853b5f194edb4a7f34.html"];
-  dir_62029a7095150ca557d10310a8fae4d0->dir_fe549de2418b81853b5f194edb4a7f34 [headlabel="1", labeldistance=1.5 headhref="dir_000000_000001.html"];
-}
