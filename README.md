@@ -110,6 +110,7 @@ Per realizzare il meccanismo del captive portal è stato implementato un web ser
 
 L’utilizzo di apposite partizione di memorie ha permesso di memorizzare i valori impostati e i vari file utilizzati per implementare il server, in particolare si è deciso di usare una partizione **NVM**, tipo chiave-valore, per memorizzare i vari valori di inizializzazione. Tale partizione è basata su memoria non volatile che permette il salvataggio dei parametri anche in assenza di tensione.
 Per gestire la partizione dedicata al captive portal è stato usato un apposito file system chiamato **SPIFFS** (Serial Peripheral Interface Flash File System).
+Prima di memorizzare i valori inseriti tramite il browser, essi vengono validati e solo in caso di correttezza saranno memorizzati e verrà indicato all’utente che la fase di configurazione è terminata correttamente.
  
 #### Sniffing
 
@@ -124,6 +125,13 @@ Per prima cosa occorre impostare correttamente la scheda di rete per disabilitar
 Ogni pacchetto sarà inviato come una stringa formata da due parti separati dal carattere `|` , una prima parte contenente i dati reali del pacchetto e una seconda parte contenente il calcolo del HMAC-SHA256 eseguito sulla prima porzione di stringa. 
 La prima parte della stringa conterrà i seguenti dati: id_board, fcs_packet, rssi_packet, mac_src_packet, timestamp, SSID, mac_board.
 Dovendo inviare più pacchetti si è deciso di concatenare ogni stringa, corrispondente all'iesimo pacchetto, con quella ottenuta dal pacchetto precedente separata dal carattere `;`.
+Una volta inviati tutti i dati acquisiti si provvede alla liberazione della varie strutture dati utilizzate per evitare memory leak. 
+Per comodità di debug e di utilizzo è stato deciso di far lampeggiare il led a bordo della scheda per indicare il corretto funzionamento. In caso di errore durante l’invio dei pacchetti tale led rimarrà acceso fin quando non sarà nuovamente possibile collegarsi col server.
+
+### Indicazione stato tramite led
+Tramite un led installato sulla scheda sarà possibile capire lo stato del programma. 
+Durante la fase di acquisizione dell’orario il led lampeggia alternando lo stato acceso e quello spento ogni 2 secondi circa, solo quando l’orario verrà impostato correttamente il led si spegnerà e inizierà la fase di sniffing.
+Alla fine di tale fase, si provvederà ad inoltrare i dati al server, per indicare il corretto invio il led eseguirà un solo lampeggio, in caso di errore invece rimarrà acceso.
 
 
 ## RoomMonitor Server
