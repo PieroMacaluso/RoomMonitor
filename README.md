@@ -113,11 +113,18 @@ Per gestire la partizione dedicata al captive portal è stato usato un apposito 
  
 #### Sniffing
 
-In tale fase la board intercetta i vari pacchetti dei vari dispositivi. Per far ciò si utilizza la modalità promiscua, attraverso la quale, è possibile ricevere ed elaborare pacchetti non destinati al proprio dispositivo.
+In tale fase la board intercetta i pacchetti dei vari dispositivi. Per far ciò si utilizza la modalità promiscua, attraverso la quale, è possibile ricevere ed elaborare pacchetti non destinati al proprio dispositivo.
+Ogni qualvolta un pacchetto sarà intercettato dalla board esso sarà gestito da un apposito handler il quale si occuperà per prima cosa di filtrare il pacchetto ricevuto, accettandolo solo in caso di pacchetto con tipo 'Management'(`type= 0x00`) e sottotipo 'Probe Request' (`Subtype= 0x0b0100`), in seguito provvede ad aggiungerlo alla lista dei pacchetti ancora non inviati al server.
+Per comodità di debug e di utilizzo è stato deciso di stampare a video i dati rilevanti del pacchetto accettato.
 
 #### Validazione e Inoltro
 
-*Work In Progress...*
+Dopo il periodo di sniffing occorre inviare i dati acquisiti al server tramite un client Tcp.
+Per prima cosa occorre impostare correttamente la scheda di rete per disabilitare la modalità promiscua e per configurare correttamente il socket per la connessione con il server solo dopo sarà possibile inviare la lista dei pacchetti acquisiti.
+Ogni pacchetto sarà inviato come una stringa formata da due parti separati dal carattere `|` , una prima parte contenente i dati reali del pacchetto e una seconda parte contenente il calcolo del HMAC-SHA256 eseguito sulla prima porzione di stringa. 
+La prima parte della stringa conterrà i seguenti dati: id_board, fcs_packet, rssi_packet, mac_src_packet, timestamp, SSID, mac_board.
+Dovendo inviare più pacchetti si è deciso di concatenare ogni stringa, corrispondente all'iesimo pacchetto, con quella ottenuta dal pacchetto precedente separata dal carattere `;`.
+
 
 ## RoomMonitor Server
 
