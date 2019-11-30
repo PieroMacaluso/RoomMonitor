@@ -32,6 +32,7 @@
     - [Captive Portal](#captive-portal)
     - [Sniffing](#sniffing)
     - [Validazione e Inoltro](#validazione-e-inoltro)
+  - [Indicazione stato tramite led](#indicazione-stato-tramite-led)
 - [RoomMonitor Server](#roommonitor-server)
   - [Generale](#generale)
   - [Impostazioni](#impostazioni)
@@ -110,14 +111,29 @@ Per realizzare il meccanismo del captive portal è stato implementato un web ser
 
 L’utilizzo di apposite partizione di memorie ha permesso di memorizzare i valori impostati e i vari file utilizzati per implementare il server, in particolare si è deciso di usare una partizione **NVM**, tipo chiave-valore, per memorizzare i vari valori di inizializzazione. Tale partizione è basata su memoria non volatile che permette il salvataggio dei parametri anche in assenza di tensione.
 Per gestire la partizione dedicata al captive portal è stato usato un apposito file system chiamato **SPIFFS** (Serial Peripheral Interface Flash File System).
+Prima di memorizzare i valori inseriti tramite il browser, essi vengono validati e solo in caso di correttezza saranno memorizzati e verrà indicato all’utente che la fase di configurazione è terminata correttamente.
  
 #### Sniffing
 
-In tale fase la board intercetta i vari pacchetti dei vari dispositivi. Per far ciò si utilizza la modalità promiscua, attraverso la quale, è possibile ricevere ed elaborare pacchetti non destinati al proprio dispositivo.
+In tale fase la board intercetta i pacchetti dei vari dispositivi. Per far ciò si utilizza la modalità promiscua, attraverso la quale, è possibile ricevere ed elaborare pacchetti non destinati al proprio dispositivo.
+Ogni qualvolta un pacchetto sarà intercettato dalla board esso sarà gestito da un apposito handler il quale si occuperà per prima cosa di filtrare il pacchetto ricevuto, accettandolo solo in caso di pacchetto con tipo 'Management'(`type= 0x00`) e sottotipo 'Probe Request' (`Subtype= 0x0b0100`), in seguito provvede ad aggiungerlo alla lista dei pacchetti ancora non inviati al server.
+Per comodità di debug e di utilizzo è stato deciso di stampare a video i dati rilevanti del pacchetto accettato.
 
 #### Validazione e Inoltro
 
-*Work In Progress...*
+Dopo il periodo di sniffing occorre inviare i dati acquisiti al server tramite un client Tcp.
+Per prima cosa occorre impostare correttamente la scheda di rete per disabilitare la modalità promiscua e per configurare correttamente il socket per la connessione con il server solo dopo sarà possibile inviare la lista dei pacchetti acquisiti.
+Ogni pacchetto sarà inviato come una stringa formata da due parti separati dal carattere `|` , una prima parte contenente i dati reali del pacchetto e una seconda parte contenente il calcolo del HMAC-SHA256 eseguito sulla prima porzione di stringa. 
+La prima parte della stringa conterrà i seguenti dati: id_board, fcs_packet, rssi_packet, mac_src_packet, timestamp, SSID, mac_board.
+Dovendo inviare più pacchetti si è deciso di concatenare ogni stringa, corrispondente all'iesimo pacchetto, con quella ottenuta dal pacchetto precedente separata dal carattere `;`.
+Una volta inviati tutti i dati acquisiti si provvede alla liberazione della varie strutture dati utilizzate per evitare memory leak. 
+Per comodità di debug e di utilizzo è stato deciso di far lampeggiare il led a bordo della scheda per indicare il corretto funzionamento. In caso di errore durante l’invio dei pacchetti tale led rimarrà acceso fin quando non sarà nuovamente possibile collegarsi col server.
+
+### Indicazione stato tramite led
+Tramite un led installato sulla scheda sarà possibile capire lo stato del programma. 
+Durante la fase di acquisizione dell’orario il led lampeggia alternando lo stato acceso e quello spento ogni 2 secondi circa, solo quando l’orario verrà impostato correttamente il led si spegnerà e inizierà la fase di sniffing.
+Alla fine di tale fase, si provvederà ad inoltrare i dati al server, per indicare il corretto invio il led eseguirà un solo lampeggio, in caso di errore invece rimarrà acceso.
+
 
 ## RoomMonitor Server
 
