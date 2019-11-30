@@ -20,8 +20,6 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "nvs_getter.h"
-#include <utils/common.h>
-#include <crypto/sha256.h>
 #include <mbedtls/md.h>
 
 #define STARTSIZE    20
