@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/RSSI_Cord.dir/main.cpp.o  -o RSSI_Cord 
