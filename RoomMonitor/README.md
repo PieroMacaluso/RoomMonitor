@@ -1,5 +1,4 @@
-# Esempio server ricezione pacchetti esp32
-
+# RoomMonitor App
 
 ## Installing
 Bisogna aprire la porta lato server per garantire un corretto funzionamento.
