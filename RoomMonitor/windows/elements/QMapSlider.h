@@ -9,7 +9,6 @@
 #include <windows/common/callout.h>
 #include <QtWidgets/QLabel>
 #include <windows/classes/PositionDataPlot.h>
-#include <windows/classes/MacLastPos.h>
 #include <windows/classes/LastMac.h>
 
 class QMapSlider : public QSlider {
