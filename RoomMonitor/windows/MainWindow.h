@@ -17,10 +17,14 @@
 #include <windows/plots/mac/MacChart.h>
 #include <windows/classes/LastMac.h>
 #include <QtGlobal>
+#include <windows/plots/mac/MacChart.h>
+#include <windows/classes/MacOccurrence.h>
+#include <windows/classes/PositionDataPlot.h>
+#include <windows/classes/AnalysisWorker.h>
+#include <Styles.h>
+#include "SettingDialog.h"
 
 class MainWindow : public QMainWindow {
-
-    int i_time = 0;
 
     /**
      * Worker thread utilizzato per analisi pesanti. Queste vengono eseguite in un thread separato per evitare di
@@ -28,6 +32,7 @@ class MainWindow : public QMainWindow {
      * thread principale attraverso
      */
     QThread workerThread;
+
     /**
      * UI Finestra Principale
      */
@@ -47,7 +52,6 @@ class MainWindow : public QMainWindow {
      * Struttura di monitoraggio. Parte centrale delle procedure di monitoraggio
      */
     MonitoringServer s{};
-
 
     /**
      * Mappa che viene pulita e riempita ogni volta che è vengono fatte le query corrispondenti alle
@@ -157,11 +161,6 @@ public:
     /**
      * Funzione richiamata dall'emissione del segnale `AnalysisWorker::macPlotReady` una volta che il thread ha terminato
      * le operazioni di recupero dei dati con le query per le posizioni degli ultimi MAC.
-     * @param chart puntatore al grafico che deve essere inserito al posto del precedente nella schermata principale.
-     */
-    /**
-     * Funzione richiamata dall'emissione del segnale `AnalysisWorker::macPlotReady` una volta che il thread ha terminato
-     * le operazioni di recupero dei dati con le query per le posizioni degli ultimi MAC.
      * @param mac QStringList dei Mac
      * @param frequency QStringList delle frequenze dei mac
      * @param macPlot puntatore al grafico MAC da popolare
@@ -183,12 +182,36 @@ public:
      */
     void setupMapPlot();
 
+    /**
+     * Funzione che viene richiamata per chiudere il server
+     */
     void stopServer();
 
+    /**
+     * Funzione per ottenere le statistiche sul MAC nascosto
+     * @param mac       mac nascosto da analizzare
+     * @param initTime  QDateTime di inizio
+     * @param endTime   QDateTime di fine
+     * @return          Lista di statistiche
+     */
     QList<Statistic> getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime);
 
+    /**
+     * Ottieni pacchetti di pacchetti nascosti
+     * @param initTime      data di inizio
+     * @param endTime       data di fine
+     * @param mac           mac da non rilevare nella queue
+     * @return              Deque di pacchetti
+     */
     static std::deque<Packet> getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac);
 
+    /**
+     * Ottieni tutti i pacchetti per un MAC address
+     * @param mac           Indirizzo MAC
+     * @param initTime      data di inizio
+     * @param endTime       data di fine
+     * @return              lista di pacchetti
+     */
     std::list<Packet> getAllPacketsOfMac(const QString &mac, QDateTime initTime, QDateTime endTime);
 };
 

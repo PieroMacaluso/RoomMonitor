@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 01/10/19.
-//
-
 #include "Utility.h"
 
 const QString Utility::ORGANIZATION = "ALP";

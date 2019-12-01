@@ -1,13 +1,15 @@
-//
-// Created by pieromack on 26/07/19.
-//
-
 #include "MonitoringServer.h"
 
 MonitoringServer::MonitoringServer() {
 }
 
 MonitoringServer::~MonitoringServer() {
+}
+
+void recalculateCircles(std::deque<Circle> &circs, double delta){
+    for (auto circ : circs){
+        circ.increaseR(delta);
+    }
 }
 
 /**
@@ -23,6 +25,8 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
     int retry = 0;
     bool error = true;
     int delta = 0;
+    auto backup_i = circles.begin();
+    auto backup_j = circles.begin()+1;
 
     // Se i cerchi non si intersecano si va ad aumentare il modulo dell'RSSI per poter raggiungere una migliore stima
     // della posizione fino ad un massimo di 1000 volte
@@ -179,19 +183,6 @@ void MonitoringServer::stop() {
 
     server.close();
     timer.stop();
-}
-
-template<class Container>
-void
-MonitoringServer::splitString(const std::string &str, Container &cont, std::string &startDelim,
-                              std::string &stopDelim) {
-    unsigned first = 0;
-    unsigned end = 0;
-    while ((first = str.find(startDelim, first)) < str.size() && (end = str.find(stopDelim, first)) < str.size()) {
-        std::string val = str.substr(first + startDelim.size() + 1, end - first - startDelim.size() - 2);
-        cont.push_back(val);
-        first = end + stopDelim.size();
-    }
 }
 
 bool MonitoringServer::is_inside_room(PositionData data) {

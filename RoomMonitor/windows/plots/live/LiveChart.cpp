@@ -32,7 +32,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
 
 
     QValueAxis *axisX = new QValueAxis();
-    axisX->setLabelFormat("%i");
+    axisX->setLabelFormat("%.2f");
     axisX->setTitleText("X");
     this->addX(axisX);
     roomPerimeter->attachAxis(axisX);
@@ -41,7 +41,7 @@ LiveChart::LiveChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(par
 
 
     QValueAxis *axisY = new QValueAxis();
-    axisY->setLabelFormat("%i");
+    axisY->setLabelFormat("%.2f");
     axisY->setTitleText("Y");
     this->addY(axisY);
     roomPerimeter->attachAxis(axisY);

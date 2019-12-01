@@ -735,5 +735,37 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionRangeDock</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>rangeSelectorDock</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>478</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionMacSituationDock</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>macDetectedDock</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>136</x>
+     <y>694</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>

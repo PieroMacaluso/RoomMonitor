@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 01/10/19.
-//
-
 #ifndef ROOMMONITOR_UTILITY_H
 #define ROOMMONITOR_UTILITY_H
 
@@ -14,11 +10,11 @@
 #include <QtCharts>
 #include "Strings.h"
 #include <vector>
-#include <monitoring/Board.h>
 #include "Query.h"
 #include <deque>
-#include <monitoring/Packet.h>
+#include "monitoring/Packet.h"
 #include <stdexcept>
+#include "monitoring/Board.h"
 
 
 class Utility {

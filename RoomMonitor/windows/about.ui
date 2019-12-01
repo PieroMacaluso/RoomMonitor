@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>281</width>
-    <height>324</height>
+    <height>330</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Informazioni</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1,0,0">
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -34,6 +34,16 @@
     <widget class="QLabel" name="label">
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Questo software è stato sviluppato da:&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Macaluso Piero&lt;br/&gt;Manicone Lorenzo&lt;br/&gt;Turco Angelo&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>&lt;a href=&quot;https://www.github.com/pieromacaluso/RoomMonitor&quot;&gt;Github&lt;/a&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>

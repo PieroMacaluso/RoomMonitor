@@ -142,7 +142,7 @@ MonitoringChart::MonitoringChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) 
     scatter->attachAxis(axisX);
 
     QValueAxis *axisY = new QValueAxis;
-    axisY->setLabelFormat("%i");
+    axisY->setLabelFormat("%.2f");
     axisY->setTitleText("Numero dispositivi rilevati");
     axisY->setRange(-0.5, 10);
     this->addY(axisY);

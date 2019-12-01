@@ -115,14 +115,33 @@ public slots:
     */
     bool isSettingValid();
 
+    /**
+     * Compila i valori dei vari form, con i dati delle impostazioni salvate.
+     */
     void compileValues();
 
+    /**
+     * Aggiunge la schedina al Database
+     * @param id_board      id schedina
+     * @param pos_x         posizione x
+     * @param pos_y         posizione y
+     * @param a
+     */
     void addBoardToDB(const QString& id_board, const QString& pos_x, const QString& pos_y, const QString& a);
 
+    /**
+     * Riempimento della tabella delle schedine con le schedine da database
+     */
     void fillBoardList();
 
+    /**
+     * Riempimento della tabella delle schedine con le schedine da impostazioni default
+     */
     void fillBoardListDefault();
 
+    /**
+     * Ripristina schedine da Database
+     */
     void restoreBoards();
 };
 

@@ -23,7 +23,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
 
 
     QValueAxis *axisX = new QValueAxis;
-    axisX->setLabelFormat("%i");
+    axisX->setLabelFormat("%.2f");
     axisX->setTitleText("X");
     this->addX(axisX);
     lineSeries->attachAxis(axisX);
@@ -31,7 +31,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     roomPerimeter->attachAxis(axisX);
 
     QValueAxis *axisY = new QValueAxis;
-    axisY->setLabelFormat("%i");
+    axisY->setLabelFormat("%.2f");
     axisY->setTitleText("Y");
     this->addY(axisY);
     lineSeries->attachAxis(axisY);

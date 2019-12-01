@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 11/08/19.
-//
-
 #include "Circle.h"
 
 Circle::Circle(double R, double X, double Y)
@@ -25,20 +21,20 @@ int Circle::intersect(const Circle &C2, Point2d &i1, Point2d &i2) {
                        c.y() - C2.c.y()).norm();
 
     // find number of solutions
-    if (d > r + C2.r) // circles are too far apart, no solution(s)
-    {
-        std::cout << "Circles are too far apart\n";
+    if (d > r + C2.r) {
+        // circles are too far apart, no solution(s)
+        // std::cout << "Circles are too far apart\n";
         return 0;
-    } else if (d == 0 && r == C2.r) // circles coincide
-    {
-        std::cout << "Circles coincide\n";
+    } else if (d == 0 && r == C2.r) {
+        // circles coincide
+        // std::cout << "Circles coincide\n";
         return -1;
-    }
+    } else if (d + min(r, C2.r) < max(r, C2.r)) {
         // one circle contains the other
-    else if (d + min(r, C2.r) < max(r, C2.r)) {
-        std::cout << "One circle contains the other\n";
+        // std::cout << "One circle contains the other\n";
         return -2;
     } else {
+        // there is/are intersections
         double a = (r * r - C2.r * C2.r + d * d) / (2.0 * d);
         double h = sqrt(r * r - a * a);
 

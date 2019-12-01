@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 11/08/19.
-//
-
 #include "Point2d.h"
 
 double Point2d::norm() const {

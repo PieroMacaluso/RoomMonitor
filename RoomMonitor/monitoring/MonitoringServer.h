@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 26/07/19.
-//
-
 #ifndef ROOMMONITOR_MONITORINGSERVER_H
 #define ROOMMONITOR_MONITORINGSERVER_H
 
@@ -25,7 +21,6 @@
 #include "Packet.h"
 #include "PositionData.h"
 #include "Board.h"
-#include "Room.h"
 #include <mutex>
 #include <QTimer>
 #include <map>
@@ -42,28 +37,63 @@
 #include "Utility.h"
 #include "Circle.h"
 #include "../windows/SettingDialog.h"
-#include <monitoring/classes/Statistic.h>
+#include "monitoring/classes/Statistic.h"
+#include "monitoring/Board.h"
 
 
 
 class MonitoringServer : public QObject {
 Q_OBJECT
+    /**
+     * TCP Server
+     */
     QTcpServer server{};
+
+    /**
+     * Mappa di <IDSchedina,Numero di fallimenti> per verificarne il corretto funzionamento
+     */
     std::map<int, int> board_fail;
+
+    /**
+     * Mappa di schedine
+     */
     std::map<int, Board> boards;
+
+    /**
+     * Lista per controllo ID
+     */
     QList<int> check_id;
-    bool running;
+
+    /**
+     * Buffer di pacchetti second-chance
+     */
     std::map<std::string, std::pair<std::deque<Packet>, int>> packets;
-    int numErrEspNotFound = 0;
-//    std::deque<std::pair<Packet, int>> packets;
+
+    /**
+     * Timer per aggregazione
+     */
     QTimer timer{};
+
+    /**
+     * Impostazioni del software
+     */
     QSettings settings{Utility::ORGANIZATION, Utility::APPLICATION};
 
 public:
+    /**
+     * Costruttore
+     */
     MonitoringServer();
 
+    /**
+     * Distruttore
+     */
     ~MonitoringServer();
 
+    /**
+     * Check if the server is running
+     * @return true if it is running, false otherwise
+     */
     bool isRunning();
 
     /**
@@ -79,64 +109,34 @@ public:
     void stop();
 
     /**
-     * Split fatto con stringhe per evitare caratteri casuali/involuti inviati dalla schedina
-     * @tparam Container
-     * @param str
-     * @param cont
-     * @param startDelim
-     * @param stopDelim
+     * Funzione di conversione da RSSI a coordinate partendo da una deque di pacchetti che appartengono allo stesso
+     * dispositivo, ma sono state ricevute da schedine differenti. Ritorna una struttura che rappresenta la stima della posizione.
+     * @param deque     Deque di pacchetti
+     * @return PositionData     posizione stimata del dispositivo
      */
-    template<class Container>
-    void splitString(const std::string &str, Container &cont, std::string &startDelim, std::string &stopDelim);
-
     PositionData fromRssiToXY(const std::deque<Packet>& deque);
 
+    /**
+     * From RSSI and A to metres
+     * @param rssi      RSSI value
+     * @param A         A constant
+     * @return float    distance
+     */
     float calculateDistance(signed rssi, int A);
 
+    /**
+     * Check if the packet is inside the room, otherwise discard it
+     * @param data Position Data
+     * @return true if it is inside, false otherwise
+     */
     bool is_inside_room(PositionData data);
 
-    bool getHiddenDeviceFor(Packet source, uint32_t initTime, uint32_t endTime, std::deque<Packet> &hiddenPackets);
-    QList<Statistic> getHiddenMacFor(QString mac, QDateTime initTime, QDateTime endTime);
-
-/**
- * Restituisce una stima del numero di dispositivi con mac nascosto nell'intervallo di tempo passato.
- * Separato su due funzioni per avere anche solo la ricerca per un singolo mac.
- * @param initTime
- * @param endTime
- *
- * initTime e endTime corrispondono al periodo di osservazione (esempio alcune ore)
- * tolleranzaTimestamp corrisponde al tempo in cui la posizione deve essere simile per dire che il mac è uguale ad un altro (esempio 1 minuto)
- *
- * @return
- */
-
-    int getHiddenDevice(uint32_t initTime, uint32_t endTime);
-
-/**
- * Funzione che recupera dal db tutti i pacchetti con mac hidden nel periodo specificato
- * @param initTime
- * @param endTime
- * @return
- */
-    static std::deque<Packet> getHiddenPackets(QDateTime initTime, QDateTime endTime, QString &mac);
-
     /**
- * Funzione utilizzata per ottenere il pacchetto con il maggior timestamp di un determinato mac
- * @param mac
- * @param initTime
- * @param endTime
- * @return
- */
-    Packet getLastPacketWithMac(QString mac, uint32_t initTime, uint32_t endTime);
-
-    std::list<PositionData> getAllPositionOfMac(QString mac, uint32_t initTime, uint32_t endTime);
-
-    std::list<uint32_t> getAllTimeStampOfMac(QString mac, uint32_t initTime, uint32_t endTime);
-
-    double checkTimeStamp(uint32_t timestamp, std::list<uint32_t> list);
-
-    double checkPos(PositionData data, std::list<PositionData> list);
-
+     * Check if a mac is hidden/random or not
+     * @param basicString
+     * @return true if it is random, false otherwise
+     */
+    static bool isRandomMac(const std::string &basicString);
 
 public slots:
 
@@ -146,27 +146,27 @@ public slots:
      */
     void newConnection();;
 
-
+    /**
+     * Slot che avvia l'aggregazione
+     */
     void aggregate();
-
-    static bool isRandomMac(const std::string &basicString);
 
 signals:
 
     /**
      * Signal che segnala l'avvio del Server TCP
-     * @param nSchedine numero delle schedine a disposizione
      */
     void started();
 
+    /**
+     * Signal che segnala la conclusione della fase di aggregazione
+     */
     void aggregated();
-
 
     /**
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
 };
-
 
 #endif //ROOMMONITOR_MONITORINGSERVER_H

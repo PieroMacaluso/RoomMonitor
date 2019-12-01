@@ -2,13 +2,8 @@
 // Created by pieromack on 11/09/19.
 //
 
-#include <windows/plots/mac/MacChart.h>
-#include <windows/classes/MacOccurrence.h>
-#include <windows/classes/PositionDataPlot.h>
-#include <windows/classes/AnalysisWorker.h>
-#include <Styles.h>
+
 #include "MainWindow.h"
-#include "SettingDialog.h"
 
 MainWindow::MainWindow() {
     ui.setupUi(this);
@@ -63,7 +58,6 @@ void MainWindow::setupConnect() {
                 ui.stopButton->setDisabled(false);
                 // Pulizia tabella Ultimi MAC
                 lastMacs.clear();
-                i_time = 0;
                 setupMonitoringPlot();
                 setupLivePlot();
                 initializeLastMacList();
@@ -93,12 +87,12 @@ void MainWindow::setupConnect() {
 
     // Click Analysis Button
     QObject::connect(ui.actionAnalysis, &QAction::triggered, [&]() {
-        if (s.isRunning()) {
-            if (!Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) return;
-            s.stop();
-            ui.startButton->setDisabled(false);
-            ui.stopButton->setDisabled(true);
-        }
+//        if (s.isRunning()) {
+//            if (!Utility::yesNoMessage(this, Strings::ANA_RUNNING, Strings::ANA_RUNNING_MSG)) return;
+//            s.stop();
+//            ui.startButton->setDisabled(false);
+//            ui.stopButton->setDisabled(true);
+//        }
 
         // Chiusura monitoraggio
         // Chiudi Dock Monitoraggio
@@ -186,9 +180,6 @@ void MainWindow::setupConnect() {
             sd.setModal(true);
             ret = sd.exec();
         }
-        if (ret) {
-            ui.actionMonitoring->triggered();
-        }
     });
 
     // Azione Localizza MAC
@@ -229,10 +220,7 @@ void MainWindow::setupConnect() {
         sd.exec();
 
     });
-
-
 }
-
 
 /**
  * Stessa cosa della funzione getHiddenDeviceFor ma questa volta partendo solo dalla stringa del mac e non da un intero pacchetto
@@ -249,9 +237,6 @@ QList<Statistic> MainWindow::getHiddenMacFor(QString mac, QDateTime initTime, QD
     // usata per definire entro quanto la posizione deve essere uguale, 240= 4 minuti
     uint32_t tolleranzaTimestamp = su.value("mac/time/tol").toInt();
     double tolleranzaDist = su.value("mac/pos/tol").toInt();
-    bool checkTime = su.value("mac/time/check").toBool();
-    bool checkDist = su.value("mac/pos/check").toBool();
-    bool checkSsid = su.value("mac/ssid/check").toBool();
     int pesoTime = su.value("mac/time/peso").toInt();
     int pesoDist = su.value("mac/pos/peso").toInt();
     int pesoSsid = su.value("mac/ssid/peso").toInt();
@@ -287,7 +272,7 @@ QList<Statistic> MainWindow::getHiddenMacFor(QString mac, QDateTime initTime, QD
             double ssid = (source.getSsid() != "Nan" && source.getSsid() == packet.getSsid()) ? 1 : 0;
 
             // Calcolo Pesi
-            int totalePesi = pesoDist * checkDist + pesoTime * checkTime + pesoSsid * checkSsid;
+            int totalePesi = pesoDist + pesoTime + pesoSsid;
             perc += (percDist * pesoDist + percTime * pesoTime + ssid * pesoSsid) / totalePesi;
         }
         perc = perc / allPacketsOfMac.size();
@@ -331,9 +316,7 @@ std::list<Packet> MainWindow::getAllPacketsOfMac(const QString &mac, QDateTime i
 
     if (!query.exec()) {
         //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                query.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return std::list<Packet>{};
     }
 
@@ -382,9 +365,7 @@ std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime en
     query.bindValue(":mac", mac);
     if (!query.exec()) {
         //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                query.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return std::deque<Packet>{};
     }
     QSqlRecord record = query.record();
@@ -393,18 +374,15 @@ std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime en
 
     while (query.next()) {                                //ciclo su ogni entry selezionata del db
         std::string fcs = query.value(1).toString().toStdString();
-        std::string mac = query.value(2).toString().toStdString();
+        std::string mac_str = query.value(2).toString().toStdString();
         uint32_t timestamp = query.value(5).toDateTime().toSecsSinceEpoch();
         std::string ssid = query.value(6).toString().toStdString();
-
-        Packet p(-1, fcs, -1, mac, timestamp, ssid);
-
+        Packet p(-1, fcs, -1, mac_str, timestamp, ssid);
         double_t posX = query.value(3).toDouble();
         double_t posY = query.value(4).toDouble();
         PositionData positionData(posX, posY);
         p.setPosition(positionData);
         hiddenPackets.push_back(p);
-
     }
     return hiddenPackets;
 }
@@ -422,7 +400,6 @@ void MainWindow::setupLivePlot() {
     std::vector<Board> boards = Utility::getBoards();
     liveChart->fillBoards(boards);
     liveChart->fillDevices(lastMacs);
-
 }
 
 void MainWindow::setupMapPlot() {
@@ -447,7 +424,6 @@ void MainWindow::setupMapPlot() {
         ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(value));
         ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(value).toString("dd/MM/yyyy hh:mm"));
     });
-
 }
 
 void MainWindow::setupAnalysisPlot() {
@@ -502,7 +478,6 @@ void MainWindow::addMacSitua(const QString &mac, int frequency, bool random) {
     ui.macSituation->setItem(i, 0, mac_table);
     ui.macSituation->setItem(i, 1, frequency_table);
     ui.macSituation->setItem(i, 2, random_table);
-
 }
 
 void MainWindow::initializeLastMacList() {
@@ -524,13 +499,11 @@ void MainWindow::initializeLastMacList() {
 void MainWindow::addLastMacPos(const QString &mac, const QDateTime &date, qreal posx, qreal posy) {
     int i = ui.macLastSituation->rowCount();
     ui.macLastSituation->insertRow(i);
-
     auto mac_table = new QTableWidgetItem{mac};
     auto date_table = new QTableWidgetItem{date.toString("dd/MM/yyyy hh:mm")};
     auto posx_table = new QTableWidgetItem{QString::number(posx)};
     auto posy_table = new QTableWidgetItem{QString::number(posy)};
     mac_table->setToolTip(mac);
-
     ui.macLastSituation->setItem(i, 0, mac_table);
     ui.macLastSituation->setItem(i, 1, date_table);
     ui.macLastSituation->setItem(i, 2, posx_table);
@@ -561,9 +534,7 @@ void MainWindow::setupPositionPlot(QString mac) {
     query.bindValue(":mac", mac);
 
     if (!query.exec()) {
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                db.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
         db.close();
         return;
     }
@@ -622,18 +593,14 @@ void MainWindow::addLiveData() {
     if (error) return;
 
     QSqlQuery query{db};
-
     query.prepare(Query::SELECT_COUNT_LIVE.arg(su.value("database/table").toString()));
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
     query.bindValue(":freq", su.value("monitor/min").toInt());
-
     if (!query.exec()) {
         //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                db.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
         return;
     }
     if (!query.first())
@@ -641,9 +608,7 @@ void MainWindow::addLiveData() {
     else
         ui.monitoringPlot->getChart()->updateData(prev, query.value(0).toInt());
 
-
     query.clear();
-
     query.prepare(Query::SELECT_COUNT_LIVE.arg(su.value("database/table").toString()));
     query.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
@@ -652,9 +617,7 @@ void MainWindow::addLiveData() {
 
     if (!query.exec()) {
         //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                query.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return;
     }
 
@@ -662,9 +625,7 @@ void MainWindow::addLiveData() {
         ui.monitoringPlot->getChart()->updateData(start, 0);
     else
         ui.monitoringPlot->getChart()->updateData(start, query.value(0).toInt());
-
     query.clear();
-
     db.close();
 }
 
@@ -697,8 +658,6 @@ void MainWindow::dataAnalysis() {
     connect(worker, &AnalysisWorker::addMac, this, &MainWindow::addMacSitua);
     connect(worker, &AnalysisWorker::finished, this, &MainWindow::finishedAnalysisThread);
     connect(worker, &AnalysisWorker::warning, this, &Utility::warningMessage);
-
-
     ui.searchButton->setEnabled(false);
     workerThread.start();
 }
@@ -720,10 +679,7 @@ void MainWindow::genLiveData() {
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     if (!query.exec()) {
         //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                query.lastError().text());
-
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return;
     }
 
@@ -744,9 +700,7 @@ void MainWindow::genLiveData() {
     this->updateLastMac();
     std::vector<LastMac> v;
     this->setupLivePlot();
-
     db.close();
-
 }
 
 void MainWindow::handleResults(MonitoringChart *chart) {
