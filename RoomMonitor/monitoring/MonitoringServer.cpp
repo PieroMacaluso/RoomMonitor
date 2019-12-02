@@ -438,10 +438,8 @@ void MonitoringServer::aggregate() {
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
         PositionData positionData = trilateration(fil.second);
-        PositionData p2 = trilaterationAverage(fil.second);
-
         std::string packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " " +
-                             positionData.getStringPosition() + " | " + p2.getStringPosition();
+                             positionData.getStringPosition();
         qDebug() << QString::fromStdString(packet);
         if (positionData == PositionData::positionDataNull()) {
             qDebug() << "Errore Triangolazione";
