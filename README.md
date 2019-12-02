@@ -41,9 +41,12 @@
     - [MAC Nascosto](#mac-nascosto)
   - [Monitoraggio](#monitoraggio-1)
     - [Aggregazione](#aggregazione)
-  - [Trilaterazione](#trilaterazione)
+    - [Trilaterazione](#trilaterazione)
   - [Analisi](#analisi)
-- [Sviluppi Futuri](#sviluppi-futuri)
+    - [Statistica di Lungo Periodo](#statistica-di-lungo-periodo)
+    - [Visualizzazione Movimento](#visualizzazione-movimento)
+    - [Analisi MAC nascosti](#analisi-mac-nascosti)
+  - [Sviluppi Futuri](#sviluppi-futuri)
 
 Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018.
 
@@ -176,16 +179,42 @@ Le percentuali così calcolate per ogni pacchetto vengono poi mediate sul numero
 
 ### Monitoraggio
 
+<table>
+<tr>
+    <th>Presenze</th>
+    <th>Frequenze MAC</th>
+    <th>Slider MAP</th>
+  </tr>
+  <tr>
+    <td><a href="stuff/img/app_analysis_1.png"><img src="stuff/img/app_analysis_1.png"></a></td>
+    <td><a href="stuff/img/app_analysis_2.png"><img src="stuff/img/app_analysis_2.png"></a></td>
+    <td><a href="stuff/img/app_analysis_3.png"><img src="stuff/img/app_analysis_3.png"></a></td>
+  </tr>
+</table>
+
+
+<table>
+<tr>
+    <th>Localizzazione MAC</th>
+    <th>Stima MAC Randomico</th>
+  </tr>
+  <tr>
+    <td><a href="stuff/img/app_analysis_4.png"><img src="stuff/img/app_analysis_4.png"></a></td>
+    <td><a href="stuff/img/app_analysis_5.png"><img src="stuff/img/app_analysis_5.png"></a></td>
+  </tr>
+</table>
+
 La parte principale del software è costituita dalla fase di monitoraggio dove il server si mette in ascolto delle connessione TCP provenienti dalle schedine configurate da cui riceve i dati per eseguire le stime.
 
 #### Aggregazione
+
 A livello di tempistiche, abbiamo deciso di implementare il sistema in modo che sia in grado di funzionare in maniera asincrona, lasciando uno strato di disaccoppiamento tra schedine e server di aggregazione.
 Le schedine sono libere di mandare i pacchetti a cadenza regolare di un minuto al server mettendosi in coda nel canale TCP. I dati così ricevuti vengono accumulati in una coda di pacchetti unica di tipo second-chance. Ogni minuto il server provvederà a eseguire l'aggregazione su ogni singolo pacchetto: questo (identificato dal CRC a 32bit trasmesso dalla schedina) verrà salvato sul database ed eliminato dalla coda solo se sarà presente un numero di pacchetti pari al numero di schedine utilizzate.
 In caso contrario ad ogni singolo pacchetto verrà incrementato il contatore di chance. Alla fine di ogni processo di aggregazione i contatori di ogni pacchetto vengono controllati per verificare se il pacchetto deve essere eliminato o mantenuto.
 
 Questo approccio ha permesso di poter gestire i pacchetti ricevuti da tutte le schedine senza introdurre forzature da meccanismi sincroni.
 
-### Trilaterazione
+#### Trilaterazione
 
 Quando per ogni pacchetto (identificato dal CRC 32 bit) sono disponibili dati provenienti da tutte le schedine configurate nella cattura, allora è il momento di andare a calcolare la posizione stimata del pacchetto e salvarlo nel database.
 
@@ -208,18 +237,33 @@ Per poter stimare la posizione si prendono combinazioni di cerchi e si calcolano
 <div align="center">
 <img src="https://latex.codecogs.com/gif.latex?\inline&space;\dpi{300}&space;\small&space;\text{num}_{x}&space;=&space;\sum_{i=0}^{n}&space;\frac{x_i}{\sum_{j=0}^{j=1}r_j}&space;\;\;\;&space;\text{num}_{y}&space;=&space;\sum_{i=0}^{n}&space;\frac{y_i}{\sum_{j=0}^{j=1}r_j}&space;\;\;\;&space;\text{den}&space;=&space;\sum_{i=0}^{n}&space;\frac{1}{\sum_{j=0}^{j=1}r_j}" title="\small \text{num}_{x} = \sum_{i=0}^{n} \frac{x_i}{\sum_{j=0}^{j=1}r_j} \;\;\; \text{num}_{y} = \sum_{i=0}^{n} \frac{y_i}{\sum_{j=0}^{j=1}r_j} \;\;\; \text{num}_{y} = \sum_{i=0}^{n} \frac{1}{\sum_{j=0}^{j=1}r_j}" />
 </div>
-
-<div align="center">
+<br><br>
+<div align="center" >
 <img src="https://latex.codecogs.com/gif.latex?\inline&space;\dpi{300}&space;\small&space;\text{result\_coordinates}&space;=&space;(\frac{\text{num}_{x}}{\text{den}},&space;\frac{\text{num}_{y}}{\text{den}})" title="\small \text{result\_coordinates} = (\frac{\text{num}_{x}}{\text{den}}, \frac{\text{num}_{y}}{\text{den}})" />
 </div>
 
 
 ### Analisi
 
-- Statistica di Lungo Periodo
-- Analisi MAC nascosti
-- Visualizzazione Movimento
+#### Statistica di Lungo Periodo
 
-## Sviluppi Futuri
+Una volta acquisiti i dati, è molto utile avere un'interfaccia con cui andarli a consultare ed analizzare. Questo è l'obiettivo che si prefissa la parte di analisi dell'applicazione.
+
+In questa sezione è possibile andare a selezionare un range di date per poter ottenere i dati su questo periodo di tempo con una granularità di 5 minuti.
+Come scelta architetturale abbiamo deciso di andare a limitare manualmente questo lasso di tempo ad un mese, periodo che ci è sembrato un compromesso ragionevole tra utilizzabilità e performance (contando sempre il fatto che una granularità di 5 minuti su un mese è comunque molto complessa da gestire).
+
+L'utente potrà visualizzare l'andamento delle presenze all'interno del primo grafico in funzione del tempo, visualizzare i dispositivi che sono stati rilevati con più frequenza e un grafico con la situazione delle posizioni animata con granularità di 5 minuti in 5 minuti.
+
+#### Visualizzazione Movimento
+
+L'utente potrà inoltra andare a scegliere un MAC di un dispositivo dall'elenco che si trova sulla sinistra e potrà andare ad analizzare il suo spostamento attraverso un'animazione regolata da uno slider.
+
+#### Analisi MAC nascosti
+
+Oramai la maggior parte dei dispositivi con i sistemi operativi più aggiornati presentano la funzionalità del MAC nascosto: la scheda del dispositivo va a generare un MAC randomico ogni tot secondi. Questa funzionalità permette di non essere tracciabili, mantenendo la privacy.
+
+Partendo dal presupposto che fare un'analisi del genere basandosi unicamente sulla posizione, sul tempo e sull'SSID è molto lontana dall'essere precisa, questa può dare in ogni caso una visione di massima di quelli che potrebbero essere i dispositivi che più di avvicinano a quello in analisi.
+
+### Sviluppi Futuri
 
 *Work in Progress...*
