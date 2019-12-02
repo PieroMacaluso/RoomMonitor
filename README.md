@@ -37,6 +37,8 @@
   - [Impostazioni](#impostazioni)
     - [Stanza](#stanza)
     - [Monitoraggio](#monitoraggio)
+    - [Database](#database)
+    - [MAC Nascosto](#mac-nascosto)
   - [Monitoraggio](#monitoraggio-1)
   - [Impostazioni](#impostazioni-1)
   - [Monitoraggio](#monitoraggio-2)
@@ -156,6 +158,17 @@ Le impostazioni della stanza permettono di inserire dati sulle caratteristiche d
 - **Costante Propagazione Segnale**: parametro utilizzato dall'algoritmo per passare da RSSI a distanza in metri. Questo parametro è settato di default a 2 o 3 per spazi quali aule o stanze.
 - **Minimo minuti conteggio presenza**: la granularità con cui vengono effettuate le stime è di 5 minuti. Questo parametro indica quanti minuti sul totale di 5 sono necessari affinchè il software conteggi la persona come presente in quei 5 minuti.
 - **Limite Fallimenti Aggregazione**: questo parametro indica qual'è il massimo numero di aggregazioni che il software farà senza ricevere nemmeno un singolo pacchetto da almeno una schedina
+- **Porta Server TCP**: serve per specificare in quale porta il server TCP riceverà i dati dalle varie schedine.
+
+#### Database
+
+In questa finestra è possibile andare a specificare tutti i dati riguardanti il database in cui andare a salvare i dati aggregati ricevuti da tutte le schedine. Da questa facciata è possibile andare ad operare sul database inizializzando una nuova tabella per una nuova cattura o andando a ripristinare la configurazione delle schedine per una determinata stanza.
+
+#### MAC Nascosto
+
+In questa schermata è possibile andare a impostare le tolleranze e i pesi per ogni parametro da tenere in considerazione nella stima della somiglianza del MAC nascosto. E' possibile andare a specificare la tolleranza per la posizione, il tempo e l'SSID. I pesi rappresentano quanto sarà importante quel parametro nel calcolo della stima. Il calcolo della stima viene fatto utilizzando la seguente equazione:
+
+<a align="center" href="https://www.codecogs.com/eqnedit.php?latex=\text{percentage}&space;=&space;\frac{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;p_i&space;\cdot&space;w_i}{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;w_i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\text{percentage}&space;=&space;\frac{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;p_i&space;\cdot&space;w_i}{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;w_i}" title="\text{percentage} = \frac{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} p_i \cdot w_i}{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} w_i}" /></a>
 
 ### Monitoraggio
 
