@@ -186,9 +186,9 @@ Le percentuali così calcolate per ogni pacchetto vengono poi mediate sul numero
     <th>Slider MAP</th>
   </tr>
   <tr>
-    <td><a href="stuff/img/app_analysis_1.png"><img src="stuff/img/app_analysis_1.png"></a></td>
-    <td><a href="stuff/img/app_analysis_2.png"><img src="stuff/img/app_analysis_2.png"></a></td>
-    <td><a href="stuff/img/app_analysis_3.png"><img src="stuff/img/app_analysis_3.png"></a></td>
+    <td><a href="https://raw.githubusercontent.com/pieromacaluso/RoomMonitor/master/stuff/img/app_analysis_1.png"><img src="stuff/img/app_analysis_1.png"></a></td>
+    <td><a href="https://raw.githubusercontent.com/pieromacaluso/RoomMonitor/master/stuff/img/app_analysis_2.png"><img src="stuff/img/app_analysis_2.png"></a></td>
+    <td><a href="https://raw.githubusercontent.com/pieromacaluso/RoomMonitor/master/stuff/img/app_analysis_3.png"><img src="stuff/img/app_analysis_3.png"></a></td>
   </tr>
 </table>
 
@@ -199,8 +199,8 @@ Le percentuali così calcolate per ogni pacchetto vengono poi mediate sul numero
     <th>Stima MAC Randomico</th>
   </tr>
   <tr>
-    <td><a href="stuff/img/app_analysis_4.png"><img src="stuff/img/app_analysis_4.png"></a></td>
-    <td><a href="stuff/img/app_analysis_5.png"><img src="stuff/img/app_analysis_5.png"></a></td>
+    <td><a href="https://raw.githubusercontent.com/pieromacaluso/RoomMonitor/master/stuff/img/app_analysis_4.png"><img src="stuff/img/app_analysis_4.png"></a></td>
+    <td><a href="https://raw.githubusercontent.com/pieromacaluso/RoomMonitor/master/stuff/img/app_analysis_5.png"><img src="stuff/img/app_analysis_5.png"></a></td>
   </tr>
 </table>
 
