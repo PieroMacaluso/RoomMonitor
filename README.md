@@ -34,9 +34,12 @@
     - [Validazione e Inoltro](#validazione-e-inoltro)
   - [Indicazione stato tramite led](#indicazione-stato-tramite-led)
 - [RoomMonitor Server](#roommonitor-server)
-  - [Generale](#generale)
   - [Impostazioni](#impostazioni)
-  - [Monitoraggio](#monitoraggio)
+    - [Stanza](#stanza)
+    - [Monitoraggio](#monitoraggio)
+  - [Monitoraggio](#monitoraggio-1)
+  - [Impostazioni](#impostazioni-1)
+  - [Monitoraggio](#monitoraggio-2)
   - [Analisi](#analisi)
 - [Sviluppi Futuri](#sviluppi-futuri)
 
@@ -137,7 +140,25 @@ Alla fine di tale fase, si provvederà ad inoltrare i dati al server, per indica
 
 ## RoomMonitor Server
 
-### Generale
+Questo secondo componente del progetto rappresenta l'applicazione desktop per poter ricevere, manipolare e fare lo storage dei dati ricevuti dalle analisi delle diverse schede ESP32. Questa svolge funzioni di monitoraggio in tempo reale, ma anche funzioni di analisi dei dati passati.
+
+### Impostazioni
+
+#### Stanza
+
+Le impostazioni della stanza permettono di inserire dati sulle caratteristiche della stanza dove si andrà ad effettuare il monitoraggio.
+
+- **Larghezza e Lunghezza Stanza**: questi valori sono utili per poter disegnare a video il perimetro della stanza e per poter scartare i dati che non si trovano all'interno della stessa.
+- **Schedine**: è possibile andare a inserire le schedine che vengono posizionate all'interno della stanza indicando ID univoco della schedina, posizione e potenza a un metro (dBm).
+
+#### Monitoraggio
+
+- **Costante Propagazione Segnale**: parametro utilizzato dall'algoritmo per passare da RSSI a distanza in metri. Questo parametro è settato di default a 2 o 3 per spazi quali aule o stanze.
+- **Minimo minuti conteggio presenza**: la granularità con cui vengono effettuate le stime è di 5 minuti. Questo parametro indica quanti minuti sul totale di 5 sono necessari affinchè il software conteggi la persona come presente in quei 5 minuti.
+- **Limite Fallimenti Aggregazione**: questo parametro indica qual'è il massimo numero di aggregazioni che il software farà senza ricevere nemmeno un singolo pacchetto da almeno una schedina
+
+### Monitoraggio
+
 
 ![Interfaccia Principale]()
 
