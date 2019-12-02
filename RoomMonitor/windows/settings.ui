@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>467</width>
-    <height>412</height>
+    <height>384</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,37 +73,33 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="portServerLabel">
-             <property name="text">
-              <string>Porta Server</string>
+           <item row="2" column="1">
+            <widget class="QDoubleSpinBox" name="heightEdit">
+             <property name="suffix">
+              <string> m</string>
              </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QSpinBox" name="portServerEdit">
              <property name="minimum">
-              <number>1024</number>
+              <double>1.000000000000000</double>
              </property>
              <property name="maximum">
-              <number>65535</number>
+              <double>99.989999999999995</double>
              </property>
              <property name="value">
-              <number>27015</number>
+              <double>10.000000000000000</double>
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="boardLabel">
              <property name="text">
               <string>Schedine</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="4" column="0">
             <widget class="QTableWidget" name="boardTable"/>
            </item>
-           <item row="5" column="1">
+           <item row="4" column="1">
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
               <widget class="QPushButton" name="addBoard">
@@ -128,22 +124,6 @@
              </item>
             </layout>
            </item>
-           <item row="2" column="1">
-            <widget class="QDoubleSpinBox" name="heightEdit">
-             <property name="suffix">
-              <string> m</string>
-             </property>
-             <property name="minimum">
-              <double>1.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>99.989999999999995</double>
-             </property>
-             <property name="value">
-              <double>10.000000000000000</double>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
         </layout>
@@ -157,7 +137,7 @@
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <layout class="QFormLayout" name="formLayout">
-         <item row="1" column="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="nLabel">
            <property name="lineWidth">
             <number>1</number>
@@ -170,14 +150,27 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="nEdit">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>3</number>
+           </property>
+           <property name="value">
+            <number>3</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
           <widget class="QLabel" name="minLabel">
            <property name="text">
             <string>Minimo minuti per conteggio presenza</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QSpinBox" name="minEdit">
            <property name="minimum">
             <number>1</number>
@@ -187,14 +180,14 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="retryLabel">
            <property name="text">
             <string>Limite fallimenti aggregazione</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="2" column="1">
           <widget class="QSpinBox" name="retryEdit">
            <property name="minimum">
             <number>1</number>
@@ -207,6 +200,26 @@
            </property>
            <property name="displayIntegerBase">
             <number>10</number>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="portServerLabel">
+           <property name="text">
+            <string>Porta Server TCP</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QSpinBox" name="portServerEdit">
+           <property name="minimum">
+            <number>1024</number>
+           </property>
+           <property name="maximum">
+            <number>65535</number>
+           </property>
+           <property name="value">
+            <number>27015</number>
            </property>
           </widget>
          </item>
@@ -241,16 +254,6 @@
             </widget>
            </item>
           </layout>
-         </item>
-         <item row="1" column="1">
-          <widget class="QSpinBox" name="nEdit">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>3</number>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
@@ -465,7 +468,7 @@
               <double>0.000000000000000</double>
              </property>
              <property name="value">
-              <double>1.000000000000000</double>
+              <double>2.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -535,7 +538,11 @@
             </spacer>
            </item>
            <item>
-            <widget class="QSpinBox" name="ssidPesoEdit"/>
+            <widget class="QSpinBox" name="ssidPesoEdit">
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -582,7 +589,6 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>widthEdit</tabstop>
   <tabstop>heightEdit</tabstop>
-  <tabstop>portServerEdit</tabstop>
   <tabstop>boardTable</tabstop>
   <tabstop>addBoard</tabstop>
   <tabstop>modBoard</tabstop>
@@ -590,7 +596,6 @@
   <tabstop>nEdit</tabstop>
   <tabstop>minEdit</tabstop>
   <tabstop>retryEdit</tabstop>
-  <tabstop>secretEdit</tabstop>
   <tabstop>secretEcho</tabstop>
   <tabstop>hostEdit</tabstop>
   <tabstop>dbEdit</tabstop>

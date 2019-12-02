@@ -6,8 +6,8 @@ MonitoringServer::MonitoringServer() {
 MonitoringServer::~MonitoringServer() {
 }
 
-void recalculateCircles(std::deque<Circle> &circs, double delta){
-    for (auto circ : circs){
+void recalculateCircles(std::deque<Circle> &circs, double delta) {
+    for (auto circ : circs) {
         circ.increaseR(delta);
     }
 }
@@ -26,7 +26,7 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
     bool error = true;
     int delta = 0;
     auto backup_i = circles.begin();
-    auto backup_j = circles.begin()+1;
+    auto backup_j = circles.begin() + 1;
 
     // Se i cerchi non si intersecano si va ad aumentare il modulo dell'RSSI per poter raggiungere una migliore stima
     // della posizione fino ad un massimo di 1000 volte
@@ -133,8 +133,122 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
     PositionData result{};
     result.addPacket(num_x / den, num_y / den);
 
-    if (!is_inside_room(result)) return PositionData::positionDataNull();
     return result;
+}
+
+/**
+ * Questa funzione prende in ingresso una coda di pacchetti con lo stesso FCS(hash) e provenienti da schede differenti.
+ * L'obiettivo è restituire la posizione stimata. Restituisce PositionData(-100,-100) se dato non va bene.
+ * @param deque
+ * @return
+ */
+PositionData MonitoringServer::trilateration(const std::deque<Packet> &deque) {
+    PositionData pos;
+    std::deque<Circle> circles{};
+    // Deque che ci serve per media pesata
+    std::deque<std::pair<PositionData, double>> pointW;
+    int retry = 0;
+    int delta = 0;
+    auto backup_i = circles.begin();
+    auto backup_j = circles.begin() + 1;
+
+    for (auto p_i = deque.begin(); p_i != deque.end() - 1; p_i++) {
+        for (auto p_j = p_i + 1; p_j != deque.end(); p_j++) {
+            delta = 0;
+            retry = 0;
+            // Controllo se appartengono a schedine configurate
+            auto b_i = boards.find(p_i->getIdSchedina());
+            auto b_j = boards.find(p_j->getIdSchedina());
+            if (b_i == boards.end() || b_j == boards.end()) return PositionData::positionDataNull();
+
+            // Da pacchetti a Cerchi di centro schedina e raggio RSSI -> metri meno il numero di retry finora
+            double dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
+            double dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
+            Circle c1{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+            Circle c2{dist_j, b_j->second.getCoord().x(), b_j->second.getCoord().y()};
+
+            // Punti di intersezione
+            Point2d intPoint1, intPoint2;
+            // Calcolare intersezione
+            int i_points;
+            while ((i_points = c1.intersect(c2, intPoint1, intPoint2)) <= 0 && retry < 1000) {
+                if (c1.getR() < 0 && i_points == -2) {
+                    intPoint1 = c1.getC();
+                    i_points = 1;
+                    break;
+                }
+                if (c2.getR() < 0 && i_points == -2) {
+                    intPoint1 = c2.getC();
+                    i_points = 1;
+                    break;
+                }
+                if (i_points == 0) {
+                    //Increase radius -> Decrease RSSI
+                    delta += -1;
+                    dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
+                    dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
+                    Circle c1_new{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+                    Circle c2_new{dist_j, b_j->second.getCoord().x(), b_j->second.getCoord().y()};
+                    Circle decrease{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+                    c1 = c1_new;
+                    c2 = c2_new;
+                } else if (i_points == -2) {
+                    delta += +1;
+                    dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
+                    dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
+                    Circle c1_new{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+                    Circle c2_new{dist_j, b_j->second.getCoord().x(), b_j->second.getCoord().y()};
+                    Circle decrease{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+                    c1 = c1_new;
+                    c2 = c2_new;
+                }
+                retry++;
+
+            }
+            if (retry >= 1000) {
+                return PositionData::positionDataNull();
+            }
+            if (i_points == 2) {
+                // Con due punti di intersezione prendiamo quello più vicino ad entrambi i punti rimanenti
+                double d_1 = 0;
+                double d_2 = 0;
+                for (auto p_k = deque.begin(); p_k != deque.end(); p_k++) {
+                    if (p_k == p_i || p_k == p_j) continue;
+                    auto b_k = boards.find(p_k->getIdSchedina());
+                    if (b_k == boards.end()) return PositionData::positionDataNull();
+                    Point2d coo = b_k->second.getCoord();
+                    d_1 += coo.distance(intPoint1);
+                    d_2 += coo.distance(intPoint2);
+                }
+                if (d_1 < d_2) {
+                    pos.addPacket(intPoint1.x(), intPoint1.y());
+                    pointW.emplace_back(pos, c1.getR() + c2.getR());
+                } else {
+                    pos.addPacket(intPoint2.x(), intPoint2.y());
+                    pointW.emplace_back(pos, c1.getR() + c2.getR());
+                }
+            } else if (i_points == 1) {
+                pos.addPacket(intPoint1.x(), intPoint1.y());
+                pointW.emplace_back(pos, c1.getR() + c2.getR());
+            }
+        }
+    }
+    // CALCOLO FINALE MEDIA PESATA
+    double num_x = 0;
+    double num_y = 0;
+    double den = 0;
+    std::for_each(pointW.begin(), pointW.end(),
+                  [&](std::pair<PositionData, double> pair) {
+                      num_x += pair.first.getX() / pair.second;
+                      num_y += pair.first.getY() / pair.second;
+                      den += 1 / pair.second;
+                  });
+
+    PositionData result{};
+    result.addPacket(num_x / den, num_y / den);
+
+    return result;
+
 }
 
 /**
@@ -194,8 +308,6 @@ bool MonitoringServer::is_inside_room(PositionData data) {
 
 void MonitoringServer::newConnection() {
     qDebug() << "New Connection started";
-    std::string startDelim("init");
-    std::string stopDelim("end");
     QTcpSocket *socket = server.nextPendingConnection();
     std::vector<std::string> pacchetti;
     std::deque<Packet> packetsConn;
@@ -325,11 +437,20 @@ void MonitoringServer::aggregate() {
                 "INSERT INTO " + settings.value("database/table").toString() +
                 " (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);");
 //            query.bindValue(":id", 0);
-        PositionData positionData = fromRssiToXY(fil.second);
+        PositionData positionData = trilateration(fil.second);
+        PositionData p2 = trilaterationAverage(fil.second);
+
         std::string packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " " +
-                             positionData.getStringPosition();
+                             positionData.getStringPosition() + " | " + p2.getStringPosition();
         qDebug() << QString::fromStdString(packet);
-        if (positionData == PositionData::positionDataNull()) continue;
+        if (positionData == PositionData::positionDataNull()) {
+            qDebug() << "Errore Triangolazione";
+            continue;
+        }
+        if (!is_inside_room(positionData)) {
+            qDebug() << "Fuori dalla stanza";
+            continue;
+        }
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
         query.bindValue(":posx", positionData.getX());

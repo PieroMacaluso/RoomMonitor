@@ -311,7 +311,7 @@ void SettingDialog::defaultValues() {
         ui.userEdit->setText("root");
         ui.passEdit->setText("NewRoot12Kz");
         ui.tableEdit->setText("stanza");
-        ui.posTolEdit->setValue(0.5);
+        ui.posTolEdit->setValue(2.0);
         ui.posPesoEdit->setValue(1);
         ui.timeTolEdit->setValue(3600);
         ui.timePesoEdit->setValue(1);

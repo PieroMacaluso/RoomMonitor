@@ -213,7 +213,6 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
             deque.push_back(packet);
         } else {
             qWarning() << "Pacchetto con Hash non coincidente " << QString::fromStdString(s);
-            throw std::invalid_argument{"Pacchetto corrotto o board non autorizzata"};
         }
     }
     return deque;
