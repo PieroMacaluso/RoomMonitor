@@ -40,8 +40,8 @@
     - [Database](#database)
     - [MAC Nascosto](#mac-nascosto)
   - [Monitoraggio](#monitoraggio-1)
-  - [Impostazioni](#impostazioni-1)
-  - [Monitoraggio](#monitoraggio-2)
+    - [Aggregazione](#aggregazione)
+  - [Trilaterazione](#trilaterazione)
   - [Analisi](#analisi)
 - [Sviluppi Futuri](#sviluppi-futuri)
 
@@ -166,24 +166,53 @@ In questa finestra è possibile andare a specificare tutti i dati riguardanti il
 
 #### MAC Nascosto
 
-In questa schermata è possibile andare a impostare le tolleranze e i pesi per ogni parametro da tenere in considerazione nella stima della somiglianza del MAC nascosto. E' possibile andare a specificare la tolleranza per la posizione, il tempo e l'SSID. I pesi rappresentano quanto sarà importante quel parametro nel calcolo della stima. Il calcolo della stima viene fatto utilizzando la seguente equazione:
+In questa schermata è possibile andare a impostare le tolleranze e i pesi per ogni parametro da tenere in considerazione nella stima della somiglianza del MAC nascosto. E' possibile andare a specificare la tolleranza per la posizione, il tempo e l'SSID. I pesi rappresentano quanto sarà importante quel parametro nel calcolo della stima. Il calcolo della stima viene fatto utilizzando la seguente equazione dove `p` rappresenta un numero tra 0 e 1 dove 1 indica che la differenza di tempo/spazio tra due pacchetti è pari a 0 oppure che l'SSID è identico. Zero indica una differenza maggiore o uguale alla tolleranza o SSID diverso.
 
 <div align="center">
 <img src="https://latex.codecogs.com/gif.latex?\text{percentage&space;(\%)}&space;=&space;\frac{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;p_i&space;\cdot&space;w_i}{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;w_i}&space;\cdot&space;100" title="\text{percentage (\%)} = \frac{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} p_i \cdot w_i}{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} w_i} \cdot 100" />
 </div>
 
-### Monitoraggio
-
-
-![Interfaccia Principale]()
-
-### Impostazioni
+Le percentuali così calcolate per ogni pacchetto vengono poi mediate sul numero di pacchetti riferiti alla stessa coppia di MAC per poter dare una stima di somiglianza tra i due indirizzi MAC.
 
 ### Monitoraggio
 
-- Ricezione
-- Aggregazione (Double Chance, Triangolazione)
-- Storage nel DB
+La parte principale del software è costituita dalla fase di monitoraggio dove il server si mette in ascolto delle connessione TCP provenienti dalle schedine configurate da cui riceve i dati per eseguire le stime.
+
+#### Aggregazione
+A livello di tempistiche, abbiamo deciso di implementare il sistema in modo che sia in grado di funzionare in maniera asincrona, lasciando uno strato di disaccoppiamento tra schedine e server di aggregazione.
+Le schedine sono libere di mandare i pacchetti a cadenza regolare di un minuto al server mettendosi in coda nel canale TCP. I dati così ricevuti vengono accumulati in una coda di pacchetti unica di tipo second-chance. Ogni minuto il server provvederà a eseguire l'aggregazione su ogni singolo pacchetto: questo (identificato dal CRC a 32bit trasmesso dalla schedina) verrà salvato sul database ed eliminato dalla coda solo se sarà presente un numero di pacchetti pari al numero di schedine utilizzate.
+In caso contrario ad ogni singolo pacchetto verrà incrementato il contatore di chance. Alla fine di ogni processo di aggregazione i contatori di ogni pacchetto vengono controllati per verificare se il pacchetto deve essere eliminato o mantenuto.
+
+Questo approccio ha permesso di poter gestire i pacchetti ricevuti da tutte le schedine senza introdurre forzature da meccanismi sincroni.
+
+### Trilaterazione
+
+Quando per ogni pacchetto (identificato dal CRC 32 bit) sono disponibili dati provenienti da tutte le schedine configurate nella cattura, allora è il momento di andare a calcolare la posizione stimata del pacchetto e salvarlo nel database.
+
+Per il calcolo della posizione nello spazio abbiamo deciso di utilizzare la trilaterazione. Questa necessita, in primis, di andare a convertire i valori di RSSI in metri. Questa procedura è stata possibile grazie alla seguente formula:
+
+<div align="center">
+<img src="https://latex.codecogs.com/gif.latex?\LARGE&space;\text{d(m)}&space;=&space;10^{\frac{A-\text{RSSI}}{10&space;\cdot&space;n}}" title="\LARGE \text{d(m)} = 10^{\frac{A-\text{RSSI}}{10 \cdot n}}" />
+</div>
+
+`A` rappresenta la potenza del segnale della schedina quando il dispositivo si trova ad un metro dalla stessa, mentre `n` è costante di propagazione del segnale che in spazi aperti o aule molto grandi è solitamente pari a 2 o 3 (nelle nostre analisi abbiamo utilizzato il 3).
+
+Una volta ottenute le misure delle distanze abbiamo di fatto ottenuto tanti cerchi quante sono le schedine: la loro posizione rappresenta il centro del cerchio, mentre la distanza il raggio.
+Da questi dati è possibile andare a stimare la posizione del dispositivo.
+
+Inizialmente abbiamo pensato di ingrandire o diminuire in egual misura tutti i cerchi disponibili (aumentando o diminuendo l'RSSI) in modo da avere un'area comune per tutti in cui andare a stimare la posizione del dispositivo attraverso i punti di intersezione. Questo approccio si è rivelato poco funzionale e instabile: in alcuni casi si andava a finire in situazioni dove non si riuscivano ad aumentare o diminuire i cerchi in maniera coerente e l'algoritmo (progettato per continuare a fare tentativi finiti) concludeva l'analisi scartando il pacchetto.
+
+Dopo aver effettuato una ricerca sui vari metodi per stimare la posizione abbiamo deciso di procedere con un metodo simile al precedente, ma che riesce ad essere più stabile con dovute semplificazioni.
+Per poter stimare la posizione si prendono combinazioni di cerchi e si calcolano la loro intersezione aumentando il raggio per far in modo che ci sia almeno un punto di intersezione: in caso di due punti di intersezione si va a prendere quello più vicino ai centri degli altri cerchi. Una volta accumulati questi punti si procede al calcolo della media in maniera pesata, basandosi sui raggi delle circonferenze utilizzati per il calcolo di quella specifica misurazione. 
+
+<div align="center">
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\dpi{300}&space;\small&space;\text{num}_{x}&space;=&space;\sum_{i=0}^{n}&space;\frac{x_i}{\sum_{j=0}^{j=1}r_j}&space;\;\;\;&space;\text{num}_{y}&space;=&space;\sum_{i=0}^{n}&space;\frac{y_i}{\sum_{j=0}^{j=1}r_j}&space;\;\;\;&space;\text{den}&space;=&space;\sum_{i=0}^{n}&space;\frac{1}{\sum_{j=0}^{j=1}r_j}" title="\small \text{num}_{x} = \sum_{i=0}^{n} \frac{x_i}{\sum_{j=0}^{j=1}r_j} \;\;\; \text{num}_{y} = \sum_{i=0}^{n} \frac{y_i}{\sum_{j=0}^{j=1}r_j} \;\;\; \text{num}_{y} = \sum_{i=0}^{n} \frac{1}{\sum_{j=0}^{j=1}r_j}" />
+</div>
+
+<div align="center">
+<img src="https://latex.codecogs.com/gif.latex?\inline&space;\dpi{300}&space;\small&space;\text{result\_coordinates}&space;=&space;(\frac{\text{num}_{x}}{\text{den}},&space;\frac{\text{num}_{y}}{\text{den}})" title="\small \text{result\_coordinates} = (\frac{\text{num}_{x}}{\text{den}}, \frac{\text{num}_{y}}{\text{den}})" />
+</div>
+
 
 ### Analisi
 
