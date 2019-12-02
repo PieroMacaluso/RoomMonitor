@@ -168,7 +168,9 @@ In questa finestra è possibile andare a specificare tutti i dati riguardanti il
 
 In questa schermata è possibile andare a impostare le tolleranze e i pesi per ogni parametro da tenere in considerazione nella stima della somiglianza del MAC nascosto. E' possibile andare a specificare la tolleranza per la posizione, il tempo e l'SSID. I pesi rappresentano quanto sarà importante quel parametro nel calcolo della stima. Il calcolo della stima viene fatto utilizzando la seguente equazione:
 
-<a align="center" href="https://www.codecogs.com/eqnedit.php?latex=\text{percentage}&space;=&space;\frac{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;p_i&space;\cdot&space;w_i}{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;w_i}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\text{percentage}&space;=&space;\frac{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;p_i&space;\cdot&space;w_i}{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;w_i}" title="\text{percentage} = \frac{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} p_i \cdot w_i}{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} w_i}" /></a>
+<div align="center">
+<img src="https://latex.codecogs.com/gif.latex?\text{percentage&space;(\%)}&space;=&space;\frac{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;p_i&space;\cdot&space;w_i}{\sum_{i&space;\in&space;\{\text{time},&space;\text{space},&space;\text{ssid}\}}&space;w_i}&space;\cdot&space;100" title="\text{percentage (\%)} = \frac{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} p_i \cdot w_i}{\sum_{i \in \{\text{time}, \text{space}, \text{ssid}\}} w_i} \cdot 100" />
+</div>
 
 ### Monitoraggio
 
