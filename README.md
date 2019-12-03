@@ -119,7 +119,7 @@ Per realizzare il meccanismo del captive portal è stato implementato un web ser
 
 L’utilizzo di apposite partizione di memorie ha permesso di memorizzare i valori impostati e i vari file utilizzati per implementare il server, in particolare si è deciso di usare una partizione **NVM**, tipo chiave-valore, per memorizzare i vari valori di inizializzazione. Tale partizione è basata su memoria non volatile che permette il salvataggio dei parametri anche in assenza di tensione.
 Per gestire la partizione dedicata al captive portal è stato usato un apposito file system chiamato **SPIFFS** (Serial Peripheral Interface Flash File System).
-Prima di memorizzare i valori inseriti tramite il browser, essi vengono validati e solo in caso di correttezza saranno memorizzati e verrà indicato all’utente che la fase di configurazione è terminata correttamente.
+Prima di memorizzare i valori inseriti tramite il browser, essi vengono validati sia lato browser sia lato ricezione, solo in caso di correttezza saranno memorizzati e verrà indicato all’utente che la fase di configurazione è terminata correttamente.
  
 #### Sniffing
 
