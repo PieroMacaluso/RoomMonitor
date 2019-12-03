@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Informazioni</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../res.qrc">
+    <normaloff>:/resources/resources/logo_img.svg</normaloff>:/resources/resources/logo_img.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="2,1,0,0">
    <item>
     <widget class="QLabel" name="label_2">
@@ -61,6 +65,7 @@
  </widget>
  <resources>
   <include location="../res.qrc"/>
+  <include location="../../../../../.designer/res.qrc"/>
  </resources>
  <connections>
   <connection>

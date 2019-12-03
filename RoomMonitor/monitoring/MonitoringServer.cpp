@@ -58,6 +58,15 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
                 }
                 if (i_points == -2) {
                     //  Cerchi non coincidenti e contenuti uno nell'altro (-2) riduco il raggio aumentando RSSI
+                    // Caso limite collasso circonferenza
+                    if (circle_i->getR() < 0.5) {
+                        intPoint1 = circle_i->getC();
+                        continue;
+                    }
+                    if (circle_j->getR() < 0.5) {
+                        intPoint1 = circle_j->getC();
+                        continue;
+                    }
                     error = true;
                     delta += 1;
                     break;
@@ -85,7 +94,11 @@ PositionData MonitoringServer::fromRssiToXY(const std::deque<Packet> &deque) {
             Point2d intPoint1, intPoint2;
             // Calcolare intersezione
             size_t i_points = circle_i->intersect(*circle_j, intPoint1, intPoint2);
-            if (i_points < 1) return PositionData::positionDataNull();
+            if (circle_i->getR() < 0.5 && i_points == -2) {
+                intPoint1 = circle_i->getC();
+            } else if (circle_j->getR() < 0.5 && i_points == -2) {
+                intPoint1 = circle_j->getC();
+            } else if (i_points < 1) return PositionData::positionDataNull();
             // Controllo se questi punti sono contenuti nelle altre circonferenze.
             // Ipotesi verificata a meno che non si trovi una condizione falsa.
             bool ok1 = true;
@@ -160,6 +173,8 @@ PositionData MonitoringServer::trilateration(const std::deque<Packet> &deque) {
             auto b_j = boards.find(p_j->getIdSchedina());
             if (b_i == boards.end() || b_j == boards.end()) return PositionData::positionDataNull();
 
+            double radius_i = calculateDistance(p_i->getRssi(), b_i->second.getA());
+            double radius_j = calculateDistance(p_j->getRssi(), b_j->second.getA());
             // Da pacchetti a Cerchi di centro schedina e raggio RSSI -> metri meno il numero di retry finora
             double dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
             double dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
@@ -172,12 +187,12 @@ PositionData MonitoringServer::trilateration(const std::deque<Packet> &deque) {
             int i_points;
             while ((i_points = c1.intersect(c2, intPoint1, intPoint2)) <= 0 && retry < 1000) {
                 // Caso limite collasso circonferenza
-                if (c1.getR() < 0 && i_points == -2) {
+                if (c1.getR() < 0.2 && i_points == -2) {
                     intPoint1 = c1.getC();
                     i_points = 1;
                     break;
                 }
-                if (c2.getR() < 0 && i_points == -2) {
+                if (c2.getR() < 0.2 && i_points == -2) {
                     intPoint1 = c2.getC();
                     i_points = 1;
                     break;
@@ -210,26 +225,149 @@ PositionData MonitoringServer::trilateration(const std::deque<Packet> &deque) {
             }
             if (i_points == 2) {
                 // Con due punti di intersezione prendiamo quello più vicino ad entrambi i punti rimanenti
-//                for (auto p_k = deque.begin(); p_k != deque.end(); p_k++) {
-//                    if (p_k == p_i || p_k == p_j) continue;
-//                    auto b_k = boards.find(p_k->getIdSchedina());
-//                    if (b_k == boards.end()) return PositionData::positionDataNull();
-//                    Point2d coo = b_k->second.getCoord();
-//                    double d_1 = coo.distance(intPoint1);
-//                    double d_2 = coo.distance(intPoint2);
-//                    if (d_1 < d_2) {
-//                        PositionData p{intPoint1.x(), intPoint1.y()};
-//                        pointW.emplace_back(p, c1.getR() + c2.getR());
-//                    } else {
-//                        PositionData p{intPoint2.x(), intPoint2.y()};
-//                        pointW.emplace_back(p, c1.getR() + c2.getR());
-//                    }
-//                }
-                PositionData p{(intPoint1.x() + intPoint2.x()) / 2, (intPoint1.y() + intPoint2.y()) / 2};
-                pointW.emplace_back(p, c1.getR() + c2.getR());
+                for (auto p_k = deque.begin(); p_k != deque.end(); p_k++) {
+                    if (p_k == p_i || p_k == p_j) continue;
+                    auto b_k = boards.find(p_k->getIdSchedina());
+                    if (b_k == boards.end()) return PositionData::positionDataNull();
+                    Point2d coo = b_k->second.getCoord();
+                    double d_1 = coo.distance(intPoint1);
+                    double d_2 = coo.distance(intPoint2);
+                    if (d_1 < d_2) {
+                        PositionData p{intPoint1.x(), intPoint1.y()};
+                        std::cout << p;
+                        pointW.emplace_back(p, c1.getR() + c2.getR());
+                    } else {
+                        PositionData p{intPoint2.x(), intPoint2.y()};
+                        pointW.emplace_back(p, c1.getR() + c2.getR());
+                    }
+                }
+//                PositionData p{(intPoint1.x() + intPoint2.x()) / 2, (intPoint1.y() + intPoint2.y()) / 2};
+//                pointW.emplace_back(p, c1.getR() + c2.getR());
             } else if (i_points == 1) {
                 PositionData p{intPoint1.x(), intPoint1.y()};
-                pointW.emplace_back(p, c1.getR() + c2.getR());
+                pointW.emplace_back(p, radius_i + radius_j);
+            }
+        }
+    }
+    std::cout << std::endl;
+    // CALCOLO FINALE MEDIA PESATA
+    double num_x = 0;
+    double num_y = 0;
+    double den = 0;
+    std::for_each(pointW.begin(), pointW.end(),
+                  [&](std::pair<PositionData, double> pair) {
+                        std::cout << pair.first.getStringPosition() << std::endl;
+                      num_x += pair.first.getX() / pair.second;
+                      num_y += pair.first.getY() / pair.second;
+                      den += 1 / pair.second;
+                  });
+
+    PositionData result{};
+    result.addPacket(num_x / den, num_y / den);
+
+    return result;
+}
+
+
+/**
+ * Questa funzione prende in ingresso una coda di pacchetti con lo stesso FCS(hash) e provenienti da schede differenti.
+ * L'obiettivo è restituire la posizione stimata. Restituisce PositionData(-100,-100) se dato non va bene.
+ * @param deque
+ * @return
+ */
+PositionData MonitoringServer::near(const std::deque<Packet> &deque) {
+    // Deque che ci serve per media pesata
+    std::deque<std::pair<PositionData, double>> pointW;
+    int retry = 0;
+    int delta = 0;
+    // Combinazioni di pacchetti
+    for (auto p_i = deque.begin(); p_i != deque.end() - 1; p_i++) {
+        for (auto p_j = p_i + 1; p_j != deque.end(); p_j++) {
+            // RSSI da aumentare o diminuire rispetto al valore originale
+            delta = 0;
+            // Tentativi limite
+            retry = 0;
+
+            // Controllo se appartengono a schedine configurate
+            auto b_i = boards.find(p_i->getIdSchedina());
+            auto b_j = boards.find(p_j->getIdSchedina());
+            if (b_i == boards.end() || b_j == boards.end()) return PositionData::positionDataNull();
+
+            double radius_i = calculateDistance(p_i->getRssi(), b_i->second.getA());
+            double radius_j = calculateDistance(p_j->getRssi(), b_j->second.getA());
+            // Da pacchetti a Cerchi di centro schedina e raggio RSSI -> metri meno il numero di retry finora
+            double dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
+            double dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
+            Circle c1{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+            Circle c2{dist_j, b_j->second.getCoord().x(), b_j->second.getCoord().y()};
+
+            // Punti di intersezione
+            Point2d intPoint1, intPoint2;
+            // Calcolare intersezione
+            int i_points;
+            while ((i_points = c1.intersect(c2, intPoint1, intPoint2)) <= 0 && retry < 1000) {
+                // Caso limite collasso circonferenza
+                if (c1.getR() < 0.2 && i_points == -2) {
+                    intPoint1 = c1.getC();
+                    i_points = 1;
+                    break;
+                }
+                if (c2.getR() < 0.2 && i_points == -2) {
+                    intPoint1 = c2.getC();
+                    i_points = 1;
+                    break;
+                }
+
+                if (i_points == 0) {
+                    // Increase radius -> Decrease RSSI
+                    delta += -1;
+                    dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
+                    dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
+                    Circle c1_new{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+                    Circle c2_new{dist_j, b_j->second.getCoord().x(), b_j->second.getCoord().y()};
+                    c1 = c1_new;
+                    c2 = c2_new;
+                } else if (i_points == -2) {
+                    // Decrease radius -> Increase RSSI
+                    delta += +1;
+                    dist_i = calculateDistance(p_i->getRssi() + delta, b_i->second.getA());
+                    dist_j = calculateDistance(p_j->getRssi() + delta, b_j->second.getA());
+                    Circle c1_new{dist_i, b_i->second.getCoord().x(), b_i->second.getCoord().y()};
+                    Circle c2_new{dist_j, b_j->second.getCoord().x(), b_j->second.getCoord().y()};
+                    c1 = c1_new;
+                    c2 = c2_new;
+                }
+                retry++;
+
+            }
+            if (retry >= 1000) {
+                return PositionData::positionDataNull();
+            }
+            if (i_points == 2) {
+                // Con due punti di intersezione prendiamo quello più vicino ad entrambi i punti rimanenti
+                double d_1 = 0;
+                double d_2 = 0;
+                for (auto p_k = deque.begin(); p_k != deque.end(); p_k++) {
+                    if (p_k == p_i || p_k == p_j) continue;
+                    auto b_k = boards.find(p_k->getIdSchedina());
+                    if (b_k == boards.end()) return PositionData::positionDataNull();
+                    Point2d coo = b_k->second.getCoord();
+
+                    d_1 += coo.distance(intPoint1) - calculateDistance(p_k->getRssi() + delta, b_k->second.getA());
+                    d_2 += coo.distance(intPoint2) - calculateDistance(p_k->getRssi() + delta, b_k->second.getA());
+                }
+                if (d_1 < d_2) {
+                    PositionData p{intPoint1.x(), intPoint1.y()};
+                    pointW.emplace_back(p, c1.getR() + c2.getR());
+                } else {
+                    PositionData p{intPoint2.x(), intPoint2.y()};
+                    pointW.emplace_back(p, c1.getR() + c2.getR());
+                }
+//                PositionData p{(intPoint1.x() + intPoint2.x()) / 2, (intPoint1.y() + intPoint2.y()) / 2};
+//                pointW.emplace_back(p, c1.getR() + c2.getR());
+            } else if (i_points == 1) {
+                PositionData p{intPoint1.x(), intPoint1.y()};
+                pointW.emplace_back(p, radius_i + radius_j);
             }
         }
     }
@@ -239,6 +377,7 @@ PositionData MonitoringServer::trilateration(const std::deque<Packet> &deque) {
     double den = 0;
     std::for_each(pointW.begin(), pointW.end(),
                   [&](std::pair<PositionData, double> pair) {
+                      std::cout << pair.first.getStringPosition() << std::endl;
                       num_x += pair.first.getX() / pair.second;
                       num_y += pair.first.getY() / pair.second;
                       den += 1 / pair.second;
@@ -288,12 +427,12 @@ PositionData MonitoringServer::trilaterationAverage(const std::deque<Packet> &de
             int i_points;
             while ((i_points = c1.intersect(c2, intPoint1, intPoint2)) <= 0 && retry < 1000) {
                 // Caso limite collasso circonferenza
-                if (c1.getR() < 0 && i_points == -2) {
+                if (c1.getR() < 0.2 && i_points == -2) {
                     intPoint1 = c1.getC();
                     i_points = 1;
                     break;
                 }
-                if (c2.getR() < 0 && i_points == -2) {
+                if (c2.getR() < 0.2 && i_points == -2) {
                     intPoint1 = c2.getC();
                     i_points = 1;
                     break;
@@ -541,8 +680,8 @@ void MonitoringServer::aggregate() {
                       << this->calculateDistance(p.getRssi(), b->second.getA()) << "; ";
         }
         std::cout << std::endl;
-        PositionData positionData = trilateration(fil.second);
-        PositionData positionDataAv = trilaterationAverage(fil.second);
+        PositionData positionDataAv = trilateration(fil.second);
+        PositionData positionData = near(fil.second);
 
         std::string packet = "ID packet:" + fil.first + " " + fil.second.begin()->getMacPeer() + " " +
                              positionData.getStringPosition() + " | " + positionDataAv.getStringPosition();
@@ -551,10 +690,10 @@ void MonitoringServer::aggregate() {
             qDebug() << "Errore Triangolazione";
             continue;
         }
-        if (!is_inside_room(positionData)) {
-            qDebug() << "Fuori dalla stanza";
-            continue;
-        }
+//        if (!is_inside_room(positionData)) {
+//            qDebug() << "Fuori dalla stanza";
+//            continue;
+//        }
         query.bindValue(":hash", QString::fromStdString(fil.second.begin()->getFcs()));
         query.bindValue(":mac", QString::fromStdString(fil.second.begin()->getMacPeer()));
         query.bindValue(":posx", positionData.getX());

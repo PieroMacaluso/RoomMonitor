@@ -532,6 +532,8 @@ void MainWindow::setupPositionPlot(QString mac) {
     query.bindValue(":fd", start_in.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", end_in.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":mac", mac);
+    query.bindValue(":lar", su.value("room/width").toString());
+    query.bindValue(":lun", su.value("room/height").toString());
 
     if (!query.exec()) {
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
@@ -548,6 +550,7 @@ void MainWindow::setupPositionPlot(QString mac) {
         v.push_back(p);
     }
     posPlot->fillData(v);
+    posPlot->fillBoards(Utility::getBoards());
     positionDialog.horizontalSlider->setData(v);
     positionDialog.horizontalSlider->setRange(0, static_cast<int>(v.size()) - 1);
     positionDialog.startDate->setText(v[0].getData().toString("yyyy-MM-dd hh:mm:ss"));
@@ -598,6 +601,8 @@ void MainWindow::addLiveData() {
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
     query.bindValue(":freq", su.value("monitor/min").toInt());
+    query.bindValue(":lar", su.value("room/width").toString());
+    query.bindValue(":lun", su.value("room/height").toString());
     if (!query.exec()) {
         //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
@@ -614,6 +619,8 @@ void MainWindow::addLiveData() {
     query.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sec", 300);
     query.bindValue(":freq", su.value("monitor/min").toInt());
+    query.bindValue(":lar", su.value("room/width").toString());
+    query.bindValue(":lun", su.value("room/height").toString());
 
     if (!query.exec()) {
         //qDebug() << query.lastError();
@@ -677,6 +684,8 @@ void MainWindow::genLiveData() {
     query.prepare(Query::SELECT_MAC_TIMING_LASTPOS.arg(su.value("database/table").toString()));
     query.bindValue(":fd", prev.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":sd", start.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":lar", su.value("room/width").toString());
+    query.bindValue(":lun", su.value("room/height").toString());
     if (!query.exec()) {
         //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
@@ -689,6 +698,7 @@ void MainWindow::genLiveData() {
         QDateTime timing = query.value(1).toDateTime();
         qreal posx = query.value(2).toDouble();
         qreal posy = query.value(3).toDouble();
+        if (!Utility::is_inside_room(posx, posy)) continue;
         auto it = lastMacs.find(mac);
         if (it != lastMacs.end()) {
             it->update(timing, posx, posy);

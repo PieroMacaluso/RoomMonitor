@@ -29,6 +29,12 @@ QSqlDatabase Utility::getDB(bool &error) {
     }
 }
 
+bool Utility::is_inside_room(qreal posx, qreal posy) {
+    QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
+    return posx >= 0 && posy >= 0 && posx <= su.value("room/width").toFloat() &&
+           posy <= su.value("room/height").toFloat();
+}
+
 bool Utility::testTable(QSqlDatabase &db) {
     QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     QSqlQuery query{db};
@@ -173,7 +179,7 @@ void Utility::setupVariables() {
 }
 
 
-std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, const QList<int>& l) {
+std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, const QList<int> &l) {
     std::deque<Packet> deque;
     std::string ssid;
 
@@ -181,8 +187,8 @@ std::deque<Packet> Utility::string2packet(const std::vector<std::string> &p, con
         std::vector<std::string> packet_hmac;
         std::vector<std::string> values;
         // Esempio: "2,8e13f31f,-69,b4:f1:da:d9:2b:b2,1xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ->
-            //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
-            Utility::split(s, packet_hmac, '|');
+        //          "2,dc7ef681,-76,b4:f1:da:d9:2b:b2,1573214966,~,3C:71:BF:F5:9F:3C"
+        Utility::split(s, packet_hmac, '|');
         if (packet_hmac.size() != 2) {
             qCritical() << "Stringa non ricevuta correttemente: " << QString::fromStdString(s);
             continue;

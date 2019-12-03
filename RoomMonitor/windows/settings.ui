@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Impostazioni</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../res.qrc">
+    <normaloff>:/resources/resources/logo_img.svg</normaloff>:/resources/resources/logo_img.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <widget class="QTabWidget" name="tabWidget">

@@ -7,12 +7,16 @@
 
 #include <QtCharts>
 #include <windows/classes/PositionDataPlot.h>
+#include <vector>
+#include "monitoring/Board.h"
 
-class PositionPlot: public QChart  {
-    Q_OBJECT
+class PositionPlot : public QChart {
+Q_OBJECT
     std::vector<PositionDataPlot> data;
     QLineSeries *lineSeries;
     QScatterSeries *scatter;
+    QScatterSeries *boards;
+    std::vector<Board> boards_v{};
     QValueAxis *aX;
     QValueAxis *aY;
     qreal xMax = 0;
@@ -20,12 +24,18 @@ class PositionPlot: public QChart  {
     int currentPos = 0;
 public:
     explicit PositionPlot(QGraphicsItem *parent = nullptr, Qt::WindowFlags wFlags = Qt::WindowFlags());
+
     void addSeries(QLineSeries *series);
+
     void addData(qreal xValue, qreal yValue);
+
     void addX(QValueAxis *axisX);
+
     void addY(QValueAxis *axisY);
-    QLineSeries * getLineSeries();
-    QScatterSeries * getScatter();
+
+    QLineSeries *getLineSeries();
+
+    QScatterSeries *getScatter();
 
     void resetView();
 
@@ -43,8 +53,15 @@ public:
 
     const std::vector<PositionDataPlot> &getData1() const;
 
+    void fillBoards(std::vector<Board> boards);
+
+    void addBoardsSeries(QScatterSeries *series);
+
 signals:
+
     void dataChanged(PositionDataPlot p);
+
+
 };
 
 

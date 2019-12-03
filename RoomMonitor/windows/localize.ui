@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Localizzazione MAC</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../res.qrc">
+    <normaloff>:/resources/resources/logo_img.svg</normaloff>:/resources/resources/logo_img.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,2">
@@ -164,7 +168,9 @@
    <header>windows/elements/QTimeSlider.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

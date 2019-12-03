@@ -117,6 +117,8 @@ public:
     PositionData fromRssiToXY(const std::deque<Packet>& deque);
     PositionData trilateration(const std::deque<Packet> &deque);
     PositionData trilaterationAverage(const std::deque<Packet> &deque);
+    PositionData near(const std::deque<Packet> &deque);
+
 
 
     /**
@@ -170,8 +172,6 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
-
-    QPointF trilaterationVincenzo(QPointF p1, QPointF p2, QPointF p3, double r1, double r2, double r3);
 };
 
 #endif //ROOMMONITOR_MONITORINGSERVER_H

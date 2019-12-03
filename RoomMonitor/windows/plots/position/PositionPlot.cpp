@@ -21,6 +21,18 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     this->addSeries(scatter);
     QChart::addSeries(roomPerimeter);
 
+    QScatterSeries *b = new QScatterSeries(this);
+    b->setName("Board");
+    b->setMarkerShape(QScatterSeries::MarkerShapeRectangle);
+    b->setMarkerSize(24.0);
+    QImage boa_img = QImage(":/resources/resources/board.svg");
+    QBrush boa_br = QBrush(boa_img);
+    b->setBrush(boa_br);
+
+    this->setAnimationOptions(QChart::SeriesAnimations);
+    this->legend()->hide();
+    this->addBoardsSeries(b);
+
 
     QValueAxis *axisX = new QValueAxis;
     axisX->setLabelFormat("%.2f");
@@ -29,6 +41,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     lineSeries->attachAxis(axisX);
     scatter->attachAxis(axisX);
     roomPerimeter->attachAxis(axisX);
+    boards->attachAxis(axisX);
 
     QValueAxis *axisY = new QValueAxis;
     axisY->setLabelFormat("%.2f");
@@ -37,6 +50,7 @@ PositionPlot::PositionPlot(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QCha
     lineSeries->attachAxis(axisY);
     scatter->attachAxis(axisY);
     roomPerimeter->attachAxis(axisY);
+    boards->attachAxis(axisY);
     QSettings s{Utility::ORGANIZATION, Utility::APPLICATION};
     xMax = s.value("room/width").toReal();
     yMax = s.value("room/height").toReal();
@@ -46,6 +60,11 @@ void PositionPlot::addSeries(QLineSeries *series) {
     this->lineSeries = series;
     QChart::addSeries(series);
 
+}
+
+void PositionPlot::addBoardsSeries(QScatterSeries *series) {
+    this->boards = series;
+    QChart::addSeries(series);
 }
 
 void PositionPlot::addData(qreal xValue, qreal yValue) {
@@ -96,6 +115,15 @@ void PositionPlot::fillData(std::vector<PositionDataPlot> newData) {
     this->currentPos = 0;
     this->lineSeries->append(data[0].getX(), data[0].getY());
     this->scatter->append(data[0].getX(), data[0].getY());
+}
+
+void PositionPlot::fillBoards(std::vector<Board> boards) {
+    this->boards_v.clear();
+    this->boards_v = std::move(boards);
+    this->currentPos = 0;
+    for (auto i : this->boards_v) {
+        this->boards->append(i.getCoord().x(), i.getCoord().y());
+    }
 }
 
 void PositionPlot::sliderChanged(int position){

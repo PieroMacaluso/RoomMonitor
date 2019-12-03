@@ -11,7 +11,7 @@ void AnalysisWorker::doWork(){
     result->setTitleFont(f);
     QSettings su{Utility::ORGANIZATION, Utility::APPLICATION};
     int granularity = 60 * 5;
-    int bucket = 1;
+    int bucket = 60;
     int freq = su.value("monitor/min").toInt();
     QDateTime start{};
     start.setSecsSinceEpoch(start_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
@@ -20,8 +20,6 @@ void AnalysisWorker::doWork(){
     qint64 diff = end.toSecsSinceEpoch() - start.toSecsSinceEpoch();
     freq = su.value("monitor/min").toInt();
     result->setTitle(title);
-    granularity = 60 * 5;
-    bucket = 60;
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
     if (error) return;
@@ -33,6 +31,9 @@ void AnalysisWorker::doWork(){
     q.bindValue(":sec", granularity);
     q.bindValue(":bucket", bucket);
     q.bindValue(":freq", freq);
+    q.bindValue(":lar", su.value("room/width").toString());
+    q.bindValue(":lun", su.value("room/height").toString());
+
     if (!q.exec()) {
         qCritical() << q.lastError();
         db.close();
@@ -78,6 +79,8 @@ void AnalysisWorker::doWork(){
     q.bindValue(":bucket", bucket);
     q.bindValue(":sec", granularity);
     q.bindValue(":freq", freq);
+    q.bindValue(":lar", su.value("room/width").toString());
+    q.bindValue(":lun", su.value("room/height").toString());
 
 
     if (!q.exec()) {
@@ -110,6 +113,9 @@ void AnalysisWorker::doWork(){
     q.bindValue(":bucket", bucket);
     q.bindValue(":sec", granularity);
     q.bindValue(":freq", freq);
+    q.bindValue(":lar", su.value("room/width").toString());
+    q.bindValue(":lun", su.value("room/height").toString());
+
     if (!q.exec()) {
         qCritical() << q.lastError();
         db.close();
@@ -133,6 +139,8 @@ void AnalysisWorker::doWork(){
     q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
     q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
     q.bindValue(":sec", granularity);
+    q.bindValue(":lar", su.value("room/width").toString());
+    q.bindValue(":lun", su.value("room/height").toString());
     if (!q.exec()) {
         qCritical() << q.lastError();
         db.close();
