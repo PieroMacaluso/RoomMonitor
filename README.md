@@ -94,11 +94,15 @@ In fase di montaggio del sistema, occorre un addetto per inizializzare i corrett
 Per garantire una facile configurazione è stato implementato un *captive portal* dove poter introdurre i valori necessari senza dover modificare il firmware.
 Per collegarsi a tale portale occorre connettersi alla rete Wi-Fi della board che si vuole configurare (default SSID: `esp32-ap`, Password: `progettopds`), dopodichè, tramite un browser (nota Chrome può avere problemi), collegarsi all'indirizzo `https://192.168.1.1`. (Nota, attenzione a non usare http ma **https**).
 A questo punto verrà mostrata la pagina di configurazione della scheda dove poter inizializzare tutti i parametri necessari.
-<div align="center">
 
-![Captive Portal](stuff/img/captive.jpg)
-
-</div>
+<table>
+  <tr>
+    <td width="30%"><img src="stuff/img/captive.jpg"/></td>
+    <td>Come si vede è possibile cambiare le impostazioni della rete WiFi della scheda, assegnarle un ID (importante per configurazione server), e il canale su cui si vuole effettuare la scansione. Nella parte sottostante è possibile impostare tutti i parametri per la comunicazione con il server.
+L’invio di questi parametri è reso sicuro tramite il protocollo **HTTPS**, garantendo confidenzialità, integrità ed autenticazione, invece per l’inoltro dei pacchetti sniffati verso il server attraverso canale TCP sono garantite le proprietà di autenticazione e integrità tramite l'utilizzo di HMAC-SHA256 con chiave a 256 bit per ogni pacchetto inoltrato.
+</td>
+  </tr>
+</table>
 
 Come si vede è possibile cambiare le impostazioni della rete WiFi della scheda, assegnarle un ID (importante per configurazione server), e il canale su cui si vuole effettuare la scansione. Nella parte sottostante è possibile impostare tutti i parametri per la comunicazione con il server.
 L’invio di questi parametri è reso sicuro tramite il protocollo **HTTPS**, garantendo confidenzialità, integrità ed autenticazione, invece per l’inoltro dei pacchetti sniffati verso il server attraverso canale TCP sono garantite le proprietà di autenticazione e integrità tramite l'utilizzo di HMAC-SHA256 con chiave a 256 bit per ogni pacchetto inoltrato.
