@@ -59,8 +59,9 @@ void SettingDialog::setupConnect() {
         ui.passEdit->setEchoMode(QLineEdit::Password);
     });
 
-    connect(ui.initializeButton, &QPushButton::clicked, [&](){
-        if (this->isSettingValid() && Utility::yesNoMessage(this, "Creazione DB", "Sei sicuro di voler creare/sovrascrivere la tabella indicata?")){
+    connect(ui.initializeButton, &QPushButton::clicked, [&]() {
+        if (this->isSettingValid() && Utility::yesNoMessage(this, "Creazione DB",
+                                                            "Sei sicuro di voler creare/sovrascrivere la tabella indicata?")) {
             this->resetDB();
         }
     });
@@ -196,7 +197,8 @@ void SettingDialog::openDialogAdd() {
             }
         }
         if (valid) {
-            addBoard(QString::number(addBoardDialog.idEdit->value()), QString::number(addBoardDialog.xEdit->value()), QString::number(addBoardDialog.yEdit->value()),
+            addBoard(QString::number(addBoardDialog.idEdit->value()), QString::number(addBoardDialog.xEdit->value()),
+                     QString::number(addBoardDialog.yEdit->value()),
                      QString::number(addBoardDialog.aEdit->value()));
             break;
         }
@@ -325,6 +327,7 @@ void SettingDialog::defaultValues() {
 }
 
 bool SettingDialog::resetDB() {
+    if (!this->isSettingValid()) return false;
     QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
     QSqlDatabase db{};
     db = QSqlDatabase::addDatabase("QMYSQL");
@@ -405,6 +408,28 @@ bool SettingDialog::isSettingValid() {
     QString table_s{ui.tableEdit->text()};
     if (username_v.validate(table_s, pos) != QValidator::Acceptable) err += "Nome tabella non valido.\n";
 
+    /* DATABASE */
+    QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
+    QSqlDatabase db{};
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName(ui.hostEdit->text());
+    db.setDatabaseName(ui.dbEdit->text());
+    db.setPort(ui.portEdit->text().toInt());
+    db.setUserName(ui.userEdit->text());
+    db.setPassword(ui.passEdit->text());
+    if (!db.open()) {
+        err += "Configurazione Database non valida.\n";
+    } else {
+        QSqlQuery query{db};
+        query.prepare(Query::SELECT_ALL_PACKET.arg(ui.tableEdit->text()));
+        if (!query.exec()) {
+            err += "Tabella pacchetti non trovata.\n";
+        }
+        query.prepare(Query::SELECT_ALL_BOARD.arg(ui.tableEdit->text()));
+        if (!query.exec()) {
+            err += "Tabella schedine non trovata.\n";
+        }
+    }
     if (err == "") {
         return true;
     } else {
