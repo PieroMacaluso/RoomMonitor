@@ -99,13 +99,10 @@ A questo punto verrà mostrata la pagina di configurazione della scheda dove pot
   <tr>
     <td width="30%"><img src="stuff/img/captive.jpg"/></td>
     <td>Come si vede è possibile cambiare le impostazioni della rete WiFi della scheda, assegnarle un ID (importante per configurazione server), e il canale su cui si vuole effettuare la scansione. Nella parte sottostante è possibile impostare tutti i parametri per la comunicazione con il server.
-L’invio di questi parametri è reso sicuro tramite il protocollo **HTTPS**, garantendo confidenzialità, integrità ed autenticazione, invece per l’inoltro dei pacchetti sniffati verso il server attraverso canale TCP sono garantite le proprietà di autenticazione e integrità tramite l'utilizzo di HMAC-SHA256 con chiave a 256 bit per ogni pacchetto inoltrato.
+      L’invio di questi parametri è reso sicuro tramite il protocollo <b>HTTPS</b>, garantendo confidenzialità, integrità ed autenticazione, invece per l’inoltro dei pacchetti sniffati verso il server attraverso canale TCP sono garantite le proprietà di autenticazione e integrità tramite l'utilizzo di HMAC-SHA256 con chiave a 256 bit per ogni pacchetto inoltrato.
 </td>
   </tr>
 </table>
-
-Come si vede è possibile cambiare le impostazioni della rete WiFi della scheda, assegnarle un ID (importante per configurazione server), e il canale su cui si vuole effettuare la scansione. Nella parte sottostante è possibile impostare tutti i parametri per la comunicazione con il server.
-L’invio di questi parametri è reso sicuro tramite il protocollo **HTTPS**, garantendo confidenzialità, integrità ed autenticazione, invece per l’inoltro dei pacchetti sniffati verso il server attraverso canale TCP sono garantite le proprietà di autenticazione e integrità tramite l'utilizzo di HMAC-SHA256 con chiave a 256 bit per ogni pacchetto inoltrato.
 
 ### Funzionamento
 
