@@ -8,6 +8,8 @@
    2. Setup della schedina
       1. HTTPS Server (NVS, SPIFFS) per Captive Portal
       2. TCP Socket connessione al Server e HMAC
+   3. Sicurezza
+      1. HMAC-SHA256 e discussione su HTTPS
 2. RoomMonitor App
    1. Impostazioni
       1. Descrizione Generale
@@ -23,4 +25,9 @@
       2. Grafici con Callout
    5. MAC randomico
       1. Scelte effettuate
+   6. Logger
 
+## Domande
+
+- Perchè C e non C++?
+- 
