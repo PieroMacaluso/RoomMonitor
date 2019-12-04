@@ -41,7 +41,6 @@
 #include "monitoring/Board.h"
 
 
-
 class MonitoringServer : public QObject {
 Q_OBJECT
     /**
@@ -114,11 +113,10 @@ public:
      * @param deque     Deque di pacchetti
      * @return PositionData     posizione stimata del dispositivo
      */
-    PositionData fromRssiToXY(const std::deque<Packet>& deque);
-    PositionData trilateration(const std::deque<Packet> &deque);
-    PositionData trilaterationAverage(const std::deque<Packet> &deque);
-    PositionData near(const std::deque<Packet> &deque);
-
+//    PositionData fromRssiToXY(const std::deque<Packet>& deque);
+//    PositionData trilateration(const std::deque<Packet> &deque);
+//    PositionData trilaterationAverage(const std::deque<Packet> &deque);
+    PositionData trilateration(const std::deque<Packet> &deque, bool middle);
 
 
     /**
@@ -128,13 +126,6 @@ public:
      * @return float    distance
      */
     float calculateDistance(signed rssi, int A);
-
-    /**
-     * Check if the packet is inside the room, otherwise discard it
-     * @param data Position Data
-     * @return true if it is inside, false otherwise
-     */
-    bool is_inside_room(PositionData data);
 
     /**
      * Check if a mac is hidden/random or not
@@ -172,6 +163,8 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
+
+    PositionData near04(const std::deque<Packet> &deque);
 };
 
 #endif //ROOMMONITOR_MONITORINGSERVER_H

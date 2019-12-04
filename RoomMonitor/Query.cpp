@@ -26,6 +26,7 @@ const QString Query::CREATE_TABLE_BOARD = "CREATE TABLE board_%1 ("
                                           ");";
 const QString Query::SELECT_ALL_PACKET = "SELECT * FROM %1;";
 const QString Query::SELECT_ALL_BOARD = "SELECT id_board, pos_x, pos_y, a FROM board_%1;";
+const QString Query::INSERT_PACKET = "INSERT INTO %1 (hash_fcs, mac_addr, pos_x, pos_y, timestamp, ssid, hidden) VALUES (:hash, :mac, :posx, :posy, :timestamp, :ssid, :hidden);";
 const QString Query::INSERT_BOARD = "INSERT INTO board_%1 (id_board, pos_x, pos_y, a) VALUES (:id_board, :pos_x, :pos_y, :a);";
 
 const QString Query::SELECT_TIMING_COUNT_BUCKET_FREQ = "SELECT timing, COUNT(*)\n"

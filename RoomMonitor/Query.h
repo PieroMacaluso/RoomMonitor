@@ -26,6 +26,7 @@ public:
     static const QString SELECT_MAC_TIMING_LASTPOS;
     static const QString SELECT_HIDDEN_NOT_MAC;
     static const QString SELECT_HIDDEN_MAC;
+    static const QString INSERT_PACKET;
 };
 
 

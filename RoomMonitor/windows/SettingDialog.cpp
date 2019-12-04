@@ -60,7 +60,7 @@ void SettingDialog::setupConnect() {
     });
 
     connect(ui.initializeButton, &QPushButton::clicked, [&]() {
-        if (this->isSettingValid() && Utility::yesNoMessage(this, "Creazione DB",
+        if (Utility::yesNoMessage(this, "Creazione DB",
                                                             "Sei sicuro di voler creare/sovrascrivere la tabella indicata?")) {
             this->resetDB();
         }
@@ -327,7 +327,7 @@ void SettingDialog::defaultValues() {
 }
 
 bool SettingDialog::resetDB() {
-    if (!this->isSettingValid()) return false;
+//    if (!this->isSettingValid()) return false;
     QSqlDatabase::removeDatabase(QSqlDatabase::database().connectionName());
     QSqlDatabase db{};
     db = QSqlDatabase::addDatabase("QMYSQL");
