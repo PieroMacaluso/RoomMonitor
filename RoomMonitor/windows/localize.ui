@@ -168,6 +168,10 @@
    <header>windows/elements/QTimeSlider.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>positionPlot</tabstop>
+  <tabstop>horizontalSlider</tabstop>
+ </tabstops>
  <resources>
   <include location="../res.qrc"/>
  </resources>

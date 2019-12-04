@@ -57,7 +57,7 @@ void SettingDialog::setupConnect() {
 
     connect(ui.initializeButton, &QPushButton::clicked, [&]() {
         if (Utility::yesNoMessage(this, "Creazione DB",
-                                                            "Sei sicuro di voler creare/sovrascrivere la tabella indicata?")) {
+                                  "Sei sicuro di voler creare/sovrascrivere la tabella indicata?")) {
             this->resetDB();
         }
     });
@@ -298,7 +298,7 @@ void SettingDialog::defaultValues() {
 
         // Ripristino informazioni iniziali
         ui.portServerEdit->setValue(27015);
-        ui.nEdit->setValue(3);
+        ui.nEdit->setValue(1.0);
         ui.minEdit->setValue(1);
         ui.widthEdit->setValue(10);
         ui.heightEdit->setValue(10);
@@ -441,7 +441,7 @@ bool SettingDialog::isSettingValid() {
 
 void SettingDialog::compileValues() {
     // Riempimento dei vari campi grafici
-    ui.nEdit->setValue(s.value("monitor/n").toInt());
+    ui.nEdit->setValue(s.value("monitor/n").toDouble());
     ui.minEdit->setValue(s.value("monitor/min").toInt());
     ui.widthEdit->setValue(s.value("room/width").toDouble());
     ui.heightEdit->setValue(s.value("room/height").toDouble());

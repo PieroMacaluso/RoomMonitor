@@ -58,6 +58,9 @@
    <header>windows/plots/mac/MacPlotView.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>macPlot</tabstop>
+ </tabstops>
  <resources>
   <include location="../res.qrc"/>
  </resources>
