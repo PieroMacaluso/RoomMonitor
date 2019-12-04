@@ -60,7 +60,7 @@ QLineSeries *Utility::generateRoomSeries(QObject *parent) {
     series->append(su.value("room/width").toInt(), su.value("room/height").toInt());
     series->append(0, su.value("room/height").toInt());
     series->append(0, 0);
-    series->setName("Perimeter");
+    series->setName(Strings::PERIMETER);
     return series;
 }
 

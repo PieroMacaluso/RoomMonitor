@@ -406,7 +406,7 @@ void MainWindow::setupMapPlot() {
     liveChart->fillBoards(boards);
     connect(ui.mapSlider, &QMapSlider::initialized, [&]() {
         if (ui.mapSlider->isMapEmpty()) {
-            ui.dateTimePlot->setText("Nessun Dato");
+            ui.dateTimePlot->setText(Strings::NO_DATA);
         } else {
             ui.dateTimePlot->setText(ui.mapSlider->getKeyIndex(0).toString("dd/MM/yyyy hh:mm"));
             ui.mapPlot->getChart()->fillDevicesV(ui.mapSlider->getMapIndex(0));

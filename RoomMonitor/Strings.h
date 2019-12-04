@@ -33,6 +33,10 @@ public:
     static const QString SET_CONF;
     static const QString NOT_WORKING_BOARD;
     static const QString NOT_WORKING_BOARD_MSG;
+    static const QString PERIMETER;
+    static const QString NO_DATA;
+    static const QString FIRST_START;
+    static const QString FIRST_START_MSG;
 };
 
 

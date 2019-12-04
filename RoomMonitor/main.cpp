@@ -19,9 +19,8 @@ int main(int argc, char **argv) {
     if (!SettingDialog::settingCheckUp()) {
         QSettings su{Utility::ORGANIZATION,Utility::APPLICATION};
         su.remove("first_time");
-        Utility::infoMessage("Primo Avvio", "Questo è il primo avvio dell'applicazione. Prima di continuare compila "
-                                               "le impostazioni.");
         SettingDialog s{};
+        Utility::infoMessage(Strings::FIRST_START, Strings::FIRST_START_MSG);
         if (!s.exec() && !SettingDialog::settingCheckUp()){
             return -1;
         }

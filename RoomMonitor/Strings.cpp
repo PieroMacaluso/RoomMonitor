@@ -27,6 +27,10 @@ const QString Strings::DB_RESET = Strings::tr("Db inizializzato");
 const QString Strings::SET_CONF = Strings::tr("Impostazioni salvate.");
 const QString Strings::NOT_WORKING_BOARD = Strings::tr("Schedine non funzionanti");
 const QString Strings::NOT_WORKING_BOARD_MSG = Strings::tr("Ti invitiamo a verificare il funzionamento delle schedine indicate nei dettagli e riavviare il monitoraggio");
+const QString Strings::PERIMETER = Strings::tr("Perimeter");
+const QString Strings::NO_DATA = Strings::tr("Nessun Dato");
+const QString Strings::FIRST_START = Strings::tr("Primo Avvio");
+const QString Strings::FIRST_START_MSG = Strings::tr("Questo è il primo avvio dell'applicazione. Prima di continuare compila le impostazioni.");
 
 
 
