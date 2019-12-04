@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 22/09/19.
-//
-
 #include "MacPlotView.h"
 
 MacPlotView::MacPlotView(QWidget *parent) : QChartView(parent) {

@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 30/10/19.
-//
-
 #ifndef ROOMMONITOR_QTIMESLIDER_H
 #define ROOMMONITOR_QTIMESLIDER_H
 
@@ -15,16 +11,34 @@
 
 class QTimeSlider: public QSlider {
     Q_OBJECT
+    /**
+     * Mouse Event
+     * @param ev Event
+     */
     void mouseMoveEvent(QMouseEvent *ev) override;
+    /**
+     * Vettore si posizioni
+     */
     std::vector<PositionDataPlot> data;
-    std::vector<QDateTime> keyMap;
 
 public:
+    /**
+     * Default constructor
+     * @param parent
+     */
     explicit QTimeSlider(QWidget *parent = nullptr);
 
+    /**
+     * Set Data in the QTimeSlider
+     * @param data
+     */
     void setData(const std::vector<PositionDataPlot> &data);
 
 signals:
+    /**
+     * Emit the maximum date for the outside
+     * @param e
+     */
     void emitDateMax(PositionDataPlot e);
 };
 

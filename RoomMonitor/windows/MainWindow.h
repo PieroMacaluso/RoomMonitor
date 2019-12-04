@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 11/09/19.
-//
-
 #ifndef ROOMMONITOR_MAINWINDOW_H
 #define ROOMMONITOR_MAINWINDOW_H
 

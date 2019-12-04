@@ -20,9 +20,7 @@ QSqlDatabase Utility::getDB(bool &error) {
         db.setPassword(su.value("database/pass").toString());
         if (!db.open()) {
             //qDebug() << db.lastError();
-            Utility::warningMessage(Strings::ERR_DB,
-                                    Strings::ERR_DB_MSG,
-                                    db.lastError().text());
+            Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
             error = true;
         }
         return db;
@@ -40,19 +38,13 @@ bool Utility::testTable(QSqlDatabase &db) {
     QSqlQuery query{db};
     query.prepare(Query::SELECT_ALL_PACKET.arg(su.value("database/table").toString()));
     if (!query.exec()) {
-        //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                query.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         db.close();
         return false;
     }
     query.prepare(Query::SELECT_ALL_BOARD.arg(su.value("database/table").toString()));
     if (!query.exec()) {
-        //qDebug() << query.lastError();
-        Utility::warningMessage(Strings::ERR_DB,
-                                Strings::ERR_DB_MSG,
-                                query.lastError().text());
+        Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         db.close();
         return false;
     }
@@ -157,20 +149,6 @@ void Utility::infoMessage(const QString &title, const QString &text) {
     m.exec();
 
     qInfo() << text;
-}
-
-int Utility::infoMessageTimer(const QString &title, const QString &text, int millisec) {
-    QMessageBox m{};
-    m.setWindowTitle(title);
-    m.setStandardButtons(QMessageBox::Ok | QMessageBox::Abort);
-    m.setText(text);
-    QTimer t{};
-    t.setInterval(millisec);
-    t.setSingleShot(true);
-    QObject::connect(&m, &QMessageBox::rejected, &t, &QTimer::stop);
-    QObject::connect(&t, &QTimer::timeout, m.button(QMessageBox::Ok), &QAbstractButton::click);
-    t.start();
-    return m.exec();
 }
 
 void Utility::setupVariables() {

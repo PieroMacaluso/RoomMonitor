@@ -1,8 +1,3 @@
-//
-// Created by pieromack on 11/09/19.
-//
-
-
 #include "MainWindow.h"
 
 MainWindow::MainWindow() {
@@ -315,7 +310,6 @@ std::list<Packet> MainWindow::getAllPacketsOfMac(const QString &mac, QDateTime i
     query.bindValue(":mac", mac);
 
     if (!query.exec()) {
-        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return std::list<Packet>{};
     }
@@ -364,7 +358,6 @@ std::deque<Packet> MainWindow::getHiddenPackets(QDateTime initTime, QDateTime en
     query.bindValue(":sd", endTime.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":mac", mac);
     if (!query.exec()) {
-        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return std::deque<Packet>{};
     }
@@ -604,7 +597,6 @@ void MainWindow::addLiveData() {
     query.bindValue(":lar", su.value("room/width").toString());
     query.bindValue(":lun", su.value("room/height").toString());
     if (!query.exec()) {
-        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, db.lastError().text());
         return;
     }
@@ -623,7 +615,6 @@ void MainWindow::addLiveData() {
     query.bindValue(":lun", su.value("room/height").toString());
 
     if (!query.exec()) {
-        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return;
     }
@@ -687,7 +678,6 @@ void MainWindow::genLiveData() {
     query.bindValue(":lar", su.value("room/width").toString());
     query.bindValue(":lun", su.value("room/height").toString());
     if (!query.exec()) {
-        //qDebug() << query.lastError();
         Utility::warningMessage(Strings::ERR_DB, Strings::ERR_DB_MSG, query.lastError().text());
         return;
     }

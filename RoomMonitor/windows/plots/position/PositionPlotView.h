@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 22/09/19.
-//
-
 #ifndef ROOMMONITOR_POSITIONPLOTVIEW_H
 #define ROOMMONITOR_POSITIONPLOTVIEW_H
 

@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 18/09/19.
-//
-
 #ifndef ROOMMONITOR_MONITORINGCHART_H
 #define ROOMMONITOR_MONITORINGCHART_H
 

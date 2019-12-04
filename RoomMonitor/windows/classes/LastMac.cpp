@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 27/09/19.
-//
-
 #include "LastMac.h"
 
 LastMac::LastMac() {}

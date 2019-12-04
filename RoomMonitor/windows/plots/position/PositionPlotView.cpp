@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 22/09/19.
-//
-
 #include <iostream>
 #include "PositionPlotView.h"
 

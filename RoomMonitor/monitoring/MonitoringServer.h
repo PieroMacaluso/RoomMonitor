@@ -113,11 +113,7 @@ public:
      * @param deque     Deque di pacchetti
      * @return PositionData     posizione stimata del dispositivo
      */
-//    PositionData fromRssiToXY(const std::deque<Packet>& deque);
-//    PositionData trilateration(const std::deque<Packet> &deque);
-//    PositionData trilaterationAverage(const std::deque<Packet> &deque);
     PositionData trilateration(const std::deque<Packet> &deque, bool middle);
-
 
     /**
      * From RSSI and A to metres
@@ -163,8 +159,6 @@ signals:
      * Signal che segnala la chiusura del server TCP
      */
     void stopped();
-
-    PositionData near04(const std::deque<Packet> &deque);
 };
 
 #endif //ROOMMONITOR_MONITORINGSERVER_H

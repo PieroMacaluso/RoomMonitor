@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 16/11/19.
-//
-
 #ifndef ROOMMONITOR_STYLES_H
 #define ROOMMONITOR_STYLES_H
 

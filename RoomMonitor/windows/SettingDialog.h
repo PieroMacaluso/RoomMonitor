@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 10/09/19.
-//
-
 #ifndef ROOMMONITOR_SETTINGDIALOG_H
 #define ROOMMONITOR_SETTINGDIALOG_H
 

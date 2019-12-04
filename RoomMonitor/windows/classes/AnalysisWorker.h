@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 01/10/19.
-//
-
 #ifndef ROOMMONITOR_ANALYSISWORKER_H
 #define ROOMMONITOR_ANALYSISWORKER_H
 

@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 27/09/19.
-//
-
 #ifndef ROOMMONITOR_LASTMAC_H
 #define ROOMMONITOR_LASTMAC_H
 

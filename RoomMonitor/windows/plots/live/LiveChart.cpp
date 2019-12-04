@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 09/10/19.
-//
-
 #include <windows/classes/LastMac.h>
 #include <Utility.h>
 #include "LiveChart.h"

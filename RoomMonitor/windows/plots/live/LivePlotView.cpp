@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 09/10/19.
-//
-
 #include "LivePlotView.h"
 
 LivePlotView::LivePlotView(QWidget *parent) : QChartView(parent) {

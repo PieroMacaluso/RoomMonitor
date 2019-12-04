@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 04/11/19.
-//
-
 #include "QMapSlider.h"
 #include "QTimeSlider.h"
 

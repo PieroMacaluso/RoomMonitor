@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 08/08/19.
-//
-
 #ifndef ROOMMONITOR_POSITIONDATA_H
 #define ROOMMONITOR_POSITIONDATA_H
 

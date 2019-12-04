@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 22/09/19.
-//
-
 #include "PositionDataPlot.h"
 
 PositionDataPlot::PositionDataPlot(const QDateTime &data, qreal x, qreal y) : data(data), x(x), y(y) {}

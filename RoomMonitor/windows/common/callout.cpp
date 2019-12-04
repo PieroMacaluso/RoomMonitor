@@ -34,14 +34,12 @@
 #include <QtGui/QMouseEvent>
 #include <QtCharts/QChart>
 
-Callout::Callout(QChart *chart):
-    QGraphicsItem(chart),
-    m_chart(chart)
-{
+Callout::Callout(QChart *chart) :
+        QGraphicsItem(chart),
+        m_chart(chart) {
 }
 
-QRectF Callout::boundingRect() const
-{
+QRectF Callout::boundingRect() const {
     QPointF anchor = mapFromParent(m_chart->mapToPosition(m_anchor));
     QRectF rect;
     rect.setLeft(qMin(m_rect.left(), anchor.x()));
@@ -51,8 +49,7 @@ QRectF Callout::boundingRect() const
     return rect;
 }
 
-void Callout::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
+void Callout::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option)
     Q_UNUSED(widget)
     QPainterPath path;
@@ -99,14 +96,12 @@ void Callout::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->drawText(m_textRect, m_text);
 }
 
-void Callout::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void Callout::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     event->setAccepted(true);
 }
 
-void Callout::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (event->buttons() & Qt::LeftButton){
+void Callout::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+    if (event->buttons() & Qt::LeftButton) {
         setPos(mapToParent(event->pos() - event->buttonDownPos(Qt::LeftButton)));
         event->setAccepted(true);
     } else {
@@ -114,8 +109,7 @@ void Callout::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void Callout::setText(const QString &text)
-{
+void Callout::setText(const QString &text) {
     m_text = text;
     QFontMetrics metrics(m_font);
     m_textRect = metrics.boundingRect(QRect(0, 0, 150, 150), Qt::AlignLeft, m_text);
@@ -124,13 +118,11 @@ void Callout::setText(const QString &text)
     m_rect = m_textRect.adjusted(-5, -5, 5, 5);
 }
 
-void Callout::setAnchor(QPointF point)
-{
+void Callout::setAnchor(QPointF point) {
     m_anchor = point;
 }
 
-void Callout::updateGeometry()
-{
+void Callout::updateGeometry() {
     prepareGeometryChange();
     setPos(m_chart->mapToPosition(m_anchor) + QPoint(10, -50));
 }

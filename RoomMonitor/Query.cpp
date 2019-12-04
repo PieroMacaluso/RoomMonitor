@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 13/11/19.
-//
-
 #include "Query.h"
 
 const QString Query::DROP_TABLE_PACKET = "DROP TABLE IF EXISTS %1;";

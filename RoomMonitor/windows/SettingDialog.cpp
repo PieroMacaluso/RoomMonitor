@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 10/09/19.
-//
-
 #include "SettingDialog.h"
 
 SettingDialog::SettingDialog() {

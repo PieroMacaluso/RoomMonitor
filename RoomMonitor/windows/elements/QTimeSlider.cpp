@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 30/10/19.
-//
-
 #include "QTimeSlider.h"
 #include <QDebug>
 #include <QSlider>

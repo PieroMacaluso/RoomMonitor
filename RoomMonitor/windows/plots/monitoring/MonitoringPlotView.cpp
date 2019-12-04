@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 18/09/19.
-//
-
 #include "MonitoringPlotView.h"
 
 MonitoringPlotView::MonitoringPlotView(QWidget *parent) : QChartView(parent) {

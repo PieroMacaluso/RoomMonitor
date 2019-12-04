@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 13/11/19.
-//
-
 #ifndef ROOMMONITOR_STRINGS_H
 #define ROOMMONITOR_STRINGS_H
 
@@ -35,6 +31,8 @@ public:
     static const QString AGG_STOPPED;
     static const QString DB_RESET;
     static const QString SET_CONF;
+    static const QString NOT_WORKING_BOARD;
+    static const QString NOT_WORKING_BOARD_MSG;
 };
 
 

@@ -1,7 +1,3 @@
-//
-// Created by pieromack on 17/09/19.
-//
-
 #include "MacChart.h"
 
 MacChart::MacChart(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QChart(parent, wFlags) {
