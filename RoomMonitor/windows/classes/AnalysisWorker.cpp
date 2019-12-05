@@ -1,6 +1,6 @@
 #include "AnalysisWorker.h"
 
-void AnalysisWorker::doWork(){
+void AnalysisWorker::doWork() {
     QString title = "Conteggio presenze lungo periodo";
     QFont f = result->titleFont();
     f.setBold(true);
@@ -14,7 +14,6 @@ void AnalysisWorker::doWork(){
     QDateTime end{};
     end.setSecsSinceEpoch(end_in.toSecsSinceEpoch() / (60 * 5) * (60 * 5));
     qint64 diff = end.toSecsSinceEpoch() - start.toSecsSinceEpoch();
-    freq = su.value("monitor/min").toInt();
     result->setTitle(title);
     bool error = false;
     QSqlDatabase db = Utility::getDB(error);
@@ -59,7 +58,7 @@ void AnalysisWorker::doWork(){
         curr++;
         itt.next();
         result->addData(itt.key(), itt.value());
-        current = curr / total * 100;
+        current = curr * 100.00 / total;
         if (last + 10 <= current) {
             emit updateProgress(current);
             last = current;
@@ -135,8 +134,11 @@ void AnalysisWorker::doWork(){
     q.bindValue(":fd", start.toString("yyyy-MM-dd hh:mm:ss"));
     q.bindValue(":sd", end.toString("yyyy-MM-dd hh:mm:ss"));
     q.bindValue(":sec", granularity);
+    q.bindValue(":bucket", bucket);
     q.bindValue(":lar", su.value("room/width").toString());
     q.bindValue(":lun", su.value("room/height").toString());
+    q.bindValue(":freq", freq);
+
     if (!q.exec()) {
         qCritical() << q.lastError();
         db.close();
