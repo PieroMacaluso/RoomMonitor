@@ -47,6 +47,7 @@
     - [Visualizzazione Movimento](#visualizzazione-movimento)
     - [Analisi MAC nascosti](#analisi-mac-nascosti)
   - [Sviluppi Futuri](#sviluppi-futuri)
+- [Riferimenti](#riferimenti)
 
 Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018.
 
@@ -268,3 +269,9 @@ Partendo dal presupposto che fare un'analisi del genere basandosi unicamente sul
 ### Sviluppi Futuri
 
 *Work in Progress...*
+
+## Riferimenti
+
+- [[1] ](https://www.matec-conferences.org/articles/matecconf/abs/2016/26/matecconf_mmme2016_05008/matecconf_mmme2016_05008.html) Zhang, Chuan Wei, and Xin Zhao. "The wireless sensor network (WSN) triangle centroid localization algorithm based on RSSI." MATEC Web of Conferences. Vol. 63. EDP Sciences, 2016.
+- [[2] ](http://netlab-mn.unipv.it/thesis/BSc/Risi_Thesis.pdf) Gamba, Paolo, Dott Ing Emanuele Goldoni, and Marco Risi. "Confronto di tecniche di localizzazione per le WSN basate su RSSI."
+- [[3] ](http://didawiki.cli.di.unipi.it/lib/exe/fetch.php/rhs/localizzazione.pdf) Luca Pappalardo. "Localizzazione: Problema, Tecniche, Algoritmi". Dipartimento di Informatica - Università di Pisa. Reti mobili: Ad Hoc e di sensori, 2011.
