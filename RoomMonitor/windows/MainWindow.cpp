@@ -465,9 +465,9 @@ void MainWindow::addMacSitua(const QString &mac, int frequency, bool random) {
     auto mac_table = new QTableWidgetItem{mac};
     mac_table->setToolTip(mac);
     auto frequency_table = new QTableWidgetItem{QString::number(frequency)};
+    frequency_table->setToolTip(QString::number(frequency));
     auto random_table = new QTableWidgetItem{random ? "true" : "false"};
-
-    mac_table->setToolTip(mac);
+    random_table->setToolTip(random ? "true" : "false");
     ui.macSituation->setItem(i, 0, mac_table);
     ui.macSituation->setItem(i, 1, frequency_table);
     ui.macSituation->setItem(i, 2, random_table);
@@ -497,6 +497,9 @@ void MainWindow::addLastMacPos(const QString &mac, const QDateTime &date, qreal 
     auto posx_table = new QTableWidgetItem{QString::number(posx)};
     auto posy_table = new QTableWidgetItem{QString::number(posy)};
     mac_table->setToolTip(mac);
+    date_table->setToolTip(date.toString("dd/MM/yyyy hh:mm"));
+    posx_table->setToolTip(QString::number(posx));
+    posy_table->setToolTip(QString::number(posy));
     ui.macLastSituation->setItem(i, 0, mac_table);
     ui.macLastSituation->setItem(i, 1, date_table);
     ui.macLastSituation->setItem(i, 2, posx_table);
