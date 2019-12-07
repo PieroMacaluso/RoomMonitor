@@ -12,7 +12,7 @@
 <p align="center">
  <img alt="Languages" src="https://img.shields.io/badge/Languages-C%20|%20C%2B%2B-orange"/>
  <img alt="Framework" src="https://img.shields.io/badge/Framework-Qt-green"/>
- <img alt="Status" src="https://img.shields.io/badge/Status-WIP-yellow"/>
+ <img alt="Status" src="https://img.shields.io/badge/Status-Delivered-green"/>
 </p>
 
 ## Indice
@@ -46,10 +46,8 @@
     - [Statistica di Lungo Periodo](#statistica-di-lungo-periodo)
     - [Visualizzazione Movimento](#visualizzazione-movimento)
     - [Analisi MAC nascosti](#analisi-mac-nascosti)
-  - [Sviluppi Futuri](#sviluppi-futuri)
+- [Sviluppi Futuri](#sviluppi-futuri)
 - [Riferimenti](#riferimenti)
-
-Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018.
 
 ## Team di sviluppo
 
@@ -58,6 +56,8 @@ Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/
 - <img alt="avatar" src="https://github.com/angeloturco.png" width="20px" height="20px"> **Angelo Turco** - [angeloturco](https://github.com/angeloturco)
 
 ## Codice sorgente progetti
+
+Questo progetto è stato sviluppato partendo dalla [proposta di progetto](stuff/specs.pdf) fornita dal prof. Giovanni Malnati durante il corso "Programmazione di Sistema" nell' a.a. 2017/2018.
 
 - [**RoomMonitor ESP32 Firmware**](ESP32firmwareCLion)
 - [**RoomMonitor Server App**](RoomMonitor)
@@ -266,9 +266,12 @@ Oramai la maggior parte dei dispositivi con i sistemi operativi più aggiornati 
 
 Partendo dal presupposto che fare un'analisi del genere basandosi unicamente sulla posizione, sul tempo e sull'SSID è molto lontana dall'essere precisa, questa può dare in ogni caso una visione di massima di quelli che potrebbero essere i dispositivi che più di avvicinano a quello in analisi.
 
-### Sviluppi Futuri
+## Sviluppi Futuri
 
-*Work in Progress...*
+- ESP32 Firmware in C++.
+- From SQL to NOSQL.
+- App/WebApp where users can know the status of rooms in every moment.
+- ...
 
 ## Riferimenti
 
