@@ -1,18 +1,16 @@
 ---
 name: Feature Proposal
-about: Suggerisci un miglioramento o una nuova feature
+about: Propose a new function or feature for the software
 
 ---
-## Comportamento Atteso
-> Come dovrebbe funzionare.
+## Expected Behaviour
 
+> How it should work.
 
+WRITE HERE
 
-## Comportamento Attuale
->Differenze rispetto al comportamento atteso.
+## Suggested solution
 
+> Tips and suggestion for implementation
 
-
-## Possibile Soluzione
-> (Non obbligatorio) Suggerimenti o idee su come raggiungere l'obiettivo.
-
+WRITE HERE
