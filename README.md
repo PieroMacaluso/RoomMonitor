@@ -47,6 +47,7 @@
     - [Visualizzazione Movimento](#visualizzazione-movimento)
     - [Analisi MAC nascosti](#analisi-mac-nascosti)
 - [Sviluppi Futuri](#sviluppi-futuri)
+- [Contibutions and License](#contibutions-and-license)
 - [Riferimenti](#riferimenti)
 
 ## Team di sviluppo
@@ -272,6 +273,15 @@ Partendo dal presupposto che fare un'analisi del genere basandosi unicamente sul
 - From SQL to NOSQL.
 - App/WebApp where users can know the status of rooms in every moment.
 - ...
+
+## Contibutions and License
+
+It is possible to fork the project and create your own one following the rules given by the [LICENSE](LICENSE).
+
+If you want to contribute or to request a new features, you can do that via the ISSUE sections.
+
+If you need any help to setup the project or to have information about it, feel free to join us at <a href="https://t.me/PieroMacaluso">`@PieroMacaluso` on Telegram</a> and ask away.
+
 
 ## Riferimenti
 
